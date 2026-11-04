@@ -22,7 +22,7 @@
 // Контракт сцены (см. .claude/skills/html-animation/SKILL.md):
 //   window.SCENE = { duration, fps?, width?, height? }
 //   window.renderFrame(t)  — необязательна; выставляет состояние сцены на время t (сек)
-//   CSS-анимации и Web Animations перематываются автоматически.
+//   CSS-анимации, Web Animations и GSAP-таймлайн window.TL перематываются автоматически.
 
 import { createRequire } from 'node:module';
 import { spawn } from 'node:child_process';
@@ -141,6 +141,8 @@ async function main() {
       const shot = async (t) => {
         await page.evaluate(async (t) => {
           for (const a of document.getAnimations()) { a.pause(); a.currentTime = t * 1000; }
+          // GSAP: сцена кладёт главный таймлайн в window.TL (paused) — перематываем его.
+          if (window.TL && typeof window.TL.seek === 'function') window.TL.seek(t, false);
           if (typeof window.renderFrame === 'function') await window.renderFrame(t);
         }, t);
         return page.screenshot({ type: 'png', omitBackground: !!o.alpha });

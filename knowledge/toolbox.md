@@ -22,6 +22,9 @@
 | скилл brag | github.com/latent-spaces/brag (★20K) | MIT | скриптов с внешними API нет | промо сайта/приложения на HyperFrames |
 | скилл video-use | github.com/browser-use/video-use (★30K) | MIT | сеть только в helpers/transcribe.py (платный ElevenLabs по ключу) | монтаж съёмки разговором, жёсткие правила ffmpeg. manim-video из того же репозитория не ставили |
 | скиллы video-edit, video-understand, visual-style, motion-graphics, music-to-video | github.com/calesthio/OpenMontage (★76K) | AGPL-3.0 (при публичной раздаче репозитория — требования AGPL) | внешние API только в motion-graphics/grounding/locate.mjs (ключ Gemini, по желанию) | монтаж ffmpeg, локальная расшифровка, стиль, моушн-графика, ролик под музыку |
+| скилл social | github.com/coreyhaines31/marketingskills (★58K, v2.4.1), 91K установок | MIT | только инструкции; в references/listening.md — по желанию бесплатные открытые запросы к Reddit/HN | хуки, формат коротких видео, разбор вирусных |
+| скилл animation-vocabulary | github.com/emilkowalski/skills (★53K), 259K установок | MIT | только инструкции | перевод «как пользователь описал движение» → название приёма |
+| скиллы gsap-core, gsap-timeline + vendor/gsap/gsap.min.js 3.15.1 | github.com/greensock/gsap-skills (★18K), 75–82K установок; библиотека из npm | MIT (скиллы); GSAP Standard No Charge (библиотека, бесплатно и для коммерции) | библиотека скачана `npm pack`, проверена в рендере: TL.seek(t) даёт точные кадры, в т.ч. в 4 потока | сложные цепочки анимации в HTML-сценах |
 | скилл find-skills | github.com/vercel-labs/skills (2026-11-04), через `npx skills add` | MIT | одна инструкция без кода, прочитана целиком | поиск новых скиллов в каталоге skills.sh. Его совет ставить с `-g` не применять — ставить в проект |
 
 ## Рекомендованы пользователю (ставит сам через карточку плагинов)
@@ -43,6 +46,10 @@
 | heygen-com/hyperframes@product-launch-video, @motion-graphics | в текущей версии репозитория таких нет — влиты в `hyperframes` (motion-graphics взят из OpenMontage) |
 | остальные ~95 скиллов OpenMontage | платные сервисы (Kling, Seedance, HeyGen, ElevenLabs, BFL…), старые копии hyperframes/remotion (перезаписали бы официальные), не про наши задачи |
 | zhuyansen/awesome-claude-video-skills (★1.5K, CC0) | это каталог-список, а не скилл — использовать для поиска новых |
+| mattpocock/skills@writing-beats, writing-shape (513K) | про статьи и тексты, не про видео |
+| coreyhaines31/marketingskills@video, marketing-psychology | обзор платных генераторов видео / психология продаж — не наши задачи |
+| higgsfield-ai/skills (видео-объяснялки, обложки YouTube) | через платный сервис Higgsfield |
+| mbfinotti/advertising-skills (★2) | мало звёзд |
 | `*/superpowers@ai-video-generation`, `@ai-avatar-video` (101-skills, magentosh, qu-skills, skills-shell, its-a-skill-issue, bankai-skills) | одинаковые копии, 0–18 звёзд, без лицензии, созданы в 2026-08/09, но по 450–950K установок — признаки накрутки; не ставить |
 | prime-skills/runcomfy-agent-skills (★61), gencraft-labs/skills (★0) | генерация через платные API, мало звёзд |
 | affaan-m/ECC video-editing | опирается на платные ElevenLabs, fal.ai, Descript |

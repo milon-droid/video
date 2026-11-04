@@ -25,6 +25,23 @@ description: Как писать HTML/CSS/JS-сцены для покадров�
 - `renderFrame(t)` — для того, что считается формулой: счётчики, прогресс-бары,
   графики, пути по кривой, синхронизация с таймкодами.
 
+## GSAP (для сложных цепочек анимации)
+Библиотека лежит в `vendor/gsap/gsap.min.js` (скиллы `gsap-core`, `gsap-timeline`).
+Весь GSAP — в **одном таймлайне на паузе**, положенном в `window.TL`:
+рендер сам вызывает `TL.seek(t)` на каждом кадре.
+```html
+<script src="../../../vendor/gsap/gsap.min.js"></script>
+<script>
+  window.SCENE = { duration: 6 };
+  const TL = gsap.timeline({ paused: true });
+  TL.from('.title', { y: 80, opacity: 0, duration: .5, ease: 'back.out(2)' }, 0.2)
+    .from('.word', { scale: 0, stagger: .12, ease: 'elastic.out(1,.5)' }, 0.8);
+  window.TL = TL;
+</script>
+```
+Нельзя: отдельные `gsap.to()` вне TL, `repeat: -1`, ScrollTrigger, `onUpdate`
+с Date.now. CSS-анимации и GSAP можно смешивать в одной сцене.
+
 ## Запрещено (ломает покадровый рендер)
 - `Date.now()`, `performance.now()`, `setTimeout`, `setInterval`,
   `requestAnimationFrame`-циклы, CSS `transition` (не перематываются).
