@@ -19,3 +19,6 @@ refs/**/list.txt
 
 # Модели голосов для озвучки (скачиваются, большие)
 assets/voices/
+
+projects/*/assets/sfx_vo.wav
+projects/*/assets/vo/
