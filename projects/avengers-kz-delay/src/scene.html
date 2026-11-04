@@ -14,7 +14,6 @@
 </head>
 <body>
 <canvas id="c" width="1080" height="1920"></canvas>
-<script src="retime.js"></script>
 <script>
 'use strict';
 const W = 1080, H = 1920, CX = 500, DUR0 = 28;
@@ -101,8 +100,8 @@ function pin(x, y, label, sub, col, s = 1) { ctx.save(); ctx.translate(x, y); ct
   ctx.fillStyle = C.panel; rr(-150, -70, 300, 120, 22); ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 5; ctx.stroke();
   ctx.beginPath(); ctx.moveTo(-18, 50); ctx.lineTo(18, 50); ctx.lineTo(0, 80); ctx.closePath(); ctx.fillStyle = col; ctx.fill();
   line([[label, C.soft]], 0, -38, 30, { weight: 800, stroke: false }); line([[sub, col]], 0, 8, 52, { stroke: false }); ctx.restore(); }
-const MONTHS = [['18', 'ДЕК'], ['20', 'ДЕК'], ['23', 'ДЕК'], ['26', 'ДЕК'], ['29', 'ДЕК'], ['31', 'ДЕК'], ['2', 'ЯНВ'], ['4', 'ЯНВ'], ['7', 'ЯНВ']];
-function calendar(x, y, k) { const i = Math.min(MONTHS.length - 1, Math.floor(k * (MONTHS.length - 1) + 1e-6)), flip = (k * (MONTHS.length - 1)) % 1;
+const MONTHS = [['18', 'ДЕК'], ['20', 'ДЕК'], ['23', 'ДЕК'], ['26', 'ДЕК'], ['29', 'ДЕК'], ['31', 'ДЕК'], ['2', 'ЯНВ'], ['4', 'ЯНВ'], ['5', 'ЯНВ'], ['6', 'ЯНВ'], ['7', 'ЯНВ']];
+function calendar(x, y, k) { const n = MONTHS.length - 1, i = Math.min(n, Math.floor(k * n + 1e-6)), flip = k >= 1 ? 0 : (k * n) % 1;
   ctx.save(); ctx.translate(x, y);
   ctx.fillStyle = '#fff'; rr(-150, -160, 300, 320, 26); ctx.fill(); ctx.fillStyle = C.red; rr(-150, -160, 300, 90, 26); ctx.fill(); ctx.fillRect(-150, -100, 300, 30);
   for (const dx of [-80, 80]) { ctx.fillStyle = '#c7cfe8'; rr(dx - 10, -185, 20, 50, 10); ctx.fill(); }
@@ -139,8 +138,8 @@ function card(x, y, k, icon, l1, l2) { const s = lerp(.6, 1, E.back(k)); ctx.sav
   ctx.save(); ctx.translate(-275, 0); icon(); ctx.restore();
   line([[l1, C.white]], -150, -28, 44, { align: 'left', stroke: false }); line([[l2, C.yel]], -150, 32, 40, { weight: 800, align: 'left', stroke: false }); ctx.restore(); }
 const iconPirate = () => { ctx.fillStyle = '#111'; rr(-70, -60, 140, 100, 8); ctx.fill(); ctx.fillStyle = '#888'; ctx.fillRect(-80, -70, 8, 150);
-  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, -36, 22, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(-12, -20, 24, 13); ctx.fillStyle = '#111'; for (const dx of [-8, 8]) { ctx.beginPath(); ctx.arc(dx, -38, 6, 0, Math.PI * 2); ctx.fill(); }
-  ctx.strokeStyle = '#fff'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-38, -2); ctx.lineTo(38, 20); ctx.moveTo(38, -2); ctx.lineTo(-38, 20); ctx.stroke(); };
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, -26, 22, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(-12, -10, 24, 13); ctx.fillStyle = '#111'; for (const dx of [-8, 8]) { ctx.beginPath(); ctx.arc(dx, -28, 6, 0, Math.PI * 2); ctx.fill(); }
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-38, 8); ctx.lineTo(38, 30); ctx.moveTo(38, 8); ctx.lineTo(-38, 30); ctx.stroke(); };
 const iconTickets = () => { for (const [dx, r, col] of [[-22, -.3, C.yel], [22, .3, C.cyan]]) { ctx.save(); ctx.translate(dx, 0); ctx.rotate(r); ctx.fillStyle = col; rr(-40, -60, 80, 120, 12); ctx.fill(); ctx.restore(); }
   ctx.fillStyle = C.red; ctx.font = '900 44px Inter'; ctx.textAlign = 'center'; ctx.fillText('VS', 0, 16); };
 const iconHourglass = () => { ctx.fillStyle = '#c9d3f5'; ctx.fillRect(-50, -70, 100, 14); ctx.fillRect(-50, 56, 100, 14);
@@ -194,7 +193,7 @@ const SHOTS = [
     const a = enter(t, 2.5, -200, 0), b = enter(t, 3.0, 200, 0);
     ctx.save(); ctx.globalAlpha = a.a; ctx.translate(a.dx, 0); globe(290, 760, 150, t); pin(290, 540, 'ВЕСЬ МИР', '18.12', C.green, pop(t, 2.6)); ctx.restore();
     ctx.save(); ctx.globalAlpha = b.a; ctx.translate(b.dx, 0); kzBadge(710, 760, 150); pin(710, 540, 'КАЗАХСТАН', '07.01', C.red, pop(t, 3.1)); ctx.restore();
-    const k = E.io(win(t, 3.4, 5.4)); calendar(CX, 1180, k);
+    const k = win(t, 3.4, 5.4); calendar(CX, 1180, k);
     line([['+', C.red], [`${Math.round(k * 20)} дней`, C.red]], CX, 1430, 72, { sc: 1 + .1 * pulse(t, 5.35, 5.6) });
     line([['Мир смотрит ', C.white], ['18 декабря', C.green]], CX, 280, 52, { sc: pop(t, 2.55) });
     line([['Казахстан — ', C.white], ['7 января 2027', C.red]], CX, 350, 52, { sc: pop(t, 3.05) });
@@ -230,7 +229,7 @@ const SHOTS = [
   }],
   [20.8, 23.5, t => { // 6б. соцсети
     const e = enter(t, 20.8, 0, 200); ctx.save(); ctx.globalAlpha = e.a; ctx.translate(0, e.dy);
-    phone(CX, 1050, t, 21.1, [['⚠ СПОЙЛЕРЫ', C.red], ['#бойкот прокату', '#7a3cff'], ['посмотрю в интернете', '#1d6fd1'], ['«Человек-паук» тоже был позже', '#e0682b']]); ctx.restore();
+    phone(CX, 1050, t, 21.1, [['⚠ СПОЙЛЕРЫ', C.red], ['#бойкотпрокату', '#7a3cff'], ['посмотрю в интернете', '#1d6fd1'], ['«Человек-паук» тоже был позже', '#e0682b']]); ctx.restore();
     line([['В соцсетях пишут:', C.cyan]], CX, 290, 50, { sc: pop(t, 20.85) });
     line([['за 3 недели всё', C.white]], CX, 360, 58, { sc: pop(t, 21.0) }); line([['разберут на ', C.white], ['спойлеры', C.red]], CX, 430, 58, { sc: pop(t, 21.1) });
   }],
@@ -275,7 +274,7 @@ const SFX0 = [
   ...[24.3, 24.9, 25.5, 26.1, 26.7].map((t, i) => ({ t, type: 'lib', id: 'impact-light-hard', gain: .7, rate: 1 + i * .05 })),
   { t: 26.9, type: 'lib', id: 'sting-playful-short', gain: .55, align: 'start' },
 ];
-window.SFX_CUES = [...SFX0.map(c => ({ ...c, t: +toNew(c.t).toFixed(3), gain: (c.gain || .7) * .55 })), ...(window.VO_CUES || [])];
+window.SFX_CUES = [...SFX0.map(c => ({ ...c, t: +toNew(c.t).toFixed(3), gain: c.gain || .7 }))];
 window.SCENE.duration = +DUR.toFixed(2);
 window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
 window.READY = Promise.all([IMG_READY, ...['900 60px Inter', '800 40px Inter', '600 28px Inter'].map(f => document.fonts.load(f))]).then(() => drawFrame(0));
