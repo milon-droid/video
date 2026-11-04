@@ -14,9 +14,13 @@
 </head>
 <body>
 <canvas id="c" width="1080" height="1920"></canvas>
+<script src="retime.js"></script>
 <script>
 'use strict';
-const W = 1080, H = 1920, CX = 500, DUR = 28;
+const W = 1080, H = 1920, CX = 500, DUR0 = 28;
+const RT = window.RETIME || [[0, DUR0, 0, DUR0]], DUR = RT[RT.length - 1][1];
+const toOrig = t => { for (const [n0, n1, o0, o1] of RT) if (t < n1) return o0 + (t - n0) * (o1 - o0) / (n1 - n0); return DUR0; };
+const toNew = to => { for (const [n0, n1, o0, o1] of RT) if (to < o1) return n0 + (to - o0) * (n1 - n0) / (o1 - o0); return DUR; };
 window.SCENE = { duration: DUR, fps: 30, width: W, height: H };
 const ctx = document.getElementById('c').getContext('2d');
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k;
@@ -45,11 +49,25 @@ const enter = (t, t0, dx = 0, dy = 80) => { const k = E.out(win(t, t0, t0 + .35)
 function cinema(t, x, y) { // экран кинозала + ряды кресел
   ctx.save(); ctx.translate(x, y);
   ctx.fillStyle = '#05081a'; rr(-420, -280, 840, 520, 30); ctx.fill();
-  const sg = ctx.createLinearGradient(0, -240, 0, 200); sg.addColorStop(0, '#dfe8ff'); sg.addColorStop(1, '#9fb4f0');
-  ctx.shadowColor = '#bcd0ff'; ctx.shadowBlur = 60; ctx.fillStyle = sg; rr(-380, -240, 760, 420, 18); ctx.fill(); ctx.shadowBlur = 0;
-  line([['СКОРО', '#1a2a66']], 0, -30, 110, { stroke: false });
+  ctx.shadowColor = '#ff8a5c'; ctx.shadowBlur = 70; ctx.fillStyle = '#2a0f3a'; rr(-380, -240, 760, 420, 18); ctx.fill(); ctx.shadowBlur = 0;
+  ctx.save(); rr(-380, -240, 760, 420, 18); ctx.clip(); poster(t); ctx.restore();
   for (let r = 0; r < 3; r++) for (let i = -5; i <= 5; i++) { ctx.fillStyle = r % 2 ? '#2a3a78' : '#22306a'; rr(i * 76 - 32 + (r % 2) * 38, 300 + r * 90, 64, 70, 16); ctx.fill(); }
   ctx.restore(); }
+function poster(t) { // своя афиша блокбастера: вспышка, лучи, силуэты героев (оригинальные), название текстом
+  const g = ctx.createRadialGradient(0, -40, 10, 0, -40, 520); g.addColorStop(0, '#fff3c4'); g.addColorStop(.18, '#ff9a3c'); g.addColorStop(.5, '#a12a5e'); g.addColorStop(1, '#1a0b33');
+  ctx.fillStyle = g; ctx.fillRect(-380, -240, 760, 420);
+  ctx.save(); ctx.translate(0, -40); ctx.globalAlpha = .25; ctx.fillStyle = '#ffe2a8';
+  for (let i = 0; i < 18; i++) { ctx.rotate(Math.PI / 9 + t * .02); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(600, -26); ctx.lineTo(600, 26); ctx.closePath(); ctx.fill(); } ctx.restore();
+  ctx.fillStyle = '#12061f'; ctx.beginPath(); ctx.moveTo(-380, 180); for (let x = -380; x <= 380; x += 38) ctx.lineTo(x, 120 - ((x * 7919) % 70 + 70) * .6); ctx.lineTo(380, 180); ctx.closePath(); ctx.fill();
+  const hero = (x, h, cape, arm) => { ctx.save(); ctx.translate(x, 180); ctx.fillStyle = '#0c0416';
+    if (cape) { ctx.beginPath(); ctx.moveTo(-14, -h * .78); ctx.quadraticCurveTo(-48, -h * .4, -40, 0); ctx.lineTo(30, 0); ctx.quadraticCurveTo(36, -h * .4, 14, -h * .78); ctx.fill(); }
+    rr(-18, -h * .8, 36, h * .5, 14); ctx.fill(); ctx.fillRect(-16, -h * .34, 12, h * .34); ctx.fillRect(4, -h * .34, 12, h * .34);
+    ctx.beginPath(); ctx.arc(0, -h * .9, h * .1, 0, Math.PI * 2); ctx.fill();
+    ctx.lineWidth = 11; ctx.strokeStyle = '#0c0416'; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-14, -h * .74); ctx.lineTo(-30, -h * (arm ? .98 : .5)); ctx.moveTo(14, -h * .74); ctx.lineTo(30, -h * .5); ctx.stroke(); ctx.restore(); };
+  [[-230, 150, 0, 0], [-120, 175, 1, 0], [0, 205, 1, 1], [120, 175, 0, 0], [230, 150, 1, 0]].forEach(([x, h, c, a]) => hero(x, h, c, a));
+  line([['МСТИТЕЛИ', '#ffffff']], 0, -150, 92, { stroke: true }); line([['СУДНЫЙ ДЕНЬ', C.yel]], 0, -82, 38, { weight: 800 });
+  ctx.fillStyle = C.red; rr(-372, -232, 150, 46, 10); ctx.fill(); line([['СКОРО', '#fff']], -297, -208, 30, { stroke: false });
+}
 function stamp(t, x, y, t0, text, col = C.red, rot = -12) {
   if (t < t0) return; const k = E.out(win(t, t0, t0 + .18)), s = lerp(3.2, 1, k), a = win(t, t0, t0 + .08);
   ctx.save(); ctx.translate(x, y); ctx.rotate(rot * Math.PI / 180); ctx.scale(s, s); ctx.globalAlpha = a;
@@ -128,7 +146,9 @@ function phone(x, y, t, t0, chips) { ctx.save(); ctx.translate(x, y);
   ctx.fillStyle = '#0d0f1c'; rr(-50, -340, 100, 22, 11); ctx.fill();
   chips.forEach(([txt, col], i) => { const k = win(t, t0 + i * .42, t0 + i * .42 + .3); if (k <= 0) return; const yy = 260 - i * 120 - 0 * k;
     ctx.save(); ctx.translate(0, yy + (1 - E.out(k)) * 60); ctx.globalAlpha = E.out(k); ctx.fillStyle = col; rr(-178, -48, 356, 96, 24); ctx.fill();
-    line([[txt, '#fff']], 0, 2, txt.length > 22 ? 24 : txt.length > 14 ? 30 : 38, { stroke: false }); ctx.restore(); });
+    ctx.font = '900 32px Inter'; if (ctx.measureText(txt).width > 320) { const w = txt.split(' '), h = Math.ceil(w.length / 2);
+      line([[w.slice(0, h).join(' '), '#fff']], 0, -17, 30, { stroke: false }); line([[w.slice(h).join(' '), '#fff']], 0, 19, 30, { stroke: false }); }
+    else line([[txt, '#fff']], 0, 2, txt.length > 14 ? 32 : 38, { stroke: false }); ctx.restore(); });
   ctx.restore(); }
 function viewer(x, y, t) { ctx.save(); ctx.translate(x, y); // зритель: наушники, зажмурился, щит
   const sway = Math.sin(t * 6) * 3;
@@ -215,7 +235,8 @@ const SHOTS = [
     line([['Источники: Tengri, Kursiv, Qumash · 2–3 ноября 2026', C.soft]], CX, 640, 28, { weight: 600, alpha: win(t, 25.0, 25.4), stroke: false });
   }],
 ];
-function drawFrame(t) {
+function drawFrame(tn) {
+  const t = toOrig(tn);
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; background(t);
   let i = SHOTS.length - 1; while (i > 0 && SHOTS[i][0] > t) i--;
   const [t0] = SHOTS[i], k = win(t, t0, t0 + .25); // короткий «вжух» на смене плана
@@ -224,7 +245,7 @@ function drawFrame(t) {
   vignette();
 }
 const cuts = SHOTS.slice(1).map(s => s[0]);
-window.SFX_CUES = [
+const SFX0 = [
   { t: 0.55, type: 'lib', id: 'impact-deep-hard', gain: .9 }, { t: 0.56, type: 'lib', id: 'impact-heavy-hard', gain: .6 },
   ...cuts.map(c => ({ t: c, type: 'lib', id: 'whoosh-fast-medium', gain: .5 })),
   { t: 2.6, type: 'lib', id: 'pop-medium-bubble', gain: .5 }, { t: 3.1, type: 'lib', id: 'pop-medium-bubble', gain: .5 },
@@ -240,6 +261,8 @@ window.SFX_CUES = [
   ...[24.3, 24.9, 25.5, 26.1, 26.7].map((t, i) => ({ t, type: 'lib', id: 'impact-light-hard', gain: .7, rate: 1 + i * .05 })),
   { t: 26.9, type: 'lib', id: 'sting-playful-short', gain: .55, align: 'start' },
 ];
+window.SFX_CUES = [...SFX0.map(c => ({ ...c, t: +toNew(c.t).toFixed(3), gain: (c.gain || .7) * .55 })), ...(window.VO_CUES || [])];
+window.SCENE.duration = +DUR.toFixed(2);
 window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
 window.READY = Promise.all(['900 60px Inter', '800 40px Inter', '600 28px Inter'].map(f => document.fonts.load(f))).then(() => drawFrame(0));
 </script>

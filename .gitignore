@@ -16,3 +16,6 @@ assets/sfx-library/
 refs/**/source.*
 refs/**/frames/
 refs/**/list.txt
+
+# Модели голосов для озвучки (скачиваются, большие)
+assets/voices/
