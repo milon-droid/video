@@ -23,7 +23,7 @@ const toOrig = t => { for (const [n0, n1, o0, o1] of RT) if (t < n1) return o0 +
 const toNew = to => { for (const [n0, n1, o0, o1] of RT) if (to < o1) return n0 + (to - o0) * (n1 - n0) / (o1 - o0); return DUR; };
 window.SCENE = { duration: DUR, fps: 30, width: W, height: H };
 const ctx = document.getElementById('c').getContext('2d');
-const IMG_READY = Promise.resolve();
+const IMG = {}; const IMG_READY = Promise.all(['kz-badge', 'kz-flag'].map(k => new Promise(res => { const im = new Image(); im.onload = () => { IMG[k] = im; res(); }; im.onerror = res; im.src = `../assets/img/${k}.png`; })));
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k;
 const win = (t, a, b) => clamp((t - a) / (b - a)), pulse = (t, a, b) => Math.sin(win(t, a, b) * Math.PI);
 const E = { out: k => 1 - Math.pow(1 - k, 3), in: k => k * k * k, io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
@@ -90,7 +90,8 @@ function globe(x, y, r, t) { ctx.save(); ctx.translate(x, y);
   ctx.save(); ctx.clip(); ctx.fillStyle = '#3ee08e'; const o = (t * 40) % (r * 2);
   for (const [cx, cy, rx, ry] of [[-60, -40, 70, 45], [50, 30, 60, 80], [-30, 80, 40, 30], [90, -70, 35, 25]]) { ctx.beginPath(); ctx.ellipse(cx - o + r, cy, rx, ry, .4, 0, Math.PI * 2); ctx.ellipse(cx - o - r, cy, rx, ry, .4, 0, Math.PI * 2); ctx.fill(); }
   ctx.restore(); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(0, 0, r * .45, r, 0, 0, Math.PI * 2); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.stroke(); ctx.restore(); }
-function kzBadge(x, y, r) { ctx.save(); ctx.translate(x, y); // флаг-кружок: голубой с солнцем
+function kzBadge(x, y, r) { if (IMG['kz-badge']) { const im = IMG['kz-badge'], d = r * 2; ctx.drawImage(im, x - d / 2, y - d / 2 * im.height / im.width, d, d * im.height / im.width); return; }
+  ctx.save(); ctx.translate(x, y); // запасной вариант: флаг-кружок
   ctx.fillStyle = '#00afca'; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#fec50c'; ctx.beginPath(); ctx.arc(0, -10, r * .3, 0, Math.PI * 2); ctx.fill();
   for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(Math.cos(a) * r * .36, -10 + Math.sin(a) * r * .36); ctx.lineTo(Math.cos(a + .1) * r * .5, -10 + Math.sin(a + .1) * r * .5); ctx.lineTo(Math.cos(a - .1) * r * .5, -10 + Math.sin(a - .1) * r * .5); ctx.fill(); }
@@ -121,7 +122,9 @@ function ministry(x, y, s = 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s
   ctx.fillStyle = '#c9d3f5'; ctx.fillRect(-290, -120, 580, 34);
   for (let i = -2; i <= 2; i++) { ctx.fillStyle = '#f4f7ff'; ctx.fillRect(i * 115 - 26, -86, 52, 250); ctx.fillStyle = '#c9d3f5'; ctx.fillRect(i * 115 - 34, -86, 68, 16); ctx.fillRect(i * 115 - 34, 150, 68, 16); }
   ctx.fillStyle = '#c9d3f5'; ctx.fillRect(-320, 166, 640, 26); ctx.fillRect(-350, 192, 700, 26);
-  ctx.fillStyle = '#9aa7d6'; ctx.fillRect(-4, -360, 8, 110); ctx.fillStyle = '#00afca'; ctx.fillRect(4, -360, 90, 56); ctx.fillStyle = '#fec50c'; ctx.beginPath(); ctx.arc(49, -332, 12, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#9aa7d6'; ctx.fillRect(-4, -360, 8, 110);
+  if (IMG['kz-flag']) { const im = IMG['kz-flag'], fw = 104, fh = fw * im.height / im.width; ctx.drawImage(im, 4, -360, fw, fh); }
+  else { ctx.fillStyle = '#00afca'; ctx.fillRect(4, -360, 90, 56); ctx.fillStyle = '#fec50c'; ctx.beginPath(); ctx.arc(49, -332, 12, 0, Math.PI * 2); ctx.fill(); }
   ctx.restore(); }
 function doc(x, y, t, tCheck, rot = 0) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
   ctx.fillStyle = '#fff'; rr(-230, -150, 460, 300, 20); ctx.fill();
