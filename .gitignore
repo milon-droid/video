@@ -1,0 +1,7 @@
+# Промежуточные кадры и рендеры — не храним в git
+**/frames/
+**/render/
+*.tmp
+.DS_Store
+node_modules/
+__pycache__/
