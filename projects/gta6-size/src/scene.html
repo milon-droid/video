@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>GTA 6 весит 212 ГБ</title>
+<!-- Новость: размер GTA 6 и даты. 1080×1920, 30 fps, 28 с. Факты — research.md. Без логотипов/персонажей правообладателей. -->
+<style>
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #120a2a; }
+  canvas { display: block; }
+  @font-face { font-family: 'Inter'; font-weight: 800; src: url('../../../fonts/Inter-ExtraBold.otf'); }
+  @font-face { font-family: 'Inter'; font-weight: 900; src: url('../../../fonts/Inter-Black.otf'); }
+  @font-face { font-family: 'Inter'; font-weight: 600; src: url('../../../fonts/Inter-SemiBold.otf'); }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+'use strict';
+const W = 1080, H = 1920, CX = 500, DUR = 28;
+window.SCENE = { duration: DUR, fps: 30, width: W, height: H };
+const ctx = document.getElementById('c').getContext('2d');
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k;
+const win = (t, a, b) => clamp((t - a) / (b - a)), pulse = (t, a, b) => Math.sin(win(t, a, b) * Math.PI);
+const E = { out: k => 1 - Math.pow(1 - k, 3), in: k => k * k * k, io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
+  back: k => { const c1 = 2.0, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); } };
+const pop = (t, t0, d = .35) => E.back(win(t, t0, t0 + d));
+const C = { pink: '#ff3fa4', orange: '#ff9a3c', yel: '#ffd23f', cyan: '#3fe0ff', green: '#35e08a', red: '#ff3b47', white: '#fff', ink: '#160b33', panel: '#2a1758', soft: '#b9a6ec' };
+function rr(x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function line(spans, x, y, size, { weight = 900, align = 'center', alpha = 1, sc = 1, stroke = true } = {}) {
+  if (typeof spans === 'string') spans = [[spans, C.white]];
+  ctx.save(); ctx.globalAlpha *= alpha; ctx.translate(x, y); ctx.scale(sc, sc); ctx.font = `${weight} ${size}px Inter`; ctx.textBaseline = 'middle';
+  const total = spans.reduce((a, [s]) => a + ctx.measureText(s).width, 0); let cx = align === 'center' ? -total / 2 : align === 'right' ? -total : 0;
+  for (const [s, col] of spans) { if (stroke) { ctx.lineWidth = size * .16; ctx.strokeStyle = 'rgba(10,4,30,.9)'; ctx.lineJoin = 'round'; ctx.strokeText(s, cx, 0); } ctx.fillStyle = col; ctx.fillText(s, cx, 0); cx += ctx.measureText(s).width; }
+  ctx.restore(); }
+const enter = (t, t0, dx = 0, dy = 80) => { const k = E.out(win(t, t0, t0 + .35)); return { a: k, dx: dx * (1 - k), dy: dy * (1 - k) }; };
+
+// ───── фон: неоновый закат, сетка, пальмы (своё) ─────
+function background(t) {
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1a0b3d'); g.addColorStop(.55, '#3a1260'); g.addColorStop(.72, '#7a1f6e'); g.addColorStop(1, '#14072c');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const sun = ctx.createLinearGradient(0, 1150, 0, 1500); sun.addColorStop(0, '#ffd23f'); sun.addColorStop(1, '#ff3fa4');
+  ctx.save(); ctx.globalAlpha = .35; ctx.fillStyle = sun; ctx.beginPath(); ctx.arc(540, 1420, 300, Math.PI, 0); ctx.fill();
+  ctx.fillStyle = '#3a1260'; for (let i = 0; i < 6; i++) ctx.fillRect(200, 1300 + i * 22, 680, 6 + i * 2); ctx.restore();
+  ctx.save(); ctx.strokeStyle = 'rgba(255,63,164,.28)'; ctx.lineWidth = 2; const hz = 1420;
+  for (let i = 0; i < 12; i++) { const y = hz + Math.pow((i + (t * .8) % 1) / 12, 2) * 520; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  for (let i = -10; i <= 10; i++) { ctx.beginPath(); ctx.moveTo(540 + i * 30, hz); ctx.lineTo(540 + i * 160, H); ctx.stroke(); } ctx.restore();
+  const palm = (x, s, f) => { ctx.save(); ctx.translate(x, 1430); ctx.scale(s * f, s); ctx.fillStyle = '#0e0520';
+    ctx.beginPath(); ctx.moveTo(-8, 0); ctx.quadraticCurveTo(20, -200, 60, -380); ctx.lineTo(74, -378); ctx.quadraticCurveTo(36, -200, 14, 0); ctx.fill();
+    for (let i = 0; i < 6; i++) { ctx.save(); ctx.translate(66, -380); ctx.rotate(-2.6 + i * .95 + Math.sin(t + i) * .04); ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(70, -30, 150, 20); ctx.quadraticCurveTo(70, -6, 0, 10); ctx.fill(); ctx.restore(); } ctx.restore(); };
+  palm(60, 1.1, 1); palm(1010, 1.0, -1);
+}
+function vignette() { const g = ctx.createRadialGradient(540, 960, 650, 540, 960, 1250); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.5)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+
+// ───── рисунки ─────
+function gameBlock(x, y, w, h, title, sub, c1, c2) { ctx.save(); ctx.translate(x, y);
+  const g = ctx.createLinearGradient(0, -h / 2, 0, h / 2); g.addColorStop(0, c1); g.addColorStop(1, c2);
+  ctx.shadowColor = c1; ctx.shadowBlur = 30; ctx.fillStyle = g; rr(-w / 2, -h / 2, w, h, 22); ctx.fill(); ctx.shadowBlur = 0;
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 4; rr(-w / 2 + 8, -h / 2 + 8, w - 16, h - 16, 16); ctx.stroke();
+  line([[title, '#fff']], 0, -h * .12, Math.min(64, w * .22)); line([[sub, '#fff']], 0, h * .22, Math.min(46, w * .15), { weight: 800 }); ctx.restore(); }
+function scales(t, x, y, tilt) { // весы: левая чаша — GTA 6, правая — две GTA 5
+  ctx.save(); ctx.translate(x, y);
+  ctx.fillStyle = '#d8c9ff'; ctx.beginPath(); ctx.moveTo(-90, 520); ctx.lineTo(90, 520); ctx.lineTo(20, 40); ctx.lineTo(-20, 40); ctx.closePath(); ctx.fill();
+  ctx.save(); ctx.rotate(tilt); ctx.fillStyle = '#efe6ff'; rr(-350, -14, 700, 28, 14); ctx.fill(); ctx.restore();
+  ctx.fillStyle = '#ffd23f'; ctx.beginPath(); ctx.arc(0, 0, 30, 0, Math.PI * 2); ctx.fill();
+  const pan = (side) => { const px = Math.cos(tilt) * 320 * side, py = Math.sin(tilt) * 320 * side;
+    ctx.save(); ctx.translate(px, py); ctx.strokeStyle = '#efe6ff'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-120, 200); ctx.moveTo(0, 0); ctx.lineTo(120, 200); ctx.stroke();
+    ctx.fillStyle = '#efe6ff'; ctx.beginPath(); ctx.ellipse(0, 205, 150, 22, 0, 0, Math.PI * 2); ctx.fill();
+    if (side < 0) gameBlock(0, 110, 240, 170, 'GTA 6', '212 ГБ', C.pink, '#b0136a');
+    else { gameBlock(0, 150, 200, 92, 'GTA 5', '105 ГБ', '#4a7dff', '#2547b8'); gameBlock(0, 52, 200, 92, 'GTA 5', '105 ГБ', '#4a7dff', '#2547b8'); }
+    ctx.restore(); };
+  pan(-1); pan(1); ctx.restore(); }
+const GAMES = [['GTA 6', 212, C.pink], ['Red Dead Redemption 2', 150, '#e0682b'], ['GTA 5', 105, '#4a7dff'], ['Cyberpunk 2077', 70, '#f2e600'], ['Elden Ring', 60, '#c9a86a'], ['Minecraft', 1, C.green]];
+function bars(t, t0) {
+  GAMES.forEach(([name, gb, col], i) => { const k = E.out(win(t, t0 + i * .28, t0 + i * .28 + .5)); if (k <= 0) return;
+    const y = 620 + i * 150, w = 620 * gb / 212 * k;
+    line([[name, '#fff']], 120, y - 42, 34, { weight: 800, align: 'left', alpha: k });
+    ctx.save(); ctx.globalAlpha = k; ctx.fillStyle = 'rgba(255,255,255,.08)'; rr(120, y - 14, 620, 52, 26); ctx.fill();
+    ctx.shadowColor = col; ctx.shadowBlur = 20; ctx.fillStyle = col; rr(120, y - 14, Math.max(w, 26), 52, 26); ctx.fill(); ctx.restore();
+    line([[gb === 1 ? '≈1 ГБ' : `${gb} ГБ`, '#fff']], 120 + Math.max(w, 26) + 16, y + 12, 36, { align: 'left', alpha: k }); });
+}
+function storage(x, y, k, t) { ctx.save(); ctx.translate(x, y);
+  ctx.fillStyle = '#0f0826'; rr(-360, -70, 720, 140, 30); ctx.fill(); ctx.strokeStyle = '#d8c9ff'; ctx.lineWidth = 6; ctx.stroke();
+  ctx.fillStyle = C.pink; ctx.shadowColor = C.pink; ctx.shadowBlur = 24; rr(-348, -58, 696 * .58 * k, 116, 22); ctx.fill(); ctx.shadowBlur = 0;
+  line([[`GTA 6 · ${Math.round(58 * k)}%`, '#fff']], -330, 0, 44, { align: 'left' }); ctx.restore(); }
+function consoleBox(x, y) { ctx.save(); ctx.translate(x, y); // своя «консоль»: прямоугольный корпус
+  ctx.fillStyle = '#f1edff'; rr(-170, -110, 340, 220, 26); ctx.fill(); ctx.fillStyle = '#1a1033'; ctx.beginPath(); ctx.arc(70, -10, 52, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#3fe0ff'; ctx.beginPath(); ctx.arc(70, -10, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#c9c0e8'; rr(-140, 60, 120, 14, 7); ctx.fill(); ctx.restore(); }
+function dateCard(x, y, day, mon, l1, l2, col, k) { const s = lerp(.6, 1, E.back(k)); ctx.save(); ctx.globalAlpha *= clamp(k * 1.5); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = C.panel; rr(-380, -120, 760, 240, 30); ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 5; ctx.stroke();
+  ctx.fillStyle = '#fff'; rr(-350, -95, 190, 190, 20); ctx.fill(); ctx.fillStyle = col; rr(-350, -95, 190, 56, 20); ctx.fill(); ctx.fillRect(-350, -60, 190, 20);
+  line([[mon, '#fff']], -255, -68, 32, { stroke: false }); line([[day, C.ink]], -255, 30, 96, { stroke: false });
+  line([[l1, '#fff']], -130, -30, 46, { align: 'left', stroke: false }); line([[l2, C.yel]], -130, 30, 34, { weight: 800, align: 'left', stroke: false }); ctx.restore(); }
+function gauge(x, y, k) { ctx.save(); ctx.translate(x, y);
+  ctx.lineWidth = 36; ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.beginPath(); ctx.arc(0, 0, 230, Math.PI, 0); ctx.stroke();
+  const g = ctx.createLinearGradient(-230, 0, 230, 0); g.addColorStop(0, C.red); g.addColorStop(.5, C.yel); g.addColorStop(1, C.green);
+  ctx.strokeStyle = g; ctx.beginPath(); ctx.arc(0, 0, 230, Math.PI, Math.PI + Math.PI * .45 * k); ctx.stroke();
+  const a = Math.PI + Math.PI * .45 * k; ctx.strokeStyle = '#fff'; ctx.lineWidth = 10; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a) * 190, Math.sin(a) * 190); ctx.stroke();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.fill();
+  line([[`${Math.round(88 * k)}`, '#fff']], 0, 80, 110); line([['Мбит/с', C.soft]], 0, 150, 38, { weight: 800 }); ctx.restore(); }
+function progress(x, y, p, label, eta, col) { ctx.save(); ctx.translate(x, y);
+  line([[label, '#fff']], -360, -70, 36, { weight: 800, align: 'left' });
+  ctx.fillStyle = 'rgba(255,255,255,.1)'; rr(-360, -26, 720, 52, 26); ctx.fill(); ctx.fillStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 20; rr(-360, -26, Math.max(26, 720 * p), 52, 26); ctx.fill(); ctx.shadowBlur = 0;
+  line([[`${(p * 100).toFixed(p < .1 ? 1 : 0)}%`, '#fff']], -360, 70, 36, { align: 'left' }); line([[eta, C.yel]], 360, 70, 36, { align: 'right' }); ctx.restore(); }
+function bullet(x, y, k, l1, l2, col) { const s = lerp(.6, 1, E.back(k)); ctx.save(); ctx.globalAlpha *= clamp(k * 1.5); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = C.panel; rr(-380, -95, 760, 190, 28); ctx.fill(); ctx.fillStyle = col; rr(-380, -95, 18, 190, 9); ctx.fill();
+  line([[l1, '#fff']], -330, -26, 42, { align: 'left', stroke: false }); line([[l2, C.soft]], -330, 30, 34, { weight: 800, align: 'left', stroke: false }); ctx.restore(); }
+function trash(x, y, t, hits) { ctx.save(); ctx.translate(x, y); const lid = Math.max(0, ...hits.map(h => pulse(t, h - .1, h + .2)));
+  ctx.fillStyle = '#cfc4f5'; ctx.beginPath(); ctx.moveTo(-150, -120); ctx.lineTo(150, -120); ctx.lineTo(120, 200); ctx.lineTo(-120, 200); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#9d8fd6'; ctx.lineWidth = 10; for (const dx of [-60, 0, 60]) { ctx.beginPath(); ctx.moveTo(dx, -80); ctx.lineTo(dx * .85, 170); ctx.stroke(); }
+  ctx.save(); ctx.translate(-160, -130); ctx.rotate(-lid * .6); ctx.fillStyle = '#e8e1ff'; rr(0, -26, 320, 32, 14); ctx.fill(); rr(130, -54, 60, 30, 10); ctx.fill(); ctx.restore(); ctx.restore(); }
+
+// ───── планы ─────
+const SHOTS = [
+  [0, 3.0, t => { // 1. хук: весы
+    const tilt = -0.2 * E.back(win(t, .7, 1.2)) + .04 * Math.sin(t * 6) * Math.exp(-(t - 1.2) * 3) * (t > 1.2 ? 1 : 0);
+    const e = enter(t, 0, 0, 160); ctx.save(); ctx.globalAlpha = e.a; ctx.translate(0, e.dy); scales(t, CX, 900, tilt); ctx.restore();
+    line([['GTA 6', C.pink], [' весит больше,', C.white]], CX, 300, 70, { sc: pop(t, .05) });
+    line([['чем ', C.white], ['ДВЕ GTA 5', C.cyan]], CX, 390, 84, { sc: pop(t, .25) });
+  }],
+  [3.0, 7.6, t => { // 2. сравнение
+    line([['212 ГБ — это…', C.white]], CX, 300, 72, { sc: pop(t, 3.05) });
+    bars(t, 3.35);
+    const m = [['= 2 × GTA 5', C.cyan, 5.5], ['= 3 × Cyberpunk 2077', C.yel, 6.1], ['≈ 200 × Minecraft', C.green, 6.7]];
+    m.forEach(([s, c, tm], i) => line([[s, c]], CX, 1500 + i * 0, 54, { sc: pop(t, tm), alpha: (t > tm && (i === 2 || t < m[i + 1][2])) ? 1 : 0 }));
+  }],
+  [7.6, 10.6, t => { // 3. Xbox Series S
+    const e = enter(t, 7.6, 0, 120); ctx.save(); ctx.globalAlpha = e.a; ctx.translate(0, e.dy); consoleBox(CX, 800); ctx.restore();
+    storage(CX, 1120, E.io(win(t, 8.2, 9.4)), t);
+    line([['На Xbox Series S', C.white]], CX, 300, 58, { sc: pop(t, 7.65) });
+    line([['свободно ≈ 364 ГБ', C.soft]], CX, 375, 46, { weight: 800, sc: pop(t, 7.8) });
+    line([['GTA 6 займёт ', C.white], ['больше половины', C.pink]], CX, 1290, 46, { sc: pop(t, 9.4) });
+  }],
+  [10.6, 14.6, t => { // 4. даты
+    line([['Когда?', C.white]], CX, 300, 76, { sc: pop(t, 10.65) });
+    dateCard(CX, 720, '10', 'НОЯ', 'Предзагрузка', 'на 2 дня раньше плана', C.cyan, win(t, 10.9, 11.3));
+    dateCard(CX, 1010, '19', 'НОЯ', 'Релиз', 'в полночь, местное время', C.pink, win(t, 11.7, 12.1));
+    line([['PS5 · Xbox Series X|S', '#fff']], CX, 1230, 44, { sc: pop(t, 12.6) });
+    line([['ПК — ждём в 2027', C.soft]], CX, 1300, 40, { weight: 800, sc: pop(t, 13.0) });
+  }],
+  [14.6, 20.6, t => { // 5. шутка про интернет
+    gauge(CX, 820, E.out(win(t, 14.9, 15.9)));
+    line([['Средний домашний', C.white]], CX, 290, 54, { sc: pop(t, 14.65) });
+    line([['интернет в Казахстане', C.cyan]], CX, 360, 54, { sc: pop(t, 14.8) });
+    const slow = t > 18.2, p = slow ? lerp(.31, .312, win(t, 18.2, 20.6)) : lerp(0, .31, win(t, 16.2, 18.2));
+    progress(CX, 1160, p, 'Загрузка GTA 6 · 212 ГБ', slow ? 'осталось ≈ 2 дня' : 'осталось ≈ 5,5 ч', slow ? C.red : C.green);
+    if (t > 16.2 && !slow) line([['…в идеальный день', C.soft]], CX, 1320, 38, { weight: 800 });
+    if (slow) { line([['мама включила сериал,', C.white]], CX, 1320, 40, { weight: 800, sc: pop(t, 18.25) }); line([['брат — TikTok', C.white]], CX, 1372, 40, { weight: 800, sc: pop(t, 18.45) });
+      line([['Совет: начни качать 10 ноября', C.yel]], CX, 1460, 44, { sc: pop(t, 19.2) }); }
+  }],
+  [20.6, 24.2, t => { // 6. сводка
+    line([['Что ещё известно', C.white]], CX, 300, 64, { sc: pop(t, 20.65) });
+    bullet(CX, 640, win(t, 20.9, 21.3), 'Коробки — с 12 ноября', 'но внутри код, а не диск', C.orange);
+    bullet(CX, 870, win(t, 21.7, 22.1), 'Только PS5 и Xbox Series', 'ПК-версия — в 2027', C.cyan);
+    bullet(CX, 1100, win(t, 22.5, 22.9), '212 ГБ — «до», зависит', 'от консоли', C.pink);
+  }],
+  [24.2, 28.01, t => { // 7. CTA
+    const hits = [25.0, 25.5, 26.0, 26.5]; trash(CX, 1150, t, hits);
+    [['Старые игры', C.cyan], ['Фото с отпуска', C.orange], ['Сериалы', C.yel], ['Ещё раз GTA 5', '#4a7dff']].forEach(([s, c], i) => { const h = hits[i], k = win(t, h - .55, h); if (k <= 0 || t > h + .02) return;
+      const side = i % 2 ? 1 : -1, x = lerp(CX + side * 420, CX, E.in(k)), y = lerp(760, 1020, k) - 220 * Math.sin(k * Math.PI);
+      ctx.save(); ctx.translate(x, y); ctx.rotate(k * side * 2); ctx.fillStyle = c; rr(-150, -42, 300, 84, 20); ctx.fill(); line([[s, C.ink]], 0, 2, 34, { stroke: false }); ctx.restore(); });
+    line([['Что удалишь', C.white]], CX, 300, 76, { sc: pop(t, 24.25) }); line([['ради ', C.white], ['GTA 6', C.pink], ['?', C.white]], CX, 390, 76, { sc: pop(t, 24.4) });
+    line([['Пиши в комментах', C.yel]], CX, 480, 58, { sc: pop(t, 24.7) });
+    ctx.save(); ctx.globalAlpha = win(t, 24.7, 24.9); ctx.fillStyle = C.yel; ctx.translate(CX, 565 + 12 * Math.sin(t * 8));
+    ctx.beginPath(); ctx.moveTo(-30, -20); ctx.lineTo(30, -20); ctx.lineTo(30, 10); ctx.lineTo(55, 10); ctx.lineTo(0, 60); ctx.lineTo(-55, 10); ctx.lineTo(-30, 10); ctx.closePath(); ctx.fill(); ctx.restore();
+    line([['Источники: Rockstar, Speedtest, Steam · ноябрь 2026', C.soft]], CX, 1420, 26, { weight: 600, alpha: win(t, 25.2, 25.6), stroke: false });
+  }],
+];
+function drawFrame(t) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; background(t);
+  let i = SHOTS.length - 1; while (i > 0 && SHOTS[i][0] > t) i--;
+  const [t0] = SHOTS[i], k = win(t, t0, t0 + .25);
+  ctx.save(); if (i > 0 && k < 1) { ctx.globalAlpha = E.out(k); ctx.translate(0, 60 * (1 - E.out(k))); }
+  SHOTS[i][2](t); ctx.restore(); vignette();
+}
+const cuts = SHOTS.slice(1).map(s => s[0]);
+window.SFX_CUES = [
+  { t: .05, type: 'lib', id: 'whoosh-medium-medium', gain: .5 }, { t: .8, type: 'lib', id: 'impact-deep-hard', gain: .85 }, { t: .82, type: 'lib', id: 'impact-heavy-hard', gain: .6 },
+  ...cuts.map(c => ({ t: c, type: 'lib', id: 'whoosh-fast-medium', gain: .5 })),
+  ...GAMES.map((g, i) => ({ t: 3.35 + i * .28, type: 'lib', id: 'pop-medium-bubble', gain: .45, rate: 1 + i * .06 })),
+  ...[5.5, 6.1, 6.7].map((t, i) => ({ t, type: 'lib', id: 'tone-step-' + (i + 2), gain: .55 })),
+  { t: 8.2, type: 'lib', id: 'riser-1s-soft', gain: .45, align: 'start' }, { t: 9.4, type: 'lib', id: 'notification-alert-soft', gain: .5 },
+  { t: 10.9, type: 'lib', id: 'pop-large-in', gain: .6 }, { t: 11.7, type: 'lib', id: 'pop-large-in', gain: .6, rate: 1.1 }, { t: 12.6, type: 'lib', id: 'tone-ding-mid', gain: .45 },
+  { t: 14.9, type: 'lib', id: 'riser-1s-strong', gain: .45, align: 'start' }, { t: 16.2, type: 'lib', id: 'time-clock-fast', gain: .35, align: 'start', dur: 2.0 },
+  { t: 18.2, type: 'lib', id: 'notification-failure-wobble', gain: .7 }, { t: 19.2, type: 'lib', id: 'notification-success-pluck', gain: .5 },
+  ...[20.9, 21.7, 22.5].map((t, i) => ({ t, type: 'lib', id: 'pop-large-in', gain: .55, rate: 1 + i * .08 })),
+  ...[25.0, 25.5, 26.0, 26.5].map((t, i) => ({ t, type: 'lib', id: 'appear-poof', gain: .55, rate: 1 + i * .05 })),
+  { t: 26.9, type: 'lib', id: 'sting-playful-short', gain: .55, align: 'start' },
+];
+window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
+window.READY = Promise.all(['900 60px Inter', '800 40px Inter', '600 24px Inter'].map(f => document.fonts.load(f))).then(() => drawFrame(0));
+</script>
+</body>
+</html>
