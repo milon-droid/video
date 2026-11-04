@@ -168,14 +168,13 @@ const SHOTS = [
     line([['свободно ≈ 364 ГБ', C.soft]], CX, 375, 46, { weight: 800, sc: pop(t, 8.2) });
     line([['GTA 6 займёт ', C.white], ['больше половины', C.pink]], CX, 1290, 46, { sc: pop(t, 9.8) });
   }],
-  [11.45, 18.7, t => { // 4. релиз 19 ноября + ПК в 2027 (v04)
-    line([['Релиз GTA 6', C.white]], CX, 300, 76, { sc: pop(t, 11.5) });
-    dateCard(CX, 600, '19', 'НОЯ', 'В полночь', 'по местному времени', C.pink, win(t, 12.0, 12.4));
-    { const k = E.out(win(t, 13.8, 14.2)); ctx.save(); ctx.translate(290, 1010); ctx.scale(.72, .72); consoles(0, 0, k); ctx.restore();
-      line([['PS5 · Xbox Series', '#fff']], 290, 1190, 34, { weight: 800, alpha: k }); line([['19 ноября', C.green]], 290, 1250, 44, { sc: pop(t, 14.2) }); }
-    if (t > 15.6) { const k = win(t, 15.7, 16.05); ctx.save(); ctx.translate(lerp(1300, 730, E.out(k)), 1010); ctx.scale(.7, .7); monitor(0, 0, k, t); ctx.restore();
-      line([['ПК', '#fff']], 730, 1190, 34, { weight: 800, alpha: k }); line([['только в 2027', C.cyan]], 730, 1250, 44, { sc: pop(t, 16.6) });
-      line([['ожидается в 1-й половине 2027 года', C.soft]], CX, 1360, 30, { weight: 800, alpha: win(t, 17.2, 17.5) }); }
+  [11.45, 18.7, t => { // 4. релиз 19 ноября + ПК в 2027 (v04) — в ролике идёт после шутки, см. ORDER
+    line([['Релиз — ', C.white], ['19 ноября', C.pink]], CX, 290, 66, { sc: pop(t, 11.5) });
+    line([['ровно в полночь · PS5 и Xbox Series', C.soft]], CX, 370, 38, { weight: 800, alpha: win(t, 12.4, 12.7) });
+    consoles(CX, 760, win(t, 11.7, 12.0));
+    const k = win(t, 15.7, 16.05); ctx.save(); ctx.translate(lerp(900, 0, E.out(k)), 0); monitor(CX, 1150, k, t); ctx.restore();
+    if (t > 16.5) line([['ПК — ', C.white], ['только в 2027', C.cyan]], CX, 1420, 52, { sc: pop(t, 16.5) });
+    line([['ожидается в 1-й половине 2027 года', C.soft]], CX, 1482, 28, { weight: 800, alpha: win(t, 17.2, 17.5), stroke: false });
   }],
   [18.7, 24.1, t => { // 5. когда начнётся предзагрузка (v05)
     line([['Предзагрузка — 10 ноября', C.white]], CX, 300, 56, { sc: pop(t, 18.75) });
@@ -215,8 +214,12 @@ const SHOTS = [
     line([['Источники: Rockstar, Speedtest, Game Informer · ноябрь 2026', C.soft]], CX, 1420, 24, { weight: 600, alpha: win(t, 36.2, 36.6), stroke: false });
   }],
 ];
-function drawFrame(t) {
-  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; background(t);
+// порядок кадров в ролике: релиз (исходно 11.45–18.7) перенесён после шутки про Казахтелеком
+const ORDER = [[0, 11.45, 0], [11.45, 16.85, 18.7], [16.85, 22.25, 24.1], [22.25, 28.0, 29.5], [28.0, 35.25, 11.45], [35.25, 39.01, 35.25]];
+const toOrig = t => { const s = ORDER.find(([a, b]) => t >= a && t < b) || ORDER[ORDER.length - 1]; return t - s[0] + s[2]; };
+const toNew = o => { const s = ORDER.find(([a, b, c]) => o >= c && o < c + (b - a)) || ORDER[ORDER.length - 1]; return o - s[2] + s[0]; };
+function drawFrame(tn) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; background(tn); const t = toOrig(tn);
   let i = SHOTS.length - 1; while (i > 0 && SHOTS[i][0] > t) i--;
   const [t0] = SHOTS[i], k = win(t, t0, t0 + .25);
   ctx.save(); if (i > 0 && k < 1) { ctx.globalAlpha = E.out(k); ctx.translate(0, 60 * (1 - E.out(k))); }
@@ -224,10 +227,9 @@ function drawFrame(t) {
 }
 const cuts = SHOTS.slice(1).map(s => s[0]);
 // озвучка (черновая, Piper) — для версии с голосом: VO_START[id] = время начала фразы
-const VO_START = { v01: .08, v02: 4.28, v03: 8.08, v04: 11.53, v05: 18.78, v06: 24.18, v07: 29.58, v08: 35.33 };
+const VO_START = { v01: .08, v02: 4.28, v03: 8.08, v05: 11.53, v06: 16.93, v07: 22.33, v04: 28.08, v08: 35.33 }; // время в ролике
 window.VO_CUES = Object.entries(VO_START).map(([id, t]) => ({ t, type: 'file', path: `projects/gta6-size/assets/vo/${id}.wav`, gain: 1.0 }));
 window.SFX_CUES = [
-  { t: 0, type: 'file', path: 'projects/gta6-size/assets/music.wav', gain: .32 },
   { t: .05, type: 'lib', id: 'whoosh-medium-medium', gain: .5 }, { t: .8, type: 'lib', id: 'impact-deep-hard', gain: .85 }, { t: .82, type: 'lib', id: 'impact-heavy-hard', gain: .6 },
   { t: 2.4, type: 'lib', id: 'pop-large-in', gain: .55 },
   ...cuts.map(c => ({ t: c, type: 'lib', id: 'whoosh-fast-medium', gain: .5 })),
@@ -246,6 +248,7 @@ window.SFX_CUES = [
   ...[36.0, 36.5, 37.0, 37.5].map((t, i) => ({ t, type: 'lib', id: 'appear-poof', gain: .55, rate: 1 + i * .05 })),
   { t: 37.8, type: 'lib', id: 'sting-playful-short', gain: .5, align: 'start' },
 ];
+window.SFX_CUES = window.SFX_CUES.map(c => ({ ...c, t: +toNew(c.t).toFixed(3) })).sort((x, y) => x.t - y.t);
 window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
 window.READY = Promise.all(['900 60px Inter', '800 40px Inter', '600 24px Inter'].map(f => document.fonts.load(f))).then(() => drawFrame(0));
 </script>
