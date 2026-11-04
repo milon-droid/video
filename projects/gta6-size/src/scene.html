@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>GTA 6 весит 212 ГБ</title>
-<!-- Новость: размер GTA 6 и даты. 1080×1920, 30 fps, 41 с. Факты — research.md. Без логотипов/персонажей правообладателей. -->
+<!-- Новость: размер GTA 6 и даты. 1080×1920, 30 fps, 39 с. Факты — research.md. Без логотипов/персонажей правообладателей. -->
 <style>
   html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #120a2a; }
   canvas { display: block; }
@@ -16,7 +16,7 @@
 <canvas id="c" width="1080" height="1920"></canvas>
 <script>
 'use strict';
-const W = 1080, H = 1920, CX = 500, DUR = 41;
+const W = 1080, H = 1920, CX = 500, DUR = 39;
 window.SCENE = { duration: DUR, fps: 30, width: W, height: H };
 const ctx = document.getElementById('c').getContext('2d');
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k;
@@ -111,11 +111,6 @@ function consoles(x, y, k) { ctx.save(); ctx.translate(x, y); ctx.globalAlpha *=
   for (const [dx, col, lab] of [[-150, '#f1edff', 'PS5'], [150, '#2a2a33', 'Xbox']]) { ctx.save(); ctx.translate(dx, 0); ctx.fillStyle = col; rr(-70, -150, 140, 300, 30); ctx.fill();
     ctx.fillStyle = col === '#2a2a33' ? '#55e07a' : '#4a7dff'; ctx.beginPath(); ctx.arc(0, -80, 16, 0, Math.PI * 2); ctx.fill(); line([[lab, col === '#2a2a33' ? '#fff' : C.ink]], 0, 100, 34, { stroke: false }); ctx.restore(); }
   ctx.restore(); }
-function playCounter(x, y, k, t, t0, tc = t0) { ctx.save(); ctx.translate(x, y); const s = lerp(.6, 1, E.back(win(t, t0, t0 + .35))); ctx.scale(s, s);
-  ctx.shadowColor = C.pink; ctx.shadowBlur = 50; ctx.strokeStyle = C.pink; ctx.lineWidth = 16; ctx.beginPath(); ctx.arc(0, 0, 150, 0, Math.PI * 2); ctx.stroke(); ctx.shadowBlur = 0;
-  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(-45, -75); ctx.lineTo(85, 0); ctx.lineTo(-45, 75); ctx.closePath(); ctx.fill(); ctx.restore();
-  if (t < tc) return; const v = Math.round(90.4 * E.out(win(t, tc + .2, tc + 1.1)) * 10) / 10;
-  line([[`${v.toFixed(1).replace('.', ',')} млн`, '#fff']], x, y + 220, 92); line([['просмотров за 24 часа', C.soft]], x, y + 300, 40, { weight: 800 }); }
 function bullet(x, y, k, l1, l2, col) { const s = lerp(.6, 1, E.back(k)); ctx.save(); ctx.globalAlpha *= clamp(k * 1.5); ctx.translate(x, y); ctx.scale(s, s);
   ctx.fillStyle = C.panel; rr(-380, -95, 760, 190, 28); ctx.fill(); ctx.fillStyle = col; rr(-380, -95, 18, 190, 9); ctx.fill();
   line([[l1, '#fff']], -330, -26, 42, { align: 'left', stroke: false }); line([[l2, C.soft]], -330, 30, 34, { weight: 800, align: 'left', stroke: false }); ctx.restore(); }
@@ -143,90 +138,81 @@ function speedChart(x, y, t, t0, reveal) { // «стабильный» граф�
   ctx.strokeStyle = col; ctx.shadowColor = col; ctx.shadowBlur = 18; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x0, yLine); ctx.lineTo(lerp(x0, x1, k), yLine + Math.sin(t * 30) * .6); ctx.stroke(); ctx.shadowBlur = 0;
   if (k > .95) line([[reveal > .5 ? '' : 'стабильно ✓', C.green]], x1 - 10, yLine - 44, 34, { weight: 900, align: 'right', stroke: false, alpha: 1 - reveal });
   ctx.restore(); }
-function stamp(x, y, k, s, col, rot = -.12) { if (k <= 0) return; const sc = lerp(2.2, 1, E.out(k)); ctx.save(); ctx.globalAlpha *= clamp(k * 2); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sc, sc);
-  ctx.font = '900 66px Inter'; const w = ctx.measureText(s).width + 60; ctx.strokeStyle = col; ctx.lineWidth = 9; rr(-w / 2, -54, w, 108, 16); ctx.stroke();
-  line([[s, col]], 0, 4, 66, { stroke: false }); ctx.restore(); }
+function stamp(x, y, k, s, col, rot = -.12, fs = 66) { if (k <= 0) return; const sc = lerp(2.2, 1, E.out(k)); ctx.save(); ctx.globalAlpha *= clamp(k * 2); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(sc, sc);
+  ctx.font = `900 ${fs}px Inter`; const w = ctx.measureText(s).width + fs * .9, hh = fs * 1.64; ctx.strokeStyle = col; ctx.lineWidth = fs * .13; rr(-w / 2, -hh / 2, w, hh, 16); ctx.stroke();
+  line([[s, col]], 0, fs * .06, fs, { stroke: false }); ctx.restore(); }
 
 // ───── планы ─────
 const SHOTS = [
-  [0, 4.4, t => { // 1. хук: GTA 6 тяжелее четырёх GTA 5 (озвучка v01)
+  [0, 4.2, t => { // 1. хук: GTA 6 тяжелее четырёх GTA 5 (озвучка v01)
     const tilt = -0.2 * E.back(win(t, .7, 1.2)) + .04 * Math.sin(t * 6) * Math.exp(-(t - 1.2) * 3) * (t > 1.2 ? 1 : 0);
-    const e = enter(t, 0, 0, 160), z = lerp(1, 1.07, E.io(win(t, 1.2, 4.4)));
+    const e = enter(t, 0, 0, 160), z = lerp(1, 1.07, E.io(win(t, 1.2, 4.2)));
     ctx.save(); ctx.globalAlpha = e.a; ctx.translate(CX, 900 + e.dy); ctx.scale(z, z); ctx.translate(-CX, -900); scales(t, CX, 900, tilt); ctx.restore();
     line([['GTA 6', C.pink], [' весит больше,', C.white]], CX, 300, 70, { sc: pop(t, .05) });
     line([['чем ', C.white], ['ЧЕТЫРЕ GTA 5', C.cyan]], CX, 390, 80, { sc: pop(t, .25) });
     line([['(GTA 5 на PS4 в 2014 — 50 ГБ)', C.soft]], CX, 470, 34, { weight: 800, alpha: win(t, 1.0, 1.3) });
-    if (t > 2.7) line([['212 ГБ', C.pink], [' > ', C.white], ['4 × 50 ГБ', C.cyan]], CX, 1500, 64, { sc: pop(t, 2.7) });
+    if (t > 2.4) line([['212 ГБ', C.pink], [' > ', C.white], ['4 × 50 ГБ', C.cyan]], CX, 1500, 64, { sc: pop(t, 2.4) });
   }],
-  [4.4, 8.2, t => { // 2. размеры на старте продаж (v02)
-    line([['212 ГБ — это…', C.white]], CX, 290, 72, { sc: pop(t, 4.45) });
-    line([['размеры игр на старте продаж', C.soft]], CX, 365, 34, { weight: 800, alpha: win(t, 4.6, 4.9) });
-    bars(t, 4.6);
-    badge(860, 770, win(t, 5.6, 5.95), '×2', '#ff9a5c'); badge(860, 920, win(t, 6.8, 7.15), '×3', C.yel);
-    badge(860, 1220, win(t, 7.2, 7.55), '×4', '#7aa0ff'); badge(860, 1370, win(t, 7.55, 7.9), '×24', C.green);
+  [4.2, 8.0, t => { // 2. размеры на старте продаж (v02)
+    line([['212 ГБ — это…', C.white]], CX, 290, 72, { sc: pop(t, 4.25) });
+    line([['размеры игр на старте продаж', C.soft]], CX, 365, 34, { weight: 800, alpha: win(t, 4.4, 4.7) });
+    bars(t, 4.35);
+    const by = i => 620 + i * 150 + 12;
+    badge(860, by(1), win(t, 5.3, 5.65), '×2', '#ff9a5c'); badge(860, by(2), win(t, 6.7, 7.05), '×3', C.yel); badge(860, by(3), win(t, 7.0, 7.35), '×3,5', '#c9a86a');
+    badge(860, by(4), win(t, 7.3, 7.65), '×4', '#7aa0ff'); badge(860, by(5), win(t, 7.55, 7.9), '×24', C.green);
   }],
-  [8.2, 11.5, t => { // 3. Xbox Series S (v03)
-    const e = enter(t, 8.2, 0, 120); ctx.save(); ctx.globalAlpha = e.a; ctx.translate(0, e.dy); consoleBox(CX, 800); ctx.restore();
-    storage(CX, 1120, E.io(win(t, 8.8, 10.0)), t);
-    line([['На Xbox Series S', C.white]], CX, 300, 58, { sc: pop(t, 8.25) });
-    line([['свободно ≈ 364 ГБ', C.soft]], CX, 375, 46, { weight: 800, sc: pop(t, 8.4) });
-    line([['GTA 6 займёт ', C.white], ['больше половины', C.pink]], CX, 1290, 46, { sc: pop(t, 10.0) });
+  [8.0, 11.45, t => { // 3. Xbox Series S (v03)
+    const e = enter(t, 8.0, 0, 120); ctx.save(); ctx.globalAlpha = e.a; ctx.translate(0, e.dy); consoleBox(CX, 800); ctx.restore();
+    storage(CX, 1120, E.io(win(t, 8.6, 9.8)), t);
+    line([['На Xbox Series S', C.white]], CX, 300, 58, { sc: pop(t, 8.05) });
+    line([['свободно ≈ 364 ГБ', C.soft]], CX, 375, 46, { weight: 800, sc: pop(t, 8.2) });
+    line([['GTA 6 займёт ', C.white], ['больше половины', C.pink]], CX, 1290, 46, { sc: pop(t, 9.8) });
   }],
-  [11.5, 15.9, t => { // 4. даты (v04)
-    line([['Когда?', C.white]], CX, 300, 76, { sc: pop(t, 11.55) });
-    dateCard(CX, 720, '10', 'НОЯ', 'Предзагрузка', 'на 2 дня раньше плана', C.cyan, win(t, 11.75, 12.15));
-    dateCard(CX, 1010, '19', 'НОЯ', 'Релиз', 'ровно в полночь', C.pink, win(t, 13.3, 13.7));
-    line([['PS5 · Xbox Series X|S', '#fff']], CX, 1230, 44, { sc: pop(t, 14.6) });
-    line([['ПК — позже', C.soft]], CX, 1300, 34, { weight: 800, alpha: win(t, 14.9, 15.2) });
+  [11.45, 18.7, t => { // 4. релиз 19 ноября + ПК в 2027 (v04)
+    line([['Релиз GTA 6', C.white]], CX, 300, 76, { sc: pop(t, 11.5) });
+    dateCard(CX, 600, '19', 'НОЯ', 'В полночь', 'по местному времени', C.pink, win(t, 12.0, 12.4));
+    { const k = E.out(win(t, 13.8, 14.2)); ctx.save(); ctx.translate(290, 1010); ctx.scale(.72, .72); consoles(0, 0, k); ctx.restore();
+      line([['PS5 · Xbox Series', '#fff']], 290, 1190, 34, { weight: 800, alpha: k }); line([['19 ноября', C.green]], 290, 1250, 44, { sc: pop(t, 14.2) }); }
+    if (t > 15.6) { const k = win(t, 15.7, 16.05); ctx.save(); ctx.translate(lerp(1300, 730, E.out(k)), 1010); ctx.scale(.7, .7); monitor(0, 0, k, t); ctx.restore();
+      line([['ПК', '#fff']], 730, 1190, 34, { weight: 800, alpha: k }); line([['только в 2027', C.cyan]], 730, 1250, 44, { sc: pop(t, 16.6) });
+      line([['ожидается в 1-й половине 2027 года', C.soft]], CX, 1360, 30, { weight: 800, alpha: win(t, 17.2, 17.5) }); }
   }],
-  [15.9, 19.4, t => { // 5. когда начнётся предзагрузка (v05)
-    line([['Предзагрузка 10 ноября', C.white]], CX, 300, 58, { sc: pop(t, 15.95) });
-    line([['во сколько начнёт качать', C.soft]], CX, 370, 36, { weight: 800, alpha: win(t, 16.1, 16.4) });
-    consoles(CX, 760, E.out(win(t, 16.0, 16.4)));
-    clockCard(CX - 200, 1120, win(t, 16.2, 16.55), '23:59', '00:00', t > 17.0, 'по местному', C.cyan);
-    clockCard(CX + 200, 1120, win(t, 17.6, 17.95), '04:59', '05:00', t > 18.3, 'по Астане', C.green);
-    if (t > 18.6) line([['(00:00 по Гринвичу)', C.soft]], CX + 200, 1240, 26, { weight: 800, alpha: win(t, 18.6, 18.8), stroke: false });
+  [18.7, 24.1, t => { // 5. когда начнётся предзагрузка (v05)
+    line([['Предзагрузка — 10 ноября', C.white]], CX, 300, 56, { sc: pop(t, 18.75) });
+    line([['на 2 дня раньше плана', C.yel]], CX, 370, 38, { weight: 800, alpha: win(t, 19.2, 19.5) });
+    consoles(CX, 760, E.out(win(t, 19.6, 20.0)));
+    clockCard(CX - 200, 1120, win(t, 20.5, 20.85), '23:59', '00:00', t > 21.4, 'по местному', C.cyan);
+    clockCard(CX + 200, 1120, win(t, 22.1, 22.45), '04:59', '05:00', t > 23.0, 'по Астане', C.green);
+    if (t > 23.2) line([['(00:00 по Гринвичу)', C.soft]], CX + 200, 1240, 26, { weight: 800, alpha: win(t, 23.2, 23.4), stroke: false });
   }],
-  [19.4, 24.8, t => { // 6. средний интернет в Казахстане (v06) — спидометр из первой версии
-    gauge(CX, 820, E.out(win(t, 19.7, 20.8)));
-    line([['Средний домашний', C.white]], CX, 290, 54, { sc: pop(t, 19.45) });
-    line([['интернет в Казахстане', C.cyan]], CX, 360, 54, { sc: pop(t, 19.6) });
-    line([['медиана, Speedtest · февраль 2026', C.soft]], CX, 1040, 26, { weight: 800, alpha: win(t, 21.0, 21.3), stroke: false });
-    if (t > 22.3) { progress(CX, 1200, lerp(0, .31, E.out(win(t, 22.4, 24.6))), 'Загрузка GTA 6 · 212 ГБ', 'осталось ≈ 5,4 ч', C.green);
-      line([['…и это в идеальный день', C.soft]], CX, 1360, 38, { weight: 800, alpha: win(t, 23.5, 23.8) }); }
+  [24.1, 29.5, t => { // 6. средний интернет в Казахстане (v06) — спидометр из первой версии
+    gauge(CX, 820, E.out(win(t, 25.8, 27.0)));
+    line([['Средний домашний', C.white]], CX, 290, 54, { sc: pop(t, 24.15) });
+    line([['интернет в Казахстане', C.cyan]], CX, 360, 54, { sc: pop(t, 24.3) });
+    line([['медиана, Speedtest · февраль 2026', C.soft]], CX, 1040, 26, { weight: 800, alpha: win(t, 26.4, 26.7), stroke: false });
+    if (t > 27.4) { progress(CX, 1200, lerp(0, .31, E.out(win(t, 27.5, 29.4))), 'Загрузка GTA 6 · 212 ГБ', 'осталось ≈ 5,4 ч', C.green);
+      line([['…и это в идеальный день', C.soft]], CX, 1360, 38, { weight: 800, alpha: win(t, 28.4, 28.7) }); }
   }],
-  [24.8, 30.5, t => { // 7. шутка про Казахтелеком (v07)
-    line([['Казахтелеком обещает', C.white]], CX, 290, 58, { sc: pop(t, 24.85) });
-    if (t > 25.4) { const k = win(t, 25.4, 25.75), sc = lerp(.5, 1, E.back(k)); ctx.save(); ctx.globalAlpha = clamp(k * 2); ctx.translate(CX, 420); ctx.scale(sc, sc);
+  [29.5, 35.25, t => { // 7. шутка про Казахтелеком (v07)
+    line([['Казахтелеком обещает', C.white]], CX, 290, 58, { sc: pop(t, 29.55) });
+    if (t > 30.4) { const k = win(t, 30.4, 30.75), sc = lerp(.5, 1, E.back(k)); ctx.save(); ctx.globalAlpha = clamp(k * 2); ctx.translate(CX, 420); ctx.scale(sc, sc);
       ctx.fillStyle = 'rgba(53,224,138,.18)'; rr(-330, -52, 660, 104, 52); ctx.fill(); ctx.strokeStyle = C.green; ctx.lineWidth = 5; ctx.stroke();
       line([['стабильный интернет ✓', C.green]], 0, 2, 50, { stroke: false }); ctx.restore(); }
-    if (t > 26.9) { line([['И не обманывает…', C.white]], CX, 580, 50, { sc: pop(t, 26.9) }); speedChart(CX, 870, t, 27.0, E.io(win(t, 28.0, 28.5))); }
-    if (t > 28.05) { const sh = Math.sin(t * 70) * 8 * Math.exp(-(t - 28.1) * 8); ctx.save(); ctx.translate(sh, 0); stamp(CX, 870, win(t, 28.05, 28.3), 'ТОРМОЗИТ СТАБИЛЬНО', C.red); ctx.restore(); }
-    if (t > 29.2) { line([['Так что качайте заранее!', C.yel]], CX, 1200, 58, { sc: pop(t, 29.2) });
-      line([['предзагрузка — с 10 ноября', C.soft]], CX, 1285, 36, { weight: 800, alpha: win(t, 29.5, 29.8) }); }
+    if (t > 31.75) { line([['И не обманывает…', C.white]], CX, 580, 50, { sc: pop(t, 31.75) }); speedChart(CX, 870, t, 31.85, E.io(win(t, 32.6, 33.1))); }
+    if (t > 32.65) { const sh = Math.sin(t * 70) * 8 * Math.exp(-(t - 32.7) * 8); ctx.save(); ctx.translate(sh, 0); stamp(CX + 40, 860, win(t, 32.65, 32.9), 'ТОРМОЗИТ СТАБИЛЬНО', C.red, -.07, 44); ctx.restore(); }
+    if (t > 33.75) { line([['Так что качайте заранее!', C.yel]], CX, 1200, 58, { sc: pop(t, 33.75) });
+      line([['предзагрузка — с 10 ноября', C.soft]], CX, 1285, 36, { weight: 800, alpha: win(t, 34.0, 34.3) }); }
   }],
-  [30.5, 33.6, t => { // 8. ПК-версия (v08)
-    line([['А на ПК?', C.white]], CX, 290, 66, { sc: pop(t, 30.55) });
-    consoles(CX, 760, win(t, 30.6, 30.9)); const k = win(t, 31.4, 31.75); ctx.save(); ctx.translate(lerp(900, 0, E.out(k)), 0); monitor(CX, 1150, k, t); ctx.restore();
-    line([['Только в ', C.white], ['2027', C.cyan]], CX, 390, 54, { sc: pop(t, 32.3) });
-    line([['ожидается в 1-й половине года', C.soft]], CX, 1430, 32, { weight: 800, alpha: win(t, 32.6, 32.9) });
-  }],
-  [33.6, 37.6, t => { // 9. трейлер — рекорд (v09)
-    playCounter(CX, 820, 1, t, 33.75, 35.3);
-    line([['Первый трейлер — ', C.white], ['рекорд', C.yel]], CX, 300, 56, { sc: pop(t, 33.65) });
-    line([['Книги рекордов Гиннесса', C.soft]], CX, 375, 40, { weight: 800, alpha: win(t, 34.4, 34.7) });
-    if (t > 36.6) line([['самый просматриваемый показ игры за сутки', C.soft]], CX, 1260, 30, { weight: 800, alpha: win(t, 36.6, 36.8) });
-  }],
-  [37.6, 41.01, t => { // 10. CTA (v11)
-    const hits = [38.4, 38.9, 39.4, 39.9]; trash(CX, 1150, t, hits);
+  [35.25, 39.01, t => { // 8. CTA (v08)
+    const hits = [36.0, 36.5, 37.0, 37.5]; trash(CX, 1150, t, hits);
     [['Старые игры', C.cyan], ['Фото с отпуска', C.orange], ['Сериалы', C.yel], ['Ещё раз GTA 5', '#4a7dff']].forEach(([s, c], i) => { const h = hits[i], k = win(t, h - .55, h); if (k <= 0 || t > h + .02) return;
       const side = i % 2 ? 1 : -1, x = lerp(CX + side * 420, CX, E.in(k)), y = lerp(760, 1020, k) - 220 * Math.sin(k * Math.PI);
       ctx.save(); ctx.translate(x, y); ctx.rotate(k * side * 2); ctx.fillStyle = c; rr(-150, -42, 300, 84, 20); ctx.fill(); line([[s, C.ink]], 0, 2, 34, { stroke: false }); ctx.restore(); });
-    line([['Что удалишь', C.white]], CX, 300, 76, { sc: pop(t, 37.65) }); line([['ради ', C.white], ['GTA 6', C.pink], ['?', C.white]], CX, 390, 76, { sc: pop(t, 37.8) });
-    line([['Пиши в комментах', C.yel]], CX, 480, 58, { sc: pop(t, 39.0) });
-    ctx.save(); ctx.globalAlpha = win(t, 39.0, 39.2); ctx.fillStyle = C.yel; ctx.translate(CX, 565 + 12 * Math.sin(t * 8));
+    line([['Что удалишь', C.white]], CX, 300, 76, { sc: pop(t, 35.3) }); line([['ради ', C.white], ['GTA 6', C.pink], ['?', C.white]], CX, 390, 76, { sc: pop(t, 35.45) });
+    line([['Пиши в комментах', C.yel]], CX, 480, 58, { sc: pop(t, 36.8) });
+    ctx.save(); ctx.globalAlpha = win(t, 36.8, 37.0); ctx.fillStyle = C.yel; ctx.translate(CX, 565 + 12 * Math.sin(t * 8));
     ctx.beginPath(); ctx.moveTo(-30, -20); ctx.lineTo(30, -20); ctx.lineTo(30, 10); ctx.lineTo(55, 10); ctx.lineTo(0, 60); ctx.lineTo(-55, 10); ctx.lineTo(-30, 10); ctx.closePath(); ctx.fill(); ctx.restore();
-    line([['Источники: Rockstar, Speedtest, Guinness, Game Informer · ноябрь 2026', C.soft]], CX, 1420, 24, { weight: 600, alpha: win(t, 38.6, 39.0), stroke: false });
+    line([['Источники: Rockstar, Speedtest, Game Informer · ноябрь 2026', C.soft]], CX, 1420, 24, { weight: 600, alpha: win(t, 36.2, 36.6), stroke: false });
   }],
 ];
 function drawFrame(t) {
@@ -238,28 +224,27 @@ function drawFrame(t) {
 }
 const cuts = SHOTS.slice(1).map(s => s[0]);
 // озвучка (черновая, Piper) — для версии с голосом: VO_START[id] = время начала фразы
-const VO_START = { v01: .08, v02: 4.48, v03: 8.28, v04: 11.58, v05: 15.98, v06: 19.48, v07: 24.88, v08: 30.58, v09: 33.68, v11: 37.68 };
+const VO_START = { v01: .08, v02: 4.28, v03: 8.08, v04: 11.53, v05: 18.78, v06: 24.18, v07: 29.58, v08: 35.33 };
 window.VO_CUES = Object.entries(VO_START).map(([id, t]) => ({ t, type: 'file', path: `projects/gta6-size/assets/vo/${id}.wav`, gain: 1.0 }));
 window.SFX_CUES = [
   { t: 0, type: 'file', path: 'projects/gta6-size/assets/music.wav', gain: .32 },
   { t: .05, type: 'lib', id: 'whoosh-medium-medium', gain: .5 }, { t: .8, type: 'lib', id: 'impact-deep-hard', gain: .85 }, { t: .82, type: 'lib', id: 'impact-heavy-hard', gain: .6 },
-  { t: 2.7, type: 'lib', id: 'pop-large-in', gain: .55 },
+  { t: 2.4, type: 'lib', id: 'pop-large-in', gain: .55 },
   ...cuts.map(c => ({ t: c, type: 'lib', id: 'whoosh-fast-medium', gain: .5 })),
-  ...GAMES.map((g, i) => ({ t: 4.6 + i * .28, type: 'lib', id: 'pop-medium-bubble', gain: .45, rate: 1 + i * .06 })),
-  ...[5.6, 6.8, 7.2, 7.55].map((t, i) => ({ t, type: 'lib', id: 'tone-step-' + (i + 2), gain: .55 })),
-  { t: 8.8, type: 'lib', id: 'riser-1s-soft', gain: .45, align: 'start' }, { t: 10.0, type: 'lib', id: 'notification-alert-soft', gain: .5 },
-  { t: 11.75, type: 'lib', id: 'pop-large-in', gain: .6 }, { t: 13.3, type: 'lib', id: 'pop-large-in', gain: .6, rate: 1.1 }, { t: 14.6, type: 'lib', id: 'tone-ding-mid', gain: .45 },
-  { t: 16.0, type: 'lib', id: 'pop-large-in', gain: .5 }, { t: 16.2, type: 'lib', id: 'time-clock-fast', gain: .3, align: 'start', dur: .8 }, { t: 17.0, type: 'lib', id: 'notification-success-chime', gain: .5 },
-  { t: 17.6, type: 'lib', id: 'time-clock-fast', gain: .3, align: 'start', dur: .7 }, { t: 18.3, type: 'lib', id: 'notification-success-chime', gain: .5, rate: 1.12 },
-  { t: 19.7, type: 'lib', id: 'riser-1s-soft', gain: .4, align: 'start' }, { t: 20.8, type: 'lib', id: 'tone-ding-mid', gain: .4 },
-  { t: 22.4, type: 'lib', id: 'time-clock-fast', gain: .3, align: 'start', dur: 1.2 },
-  { t: 25.4, type: 'lib', id: 'notification-success-bubble', gain: .55 }, { t: 27.0, type: 'lib', id: 'whoosh-medium-soft', gain: .45 },
-  { t: 28.0, type: 'lib', id: 'faller-1s-strong', gain: .55, align: 'start' }, { t: 28.1, type: 'lib', id: 'impact-deep-firm', gain: .75 }, { t: 28.15, type: 'lib', id: 'notification-error-clear', gain: .45 },
-  { t: 29.2, type: 'lib', id: 'notification-success-pluck', gain: .5 },
-  { t: 30.6, type: 'lib', id: 'pop-large-in', gain: .5 }, { t: 31.4, type: 'lib', id: 'whoosh-medium-soft', gain: .5 }, { t: 32.3, type: 'lib', id: 'tone-ding-mid', gain: .4 },
-  { t: 35.5, type: 'lib', id: 'time-stopwatch', gain: .4, align: 'start', dur: 0.9 }, { t: 36.6, type: 'lib', id: 'notification-success-sparkle', gain: .5 },
-  ...[38.4, 38.9, 39.4, 39.9].map((t, i) => ({ t, type: 'lib', id: 'appear-poof', gain: .55, rate: 1 + i * .05 })),
-  { t: 40.2, type: 'lib', id: 'sting-playful-short', gain: .5, align: 'start' },
+  ...GAMES.map((g, i) => ({ t: 4.35 + i * .28, type: 'lib', id: 'pop-medium-bubble', gain: .45, rate: 1 + i * .06 })),
+  ...[5.3, 6.7, 7.0, 7.3, 7.55].map((t, i) => ({ t, type: 'lib', id: 'tone-step-' + Math.min(i + 2, 5), gain: .5, rate: 1 + Math.max(0, i - 3) * .12 })),
+  { t: 8.6, type: 'lib', id: 'riser-1s-soft', gain: .45, align: 'start' }, { t: 9.8, type: 'lib', id: 'notification-alert-soft', gain: .5 },
+  { t: 12.0, type: 'lib', id: 'pop-large-in', gain: .6 }, { t: 13.8, type: 'lib', id: 'pop-large-in', gain: .5, rate: 1.1 }, { t: 14.2, type: 'lib', id: 'tone-ding-mid', gain: .4 },
+  { t: 15.7, type: 'lib', id: 'whoosh-medium-soft', gain: .5 }, { t: 16.6, type: 'lib', id: 'tone-ding-mid', gain: .4, rate: 1.12 },
+  { t: 19.6, type: 'lib', id: 'pop-large-in', gain: .5 }, { t: 20.5, type: 'lib', id: 'time-clock-fast', gain: .3, align: 'start', dur: .8 }, { t: 21.4, type: 'lib', id: 'notification-success-chime', gain: .5 },
+  { t: 22.1, type: 'lib', id: 'time-clock-fast', gain: .3, align: 'start', dur: .8 }, { t: 23.0, type: 'lib', id: 'notification-success-chime', gain: .5, rate: 1.12 },
+  { t: 25.8, type: 'lib', id: 'riser-1s-soft', gain: .4, align: 'start' }, { t: 27.0, type: 'lib', id: 'tone-ding-mid', gain: .4 },
+  { t: 27.5, type: 'lib', id: 'time-clock-fast', gain: .3, align: 'start', dur: 1.2 },
+  { t: 30.4, type: 'lib', id: 'notification-success-bubble', gain: .55 }, { t: 31.85, type: 'lib', id: 'whoosh-medium-soft', gain: .45 },
+  { t: 32.55, type: 'lib', id: 'faller-1s-strong', gain: .55, align: 'start' }, { t: 32.7, type: 'lib', id: 'impact-deep-firm', gain: .75 }, { t: 32.75, type: 'lib', id: 'notification-error-clear', gain: .45 },
+  { t: 33.75, type: 'lib', id: 'notification-success-pluck', gain: .5 },
+  ...[36.0, 36.5, 37.0, 37.5].map((t, i) => ({ t, type: 'lib', id: 'appear-poof', gain: .55, rate: 1 + i * .05 })),
+  { t: 37.8, type: 'lib', id: 'sting-playful-short', gain: .5, align: 'start' },
 ];
 window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
 window.READY = Promise.all(['900 60px Inter', '800 40px Inter', '600 24px Inter'].map(f => document.fonts.load(f))).then(() => drawFrame(0));
