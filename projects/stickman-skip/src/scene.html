@@ -2,501 +2,474 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<title>Пропущенные секунды</title>
+<title>Пропущенные секунды v2</title>
 <!--
-  Стикмен «Пропущенные секунды». 1080×1920, 30 fps, 30 с.
-  Всё рисуется на canvas функцией renderFrame(t) — кадр зависит только от t.
-  Рендер: node tools/render.mjs projects/stickman-skip/src/scene.html --draft
+  Стикмен «Пропущенные секунды», v2 — монтаж из отдельных планов на фонах пользователя.
+  1080×1920, 30 fps, 30 с. Кадр зависит только от t (renderFrame).
+  Фоны: ../assets/bg/bg0..bg5.jpg (1080×1920). Предыдущая версия: scene-v1-flat.html.
 -->
 <style>
-  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #1b1630; }
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
   canvas { display: block; }
   .fontwarm { position: absolute; left: -9999px; font: 900 40px 'Inter'; }
 </style>
 </head>
 <body>
 <canvas id="c" width="1080" height="1920"></canvas>
-<div class="fontwarm">+5 SEC −5</div>
+<div class="fontwarm">+5 SEC −5 !?</div>
 <script>
 'use strict';
 window.SCENE = { duration: 30, fps: 30, width: 1080, height: 1920 };
-
-// ───────────────────────── настройки ─────────────────────────
-const W = 1080, H = 1920, G = 1250, SCALE = 1.22;           // G — уровень земли (ступни)
-const FINAL_GESTURE = 'finger';               // 'finger' | 'flick' — финальный жест
-const PIT = [470, 700];                       // пропасть (мир, x)
-const WALL_X = 3570;                          // стена в сцене 5
-const RED = '#ff2a4a', RED_D = '#c4002a';
-const HERO = { line: '#0b0b12', fill: '#0b0b12' };
-const GHOST = { line: '#dcdbe8', glow: 'rgba(255,255,255,0.9)' };
-
+const W = 1080, H = 1920;
+const FINAL_GESTURE = 'finger';        // 'finger' | 'flick'
+const RED = '#ff2a4a';
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 
-// ───────────────────────── утилиты ─────────────────────────
+// ───────── утилиты ─────────
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const lerp = (a, b, k) => a + (b - a) * k;
 const D2R = Math.PI / 180;
 const E = {
-  lin: k => k,
-  io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
-  out: k => 1 - Math.pow(1 - k, 3),
-  in: k => k * k * k,
+  lin: k => k, io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
+  out: k => 1 - Math.pow(1 - k, 3), in: k => k * k * k, in2: k => k * k,
   back: k => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); },
-  step: k => 0,
 };
 function mulberry(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const ev = (v, t) => typeof v === 'function' ? v(t) : v;
-function blend(a, b, k) {
-  if (typeof a === 'number') return lerp(a, b, k);
-  const o = {};
-  for (const key in a) o[key] = (key in b) ? lerp(a[key], b[key], k) : a[key];
-  return o;
-}
-// Трек ключей: [[t, value, ease?], ...]; value — число, поза или функция(t).
-// Одинаковое время у двух ключей подряд = мгновенный скачок.
+function blend(a, b, k) { if (typeof a === 'number') return lerp(a, b, k); const o = {}; for (const key in a) o[key] = (key in b) ? lerp(a[key], b[key], k) : a[key]; return o; }
 function track(keys) {
   return t => {
     if (t <= keys[0][0]) return ev(keys[0][1], t);
-    let i = keys.length - 1;
-    while (i > 0 && keys[i][0] > t) i--;
+    let i = keys.length - 1; while (i > 0 && keys[i][0] > t) i--;
     if (i === keys.length - 1) return ev(keys[i][1], t);
     const [t0, v0] = keys[i], [t1, v1, en] = keys[i + 1];
-    const k = (E[en || 'io'])(clamp((t - t0) / (t1 - t0)));
-    return blend(ev(v0, t), ev(v1, t), k);
+    return blend(ev(v0, t), ev(v1, t), (E[en || 'io'])(clamp((t - t0) / (t1 - t0))));
   };
 }
-const win = (t, a, b) => clamp((t - a) / (b - a)); // 0..1 внутри окна
+const win = (t, a, b) => clamp((t - a) / (b - a));
+const pulse = (t, a, b) => Math.sin(win(t, a, b) * Math.PI);
 
-// ───────────────────────── позы ─────────────────────────
-// Углы в градусах. Для конечностей 0 = вниз, + = вперёд (по направлению взгляда).
-// t — наклон корпуса (+ вперёд), h — наклон головы. a1/a2 — дальняя/ближняя рука
-// (u — плечо, f — предплечье), l1/l2 — ноги (u — бедро, l — голень).
+// ───────── позы (градусы; конечности: 0 = вниз, + = вперёд) ─────────
 const BASE = { t: 0, h: 0, a1u: -8, a1f: -4, a2u: 8, a2f: 4, l1u: -6, l1l: -6, l2u: 6, l2l: 6 };
 const P = {
   stand: { ...BASE },
-  walk: t => { const w = t * 1.6 * 2 * Math.PI, s = Math.sin(w), c = Math.cos(w);
-    const th1 = 24 * s, th2 = -th1;
-    return { t: 4, h: 0, l1u: th1, l1l: th1 - 34 * Math.max(0, c), l2u: th2, l2l: th2 - 34 * Math.max(0, -c),
-      a1u: -18 * s, a1f: -18 * s + 14, a2u: 18 * s, a2f: 18 * s + 14 }; },
-  run: t => { const w = t * 2.6 * 2 * Math.PI, s = Math.sin(w), c = Math.cos(w);
-    const th1 = 44 * s, th2 = -th1;
-    return { t: 16, h: -4, l1u: th1, l1l: th1 - 85 * Math.max(0, c), l2u: th2, l2l: th2 - 85 * Math.max(0, -c),
-      a1u: -42 * s, a1f: -42 * s + 80, a2u: 42 * s, a2f: 42 * s + 80 }; },
-  backRun: t => { const p = P.run(t); return { ...p, t: -10, h: 8 }; },
+  walk: t => { const w = t * 1.6 * 2 * Math.PI, s = Math.sin(w), c = Math.cos(w), th = 24 * s;
+    return { t: 4, h: 0, l1u: th, l1l: th - 34 * Math.max(0, c), l2u: -th, l2l: -th - 34 * Math.max(0, -c), a1u: -18 * s, a1f: -18 * s + 14, a2u: 18 * s, a2f: 18 * s + 14 }; },
+  run: t => { const w = t * 2.6 * 2 * Math.PI, s = Math.sin(w), c = Math.cos(w), th = 44 * s;
+    return { t: 16, h: -4, l1u: th, l1l: th - 85 * Math.max(0, c), l2u: -th, l2l: -th - 85 * Math.max(0, -c), a1u: -42 * s, a1f: -42 * s + 80, a2u: 42 * s, a2f: 42 * s + 80 }; },
+  panicRun: t => { const p = P.run(t), w = t * 2.6 * 2 * Math.PI; return { ...p, t: 22, h: -14, a1u: 150 + 20 * Math.sin(w), a1f: 175, a2u: 160 - 20 * Math.sin(w), a2f: 185 }; },
+  lookBackRun: t => ({ ...P.panicRun(t), h: -60 }),
+  backRun: t => ({ ...P.run(t), t: -10, h: 8 }),
   brake: { t: -24, h: -10, a1u: -110, a1f: -140, a2u: 120, a2f: 150, l1u: -18, l1l: -50, l2u: 36, l2l: 44 },
-  windmill: t => { const w = t * 9; return { t: -14, h: -6, a1u: -100 + 70 * Math.sin(w), a1f: -100 + 70 * Math.sin(w) - 30,
-      a2u: 110 + 70 * Math.sin(w + 1.6), a2f: 110 + 70 * Math.sin(w + 1.6) + 30, l1u: -12, l1l: -30, l2u: 18, l2l: 22 }; },
+  windmill: t => { const w = t * 9; return { t: -14, h: -6, a1u: -100 + 70 * Math.sin(w), a1f: -130 + 70 * Math.sin(w), a2u: 110 + 70 * Math.sin(w + 1.6), a2f: 140 + 70 * Math.sin(w + 1.6), l1u: -12, l1l: -30, l2u: 18, l2l: 22 }; },
   lookDown: { t: 18, h: 34, a1u: -14, a1f: -8, a2u: 22, a2f: 30, l1u: -8, l1l: -16, l2u: 12, l2l: 10 },
+  lookUp: { t: -8, h: -45, a1u: -14, a1f: -8, a2u: 14, a2f: 8, l1u: -8, l1l: -8, l2u: 8, l2l: 8 },
   surprised: { t: -10, h: -16, a1u: -125, a1f: -160, a2u: 125, a2f: 160, l1u: -10, l1l: -12, l2u: 10, l2l: 12 },
   reachUp: { t: 4, h: -26, a1u: -20, a1f: -10, a2u: 150, a2f: 168, l1u: -6, l1l: -8, l2u: 8, l2l: 6 },
   press: { t: 10, h: -20, a1u: -24, a1f: -14, a2u: 140, a2f: 150, l1u: -8, l1l: -14, l2u: 14, l2l: 6 },
   cheer: { t: -6, h: -14, a1u: -155, a1f: -172, a2u: 155, a2f: 172, l1u: -16, l1l: -40, l2u: 16, l2l: -20 },
+  crouch: { t: 26, h: -20, a1u: -40, a1f: -20, a2u: -30, a2f: -10, l1u: 70, l1l: -40, l2u: 80, l2l: -30 },
   fear: { t: 14, h: 26, a1u: 150, a1f: 245, a2u: 160, a2f: 255, l1u: 40, l1l: -26, l2u: 52, l2l: -10 },
   peek: { t: 6, h: -6, a1u: 120, a1f: 200, a2u: 70, a2f: 150, l1u: 30, l1l: -20, l2u: 40, l2l: -6 },
   smug: { t: -6, h: -12, a1u: 28, a1f: 100, a2u: 22, a2f: 96, l1u: -10, l1l: -10, l2u: 12, l2l: 12 },
-  hop: { t: 6, h: -24, a1u: 150, a1f: 165, a2u: 160, a2f: 175, l1u: 30, l1l: -40, l2u: 46, l2l: -10 },
-  crouch: { t: 26, h: -20, a1u: -40, a1f: -20, a2u: -30, a2f: -10, l1u: 70, l1l: -40, l2u: 80, l2l: -30 },
-  escape: { t: 30, h: -30, a1u: 150, a1f: 175, a2u: 130, a2f: 160, l1u: -40, l1l: -95, l2u: 55, l2l: 30 },
+  angry: { t: 12, h: 8, a1u: -30, a1f: 40, a2u: 30, a2f: 100, l1u: -14, l1l: -14, l2u: 14, l2l: 14 },
+  hang: { t: 0, h: -20, a1u: 175, a1f: 178, a2u: 185, a2f: 182, l1u: 10, l1l: 30, l2u: -10, l2l: -20 },
+  fall: t => { const w = t * 8; return { t: -20, h: -30, a1u: -150 + 30 * Math.sin(w), a1f: -170 + 30 * Math.sin(w), a2u: 150 + 30 * Math.sin(w + 2), a2f: 170 + 30 * Math.sin(w + 2), l1u: -30 + 25 * Math.sin(w + 1), l1l: -60, l2u: 40 - 25 * Math.sin(w + 1), l2l: 10 }; },
   tuck: { t: 10, h: -10, a1u: -140, a1f: -170, a2u: 150, a2f: 175, l1u: 70, l1l: -20, l2u: 90, l2l: 10 },
   flat: { t: 0, h: 0, a1u: -165, a1f: -170, a2u: 165, a2f: 170, l1u: -10, l1l: -8, l2u: 10, l2l: 8 },
+  splat: { t: 0, h: 0, a1u: -80, a1f: -80, a2u: 80, a2f: 80, l1u: -40, l1l: -40, l2u: 40, l2l: 40 },
   hold: { t: 4, h: 10, a1u: -12, a1f: -6, a2u: 72, a2f: 92, l1u: -6, l1l: -8, l2u: 8, l2l: 6 },
   reachIn: { t: 18, h: 14, a1u: 60, a1f: 80, a2u: 78, a2f: 95, l1u: -14, l1l: -18, l2u: 18, l2l: 6 },
   exhale: { t: 12, h: 18, a1u: 4, a1f: 2, a2u: 6, a2f: 4, l1u: -6, l1l: -6, l2u: 6, l2l: 6 },
   raise: { t: -4, h: -6, a1u: -10, a1f: -6, a2u: 120, a2f: 178, l1u: -6, l1l: -6, l2u: 6, l2l: 6 },
+  bonk: { t: -30, h: -30, a1u: -60, a1f: -80, a2u: 60, a2f: 80, l1u: 10, l1l: 10, l2u: 30, l2l: 30 },
 };
-const tremble = (pose, t, amp = 3) => t2 => { const p = ev(pose, t2); return { ...p, t: p.t + amp * Math.sin(t2 * 70), h: p.h + amp * Math.sin(t2 * 55) }; };
+const tremble = (pose, amp = 3) => t2 => { const p = ev(pose, t2); return { ...p, t: p.t + amp * Math.sin(t2 * 70), h: p.h + amp * Math.sin(t2 * 55) }; };
 
-// ───────────────────────── рисование стикмена ─────────────────────────
+// ───────── стикмен ─────────
 const L = { torso: 96, head: 31, ua: 52, fa: 48, th: 62, sh: 62 };
 function skeleton(p, f) {
-  const H0 = { x: 0, y: 0 };
-  const ta = p.t * D2R;
-  const N = { x: Math.sin(ta) * L.torso * f, y: -Math.cos(ta) * L.torso };
-  const ha = (p.t + p.h) * D2R;
-  const Hd = { x: N.x + Math.sin(ha) * (L.head + 6) * f, y: N.y - Math.cos(ha) * (L.head + 6) };
+  const ta = p.t * D2R, N = { x: Math.sin(ta) * L.torso * f, y: -Math.cos(ta) * L.torso };
+  const ha = (p.t + p.h) * D2R, Hd = { x: N.x + Math.sin(ha) * (L.head + 6) * f, y: N.y - Math.cos(ha) * (L.head + 6) };
   const S = { x: N.x - Math.sin(ta) * 10 * f, y: N.y + Math.cos(ta) * 10 };
-  const limb = (o, u, l, lu, ll) => { const K = { x: o.x + Math.sin(u * D2R) * lu * f, y: o.y + Math.cos(u * D2R) * lu };
-    return [K, { x: K.x + Math.sin(l * D2R) * ll * f, y: K.y + Math.cos(l * D2R) * ll }]; };
+  const limb = (o, u, l, lu, ll) => { const K = { x: o.x + Math.sin(u * D2R) * lu * f, y: o.y + Math.cos(u * D2R) * lu }; return [K, { x: K.x + Math.sin(l * D2R) * ll * f, y: K.y + Math.cos(l * D2R) * ll }]; };
   const [E1, W1] = limb(S, p.a1u, p.a1f, L.ua, L.fa), [E2, W2] = limb(S, p.a2u, p.a2f, L.ua, L.fa);
-  const [K1, F1] = limb(H0, p.l1u, p.l1l, L.th, L.sh), [K2, F2] = limb(H0, p.l2u, p.l2l, L.th, L.sh);
-  return { H0, N, Hd, S, E1, W1, E2, W2, K1, F1, K2, F2 };
+  const [K1, F1] = limb({ x: 0, y: 0 }, p.l1u, p.l1l, L.th, L.sh), [K2, F2] = limb({ x: 0, y: 0 }, p.l2u, p.l2l, L.th, L.sh);
+  return { H0: { x: 0, y: 0 }, N, Hd, S, E1, W1, E2, W2, K1, F1, K2, F2, ha };
 }
-// st: {x, y(ступни/земля), f, pose, s, rot, lift, alpha, ghost, sq, eyes, finger}
+// st: x, y (земля под ступнями), s, f, pose, lift, rot, sq (сплющивание), alpha, ghost, angry, eyes, finger, emo
 function drawStick(st, t) {
-  if (!st || st.alpha <= 0) return;
-  const p = ev(st.pose, t), f = st.f || 1, s = (st.s || 1) * SCALE;
-  const sk = skeleton(p, f);
-  const lowFoot = Math.max(sk.F1.y, sk.F2.y);
+  if (!st || st.alpha === 0) return;
+  const p = ev(st.pose, t), f = st.f || 1, s = st.s || 1, sk = skeleton(p, f), low = Math.max(sk.F1.y, sk.F2.y);
   ctx.save();
   ctx.translate(st.x, st.y - (st.lift || 0) * s);
-  const sq = st.sq || 1;
-  ctx.scale(s / Math.sqrt(sq), s * sq);
-  if (st.rot) { ctx.translate(0, -lowFoot - 60); ctx.rotate(st.rot * D2R); ctx.translate(0, 60); } else ctx.translate(0, -lowFoot);
-  ctx.globalAlpha = st.alpha ?? 1;
-  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  const ghost = st.ghost;
-  const col = ghost ? GHOST.line : HERO.line;
-  if (ghost) { ctx.shadowColor = GHOST.glow; ctx.shadowBlur = 26; }
-  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 15;
-  const seg = (...pts) => { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (const q of pts.slice(1)) ctx.lineTo(q.x, q.y); ctx.stroke(); };
-  seg(sk.S, sk.E1, sk.W1); seg(sk.H0, sk.K1, sk.F1);
-  seg(sk.H0, sk.N); seg(sk.H0, sk.K2, sk.F2); seg(sk.S, sk.E2, sk.W2);
-  ctx.beginPath(); ctx.arc(sk.Hd.x, sk.Hd.y, L.head, 0, Math.PI * 2); ctx.fill();
-  if (st.finger) drawFingerHand(sk.W2, sk.E2, f, st.finger);
-  ctx.shadowBlur = 0;
+  const sq = st.sq || 1; ctx.scale(s / Math.sqrt(sq), s * sq);
+  if (st.rot) { ctx.translate(0, -low - 60); ctx.rotate(st.rot * D2R); ctx.translate(0, 60); } else ctx.translate(0, -low);
+  ctx.globalAlpha = st.alpha ?? 1; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const path = (lw) => {
+    ctx.lineWidth = lw;
+    const seg = (...q) => { ctx.beginPath(); ctx.moveTo(q[0].x, q[0].y); for (const r of q.slice(1)) ctx.lineTo(r.x, r.y); ctx.stroke(); };
+    seg(sk.S, sk.E1, sk.W1); seg(sk.H0, sk.K1, sk.F1); seg(sk.H0, sk.N); seg(sk.H0, sk.K2, sk.F2); seg(sk.S, sk.E2, sk.W2);
+    ctx.beginPath(); ctx.arc(sk.Hd.x, sk.Hd.y, L.head + (lw - 15) / 2, 0, Math.PI * 2); ctx.fill();
+  };
+  if (st.ghost) {
+    ctx.shadowColor = 'rgba(255,255,255,.85)'; ctx.shadowBlur = 22;
+    ctx.strokeStyle = ctx.fillStyle = '#3d3b55'; path(21); ctx.shadowBlur = 0;
+    ctx.strokeStyle = ctx.fillStyle = '#b9b7cf'; path(13);
+  } else {
+    ctx.save(); ctx.translate(-3.5, -2.5); ctx.strokeStyle = ctx.fillStyle = '#ffb27a'; path(16); ctx.restore(); // контровой свет заката
+    ctx.strokeStyle = ctx.fillStyle = '#0b0b12'; path(15);
+  }
+  if (st.finger) { ctx.fillStyle = ctx.strokeStyle = st.ghost ? '#b9b7cf' : '#0b0b12'; drawFingerHand(sk.W2, sk.E2, st.finger); }
+  if (st.angry) drawBrows(sk.Hd, f, st.angry);
   if (st.eyes) drawEyes(sk.Hd, st.eyes);
   ctx.restore();
+  if (st.emo) drawEmo(st, sk, low);
 }
-function drawEyes(c, k) { // взгляд в камеру, «тяжёлые веки»
-  ctx.save(); ctx.globalAlpha *= clamp(k);
-  for (const dx of [-11, 11]) {
-    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(c.x + dx, c.y + 2, 8, 9, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(c.x + dx, c.y + 5, 4, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = HERO.fill; ctx.fillRect(c.x + dx - 10, c.y - 9, 20, 9); // веко
-  }
-  ctx.restore();
-}
-function drawFingerHand(Wp, Ep, f, k) {
-  const ang = Math.atan2(Wp.y - Ep.y, Wp.x - Ep.x);
-  ctx.save(); ctx.translate(Wp.x, Wp.y); ctx.rotate(ang + Math.PI / 2);
-  ctx.beginPath(); ctx.arc(0, -4, 15, 0, Math.PI * 2); ctx.fill();          // кулак
-  if (FINAL_GESTURE === 'finger') { ctx.lineWidth = 11; ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(0, -12 - 30 * clamp(k)); ctx.stroke(); }
-  else { ctx.lineWidth = 11; ctx.beginPath(); ctx.moveTo(4, -10); ctx.lineTo(4 + 22 * clamp(k), -22); ctx.stroke(); }
+function drawBrows(c, f, k) { ctx.save(); ctx.globalAlpha *= clamp(k); ctx.strokeStyle = '#141226'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(c.x + 4 * f, c.y - 16); ctx.lineTo(c.x + 26 * f, c.y - 4); ctx.stroke();
+  ctx.fillStyle = '#141226'; ctx.beginPath(); ctx.arc(c.x + 18 * f, c.y + 4, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+function drawEyes(c, k) { ctx.save(); ctx.globalAlpha *= clamp(k);
+  for (const dx of [-11, 11]) { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(c.x + dx, c.y + 2, 8, 9, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(c.x + dx, c.y + 5, 4, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#0b0b12'; ctx.fillRect(c.x + dx - 10, c.y - 9, 20, 9); }
+  ctx.restore(); }
+function drawFingerHand(Wp, Ep, k) {
+  const ang = Math.atan2(Wp.y - Ep.y, Wp.x - Ep.x); ctx.save(); ctx.translate(Wp.x, Wp.y); ctx.rotate(ang + Math.PI / 2);
+  ctx.beginPath(); ctx.arc(0, -4, 15, 0, Math.PI * 2); ctx.fill(); ctx.lineWidth = 11; ctx.beginPath();
+  if (FINAL_GESTURE === 'finger') { ctx.moveTo(0, -12); ctx.lineTo(0, -12 - 30 * clamp(k)); } else { ctx.moveTo(4, -10); ctx.lineTo(4 + 22 * clamp(k), -22); }
+  ctx.stroke(); ctx.restore(); }
+// эмоции значками над головой: '!', '!?', '?', 'sweat', 'anger', '...'
+function drawEmo(st, sk, low) {
+  const k = st.emoK ?? 1; if (k <= 0) return;
+  const s = st.s || 1, f = st.f || 1;
+  const hx = st.x + sk.Hd.x * s, hy = st.y - (st.lift || 0) * s + (sk.Hd.y - low) * s * (st.sq || 1);
+  ctx.save(); ctx.translate(hx + 42 * s * f, hy - 52 * s); ctx.scale(s * E.back(clamp(k)), s * E.back(clamp(k)));
+  ctx.lineCap = 'round'; ctx.lineWidth = 7;
+  const col = st.ghost ? '#e9e7ff' : '#16121f';
+  if (st.emo === 'anger') { ctx.strokeStyle = RED; ctx.lineWidth = 8; for (const [a, b] of [[0, 1], [1.57, 1], [3.14, 1], [4.71, 1]]) { ctx.save(); ctx.rotate(a + .78); ctx.beginPath(); ctx.arc(14, 14, 10, Math.PI, Math.PI * 1.5); ctx.stroke(); ctx.restore(); } }
+  else if (st.emo === 'sweat') { ctx.fillStyle = '#9fd8ff'; for (const [dx, dy, r] of [[0, 0, 11], [24, 22, 8]]) { ctx.beginPath(); ctx.moveTo(dx, dy - r * 1.8); ctx.quadraticCurveTo(dx + r, dy, dx, dy + r); ctx.quadraticCurveTo(dx - r, dy, dx, dy - r * 1.8); ctx.fill(); } }
+  else if (st.emo === '...') { ctx.fillStyle = col; for (const dx of [0, 20, 40]) { ctx.beginPath(); ctx.arc(dx, 0, 6, 0, Math.PI * 2); ctx.fill(); } }
+  else { ctx.fillStyle = col; ctx.font = '900 64px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(st.emo, 0, 0);
+    ctx.strokeStyle = col; ctx.lineWidth = 5; for (const a of [-.5, 0, .5]) { ctx.beginPath(); ctx.moveTo(Math.sin(a) * 50 - 10, -Math.cos(a) * 50); ctx.lineTo(Math.sin(a) * 66 - 10, -Math.cos(a) * 66); ctx.stroke(); } }
   ctx.restore();
 }
 
-// ───────────────────────── кнопки ─────────────────────────
-function drawButton(x, y, scale, label, rew, extra = {}) {
+// ───────── кнопки (неон) ─────────
+function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function drawButton(x, y, scale, label, rew, ex = {}) {
   if (scale <= 0.01) return;
-  ctx.save(); ctx.translate(x, y); ctx.scale(scale * (extra.sx || 1), scale * (extra.sy || 1)); ctx.rotate((extra.rot || 0) * D2R);
-  ctx.font = '900 54px Inter'; const tw = ctx.measureText(label).width;
-  const w = tw + 150, h = 110, r = 30;
-  ctx.shadowColor = 'rgba(255,40,70,0.95)'; ctx.shadowBlur = 50;
-  ctx.fillStyle = extra.flash ? '#ff8095' : RED;
-  roundRect(-w / 2, -h / 2, w, h, r); ctx.fill();
-  ctx.shadowBlur = 0;
-  ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; roundRect(-w / 2 + 8, -h / 2 + 8, w - 16, h - 16, r - 8); ctx.stroke();
-  ctx.fillStyle = '#fff';
-  // значок ⏭ / ⏪ — два треугольника
-  const ix = -w / 2 + 34, dir = rew ? -1 : 1;
-  ctx.save(); ctx.translate(ix + 34, 0); ctx.scale(dir, 1);
-  for (const off of [-22, 6]) { ctx.beginPath(); ctx.moveTo(off, -22); ctx.lineTo(off + 26, 0); ctx.lineTo(off, 22); ctx.closePath(); ctx.fill(); }
-  ctx.restore();
-  ctx.font = '900 54px Inter'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-  ctx.fillText(label, -w / 2 + 108, 3);
+  ctx.save(); ctx.translate(x, y); ctx.scale(scale * (ex.sx || 1), scale * (ex.sy || 1)); ctx.rotate((ex.rot || 0) * D2R);
+  ctx.font = '900 54px Inter'; const tw = ctx.measureText(label).width, w = tw + 160, h = 112, r = 26;
+  if (ex.dashed) { // «обиженная» кнопка — пунктирный контур
+    ctx.setLineDash([22, 16]); ctx.lineWidth = 9; ctx.strokeStyle = RED; ctx.shadowColor = RED; ctx.shadowBlur = 30; roundRect(-w / 2, -h / 2, w, h, r); ctx.stroke(); ctx.restore(); return; }
+  ctx.shadowColor = 'rgba(255,30,60,1)'; ctx.shadowBlur = 60;
+  const g = ctx.createLinearGradient(0, -h / 2, 0, h / 2); g.addColorStop(0, ex.flash ? '#ff9db0' : '#ff3d5c'); g.addColorStop(1, ex.flash ? '#ff6a85' : '#c8102e');
+  ctx.fillStyle = g; roundRect(-w / 2, -h / 2, w, h, r); ctx.fill(); ctx.shadowBlur = 25; ctx.shadowColor = '#fff';
+  ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(255,235,240,0.95)'; roundRect(-w / 2 + 9, -h / 2 + 9, w - 18, h - 18, r - 9); ctx.stroke(); ctx.shadowBlur = 0;
+  ctx.fillStyle = '#fff'; ctx.save(); ctx.translate(-w / 2 + 70, 0); ctx.scale(rew ? -1 : 1, 1);
+  for (const off of [-24, 4]) { ctx.beginPath(); ctx.moveTo(off, -24); ctx.lineTo(off + 28, 0); ctx.lineTo(off, 24); ctx.closePath(); ctx.fill(); }
+  ctx.restore(); ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText(label, -w / 2 + 116, 3);
   ctx.restore();
 }
-function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
-// анимация появления/нажатия: 0 → 1.15 → 1, при нажатии сжатие
 function btnScale(t, tIn, tPress, tOut) {
   if (t < tIn || t > tOut + .25) return 0;
   let s = E.back(win(t, tIn, tIn + .28));
-  if (tPress != null && t >= tPress - .08) { const k = win(t, tPress - .08, tPress + .16); s *= 1 - .22 * Math.sin(k * Math.PI); }
+  if (tPress != null && t >= tPress - .08) s *= 1 - .22 * pulse(t, tPress - .08, tPress + .16);
   if (t > tOut) s *= 1 - E.in(win(t, tOut, tOut + .25));
   return s;
 }
 
-// ───────────────────────── фон ─────────────────────────
-function makeLayer(w, h, draw) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); return c; }
-const SKY = makeLayer(W, H, (g, w, h) => {
-  const gr = g.createLinearGradient(0, 0, 0, h);
-  gr.addColorStop(0, '#1e1d4d'); gr.addColorStop(.30, '#4a3a7c'); gr.addColorStop(.50, '#b4598c'); gr.addColorStop(.62, '#f08a7a'); gr.addColorStop(.70, '#ffc27a'); gr.addColorStop(1, '#ffd9a0');
-  g.fillStyle = gr; g.fillRect(0, 0, w, h);
-  const sun = g.createRadialGradient(560, 1150, 10, 560, 1150, 620);
-  sun.addColorStop(0, 'rgba(255,245,210,1)'); sun.addColorStop(.12, 'rgba(255,220,160,.85)'); sun.addColorStop(.45, 'rgba(255,150,120,.25)'); sun.addColorStop(1, 'rgba(255,120,120,0)');
-  g.fillStyle = sun; g.fillRect(0, 0, w, h);
-  const rnd = mulberry(7);
-  g.filter = 'blur(18px)';
-  for (let i = 0; i < 26; i++) { const y = 180 + rnd() * 760, x = rnd() * w, rw = 160 + rnd() * 340, rh = 30 + rnd() * 60;
-    const k = y / 940; g.fillStyle = `rgba(${Math.round(lerp(150, 255, k))},${Math.round(lerp(120, 170, k))},${Math.round(lerp(190, 170, k))},${.35 + rnd() * .3})`;
-    g.beginPath(); g.ellipse(x, y, rw, rh, 0, 0, Math.PI * 2); g.fill(); }
-  g.filter = 'none';
-});
-function ridge(g, w, base, amp, rough, seed, color, step = 40) {
-  const rnd = mulberry(seed); g.fillStyle = color; g.beginPath(); g.moveTo(0, 2200);
-  let y = base; for (let x = 0; x <= w + step; x += step) { y = clamp(y + (rnd() - .5) * rough, base - amp, base + amp * .3); if (rnd() < .08) y -= amp * .5 * rnd(); g.lineTo(x, y); }
-  g.lineTo(w, 2200); g.closePath(); g.fill();
-}
-const FAR = makeLayer(2400, 1920, (g, w) => { ridge(g, w, 1080, 160, 60, 3, 'rgba(126,92,150,0.75)', 30); });
-const MID = makeLayer(3600, 1920, (g, w) => {
-  // столовые горы
-  const rnd = mulberry(11); g.fillStyle = '#4b3766';
-  for (let x = -100; x < w; x += 260 + rnd() * 300) { const top = 980 + rnd() * 180, ww = 160 + rnd() * 260;
-    g.beginPath(); g.moveTo(x, 1920); g.lineTo(x + 30, top + 40); g.lineTo(x + 50, top); g.lineTo(x + ww - 40, top + rnd() * 20); g.lineTo(x + ww, top + 60); g.lineTo(x + ww + 40, 1920); g.fill(); }
-  ridge(g, w, 1160, 60, 40, 13, '#3a2b55', 24);
-});
-function drawBackground(cx, cy, z, clockSpin) {
-  ctx.drawImage(SKY, 0, 0);
-  drawClock(clockSpin);
-  const par = (img, p, py) => { const ox = -((cx * p) % img.width + img.width) % img.width; const oy = (960 - cy) * py;
-    ctx.drawImage(img, ox, oy); ctx.drawImage(img, ox + img.width, oy); };
-  par(FAR, .08, .05); par(MID, .25, .15);
-}
-function drawClock(spin) {
-  ctx.save(); ctx.translate(760, 520); ctx.globalAlpha = .16; ctx.strokeStyle = '#fff'; ctx.lineWidth = 6;
-  ctx.beginPath(); ctx.arc(0, 0, 230, 0, Math.PI * 2); ctx.stroke();
-  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(Math.sin(a) * 200, -Math.cos(a) * 200); ctx.lineTo(Math.sin(a) * 222, -Math.cos(a) * 222); ctx.stroke(); }
-  ctx.lineWidth = 9; const a1 = spin, a2 = spin / 12;
-  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(a1) * 175, -Math.cos(a1) * 175); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(a2) * 110, -Math.cos(a2) * 110); ctx.stroke();
-  ctx.restore();
-}
-// передний план в мировых координатах (после трансформации камеры)
-const ROCKS = (() => { const r = mulberry(21), a = []; for (let x = -600; x < 4600; x += 50 + r() * 140) a.push([x, 6 + r() * 16, r()]); return a; })();
-function drawGround(Tw, ep) {
-  const pitOpen = ep ? 0 : E.out(win(Tw, .35, .8));
-  const g = ctx;
-  const groundFill = g.createLinearGradient(0, G, 0, G + 700);
-  groundFill.addColorStop(0, '#2c2140'); groundFill.addColorStop(1, '#120d1e');
-  g.fillStyle = groundFill;
-  // левая часть до пропасти, правая после
-  g.fillRect(-1200, G, PIT[0] + 1200, 1400);
-  g.fillRect(PIT[1], G, WALL_X + 2000 - PIT[1], 1400);
-  // кусок земли над пропастью — проваливается
-  if (pitOpen < 1) { g.save(); g.globalAlpha = 1 - pitOpen; g.translate(0, pitOpen * 500);
-    g.fillRect(PIT[0] - 1, G, PIT[1] - PIT[0] + 2, 1400); g.restore(); }
-  if (pitOpen > 0) { // стенки пропасти и дно
-    g.fillStyle = '#0d0916'; g.fillRect(PIT[0], G + 40, PIT[1] - PIT[0], 1400);
-    g.fillStyle = '#3a2b52'; g.fillRect(PIT[0] + 40, G + 470, 70, 20); // уступ, на котором прыгает двойник
-    const sh = g.createLinearGradient(0, G, 0, G + 400); sh.addColorStop(0, 'rgba(0,0,0,.0)'); sh.addColorStop(1, 'rgba(0,0,0,.6)');
-    g.fillStyle = sh; g.fillRect(PIT[0], G, PIT[1] - PIT[0], 600);
-  }
-  // контровой свет по кромке
-  g.strokeStyle = 'rgba(255,190,140,0.85)'; g.lineWidth = 5;
-  g.beginPath(); g.moveTo(-1200, G + 2); g.lineTo(PIT[0], G + 2); g.moveTo(PIT[1], G + 2); g.lineTo(WALL_X, G + 2); g.stroke();
-  if (pitOpen > 0 && pitOpen < 1) { // летящие обломки
-    const r = mulberry(5); g.fillStyle = '#2c2140';
-    for (let i = 0; i < 14; i++) { const x = PIT[0] + r() * (PIT[1] - PIT[0]), sz = 12 + r() * 26; g.fillRect(x, G + pitOpen * (300 + r() * 600), sz, sz); }
-  }
-  g.fillStyle = '#21182f';
-  for (const [x, sz] of ROCKS) if (x < PIT[0] - 20 || (x > PIT[1] + 20 && x < WALL_X - 30)) { g.beginPath(); g.ellipse(x, G + 4, sz * 1.6, sz, 0, Math.PI, 0); g.fill(); }
-  // стена сцены 5
-  g.fillStyle = '#2a1f3d'; g.beginPath(); g.moveTo(WALL_X, G); g.lineTo(WALL_X + 10, 300); g.lineTo(WALL_X + 80, -200); g.lineTo(WALL_X + 900, -200); g.lineTo(WALL_X + 900, G + 900); g.lineTo(WALL_X, G + 900); g.fill();
-  g.strokeStyle = 'rgba(255,190,140,0.7)'; g.lineWidth = 5; g.beginPath(); g.moveTo(WALL_X, G); g.lineTo(WALL_X + 10, 300); g.stroke();
-}
-function drawAnvil(x, y, rot = 0, shadowK = 0) {
-  if (shadowK > 0) { ctx.save(); ctx.fillStyle = `rgba(0,0,0,${.45 * shadowK})`; ctx.beginPath(); ctx.ellipse(x, G + 4, 150 * shadowK + 20, 18 * shadowK + 4, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
-  ctx.save(); ctx.translate(x, y); ctx.rotate(rot * D2R);
-  const gr = ctx.createLinearGradient(0, -150, 0, 0); gr.addColorStop(0, '#5a5a66'); gr.addColorStop(1, '#22222a');
-  ctx.fillStyle = gr; ctx.beginPath();
-  ctx.moveTo(-170, -150); ctx.lineTo(130, -150); ctx.quadraticCurveTo(190, -150, 210, -118); ctx.lineTo(80, -100); ctx.lineTo(60, -60);
-  ctx.lineTo(95, 0); ctx.lineTo(-95, 0); ctx.lineTo(-60, -60); ctx.lineTo(-90, -100); ctx.lineTo(-170, -112); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,200,160,.5)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-165, -147); ctx.lineTo(128, -147); ctx.stroke();
-  ctx.restore();
-}
-
-// ───────────────────────── хореография ─────────────────────────
-// Камера: центр в мире (cx, cy) и зум z.
-const cam = { cx: track([[0, 540], [2.6, 540], [3.5, 470], [4.0, 470], [4.0, 600], [5.5, 600], [6.6, 560], [7.6, 560], [8.0, 900, 'io'], [9.1, 1150, 'lin'], [9.6, 1150], [10.0, 1150], [10.0, 1250], [13, 1250], [19, 3230, 'lin'], [19.25, 3245, 'out'], [21, 3300], [24.2, 3330]]),
-  cy: track([[0, 860], [2.6, 860], [3.5, 960], [4.0, 960], [4.0, 860], [5.6, 860], [6.6, 1480], [7.5, 1440], [8.0, 860], [9.1, 860], [9.6, 900], [10.0, 900], [10.0, 860], [19.25, 860], [21, 860], [24.2, 860]]),
-  z: track([[0, 1], [2.6, 1], [3.5, 1.45], [4.0, 1.45], [4.0, 1], [5.6, 1], [6.6, 1.15], [7.5, 1.25], [8.0, 1], [9.1, 1], [9.6, 1.3], [10.0, 1.3], [10.0, 1], [19.25, 1], [21, 1.06], [24.2, 1.1]]) };
-const camEp = { cx: track([[27.4, 540], [28.2, 320], [28.6, 300], [29.7, 300], [29.75, 540]]), cy: track([[27.4, 860], [28.2, 960], [28.6, 940], [29.7, 940], [29.75, 860]]),
-  z: track([[27.4, 1], [28.2, 1.6], [28.6, 1.85], [29.7, 1.9], [29.75, 1]]) };
-
-const chaseCam = t => cam.cx(t);  // сцена 4: камера едет вправо
-const heroTrack = {
-  x: track([[0, 160], [0.95, 405, 'lin'], [1.25, 430, 'out'], [4.0, 430], [4.0, 800], [8.0, 800], [8.0, 800], [9.1, 1150, 'lin'], [9.6, 1150],
-    [10.0, 1150], [10.0, 1450], [13.0, 1450], [13.0, 1450], [13.6, cam.cx(13.6) + 200, 'in'], [14.0, cam.cx(14) + 200, 'lin'], [18.6, cam.cx(18.6) + 220, 'lin'],
-    [19.2, WALL_X - 50, 'out'], [19.4, WALL_X - 55]]),
-  pose: track([[0, P.walk], [0.9, P.walk], [1.05, P.brake, 'out'], [1.25, P.windmill, 'lin'], [1.75, P.windmill], [2.05, P.lookDown], [2.25, P.lookDown], [2.45, P.surprised, 'back'],
-    [2.95, P.surprised], [3.25, P.reachUp], [3.5, P.press, 'out'], [4.0, P.press], [4.0, P.cheer], [4.3, P.crouch], [4.55, P.cheer, 'out'], [4.95, P.crouch], [5.2, P.cheer, 'out'], [5.6, P.cheer],
-    [6.2, P.smug], [8.0, P.smug], [8.0, P.walk], [8.75, P.walk], [8.95, tremble(P.surprised, 0, 4)], [9.25, P.reachUp, 'out'], [9.5, P.press, 'out'], [10.0, P.press],
-    [10.0, P.smug], [12.6, P.smug], [12.9, P.surprised], [13.1, P.run], [19.1, P.run], [19.2, P.surprised, 'out'], [19.5, P.surprised],
-    [20.3, tremble(P.fear, 0, 3)], [22.2, tremble(P.fear, 0, 3)], [22.5, P.peek], [23.0, P.surprised], [24.2, tremble(P.fear, 0, 2)]]),
-  f: t => (t >= 19.35 && t < 25) ? -1 : 1,
-  lift: track([[0, 0], [2.3, 0], [2.45, 18, 'out'], [2.7, 0, 'in'], [4.0, 0], [4.15, 70, 'out'], [4.35, 0, 'in'], [4.75, 70, 'out'], [4.95, 0, 'in'], [5.4, 60, 'out'], [5.6, 0, 'in'], [19.4, 0]]),
-};
-const heroEp = {
-  x: t => t >= 29.75 ? 160 - (30 - t) * 255 : track([[27.4, 210], [27.6, 230, 'out']])(t),
-  pose: track([[27.4, P.walk], [27.6, P.stand], [27.75, P.exhale], [28.1, P.exhale], [28.35, P.stand], [28.8, P.raise], [29.7, P.raise], [29.75, P.walk]]),
-};
-
-// двойники: функции состояния от времени мира T
-const SP = 330; // скорость погони px/с
-const ghosts = [
-  { id: 1, born: 4.0, st: T => {
-      if (T < 8.0) { // в пропасти: подпрыгивает на уступе
-        const ph = (T - 4.0) % .9, hop = Math.sin(clamp(ph / .55) * Math.PI);
-        const look = win(T, 6.9, 7.3);
-        return { x: PIT[0] + 75, y: G + 470, pose: look > 0 ? blend(P.hop, { ...P.stand, h: -40, t: -8 }, look) : (ph < .55 ? P.hop : P.crouch), lift: look > 0 ? 0 : hop * 150, f: 1 }; }
-      if (T < 10.5) return null;
-      if (T < 13.0) { const x = track([[10.5, 760], [11.2, 900, 'out']])(T);
-        const pose = track([[10.5, P.run], [11.1, P.run], [11.3, P.stand], [11.6, { ...P.stand, h: 10 }], [12.3, { ...P.stand, h: 10 }], [12.6, { ...P.stand, h: -10 }]])(T);
-        return { x, y: G, pose, f: 1 }; }
-      if (T < 19.0) return { x: track([[13, 900], [13.8, cam.cx(13.8) - 420, 'in'], [18.6, cam.cx(18.6) - 420, 'lin'], [19.0, cam.cx(19) - 420]])(T), y: G, pose: P.run, f: 1 };
-      return ringPos(T, 0);
-    } },
-  { id: 2, born: 10.0, st: T => {
-      if (T < 13.0) { const pose = T < 11.6 ? tremble(P.escape, 0, 3) : track([[11.6, P.escape], [11.9, { ...P.stand, h: 0, t: -4 }], [12.6, { ...P.stand, h: -10 }]])(T);
-        return { x: 1330, y: G, pose, f: T < 11.6 ? 1 : (T < 12.4 ? -1 : 1), lift: T < 11.6 ? 30 : 0 }; }
-      if (T < 19.0) return { x: track([[13, 1330], [13.8, cam.cx(13.8) - 300, 'in'], [18.6, cam.cx(18.6) - 300, 'lin'], [19.0, cam.cx(19) - 300]])(T), y: G, pose: P.run, f: 1 };
-      return ringPos(T, 1);
-    } },
-  { id: 3, born: 14.0, st: T => { // падает плашмя, потом вскакивает
-      const bx = 1250 + (14.0 - 13) * SP + 200;
-      if (T < 15.0) { const k = E.out(win(T, 14.05, 14.35)); return { x: bx, y: G, pose: blend(P.run(T), P.flat, k), rot: 90 * k, f: 1 }; }
-      if (T < 19.0) return { x: track([[15.0, bx], [16.2, cam.cx(16.2) - 180, 'in'], [18.6, cam.cx(18.6) - 180, 'lin'], [19.0, cam.cx(19) - 180]])(T), y: G, pose: P.run, f: 1, rot: 90 * (1 - E.out(win(T, 15.0, 15.25))) };
-      return ringPos(T, 2);
-    } },
-  { id: 4, born: 14.9, st: T => { // завис в прыжке
-      const bx = 1250 + (14.9 - 13) * SP + 200;
-      if (T < 16.4) return { x: bx, y: G, pose: P.tuck, lift: 170, f: 1 };
-      if (T < 19.0) return { x: track([[16.4, bx], [17.4, cam.cx(17.4) - 60, 'in'], [18.6, cam.cx(18.6) - 60, 'lin'], [19.0, cam.cx(19) - 60]])(T), y: G, pose: P.run, f: 1, lift: 170 * (1 - E.in(win(T, 16.4, 16.65))) };
-      return ringPos(T, 3);
-    } },
-  { id: 5, born: 15.8, st: T => { // бежит задом наперёд
-      const bx = 1250 + (15.8 - 13) * SP + 200;
-      if (T < 19.0) return { x: track([[15.8, bx], [16.6, cam.cx(16.6) + 40, 'in'], [18.6, cam.cx(18.6) + 40, 'lin'], [19.0, cam.cx(19) + 40]])(T), y: G, pose: P.backRun, f: -1 };
-      return ringPos(T, 4);
-    } },
-  { id: 6, born: 16.7, st: T => { // вверх ногами
-      const bx = 1250 + (16.7 - 13) * SP + 200;
-      if (T < 19.0) return { x: track([[16.7, bx], [17.6, cam.cx(17.6) + 130, 'in'], [18.6, cam.cx(18.6) + 130, 'lin'], [19.0, cam.cx(19) + 130]])(T), y: G - 175, pose: P.run, f: 1, rot: 180 };
-      const r = ringPos(T, 5); return { ...r, rot: 180 * (1 - E.io(win(T, 19.2, 19.8))), y: r.y - 175 * (1 - E.io(win(T, 19.2, 19.8))) };
-    } },
-];
-// сцена 5: полукруг в два ряда (экранные x при cx≈3300)
-const RING = [[520, 0, .95], [665, 0, .95], [375, 0, .95], [445, -55, .8], [590, -55, .8], [300, -55, .8]];
-function ringPos(T, i) {
-  const [sx, dy, s] = RING[i], tx = 3300 - 540 + sx;
-  const x0 = { 0: 3230 - 420 - 540 + 540, 1: 3230 - 300, 2: 3230 - 180, 3: 3230 - 60, 4: 3230 + 40, 5: 3230 + 130 }[i];
-  const k = E.out(win(T, 19.0, 20.2));
-  const arrive = win(T, 19.0, 20.0) < 1;
-  let pose = arrive ? P.run : P.stand;
-  if (T > 20.2) pose = { ...P.stand, t: 8, h: 8 };
-  if (i === 0 && T > 21.8) pose = track([[21.8, P.stand], [22.2, P.hold, 'back']])(T);
-  if (T > 23.1) pose = i === 0 ? P.hold : track([[23.1, pose], [23.7, P.reachIn, 'out'], [24.2, P.reachIn], [24.35, { ...P.reachIn, a2u: 90, a2f: 110 }]])(T);
-  return { x: lerp(x0, tx, k), y: G + dy, s, pose, f: 1, lift: 0 };
-}
-
-// эффекты пропуска (время мира) — [начало, конец, сила, тип]
-const SKIPS = [[3.55, 4.45, 1, 'ff'], [9.55, 10.05, 1, 'ff'], [13.95, 14.2, .7, 'ff'], [14.85, 15.1, .7, 'ff'], [15.75, 16.0, .7, 'ff'], [16.65, 16.9, .7, 'ff']];
-const HERO_BUTTONS = [[2.2, 3.55, 3.7], [9.0, 9.5, 9.6], [13.7, 13.95, 14.05], [14.6, 14.85, 14.95], [15.5, 15.75, 15.85], [16.4, 16.65, 16.75]];
-
-// ───────────────────────── кадр ─────────────────────────
-function worldTime(t) {
-  if (t < 25.0) return { T: t, ep: false };
-  if (t < 27.4) { const k = win(t, 25.0, 27.4); return { T: 24.3 - (24.3 - 0.45) * E.io(k), ep: false, rew: k }; }
-  return { T: t, ep: true };
-}
-let clockAcc = 0;
-function clockAngle(t, T) { // минутная стрелка: идёт, при пропусках — рывок вперёд, при перемотке — назад
-  let a = T * .5; for (const [s0, s1] of SKIPS) a += 6 * E.io(win(T, s0, s1));
-  if (t >= 27.4) a = 0.45 * .5 + (t - 27.4) * .5;
-  return a;
-}
-function drawFrame(t) {
-  const { T, ep, rew } = worldTime(t);
-  const C = ep ? camEp : cam, Tc = ep ? t : T;
-  let cx = C.cx(Tc), cy = C.cy(Tc), z = C.z(Tc);
-  // тряска: удар наковальни, синхронный щелчок
-  const shake = (ep ? 0 : (Math.max(0, 1 - Math.abs(T - 10.0) * 6) * 18 + Math.max(0, 1 - Math.abs(T - 24.35) * 5) * 22)) + (rew ? 10 * Math.sin(rew * Math.PI) : 0);
-  if (shake > 0) { cx += Math.sin(t * 97) * shake; cy += Math.cos(t * 83) * shake; }
-
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.globalAlpha = 1; ctx.filter = 'none';
-  drawBackground(cx, cy, z, clockAngle(t, T));
+// ───────── фоны и камера ─────────
+const BG = {}; let bgLoaded = 0;
+const BG_READY = Promise.all(['bg0', 'bg1', 'bg2', 'bg3', 'bg4', 'bg5'].map(k => new Promise(res => { const im = new Image(); im.onload = () => { BG[k] = im; res(); }; im.onerror = res; im.src = `../assets/bg/${k}.jpg`; })));
+// камера: (cx, cy) — точка фона в центре экрана, z — зум; не выходит за края картинки
+function setCam(cx, cy, z, mirror) {
+  const hw = 540 / z, hh = 960 / z; cx = clamp(cx, hw, W - hw); cy = clamp(cy, hh, H - hh);
   ctx.setTransform(z, 0, 0, z, 540 - cx * z, 960 - cy * z);
-  drawGround(ep ? 99 : T, ep);
-
-  if (!ep) {
-    // наковальня: падает 8.6–9.6, после пропуска лежит
-    if (T >= 8.3) {
-      const kf = win(T, 8.3, 9.9), fallY = T < 10.0 ? lerp(-60, 860, kf * kf) : G;
-      const sk = T < 10.0 ? win(T, 8.5, 9.6) : 1;
-      drawAnvil(1170, fallY, T < 10 ? -6 + 4 * Math.sin(T * 6) : 0, sk);
-      if (T >= 10.0 && T < 11.2) drawDust(1170, G, win(T, 10.0, 11.2));
-    }
-    // двойники
-    const order = T > 19 ? [3, 4, 5, 2, 1, 0] : [0, 1, 2, 3, 4, 5];
-    for (const gi of order) { const gh = ghosts[gi];
-      if (T < gh.born) continue;
-      const st = gh.st(T); if (!st) continue;
-      const appear = E.out(win(T, gh.born, gh.born + .25));
-      drawStick({ ...st, ghost: true, alpha: .8 * appear, s: (st.s || .95) }, T);
-      // кнопка −5 у двойника 1
-      if (gh.id === 1 && T > 21.9) {
-        const sc = (st.s || .95) * SCALE, sk = skeleton(ev(st.pose, T), 1);
-        const bs = .62 * E.back(win(T, 21.9, 22.3)) * (1 - .25 * Math.sin(win(T, 24.25, 24.5) * Math.PI));
-        drawButton(st.x + sk.W2.x * sc + 95, st.y + (sk.W2.y - Math.max(sk.F1.y, sk.F2.y)) * sc - 10, bs, '−5 SEC', true, { flash: T > 24.3 && T < 24.45 });
-      }
-    }
-    // герой (+ шлейф при беге)
-    const hx = heroTrack.x(T), hp = heroTrack.pose, hf = heroTrack.f(T), hl = heroTrack.lift(T);
-    if (T > 13.1 && T < 19.1) for (const d of [.06, .03]) drawStick({ x: heroTrack.x(T - d), y: G, pose: hp, f: hf, alpha: .18 }, T - d);
-    if (T > 13.1 && T < 19.1) drawSpeedLines(hx - 90, G - 150, T);
-    drawStick({ x: hx, y: G, pose: hp, f: hf, lift: hl, sq: squashAt(T) }, T);
-    // кнопки героя над головой
-    for (const [tin, tp, tout] of HERO_BUTTONS) {
-      const s = btnScale(T, tin, tp, tout); if (!s) continue;
-      drawButton(hx + 40, G - 480 - (hl || 0) * SCALE, s * .9, '+5 SEC', false, { flash: T > tp && T < tp + .1 });
-    }
-  } else {
-    // эпилог: снова начало
-    const hx = heroEp.x(t);
-    const eyes = win(t, 28.35, 28.55) * (t < 29.75 ? 1 : 0);
-    const finger = t > 28.75 && t < 29.75 ? E.back(win(t, 28.8, 29.05)) : 0;
-    drawStick({ x: hx, y: G, pose: heroEp.pose, f: 1, eyes, finger }, t);
-    if (t > 27.75 && t < 28.3) drawPuff(hx + 60, G - 330, win(t, 27.75, 28.3));
-    if (t >= 28.0 && t < 29.75) { // кнопка: появляется, обижается и исчезает
-      const s = btnScale(t, 28.0, null, 29.45) * .9;
-      const wr = win(t, 29.05, 29.45);
-      drawButton(hx + 125, G - 500, s * (1 - .35 * wr), '+5 SEC', false, { sx: 1 + .08 * Math.sin(t * 60) * wr, sy: 1 - .3 * wr, rot: -8 * wr });
-      if (t > 29.45) drawPop(hx + 125, G - 500, win(t, 29.45, 29.7));
-    }
-  }
-
-  // ── экранные эффекты ──
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  if (!ep) for (const [s0, s1, amp] of SKIPS) { const k = win(T, s0, s1); if (k > 0 && k < 1) skipFX(Math.sin(k * Math.PI) * amp, t, false); }
-  if (!ep && T > 24.3 && !rew) skipFX(E.in(win(T, 24.3, 25.0)) * .9, t, true);
-  if (rew) skipFX(.65 + .35 * Math.sin(rew * Math.PI), t, true);
-  if (!ep && Math.abs(T - 24.33) < .05) { ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(0, 0, W, H); }
-  vignette();
+  return { cx, cy, z, mirror };
 }
-function squashAt(T) { // приземления героя — сжатие/растяжение
-  let s = 1; for (const tl of [4.35, 4.95, 5.6]) { const k = win(T, tl - .02, tl + .16); if (k > 0 && k < 1) s *= 1 - .16 * Math.sin(k * Math.PI); }
-  const kb = win(T, 19.15, 19.35); if (kb > 0 && kb < 1) s *= 1 - .12 * Math.sin(kb * Math.PI);
-  return s;
+function drawBG(key, mirror) { const im = BG[key]; if (!im) { ctx.fillStyle = '#6a5a9a'; ctx.fillRect(0, 0, W, H); return; }
+  if (mirror) { ctx.save(); ctx.translate(W, 0); ctx.scale(-1, 1); ctx.drawImage(im, 0, 0, W, H); ctx.restore(); } else ctx.drawImage(im, 0, 0, W, H); }
+const g0 = x => 1066 + clamp(x / 610) * 10; // земля плато на bg0
+
+// ───────── реквизит ─────────
+function drawAnvil(x, y, s = 1, rot = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.rotate(rot * D2R);
+  const gr = ctx.createLinearGradient(0, -150, 0, 0); gr.addColorStop(0, '#6b6470'); gr.addColorStop(.35, '#3a3640'); gr.addColorStop(1, '#16141a');
+  ctx.fillStyle = gr; ctx.beginPath();
+  ctx.moveTo(-170, -150); ctx.lineTo(130, -150); ctx.quadraticCurveTo(195, -150, 215, -116); ctx.lineTo(80, -100); ctx.lineTo(60, -60);
+  ctx.lineTo(95, 0); ctx.lineTo(-95, 0); ctx.lineTo(-60, -60); ctx.lineTo(-90, -100); ctx.lineTo(-170, -112); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#ffb27a'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(-166, -147); ctx.lineTo(128, -147); ctx.quadraticCurveTo(190, -147, 208, -118); ctx.stroke();
+  ctx.restore();
 }
-function drawSpeedLines(x, y, T) { ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 5; ctx.lineCap = 'round';
-  const r = mulberry(Math.floor(T * 15)); for (let i = 0; i < 5; i++) { const yy = y + r() * 220, ll = 60 + r() * 90; ctx.beginPath(); ctx.moveTo(x - 30 - r() * 40, yy); ctx.lineTo(x - 30 - ll, yy); ctx.stroke(); } ctx.restore(); }
-function drawDust(x, y, k) { ctx.save(); const r = mulberry(9); for (let i = 0; i < 22; i++) { const a = (r() - .5) * Math.PI, d = 60 + r() * 220;
-  ctx.fillStyle = `rgba(230,200,190,${.5 * (1 - k)})`; ctx.beginPath(); ctx.arc(x + Math.sin(a) * d * E.out(k) * 1.6, y - 20 - Math.abs(Math.cos(a)) * d * E.out(k) * .5, 16 + 30 * k, 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
-function drawPuff(x, y, k) { ctx.save(); ctx.fillStyle = `rgba(255,255,255,${.8 * (1 - k)})`; for (const [dx, dy, r] of [[0, 0, 16], [20, -8, 13], [36, 4, 11]]) { ctx.beginPath(); ctx.arc(x + dx * (1 + k * 2), y + dy, r * (1 + k), 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
-function drawPop(x, y, k) { ctx.save(); ctx.strokeStyle = RED; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.globalAlpha = 1 - k;
-  for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2, r0 = 40 + 120 * E.out(k); ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * r0, y + Math.sin(a) * r0); ctx.lineTo(x + Math.cos(a) * (r0 + 30), y + Math.sin(a) * (r0 + 30)); ctx.stroke(); }
+function drawShadow(x, y, w, k) { ctx.save(); ctx.fillStyle = `rgba(20,10,40,${.55 * k})`; ctx.beginPath(); ctx.ellipse(x, y, w, w * .16, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+function drawDust(x, y, k, s = 1) { ctx.save(); const r = mulberry(9); for (let i = 0; i < 24; i++) { const a = (r() - .5) * Math.PI, d = (60 + r() * 220) * s;
+  ctx.fillStyle = `rgba(235,205,200,${.55 * (1 - k)})`; ctx.beginPath(); ctx.arc(x + Math.sin(a) * d * E.out(k) * 1.6, y - 20 * s - Math.abs(Math.cos(a)) * d * E.out(k) * .5, (16 + 30 * k) * s, 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
+function drawPebbles(x, y, k, n = 7, spread = 60, depth = 520) { const r = mulberry(31); ctx.save(); ctx.fillStyle = '#5b4d70';
+  for (let i = 0; i < n; i++) { const dx = (r() - .3) * spread, sz = 8 + r() * 14, kk = clamp(k * (1 + r() * .5)); ctx.globalAlpha = 1 - kk * .8;
+    ctx.save(); ctx.translate(x + dx + kk * 30, y + kk * kk * depth * (0.7 + r() * .6)); ctx.rotate(kk * 6); ctx.fillRect(-sz / 2, -sz / 2, sz, sz); ctx.restore(); } ctx.restore(); }
+function drawPuff(x, y, k) { ctx.save(); ctx.fillStyle = `rgba(255,255,255,${.85 * (1 - k)})`; for (const [dx, dy, r] of [[0, 0, 16], [20, -8, 13], [36, 4, 11]]) { ctx.beginPath(); ctx.arc(x + dx * (1 + k * 2), y + dy, r * (1 + k), 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
+function drawBurst(x, y, k, col = RED, n = 10, r0 = 40, len = 30) { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.globalAlpha = 1 - k; ctx.shadowColor = col; ctx.shadowBlur = 20;
+  for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2, rr = r0 + 120 * E.out(k); ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); ctx.lineTo(x + Math.cos(a) * (rr + len), y + Math.sin(a) * (rr + len)); ctx.stroke(); } ctx.restore(); }
+function speedLines(x, y, h, t, dir = 1, col = 'rgba(255,255,255,.6)') { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 6; ctx.lineCap = 'round';
+  const r = mulberry(Math.floor(t * 15)); for (let i = 0; i < 6; i++) { const yy = y + r() * h, ll = 70 + r() * 120, x0 = x - dir * (30 + r() * 50); ctx.beginPath(); ctx.moveTo(x0, yy); ctx.lineTo(x0 - dir * ll, yy); ctx.stroke(); } ctx.restore(); }
+function smear(x0, x1, y, h, k) { // «смаз» героя при рывке вперёд
+  ctx.save(); const g = ctx.createLinearGradient(x0, 0, x1, 0); g.addColorStop(0, 'rgba(10,10,20,0)'); g.addColorStop(1, `rgba(10,10,20,${.8 * (1 - k)})`);
+  ctx.fillStyle = g; ctx.fillRect(Math.min(x0, x1), y - h, Math.abs(x1 - x0), h); ctx.restore(); }
+function bigHand(x0, y0, x1, y1, k) { // рука крупным планом, указательный палец
+  ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = '#ffb27a'; ctx.lineWidth = 50; ctx.beginPath(); ctx.moveTo(x0 - 6, y0 - 4); ctx.lineTo(x1 - 6, y1 - 4); ctx.stroke();
+  ctx.strokeStyle = '#0b0b12'; ctx.lineWidth = 46; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  const a = Math.atan2(y1 - y0, x1 - x0); ctx.translate(x1, y1); ctx.rotate(a); ctx.fillStyle = '#0b0b12'; ctx.beginPath(); ctx.arc(10, 0, 40, 0, Math.PI * 2); ctx.fill();
+  ctx.lineWidth = 26; ctx.beginPath(); ctx.moveTo(30, -6); ctx.lineTo(30 + 56 * k + 10, -14); ctx.stroke(); ctx.restore(); }
+function neonClock(x, y, s, a) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.strokeStyle = RED; ctx.shadowColor = RED; ctx.shadowBlur = 40; ctx.lineCap = 'round';
+  ctx.lineWidth = 14; ctx.beginPath(); ctx.arc(0, 0, 240, 0, Math.PI * 2); ctx.stroke();
+  ctx.lineWidth = 8; for (let i = 0; i < 12; i++) { const q = i / 12 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(Math.sin(q) * 200, -Math.cos(q) * 200); ctx.lineTo(Math.sin(q) * 222, -Math.cos(q) * 222); ctx.stroke(); }
+  ctx.lineWidth = 14; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(a) * 170, -Math.cos(a) * 170); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(a / 12) * 110, -Math.cos(a / 12) * 110); ctx.stroke();
+  ctx.lineWidth = 12; for (const off of [0, Math.PI]) { ctx.beginPath(); ctx.arc(0, 0, 310, off - a * .2 + .3, off - a * .2 + 1.9); ctx.stroke();
+    const e = off - a * .2 + .3; ctx.save(); ctx.translate(Math.cos(e) * 310, Math.sin(e) * 310); ctx.rotate(e - Math.PI / 2); ctx.beginPath(); ctx.moveTo(-26, 10); ctx.lineTo(0, -22); ctx.lineTo(26, 10); ctx.stroke(); ctx.restore(); }
   ctx.restore(); }
-// полосы перемотки + значок ▶▶/◀◀ + глитч-сдвиг полос кадра
+
+// ───────── эффекты экрана ─────────
 const FX = document.createElement('canvas'); FX.width = W; FX.height = H; const fx = FX.getContext('2d');
 function skipFX(a, t, rew) {
   if (a <= 0.01) return;
-  const fi = Math.floor(t * 30), r = mulberry(fi * 13 + 1);
-  // глитч: сдвиг горизонтальных полос
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const r = mulberry(Math.floor(t * 30) * 13 + 1);
   fx.clearRect(0, 0, W, H); fx.drawImage(cv, 0, 0);
-  const n = Math.round(4 + a * 8);
-  for (let i = 0; i < n; i++) { const y = r() * H, h = 20 + r() * 140, dx = (r() - .5) * 160 * a; ctx.drawImage(FX, 0, y, W, h, dx, y, W, h); }
+  for (let i = 0, n = Math.round(4 + a * 8); i < n; i++) { const y = r() * H, h = 20 + r() * 140, dx = (r() - .5) * 160 * a; ctx.drawImage(FX, 0, y, W, h, dx, y, W, h); }
   ctx.save(); ctx.globalAlpha = .35 * a; ctx.globalCompositeOperation = 'screen'; ctx.drawImage(FX, 14 * a * (rew ? -1 : 1), 0); ctx.restore();
-  // красные полосы
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
-  for (let i = 0; i < 26; i++) { const y = r() * H, len = 300 + r() * 900, x = (r() * 1.6 - .3) * W, th = 4 + r() * 26;
-    const gr = ctx.createLinearGradient(x, 0, x + len, 0); const c = `rgba(255,${40 + Math.round(r() * 60)},${80 + Math.round(r() * 60)},`;
-    gr.addColorStop(0, c + '0)'); gr.addColorStop(.5, c + (.55 * a) + ')'); gr.addColorStop(1, c + '0)');
-    ctx.fillStyle = gr; ctx.fillRect(x, y, len, th); }
-  ctx.restore();
-  ctx.save(); ctx.fillStyle = `rgba(255,60,110,${.18 * a})`; ctx.fillRect(0, 0, W, H); ctx.restore();
-  // значок
-  const s = 1 + .08 * Math.sin(t * 30);
-  ctx.save(); ctx.translate(540, 900); ctx.scale(s * (rew ? -1 : 1), s); ctx.globalAlpha = clamp(a * 1.4);
-  ctx.shadowColor = 'rgba(255,40,70,1)'; ctx.shadowBlur = 60; ctx.fillStyle = RED;
-  for (const off of [-120, 0]) { ctx.beginPath(); ctx.moveTo(off, -100); ctx.lineTo(off + 120, 0); ctx.lineTo(off, 100); ctx.closePath(); ctx.fill(); }
-  ctx.restore();
+  for (let i = 0; i < 28; i++) { const y = r() * H, len = 300 + r() * 900, x = (r() * 1.6 - .3) * W, th = 4 + r() * 26, c = `rgba(255,${40 + Math.round(r() * 60)},${80 + Math.round(r() * 60)},`;
+    const gr = ctx.createLinearGradient(x, 0, x + len, 0); gr.addColorStop(0, c + '0)'); gr.addColorStop(.5, c + (.6 * a) + ')'); gr.addColorStop(1, c + '0)'); ctx.fillStyle = gr; ctx.fillRect(x, y, len, th); }
+  ctx.restore(); ctx.fillStyle = `rgba(255,60,110,${.2 * a})`; ctx.fillRect(0, 0, W, H);
+  const s = 1 + .08 * Math.sin(t * 30); ctx.save(); ctx.translate(540, 900); ctx.scale(s * (rew ? -1 : 1), s); ctx.globalAlpha = clamp(a * 1.4); ctx.shadowColor = RED; ctx.shadowBlur = 60; ctx.fillStyle = RED;
+  for (const off of [-120, 0]) { ctx.beginPath(); ctx.moveTo(off, -100); ctx.lineTo(off + 120, 0); ctx.lineTo(off, 100); ctx.closePath(); ctx.fill(); } ctx.restore();
 }
-function vignette() { const g = ctx.createRadialGradient(540, 960, 600, 540, 960, 1250); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(10,5,25,.45)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+function vignette() { ctx.setTransform(1, 0, 0, 1, 0, 0); const g = ctx.createRadialGradient(540, 960, 620, 540, 960, 1250); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(25,10,45,.45)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+function flash(a) { if (a <= 0) return; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.fillRect(0, 0, W, H); }
 
-window.renderFrame = (t) => drawFrame(Math.min(t, 29.999));
-window.READY = document.fonts.load('900 54px Inter').then(() => drawFrame(0));
+// ───────── ПЛАНЫ ─────────
+// Каждый план: [t0, t1, функция(T)]. T — время «мира» (при перемотке идёт назад).
+const H1 = 1.15; // масштаб героя на общем плане bg0
+const SHOTS = [
+  // 1. Общий: идёт к обрыву, кромка осыпается, балансирует
+  [0, 1.7, T => {
+    setCam(lerp(540, 470, E.io(win(T, 0, 1.7))), lerp(980, 1000, win(T, 0, 1.7)), lerp(1.05, 1.18, E.io(win(T, 0, 1.7)))); drawBG('bg0');
+    const x = track([[0, 150], [0.95, 500, 'lin'], [1.2, 545, 'out']])(T);
+    const pose = track([[0, P.walk], [0.9, P.walk], [1.05, P.brake, 'out'], [1.2, P.windmill, 'lin']])(T);
+    if (T > 1.0) drawPebbles(600, 1080, win(T, 1.0, 1.7));
+    drawStick({ x, y: g0(x), s: H1, pose, emo: '!', emoK: win(T, 1.25, 1.4) }, T);
+  }],
+  // 2. Взгляд вниз: камешки улетают в бездну
+  [1.7, 2.3, T => { setCam(540, 1150, lerp(1.25, 1.45, win(T, 1.7, 2.3))); drawBG('bg4');
+    const k = win(T, 1.7, 2.3), r = mulberry(4); ctx.fillStyle = '#2e2440';
+    for (let i = 0; i < 6; i++) { const sz = (70 - 50 * k) * (0.6 + r() * .6); ctx.save(); ctx.translate(lerp(420 + r() * 240, 540, k), lerp(700 + r() * 100, 1350, E.out(k))); ctx.rotate(k * 5 + i); ctx.fillRect(-sz / 2, -sz / 2, sz, sz); ctx.restore(); }
+  }],
+  // 3. Средний: появляется кнопка, удивление
+  [2.3, 3.4, T => { setCam(560, 930, 1.85); drawBG('bg0');
+    const pose = track([[2.3, P.lookDown], [2.45, P.lookDown], [2.6, P.surprised, 'back'], [3.05, P.surprised], [3.35, P.reachUp]])(T);
+    drawStick({ x: 545, y: g0(545), s: H1, pose, lift: 14 * pulse(T, 2.55, 2.8), emo: '!?', emoK: win(T, 2.6, 2.75) }, T);
+    drawButton(650, 730, btnScale(T, 2.42, null, 9) * .62, '+5 SEC', false);
+  }],
+  // 4. Вставка: палец жмёт кнопку
+  [3.4, 3.9, T => { setCam(600, 780, 2.4); drawBG('bg0');
+    const pr = win(T, 3.5, 3.68);
+    drawButton(650, 730, .62 * (1 - .2 * pulse(T, 3.62, 3.82)), '+5 SEC', false, { flash: T > 3.66 && T < 3.76 });
+    bigHand(420, 1000, lerp(470, 570, E.in2(pr)), lerp(950, 770, E.in2(pr)), clamp(pr * 2));
+    if (T > 3.66) drawBurst(650, 730, win(T, 3.66, 3.9), '#fff', 12, 60, 24);
+  }],
+  // 5. РАЗДВОЕНИЕ: чёрный улетает вперёд, серая копия остаётся — и падает с обрыва
+  [3.9, 4.9, T => { setCam(560, 980, 1.35); drawBG('bg0');
+    const kz = E.in(win(T, 3.95, 4.12)), hx = lerp(545, 1500, kz);
+    if (T < 4.25) { smear(545, hx, g0(545) - 20, 300 * H1, win(T, 3.95, 4.3)); drawStick({ x: hx, y: g0(545), s: H1, pose: P.run, alpha: T < 4.12 ? 1 : 0 }, T); }
+    const fallK = win(T, 4.45, 4.9);
+    const pose = T < 4.45 ? track([[3.9, P.press], [4.15, { ...P.stand, h: -20 }], [4.3, { ...P.stand, h: 30 }]])(T) : P.fall;
+    if (T > 4.38) drawPebbles(600, 1080, win(T, 4.38, 4.9), 10, 90);
+    drawStick({ x: 545 + 80 * fallK, y: g0(545) + 700 * fallK * fallK, s: H1, pose, rot: 40 * fallK, ghost: true, alpha: .95 * E.out(win(T, 3.95, 4.1)), emo: T < 4.45 ? '?' : '!', emoK: win(T, 4.15, 4.3) }, T);
+  }],
+  // 6. Бездна: двойник улетает вниз в туман
+  [4.9, 5.7, T => { setCam(540, 1150, 1.3); drawBG('bg4');
+    const k = win(T, 4.9, 5.7);
+    drawStick({ x: lerp(480, 560, k), y: lerp(760, 1360, E.out(k)), s: lerp(1.5, .16, E.out(k)), pose: P.fall, rot: 200 * k, ghost: true, alpha: 1 - win(T, 5.4, 5.7) }, T);
+    if (T > 5.45) { ctx.save(); ctx.globalAlpha = .7 * (1 - win(T, 5.45, 5.7)); ctx.fillStyle = '#f3e6ff'; ctx.beginPath(); ctx.ellipse(560, 1370, 80 * win(T, 5.45, 5.7) + 10, 20, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+  }],
+  // 7. Другая сторона: герой радуется, потом что-то слышит
+  [5.7, 7.0, T => { setCam(720, 900, 1.3); drawBG('bg3');
+    const pose = track([[5.7, P.cheer], [5.95, P.crouch], [6.15, P.cheer, 'out'], [6.4, P.crouch], [6.55, P.smug], [6.7, { ...P.smug, h: -10 }]])(T);
+    const lift = 70 * pulse(T, 5.7, 5.95) + 70 * pulse(T, 6.15, 6.4);
+    drawStick({ x: 760, y: 985, s: 1.05, pose, lift, f: T > 6.62 ? -1 : 1, emo: T > 6.6 ? '?' : null, emoK: win(T, 6.62, 6.75) }, T);
+  }],
+  // 8. Кромка крупно: двойник вылез из пропасти — злой
+  [7.0, 8.0, T => { setCam(470, 960, 1.9); drawBG('bg2');
+    const up = E.out(win(T, 7.05, 7.45));
+    drawStick({ x: 470, y: 905 + lerp(330, 210, up), s: 1.25, pose: track([[7, P.hang], [7.5, { ...P.hang, h: 10 }]])(T), ghost: true, angry: win(T, 7.45, 7.6), emo: 'anger', emoK: win(T, 7.55, 7.7) }, T);
+  }],
+  // 9. Тропа: идёт дальше, на земле растёт тень, смотрит вверх
+  [8.0, 9.0, T => { setCam(470, 1180, 1.12); drawBG('bg5');
+    const x = track([[8.0, 180], [8.7, 400, 'lin'], [8.85, 420, 'out']])(T);
+    drawShadow(440, 1430, 30 + 140 * win(T, 8.2, 9.0), win(T, 8.2, 9.0));
+    drawStick({ x, y: 1425, s: 1.25, pose: track([[8, P.walk], [8.68, P.walk], [8.85, P.lookUp]])(T), emo: '!', emoK: win(T, 8.8, 8.95) }, T);
+  }],
+  // 10. Снизу: наковальня летит прямо в камеру
+  [9.0, 9.45, T => { setCam(540, 520, 1.5); drawBG('bg4');
+    const k = win(T, 9.0, 9.45); speedLines(540, 200, 0, T);
+    ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 5; for (let i = -3; i <= 3; i++) { ctx.beginPath(); ctx.moveTo(540 + i * 60, 300 - 200 * k); ctx.lineTo(540 + i * 60 * (1 + k), 120 - 300 * k); ctx.stroke(); } ctx.restore();
+    drawAnvil(540, 560 + 60 * k, lerp(.35, 1.7, E.in2(k)), -8 + 10 * k);
+  }],
+  // 11. Крупно: паника, жмёт кнопку
+  [9.45, 9.9, T => { setCam(440, 1240, 2.1); drawBG('bg5');
+    ctx.fillStyle = `rgba(20,10,40,${.35 * win(T, 9.45, 9.9)})`; ctx.fillRect(0, 0, W, H);
+    drawStick({ x: 420, y: 1425, s: 1.25, pose: track([[9.45, tremble(P.surprised, 4)], [9.62, P.reachUp, 'out'], [9.78, P.press, 'out']])(T), emo: 'sweat', emoK: 1 }, T);
+    drawButton(500, 1010, btnScale(T, 9.48, 9.8, 9.95) * .55, '+5 SEC', false, { flash: T > 9.8 });
+  }],
+  // 12. РАЗДВОЕНИЕ 2: герой улетает вперёд, наковальня расплющивает копию
+  [9.9, 11.3, T => { setCam(470, 1180, 1.12); drawBG('bg5');
+    const kz = E.out(win(T, 9.92, 10.08));
+    const land = win(T, 10.02, 10.16), flat = T > 10.16;
+    if (!flat) drawShadow(420, 1430, 170, 1);
+    if (flat) drawStick({ x: 420, y: 1428, s: 1.25, pose: P.splat, sq: lerp(.12, .15, pulse(T, 10.16, 10.4)), ghost: true }, T);
+    else drawStick({ x: 420, y: 1425, s: 1.25, pose: tremble(P.surprised, 5), ghost: true, alpha: E.out(win(T, 9.92, 10.0)), emo: '!', emoK: 1 }, T);
+    drawAnvil(420, lerp(700, 1440, E.in2(land)) + (flat ? 0 : 0), 1.05, flat ? 0 : -6);
+    if (flat) drawDust(420, 1440, win(T, 10.16, 11.0), 1.1);
+    smear(420, lerp(420, 690, kz), 1405, 330, win(T, 9.92, 10.25));
+    drawStick({ x: lerp(420, 690, kz), y: 1440, s: 1.25, pose: T < 10.3 ? P.run : track([[10.3, P.stand], [10.6, P.smug]])(T), f: T > 10.6 ? -1 : 1, emo: T > 10.8 ? '...' : null, emoK: win(T, 10.8, 10.95) }, T);
+  }],
+  // 13. Средний: «блин» отлипает, второй двойник прибегает — оба злые
+  [11.3, 13.0, T => { setCam(450, 1250, 1.3); drawBG('bg5');
+    const peel = E.back(win(T, 11.4, 11.85));
+    drawAnvil(330, 1440, 1.05);
+    drawStick({ x: lerp(380, 470, win(T, 11.4, 11.85)), y: 1440, s: 1.25, pose: T < 11.85 ? P.splat : P.angry, sq: lerp(.12, 1, peel), ghost: true, angry: win(T, 11.9, 12.1), emo: 'anger', emoK: win(T, 12.1, 12.3) }, T);
+    const d1x = track([[11.6, -120], [12.2, 200, 'out']])(T);
+    if (T > 11.6) drawStick({ x: d1x, y: 1440, s: 1.25, pose: T < 12.2 ? P.run : P.angry, ghost: true, angry: 1, emo: 'anger', emoK: win(T, 12.3, 12.45) }, T);
+    drawStick({ x: 690, y: 1440, s: 1.25, pose: track([[11.3, P.smug], [12.4, P.smug], [12.6, tremble(P.surprised, 2)]])(T), f: -1, emo: 'sweat', emoK: win(T, 12.55, 12.7) }, T);
+  }],
+  // 14. Погоня: начало
+  [13.0, 13.95, T => { setCam(540, 1150, 1.0); drawBG('bg1');
+    const hx = track([[13.0, 520], [13.95, 760, 'lin']])(T);
+    speedLines(hx - 60, 1180, 200, T);
+    drawStick({ x: hx, y: 1400, s: 1.2, pose: P.lookBackRun, emo: 'sweat', emoK: 1 }, T);
+    for (const [i, off] of [[0, 330], [1, 470]]) drawStick({ x: hx - off + 40 * Math.sin(T * 3 + i), y: 1400 + i * 6, s: 1.2, pose: P.run, ghost: true, angry: 1 }, T + i * .13);
+    drawButton(hx + 70, 920, btnScale(T, 13.7, null, 99) * .55, '+5 SEC', false);
+  }],
+  // 15. Серия: нажатие → новый двойник со своим «законом времени»
+  ...[[13.95, 'bg5', false, 3], [14.75, 'bg1', true, 4], [15.55, 'bg5', true, 5], [16.35, 'bg1', false, 6]].flatMap(([t0, bg, mir, n], idx) => [
+    [t0, t0 + .22, T => { setCam(620, 980, 2.3, mir); drawBG(bg, mir); // вставка: жмёт кнопку на бегу
+      drawStick({ x: 560, y: 1400, s: 1.2, pose: track([[t0, P.panicRun], [t0 + .1, P.press, 'out']])(T), emo: 'sweat', emoK: 1 }, T);
+      drawButton(640, 960, .55 * (1 - .2 * pulse(T, t0 + .1, t0 + .22)), '+5 SEC', false, { flash: T > t0 + .12 }); }],
+    [t0 + .22, t0 + .8, T => { setCam(540, 1150, 1.0, mir); drawBG(bg, mir);
+      const lt = T - t0 - .22, gy = 1400;
+      const hx = 700 + 60 * Math.min(1, lt * 4);
+      speedLines(hx - 60, gy - 230, 200, T);
+      // стая уже существующих двойников
+      for (let i = 0; i < n - 1; i++) drawStick({ x: 120 + i * 105 + 25 * Math.sin(T * 4 + i), y: gy - (i % 2) * 40, s: 1.05 - (i % 2) * .12, pose: i === 4 ? P.backRun : P.run, f: i === 4 ? -1 : 1, rot: i === 5 ? 180 : 0, lift: i === 5 ? 170 : 0, ghost: true, angry: 1 }, T + i * .11);
+      // новый двойник на месте героя
+      const nx = 600, born = E.out(win(T, t0 + .22, t0 + .34));
+      let st = { x: nx, y: gy, s: 1.2, ghost: true, alpha: born, angry: win(T, t0 + .5, t0 + .6) };
+      if (n === 3) st = { ...st, pose: blend(P.run(T), P.flat, E.out(win(T, t0 + .26, t0 + .45))), rot: 90 * E.out(win(T, t0 + .26, t0 + .45)), emo: '!', emoK: win(T, t0 + .3, t0 + .4) };
+      if (n === 4) st = { ...st, pose: P.tuck, lift: 190, emo: '...', emoK: win(T, t0 + .4, t0 + .5) };
+      if (n === 5) st = { ...st, pose: P.backRun, f: -1, x: nx - 60 * lt };
+      if (n === 6) st = { ...st, pose: P.run, rot: 180, lift: 170, emo: '?', emoK: win(T, t0 + .4, t0 + .5) };
+      drawStick(st, T);
+      drawStick({ x: hx, y: gy, s: 1.2, pose: P.lookBackRun, emo: 'sweat', emoK: 1 }, T);
+      if (idx < 3) drawButton(hx + 70, 920, btnScale(T, t0 + .55, null, 99) * .55, '+5 SEC', false);
+    }],
+  ]),
+  // 16. Общий: шестеро гонятся за героем
+  [17.15, 19.0, T => { setCam(lerp(540, 600, win(T, 17.15, 19)), 1130, lerp(1.0, 1.1, win(T, 17.15, 19))); drawBG('bg1');
+    const gy = 1400, hx = 760;
+    speedLines(hx - 60, gy - 240, 220, T);
+    const pack = [[150, 0, 1], [250, 1, 1], [350, 0, 1], [450, 1, 1], [540, 0, 1], [610, 1, 1]];
+    pack.forEach(([x, row], i) => drawStick({ x: x + 30 * Math.sin(T * 3 + i * 1.7), y: gy - row * 42, s: 1.08 - row * .12, pose: i === 4 ? P.backRun : P.run, f: i === 4 ? -1 : 1, rot: i === 5 ? 180 : 0, lift: i === 5 ? 170 : 0, ghost: true, angry: 1 }, T + i * .09));
+    drawStick({ x: hx, y: gy, s: 1.2, pose: T < 18.55 ? P.lookBackRun : P.panicRun, emo: T < 18.55 ? 'sweat' : '!', emoK: T < 18.55 ? 1 : win(T, 18.55, 18.7) }, T);
+  }],
+  // 17. Стена: врезается, разворачивается
+  [19.0, 20.0, T => { setCam(700, 1020, 1.45, true); drawBG('bg5', true);
+    const x = track([[19.0, 520], [19.22, 845, 'in2'], [19.4, 820, 'out']])(T);
+    drawStick({ x, y: 1065, s: 1.25, pose: track([[19.0, P.panicRun], [19.2, P.panicRun], [19.25, P.bonk, 'out'], [19.55, P.bonk], [19.8, tremble(P.fear, 3)]])(T), f: T > 19.55 ? -1 : 1,
+      sq: 1 - .18 * pulse(T, 19.2, 19.4), emo: T < 19.6 ? '!' : 'sweat', emoK: win(T, 19.22, 19.35) }, T);
+    if (T > 19.22) drawBurst(875, 790, win(T, 19.22, 19.6), '#fff8c0', 8, 20, 22);
+  }],
+  // 18. Снизу: двойники нависают со всех сторон (взгляд героя)
+  [20.0, 20.8, T => { setCam(540, 700, 1.25); drawBG('bg4');
+    ctx.fillStyle = 'rgba(30,15,50,.25)'; ctx.fillRect(0, 0, W, H);
+    const k = E.out(win(T, 20.0, 20.8)), ring = [[60, 1700, -25], [300, 1850, -8], [560, 1880, 4], [820, 1830, 14], [1040, 1700, 26], [180, 1420, -30]];
+    ring.forEach(([x, y, r], i) => { ctx.save(); ctx.translate(540 + (x - 540) * (1.25 - .25 * k), y + 120 * (1 - k)); ctx.rotate(r * D2R);
+      drawStick({ x: 0, y: 0, s: 3.4, pose: { ...P.angry, h: 25 }, f: x < 540 ? 1 : -1, ghost: true, angry: 1 }, T); ctx.restore(); });
+  }],
+  // 19. Средний: герой сжался у стены, двойники на переднем плане
+  [20.8, 21.6, T => { setCam(700, 1020, 1.45, true); drawBG('bg5', true);
+    drawStick({ x: 820, y: 1065, s: 1.25, pose: tremble(P.fear, 3), f: -1, emo: 'sweat', emoK: 1 }, T);
+    [[470, 1110, 1.6], [600, 1150, 1.75], [340, 1160, 1.75]].forEach(([x, y, s], i) => drawStick({ x, y, s, pose: P.angry, f: 1, ghost: true, angry: 1, alpha: .95 }, T + i));
+  }],
+  // 20. Вставка: двойник достаёт кнопку −5
+  [21.6, 22.4, T => { setCam(600, 900, 2.0, true); drawBG('bg5', true);
+    drawStick({ x: 470, y: 1180, s: 1.7, pose: track([[21.6, P.angry], [21.95, P.hold, 'back']])(T), ghost: true, angry: 1 }, T);
+    drawButton(700, 930, btnScale(T, 21.95, null, 99) * .78, '−5 SEC', true);
+    if (T > 21.95) drawBurst(700, 930, win(T, 21.95, 22.35), RED, 10, 70, 26);
+  }],
+  // 21. Крупно: герой выглядывает — удивлён
+  [22.4, 23.0, T => { setCam(780, 860, 2.3, true); drawBG('bg5', true);
+    drawStick({ x: 820, y: 1065, s: 1.25, pose: track([[22.4, P.fear], [22.6, P.peek, 'out'], [22.85, P.surprised]])(T), f: -1, emo: '?', emoK: win(T, 22.6, 22.75) }, T);
+  }],
+  // 22. Все вместе жмут кнопку
+  [23.0, 24.4, T => { setCam(640, 1000, 1.55, true); drawBG('bg5', true);
+    const bx = 690, by = 930;
+    [[430, 1130, 1.25, -1], [520, 1090, 1.05, 0], [560, 1150, 1.3, 1]].forEach(([x, y, s, j], i) => drawStick({ x: x + 30 * j * E.out(win(T, 23.1, 23.6)), y, s, pose: track([[23.0, P.angry], [23.5, P.reachIn, 'out']])(T), ghost: true, angry: 1 }, T + i));
+    drawStick({ x: 830, y: 1065, s: 1.25, pose: tremble(P.surprised, 2), f: -1, emo: '!?', emoK: 1 }, T);
+    drawButton(bx, by, .75 * (1 - .25 * pulse(T, 24.1, 24.35)), '−5 SEC', true, { flash: T > 24.15 });
+    if (T > 24.15) drawBurst(bx, by, win(T, 24.15, 24.4), '#fff', 14, 80, 30);
+  }],
+  // 23. Неоновые часы: время пошло назад
+  [24.4, 25.0, T => { setCam(540, 960, 1.0, true); drawBG('bg5', true); ctx.fillStyle = 'rgba(20,0,30,.55)'; ctx.fillRect(0, 0, W, H);
+    neonClock(540, 900, .8 + .3 * E.out(win(T, 24.4, 25.0)), -T * 14);
+  }],
+  // — 25.0–27.4: перемотка (кадры выше назад, см. drawFrame) —
+  // 24. Снова начало: выдох облегчения
+  [27.4, 28.3, T => { setCam(540, 980, 1.05); drawBG('bg0');
+    drawStick({ x: 255, y: g0(255), s: H1, pose: track([[27.4, P.walk], [27.6, P.stand], [27.75, P.exhale], [28.2, P.exhale]])(T) }, T);
+    if (T > 27.75) drawPuff(255 + 70, g0(255) - 330, win(T, 27.75, 28.25));
+  }],
+  // 25. Снова кнопка
+  [28.3, 28.75, T => { setCam(330, 930, 1.75); drawBG('bg0');
+    drawStick({ x: 255, y: g0(255), s: H1, pose: track([[28.3, P.stand], [28.5, { ...P.stand, h: -20 }]])(T), emo: '...', emoK: win(T, 28.45, 28.6) }, T);
+    drawButton(390, 760, btnScale(T, 28.32, null, 99) * .5, '+5 SEC', false);
+  }],
+  // 26. Крупно: взгляд в камеру, жест, кнопка «обиделась» и исчезла
+  [28.75, 29.65, T => { setCam(320, 820, 2.5); drawBG('bg0');
+    drawStick({ x: 255, y: g0(255), s: H1, pose: track([[28.75, P.stand], [28.95, P.raise, 'out']])(T), eyes: 1, finger: E.back(win(T, 28.95, 29.15)) }, T);
+    const wr = win(T, 29.15, 29.4);
+    if (T < 29.4) drawButton(400, 760, .45 * (1 - .3 * wr), '+5 SEC', false, { sx: 1 + .06 * Math.sin(T * 60) * wr, sy: 1 - .25 * wr, rot: -8 * wr });
+    else if (T < 29.52) drawButton(400, 760, .42, '+5 SEC', false, { dashed: true });
+    if (T > 29.48) drawBurst(400, 760, win(T, 29.48, 29.65), RED, 12, 40, 26);
+  }],
+  // 27. Общий: снова идёт — кадр совпадает с началом (петля)
+  [29.65, 30.01, T => { setCam(540, 980, 1.05); drawBG('bg0');
+    const x = 150 - (30 - T) * 370; drawStick({ x, y: g0(Math.max(0, x)), s: H1, pose: P.walk }, T);
+  }],
+];
+
+// пропуски (глитч) — по времени мира
+const SKIPS = [[3.9, 4.3, 1], [9.88, 10.12, 1], ...[13.95, 14.75, 15.55, 16.35].map(t => [t + .18, t + .32, .8])];
+function shotAt(T) { for (let i = SHOTS.length - 1; i >= 0; i--) if (T >= SHOTS[i][0]) return SHOTS[i]; return SHOTS[0]; }
+function drawFrame(t) {
+  let T = t, rew = 0;
+  if (t >= 25.0 && t < 27.4) { rew = win(t, 25.0, 27.4); T = 24.3 - (24.3 - 0.35) * E.io(rew); }
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
+  // тряска камеры
+  const shake = 16 * pulse(T, 10.14, 10.4) + 10 * pulse(T, 19.2, 19.4) + 18 * pulse(T, 24.15, 24.5) + (rew ? 12 * Math.sin(rew * Math.PI) : 0);
+  ctx.save();
+  if (shake > 0) ctx.translate(Math.sin(t * 97) * shake, Math.cos(t * 83) * shake);
+  const shot = shotAt(T); shot[2](T);
+  ctx.restore();
+  if (!rew) for (const [a, b, amp] of SKIPS) { const k = win(T, a, b); if (k > 0 && k < 1) skipFX(Math.sin(k * Math.PI) * amp, t, false); }
+  if (t >= 24.4 && t < 25) skipFX(.5 * win(t, 24.4, 25), t, true);
+  if (rew) { skipFX(.7 + .3 * Math.sin(rew * Math.PI), t, true); ctx.setTransform(1, 0, 0, 1, 0, 0); neonClock(540, 900, .55, -t * 25); }
+  flash(.85 * pulse(T, 24.15, 24.3) * (rew ? 0 : 1) + .18 * pulse(T, 3.64, 3.74));
+  vignette();
+}
+window.renderFrame = t => drawFrame(Math.min(t, 29.999));
+window.READY = Promise.all([BG_READY, document.fonts.load('900 54px Inter')]).then(() => drawFrame(0));
 </script>
 </body>
 </html>
