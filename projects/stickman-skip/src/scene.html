@@ -250,26 +250,33 @@ function btnScale(t, tIn, tPress, tOut) {
 
 // ───────── фоны и камера ─────────
 const BG = {}; let bgLoaded = 0;
-const BG_READY = Promise.all(['bg0', 'bg1', 'bg2', 'bg3', 'bg4', 'bg5'].map(k => new Promise(res => { const im = new Image(); im.onload = () => { BG[k] = im; res(); }; im.onerror = res; im.src = `../assets/bg/${k}.jpg`; })));
+const loadImg = (src) => new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+const BG_READY = Promise.all(['bg0', 'bg1', 'bg2', 'bg3', 'bg4', 'bg5', 'bg6', 'bg7', 'pano'].map(async k => { BG[k] = await loadImg(`../assets/bg/${k}.jpg`); }));
+const SPR_META = {"anvil-side": {"w": 1172, "h": 648}, "anvil-below": {"w": 1187, "h": 1121}, "anvil-falling": {"w": 1148, "h": 943}, "anvil-landed": {"w": 1196, "h": 734}, "dust-impact": {"w": 1953, "h": 568}, "dust-puff": {"w": 963, "h": 861}, "edge-chunk": {"w": 1317, "h": 909}, "rock0": {"w": 349, "h": 323}, "rock1": {"w": 336, "h": 229}, "rock2": {"w": 317, "h": 223}, "rock3": {"w": 270, "h": 259}, "rock4": {"w": 230, "h": 199}, "rock5": {"w": 163, "h": 154}, "rock6": {"w": 121, "h": 120}, "rock7": {"w": 131, "h": 102}, "clock-ring": {"w": 1863, "h": 1847}, "clock-arrows": {"w": 928, "h": 951}, "hand-long": {"w": 331, "h": 1660, "px": 167, "py": 1494}, "hand-short": {"w": 245, "h": 604, "px": 123, "py": 479}}, SPR = {};
+const SPR_READY = Promise.all(Object.keys(SPR_META).map(async k => { SPR[k] = await loadImg(`../assets/sprites/${k}.png`); }));
+// спрайт: (x, y) — точка привязки (низ-центр или центр), w — ширина в пикселях мира
+function sprite(name, x, y, w, { anchor = 'bottom', rot = 0, alpha = 1, comp = null, sy = 1, flip = false } = {}) {
+  const im = SPR[name], m = SPR_META[name]; if (!im || w <= 0 || alpha <= 0) return;
+  const h = w * m.h / m.w; ctx.save(); ctx.translate(x, y); ctx.rotate(rot * D2R); ctx.scale(flip ? -1 : 1, sy); ctx.globalAlpha *= alpha; if (comp) ctx.globalCompositeOperation = comp;
+  ctx.drawImage(im, -w / 2, anchor === 'bottom' ? -h : -h / 2, w, h); ctx.restore(); }
 // камера: (cx, cy) — точка фона в центре экрана, z — зум; не выходит за края картинки
-function setCam(cx, cy, z, mirror) {
-  const hw = 540 / z, hh = 960 / z; cx = clamp(cx, hw, W - hw); cy = clamp(cy, hh, H - hh);
+function setCam(cx, cy, z, mirror, ww = W) {
+  const hw = 540 / z, hh = 960 / z; cx = clamp(cx, hw, ww - hw); cy = clamp(cy, hh, H - hh);
   ctx.setTransform(z, 0, 0, z, 540 - cx * z, 960 - cy * z);
   return { cx, cy, z, mirror };
 }
+const PW = 3840; // панорама
+const setCamP = (cx, cy, z) => setCam(cx, cy, z, false, PW);
+const gL = x => 793 + clamp((x - 1150) / 300) * 12, gR = 822; // земля на панораме: левое / правое плато
+function drawPano(dx = 0) { const im = BG.pano; if (im) ctx.drawImage(im, dx, 0, PW, H); }
 function drawBG(key, mirror) { const im = BG[key]; if (!im) { ctx.fillStyle = '#6a5a9a'; ctx.fillRect(0, 0, W, H); return; }
   if (mirror) { ctx.save(); ctx.translate(W, 0); ctx.scale(-1, 1); ctx.drawImage(im, 0, 0, W, H); ctx.restore(); } else ctx.drawImage(im, 0, 0, W, H); }
 const g0 = x => 1066 + clamp(x / 610) * 10; // земля плато на bg0
 
 // ───────── реквизит ─────────
-function drawAnvil(x, y, s = 1, rot = 0) {
-  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.rotate(rot * D2R);
-  const gr = ctx.createLinearGradient(0, -150, 0, 0); gr.addColorStop(0, '#6b6470'); gr.addColorStop(.35, '#3a3640'); gr.addColorStop(1, '#16141a');
-  ctx.fillStyle = gr; ctx.beginPath();
-  ctx.moveTo(-170, -150); ctx.lineTo(130, -150); ctx.quadraticCurveTo(195, -150, 215, -116); ctx.lineTo(80, -100); ctx.lineTo(60, -60);
-  ctx.lineTo(95, 0); ctx.lineTo(-95, 0); ctx.lineTo(-60, -60); ctx.lineTo(-90, -100); ctx.lineTo(-170, -112); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = '#ffb27a'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(-166, -147); ctx.lineTo(128, -147); ctx.quadraticCurveTo(190, -147, 208, -118); ctx.stroke();
-  ctx.restore();
+function drawAnvil(x, y, s = 1, rot = 0, view = 'side') { // y — низ наковальни
+  const name = { side: 'anvil-side', below: 'anvil-below', falling: 'anvil-falling', landed: 'anvil-landed' }[view] || 'anvil-side';
+  sprite(name, x, y, 420 * s, { anchor: view === 'below' ? 'center' : 'bottom', rot });
 }
 function drawShadow(x, y, w, k) { ctx.save(); ctx.fillStyle = `rgba(20,10,40,${.55 * k})`; ctx.beginPath(); ctx.ellipse(x, y, w, w * .16, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
 function drawDust(x, y, k, s = 1) { ctx.save(); const r = mulberry(9); for (let i = 0; i < 24; i++) { const a = (r() - .5) * Math.PI, d = (60 + r() * 220) * s;
@@ -290,14 +297,13 @@ function bigHand(x0, y0, x1, y1, k) { // рука крупным планом, �
   ctx.strokeStyle = '#0b0b12'; ctx.lineWidth = 46; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
   const a = Math.atan2(y1 - y0, x1 - x0); ctx.translate(x1, y1); ctx.rotate(a); ctx.fillStyle = '#0b0b12'; ctx.beginPath(); ctx.arc(10, 0, 40, 0, Math.PI * 2); ctx.fill();
   ctx.lineWidth = 26; ctx.beginPath(); ctx.moveTo(30, -6); ctx.lineTo(30 + 56 * k + 10, -14); ctx.stroke(); ctx.restore(); }
-function neonClock(x, y, s, a) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.strokeStyle = RED; ctx.shadowColor = RED; ctx.shadowBlur = 40; ctx.lineCap = 'round';
-  ctx.lineWidth = 14; ctx.beginPath(); ctx.arc(0, 0, 240, 0, Math.PI * 2); ctx.stroke();
-  ctx.lineWidth = 8; for (let i = 0; i < 12; i++) { const q = i / 12 * Math.PI * 2; ctx.beginPath(); ctx.moveTo(Math.sin(q) * 200, -Math.cos(q) * 200); ctx.lineTo(Math.sin(q) * 222, -Math.cos(q) * 222); ctx.stroke(); }
-  ctx.lineWidth = 14; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(a) * 170, -Math.cos(a) * 170); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(a / 12) * 110, -Math.cos(a / 12) * 110); ctx.stroke();
-  ctx.lineWidth = 12; for (const off of [0, Math.PI]) { ctx.beginPath(); ctx.arc(0, 0, 310, off - a * .2 + .3, off - a * .2 + 1.9); ctx.stroke();
-    const e = off - a * .2 + .3; ctx.save(); ctx.translate(Math.cos(e) * 310, Math.sin(e) * 310); ctx.rotate(e - Math.PI / 2); ctx.beginPath(); ctx.moveTo(-26, 10); ctx.lineTo(0, -22); ctx.lineTo(26, 10); ctx.stroke(); ctx.restore(); }
+function neonClock(x, y, s, a) { // неоновые часы из спрайтов, стрелки идут назад (a убывает)
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  sprite('clock-arrows', x, y, 760 * s, { anchor: 'center', rot: (-a * .25) * 57.3, comp: 'lighter' });
+  sprite('clock-ring', x, y, 560 * s, { anchor: 'center', comp: 'lighter' });
+  for (const [n, k, len] of [['hand-long', 1, 230], ['hand-short', 1 / 12, 150]]) { const m = SPR_META[n], w = len * s * m.w / m.py, h = w * m.h / m.w;
+    if (!SPR[n]) continue; ctx.save(); ctx.translate(x, y); ctx.rotate(a * k); ctx.drawImage(SPR[n], -m.px / m.w * w, -m.py / m.h * h, w, h); ctx.restore(); }
   ctx.restore(); }
-
 // ───────── эффекты экрана ─────────
 const FX = document.createElement('canvas'); FX.width = W; FX.height = H; const fx = FX.getContext('2d');
 function skipFX(a, t, rew) {
@@ -318,20 +324,16 @@ function vignette() { ctx.setTransform(1, 0, 0, 1, 0, 0); const g = ctx.createRa
 function flash(a) { if (a <= 0) return; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.fillRect(0, 0, W, H); }
 
 // ───────── мультяшная пыль, осколки, таймер ─────────
-function cloudPuff(x, y, k, sc = 1) { // облако «пыль/удар» как в сториборде
+function cloudPuff(x, y, k, sc = 1) { // пыль удара: широкое облако + клубы
   if (k <= 0 || k >= 1) return;
-  const g = E.out(clamp(k * 1.6)), fade = 1 - clamp((k - .6) / .4);
-  ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); ctx.globalAlpha = fade;
-  const puffs = [[-150, -30, 60], [-90, -80, 72], [0, -105, 85], [95, -80, 72], [155, -30, 60], [-50, -20, 70], [55, -20, 70]];
-  ctx.fillStyle = '#f2e1ea'; ctx.strokeStyle = '#6d5a80'; ctx.lineWidth = 7;
-  for (const [dx, dy, r] of puffs) { ctx.beginPath(); ctx.arc(dx * (0.6 + .6 * g), dy * (0.5 + .7 * g), r * (0.3 + .7 * g), 0, Math.PI * 2); ctx.stroke(); }
-  for (const [dx, dy, r] of puffs) { ctx.beginPath(); ctx.arc(dx * (0.6 + .6 * g), dy * (0.5 + .7 * g), r * (0.3 + .7 * g), 0, Math.PI * 2); ctx.fill(); }
-  ctx.restore();
+  const g = E.out(clamp(k * 1.5)), fade = 1 - clamp((k - .55) / .45);
+  sprite('dust-impact', x, y + 30 * sc, (700 + 700 * g) * sc, { alpha: fade, sy: .7 + .3 * g });
+  sprite('dust-puff', x - 190 * sc * g, y - 40 * sc * g, 230 * sc * (.5 + .5 * g), { alpha: fade * .9 });
+  sprite('dust-puff', x + 200 * sc * g, y - 60 * sc * g, 260 * sc * (.5 + .5 * g), { alpha: fade * .9, flip: true });
 }
-function debris(x, y, k, sc = 1, seed = 3) { if (k <= 0 || k >= 1) return; const r = mulberry(seed); ctx.save(); ctx.fillStyle = '#4e4063'; ctx.strokeStyle = '#ffb27a'; ctx.lineWidth = 3;
-  for (let i = 0; i < 9; i++) { const vx = (r() - .5) * 900, vy = -300 - r() * 500, tt = k * .9, px = x + vx * tt * sc, py = y + (vy * tt + 1400 * tt * tt) * sc, sz = (14 + r() * 18) * sc;
-    ctx.save(); ctx.translate(px, py); ctx.rotate(k * 8 + i); ctx.beginPath(); ctx.moveTo(-sz, -sz * .4); ctx.lineTo(sz * .3, -sz); ctx.lineTo(sz, sz * .2); ctx.lineTo(-sz * .2, sz * .8); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
-  ctx.restore(); }
+function debris(x, y, k, sc = 1, seed = 3) { if (k <= 0 || k >= 1) return; const r = mulberry(seed);
+  for (let i = 0; i < 9; i++) { const vx = (r() - .5) * 900, vy = -300 - r() * 500, tt = k * .9;
+    sprite('rock' + (i % 8), x + vx * tt * sc, y + (vy * tt + 1400 * tt * tt) * sc, (26 + r() * 30) * sc, { anchor: 'center', rot: (k * 8 + i) * 57, alpha: 1 - clamp((k - .7) / .3) }); } }
 function accent(x, y, k, sc = 1, col = '#fff6d8') { drawBurst(x, y, k, col, 9, 50 * sc, 40 * sc); }
 // таймер на экране: пропущенное время прокручивается (0:00 → 0:05) или назад
 function hud(lt, from, to, dur, rew) {
@@ -363,15 +365,10 @@ function drawRock(x, y, s = 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s
   ctx.beginPath(); ctx.moveTo(-85, 0); ctx.lineTo(-70, -55); ctx.lineTo(-25, -92); ctx.lineTo(35, -84); ctx.lineTo(80, -40); ctx.lineTo(88, 0); ctx.closePath(); ctx.fill();
   ctx.strokeStyle = '#ffb27a'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(-70, -55); ctx.lineTo(-25, -92); ctx.lineTo(35, -84); ctx.stroke(); ctx.restore(); }
 // камни с подсветкой (вместо «чёрных квадратиков»)
-function stones(x, y, k, n = 7, spread = 60, depth = 520, sc = 1, seed = 31) { if (k <= 0) return; const r = mulberry(seed); ctx.save();
-  for (let i = 0; i < n; i++) { const dx = (r() - .3) * spread, sz = (10 + r() * 16) * sc, kk = clamp(k * (1 + r() * .5)); ctx.globalAlpha = 1 - kk * .7;
-    ctx.save(); ctx.translate(x + dx + kk * 30, y + kk * kk * depth * (0.7 + r() * .6)); ctx.rotate(kk * 6 + i);
-    ctx.fillStyle = '#6e5f86'; ctx.beginPath(); ctx.moveTo(-sz, -sz * .3); ctx.lineTo(-sz * .2, -sz); ctx.lineTo(sz, -sz * .4); ctx.lineTo(sz * .6, sz * .7); ctx.lineTo(-sz * .6, sz * .6); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#ffb27a'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-sz, -sz * .3); ctx.lineTo(-sz * .2, -sz); ctx.lineTo(sz, -sz * .4); ctx.stroke(); ctx.restore(); }
-  ctx.restore(); }
-function edgeChunk(x, y, k, sc = 1) { if (k <= 0 || k >= 1) return; ctx.save(); ctx.translate(x + 40 * k, y + 900 * k * k); ctx.rotate(k * 2.2); ctx.scale(sc * (1 - .5 * k), sc * (1 - .5 * k));
-  ctx.fillStyle = '#7a6a92'; ctx.beginPath(); ctx.moveTo(-60, 0); ctx.lineTo(50, -6); ctx.lineTo(62, 22); ctx.lineTo(20, 46); ctx.lineTo(-44, 30); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = '#ffb27a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-60, 0); ctx.lineTo(50, -6); ctx.stroke(); ctx.restore(); }
+function stones(x, y, k, n = 7, spread = 60, depth = 520, sc = 1, seed = 31) { if (k <= 0) return; const r = mulberry(seed);
+  for (let i = 0; i < n; i++) { const dx = (r() - .3) * spread, sz = (22 + r() * 30) * sc, kk = clamp(k * (1 + r() * .5));
+    sprite('rock' + ((i + seed) % 8), x + dx + kk * 30, y + kk * kk * depth * (0.7 + r() * .6), sz, { anchor: 'center', rot: (kk * 6 + i) * 57, alpha: 1 - kk * .7 }); } }
+function edgeChunk(x, y, k, sc = 1) { if (k <= 0 || k >= 1) return; sprite('edge-chunk', x + 40 * k, y + 900 * k * k, 150 * sc * (1 - .5 * k), { anchor: 'center', rot: k * 126 }); }
 function afterimages(stAt, lt, n = 4, gap = .045) { for (let i = n; i >= 1; i--) { const st = stAt(lt - i * gap); if (!st) continue; drawStick({ ...st, alpha: .55 * (1 - i / (n + 1)), shadow: false, face: null, emo: null }, lt - i * gap); } }
 function whip(k, a, b, ma, mb) { // пролёт камеры: фон a уезжает влево, b въезжает справа, со смазом
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -428,85 +425,91 @@ const K = keys => track(keys);
 const H1 = 1.15, gy5 = 1430, gy1 = 1400, gyW = 1065;
 const btn = (x, y, s, ex) => drawButton(x, y, s, '+5 SEC', false, ex);
 
-// ═══ А. ОБРЫВ: опасность понятна до кнопки ═══
-const A1 = shot(2.2, lt => { setCam(lerp(540, 480, E.io(win(lt, 0, 2.2))), lerp(980, 1000, win(lt, 0, 2.2)), lerp(1.05, 1.15, E.io(win(lt, 0, 2.2)))); drawBG('bg0');
+// ═══ А. ОБРЫВ: опасность понятна до кнопки (панорама) ═══
+const HP = 1.05; // масштаб героя на панораме
+const A1 = shot(2.4, lt => { setCamP(lerp(880, 1260, E.io(win(lt, 0, 2.4))), 800, lerp(1.1, 1.25, E.io(win(lt, 0, 2.4)))); drawPano();
   let st;
-  if (lt < 1.05) { const g = walker(lt, 0, 120, H1); st = { x: g.x, pose: g.pose, face: 'neutral' }; }
-  else { const g = walker(1.05, 0, 120, H1), x0 = g.x;
-    const x = K([[1.05, x0], [1.2, x0 + 28, 'out'], [1.45, x0 - 12, 'io'], [2.2, x0 - 6]])(lt);
-    const pose = K([[1.05, g.pose], [1.15, P.slip, 'out'], [1.4, P.recoil, 'back'], [1.55, P.windmill, 'io'], [2.2, P.windmill]])(lt);
-    st = { x, pose, face: lt < 1.3 ? 'surprised' : 'scared', emo: '!', emoK: win(lt, 1.15, 1.3) }; }
-  if (lt > 1.1) { edgeChunk(608, 1078, win(lt, 1.12, 2.2), 1); stones(600, 1080, win(lt, 1.1, 2.2), 7, 60, 600); }
-  drawStick({ ...st, y: g0(Math.min(st.x, 600)), s: H1 }, lt);
-}, [[.15, 'step', { gain: .45 }], [.46, 'step', { gain: .45 }], [.77, 'step', { gain: .45 }], [1.06, 'skid', { dur: .35, gain: .55 }], [1.12, 'pop', { gain: .35, pitch: .55 }], [1.42, 'puff', { dur: .3, gain: .25 }]]);
-shot(0.9, lt => { setCam(540, 1150, lerp(1.15, 1.5, E.io(win(lt, 0, .9)))); drawBG('bg4');
+  if (lt < 1.2) { const g = walker(lt, 0, 990, HP); st = { x: g.x, pose: g.pose, face: 'neutral' }; }
+  else { const g = walker(1.2, 0, 990, HP), x0 = g.x;
+    const x = K([[1.2, x0], [1.35, x0 + 26, 'out'], [1.6, x0 - 12, 'io'], [2.4, x0 - 6]])(lt);
+    const pose = K([[1.2, g.pose], [1.3, P.slip, 'out'], [1.55, P.recoil, 'back'], [1.7, P.windmill, 'io'], [2.4, P.windmill]])(lt);
+    st = { x, pose, face: lt < 1.45 ? 'surprised' : 'scared', emo: '!', emoK: win(lt, 1.3, 1.45) }; }
+  if (lt > 1.25) { edgeChunk(1452, 812, win(lt, 1.27, 2.4), 1); stones(1445, 812, win(lt, 1.25, 2.4), 7, 50, 700); }
+  drawStick({ ...st, y: gL(Math.min(st.x, 1440)), s: HP }, lt);
+}, [[.15, 'step', { gain: .45 }], [.46, 'step', { gain: .45 }], [.77, 'step', { gain: .45 }], [1.08, 'step', { gain: .45 }], [1.21, 'skid', { dur: .35, gain: .55 }], [1.27, 'pop', { gain: .35, pitch: .55 }], [1.57, 'puff', { dur: .3, gain: .25 }]]);
+shot(0.9, lt => { setCam(540, lerp(1150, 1050, win(lt, 0, .9)), lerp(1.0, 1.25, E.io(win(lt, 0, .9)))); drawBG('bg7'); // вид с кромки вниз
   const k = win(lt, 0, .9);
-  edgeChunk(540, 520, clamp(.25 + k * .7), 1.8); stones(520, 540, clamp(.2 + k * .8), 6, 200, 900, 2.2, 5);
+  sprite('edge-chunk', lerp(560, 600, k), lerp(1420, 820, E.out(k)), lerp(420, 70, E.out(k)), { anchor: 'center', rot: k * 160 });
+  const r = mulberry(5); for (let i = 0; i < 6; i++) sprite('rock' + i, lerp(380 + r() * 340, 590, E.out(k)), lerp(1380 + r() * 120, 840, E.out(clamp(k * (1 + r() * .4)))), lerp(110, 18, E.out(k)) * (0.6 + r() * .6), { anchor: 'center', rot: (k * 5 + i) * 57 });
 }, [[.1, 'tick', { gain: .25, pitch: .5 }], [.35, 'tick', { gain: .2, pitch: .45 }], [.6, 'tick', { gain: .15, pitch: .4 }]]);
-shot(0.7, lt => { setCam(575, 1020, 2.5); drawBG('bg0'); // ступни на краю
-  const x = K([[0, 520], [.35, 520], [.6, 470, 'io']])(lt);
-  stones(606, 1080, win(lt, 0, .7), 4, 30, 400, .8, 11);
-  drawStick({ x, y: g0(x), s: H1, pose: K([[0, tremble(P.recoil, 3)], [.35, tremble(P.recoil, 3)], [.6, P.scared]])(lt) }, lt);
+shot(0.6, lt => { setCamP(1400, 760, 2.6); drawPano(); // ступни на краю
+  const x = K([[0, 1405], [.35, 1405], [.6, 1350, 'io']])(lt);
+  stones(1450, 812, win(lt, 0, .7), 4, 30, 400, .8, 11);
+  drawStick({ x, y: gL(x), s: HP, pose: K([[0, tremble(P.recoil, 3)], [.35, tremble(P.recoil, 3)], [.6, P.scared]])(lt) }, lt);
 }, [[.4, 'step', { gain: .3 }]]);
-shot(0.9, lt => { setCam(480, 800, 2.5); drawBG('bg0'); // лицо: удивление → испуг
-  drawStick({ x: 470, y: g0(470), s: H1, pose: K([[0, P.scared], [.5, tremble(P.scared, 2)]])(lt), face: lt < .35 ? 'surprised' : 'scared', emo: 'sweat', emoK: win(lt, .4, .55) }, lt);
+shot(0.9, lt => { setCamP(1360, 560, 2.6); drawPano(); // лицо: удивление → испуг
+  drawStick({ x: 1350, y: gL(1350), s: HP, pose: K([[0, P.scared], [.5, tremble(P.scared, 2)]])(lt), face: lt < .35 ? 'surprised' : 'scared', emo: 'sweat', emoK: win(lt, .4, .55) }, lt);
 }, [[.45, 'pop', { gain: .2, pitch: .4 }]]);
-shot(1.4, lt => { setCam(600, 930, 1.55); drawBG('bg0'); // смотрит на тот берег → появляется кнопка
-  const pose = K([[0, P.scared], [.25, { ...P.stand, h: -12 }], [.55, { ...P.lookDown }], [.75, P.lookDown], [.9, P.lookUp, 'out'], [1.1, P.surprised, 'back']])(lt);
-  drawStick({ x: 470, y: g0(470), s: H1, pose, face: lt < .85 ? 'scared' : 'surprised', emo: lt > .95 ? '!?' : null, emoK: win(lt, .95, 1.1) }, lt);
-  crackFX(600, 690, win(lt, .7, .95));
-  btn(600, 690, btnScale(lt, .75, null, 99) * .62);
-}, [[.72, 'glitch', { dur: .15, gain: .3 }], [.75, 'bloop', { gain: .55 }], [1.0, 'boing', { dur: .25, pitch: 2.2, gain: .2 }]]);
-shot(0.6, lt => { setCam(560, 760, 2.0); drawBG('bg0'); // палец жмёт
+shot(0.6, lt => { setCamP(1960, 860, 1.0); drawPano(); // через плечо: тот берег далеко
+  drawStick({ x: 1440, y: 1020, s: 1.9, pose: K([[0, P.scared], [.3, { ...P.stand, h: -6 }]])(lt), face: 'scared', shadow: false }, lt);
+});
+shot(1.2, lt => { setCamP(1420, 640, 1.6); drawPano(); // кнопка появляется — как шанс
+  const pose = K([[0, P.lookDown], [.3, P.lookDown], [.45, P.lookUp, 'out'], [.7, P.surprised, 'back']])(lt);
+  drawStick({ x: 1350, y: gL(1350), s: HP, pose, face: lt < .45 ? 'scared' : 'surprised', emo: lt > .6 ? '!?' : null, emoK: win(lt, .6, .75) }, lt);
+  crackFX(1480, 400, win(lt, .2, .45)); btn(1480, 400, btnScale(lt, .25, null, 99) * .58);
+}, [[.22, 'glitch', { dur: .15, gain: .3 }], [.25, 'bloop', { gain: .55 }], [.62, 'boing', { dur: .25, pitch: 2.2, gain: .2 }]]);
+shot(0.6, lt => { setCamP(1450, 470, 2.0); drawPano(); // палец жмёт
   const pr = win(lt, .05, .25);
-  btn(600, 690, .62 * (1 - .2 * pulse(lt, .22, .42)), { flash: lt > .25 && lt < .35 });
-  bigHand(360, 1000, lerp(410, 525, E.in2(pr)), lerp(930, 725, E.in2(pr)), clamp(pr * 2));
-  pulseRing(600, 690, win(lt, .25, .6));
+  btn(1480, 400, .58 * (1 - .2 * pulse(lt, .22, .42)), { flash: lt > .25 && lt < .35 });
+  bigHand(1260, 700, lerp(1300, 1405, E.in2(pr)), lerp(640, 435, E.in2(pr)), clamp(pr * 2));
+  pulseRing(1480, 400, win(lt, .25, .6));
 }, [[.24, 'click', { gain: .8 }]]);
 
-// ═══ Б. ПЕРВЫЙ ПРОПУСК: оригинал — вперёд, клон 1 остаётся проживать прыжок ═══
-const heroDash = lt => { const kz = E.in(win(lt, .05, .3)); return lt < .3 ? { x: lerp(470, 1500, kz), y: g0(470), s: H1, pose: P.run } : null; };
-const B1 = shot(0.9, lt => { setCam(560, 980, 1.35); drawBG('bg0');
-  pulseRing(520, 900, win(lt, 0, .5));
-  drawStick(G(0, { x: 470, y: g0(470), s: H1, pose: P.reachUp, alpha: .9 * E.out(win(lt, .05, .2)), face: 'neutral' }), lt);
+// ═══ Б. ПЕРВЫЙ ПРОПУСК: оригинал — через пропасть, клон 1 остаётся проживать прыжок ═══
+const heroDash = lt => lt < .3 ? { x: lerp(1350, 1900, E.in(win(lt, .05, .3))), y: gL(1350) - 260 * Math.sin(win(lt, .05, .3) * Math.PI) * .4, s: HP, pose: P.run } : null;
+const B1 = shot(0.9, lt => { setCamP(1450, 720, 1.35); drawPano();
+  pulseRing(1400, 620, win(lt, 0, .5));
+  drawStick(G(0, { x: 1350, y: gL(1350), s: HP, pose: P.reachUp, alpha: .9 * E.out(win(lt, .05, .2)), face: 'neutral' }), lt);
   afterimages(heroDash, lt, 4, .04); const h = heroDash(lt); if (h) drawStick(h, lt);
   const k = win(lt, 0, .45); if (k > 0 && k < 1) skipFX(Math.sin(k * Math.PI), lt + 3, false);
   hud(lt, 0, 5, .9, REVERSE);
 }, [[0, 'ff', { dur: .45, gain: .65 }], [0, 'glitch', { dur: .25, gain: .4 }], [.15, 'tick', { gain: .3 }], [.35, 'tick', { gain: .3 }], [.55, 'tick', { gain: .3 }], [.75, 'tick', { gain: .3 }]]);
-const B2 = shot(0.45, lt => { const k = win(lt, 0, .45); whip(k, 'bg0', 'bg3'); skipFX(.6 * Math.sin(k * Math.PI), lt + 5, false);
-  ctx.setTransform(1, 0, 0, 1, 0, 0); afterimages(l => ({ x: lerp(-100, 1180, win(l, 0, .45)), y: 1150, s: 1.1, pose: P.run }), lt, 4, .03); hud(lt + .9, 0, 5, .9, REVERSE);
-}, [[0, 'whistle', { dur: .4, gain: .4, pitch: 2 }]]);
-const B3 = shot(1.5, lt => { setCam(720, 900, 1.3); drawBG('bg3'); // приземлился, проверяет себя, радуется
+const B2 = shot(0.6, lt => { const k = E.io(win(lt, 0, .6)), cx = lerp(1450, 2700, k); // настоящий пролёт камеры над пропастью
+  for (let i = -2; i <= 2; i++) { ctx.globalAlpha = i === 0 ? 1 : .2; setCamP(cx + i * 40 * Math.sin(k * Math.PI), 760, 1.3); drawPano(); } ctx.globalAlpha = 1;
+  setCamP(cx, 760, 1.3); afterimages(l => ({ x: lerp(1500, 2650, E.io(win(l, 0, .6))), y: lerp(gL(1400), gR, win(l, 0, .6)) - 200 * Math.sin(win(l, 0, .6) * Math.PI), s: HP, pose: P.run }), lt, 4, .03);
+  skipFX(.5 * Math.sin(win(lt, 0, .6) * Math.PI), lt + 5, false); hud(lt + .9, 0, 5, .9, REVERSE);
+}, [[0, 'whistle', { dur: .55, gain: .4, pitch: 2 }]]);
+const B3 = shot(1.5, lt => { setCamP(2680, 700, 1.35); drawPano(); // приземлился, проверяет себя, радуется
   const land = pulse(lt, 0, .18);
   const pose = K([[0, P.crouch], [.18, P.crouch], [.45, { ...P.lookFeet }, 'out'], [.75, P.lookFeet], [.9, P.cheer, 'back'], [1.1, P.crouch], [1.3, P.cheer, 'out'], [1.5, P.cheer]])(lt);
-  drawStick({ x: 800, y: 985, s: 1.05, pose, sq: 1 - .2 * land, lift: 70 * pulse(lt, .9, 1.12) + 70 * pulse(lt, 1.3, 1.5), face: lt < .8 ? 'surprised' : 'happy' }, lt);
-  hud(lt + 1.35, 0, 5, .9, REVERSE);
+  if (lt < .4) cloudPuff(2680, gR + 8, win(lt, 0, .4) * .6, .35);
+  drawStick({ x: 2680, y: gR, s: HP, pose, sq: 1 - .2 * land, lift: 70 * pulse(lt, .9, 1.12) + 70 * pulse(lt, 1.3, 1.5), face: lt < .8 ? 'surprised' : 'happy' }, lt);
+  hud(lt + 1.5, 0, 5, .9, REVERSE);
 }, [[0, 'thud', { dur: .3, gain: .4, pitch: 2 }], [1.12, 'step', { gain: .4, pitch: 1.3 }], [1.5, 'step', { gain: .4, pitch: 1.3 }]]);
-// тем временем на старом краю: клон 1 проживает пропущенный прыжок
-const B4 = shot(2.5, lt => { setCam(560, 1000, 1.05); drawBG('bg0');
-  ctx.save(); ctx.fillStyle = 'rgba(60,40,90,.16)'; ctx.fillRect(0, 0, W, H); ctx.restore();
-  drawStick({ x: 1000, y: 988, s: .42, pose: K([[0, P.cheer], [.4, P.crouch], [.6, P.cheer]])(lt), lift: 50 * pulse(lt, .4, .6), shadow: false }, lt); // герой вдали
+// тем временем: клон 1 проживает пропущенный прыжок через ту же пропасть
+const B4 = shot(2.6, lt => { setCamP(K([[0, 1420], [.75, 1500], [1.4, 2330, 'io'], [2.6, 2400]])(lt), 820, 1.2); drawPano();
+  ctx.save(); ctx.fillStyle = 'rgba(60,40,90,.14)'; ctx.fillRect(0, 0, PW, H); ctx.restore();
   let st;
-  if (lt < .3) st = { x: 470, y: g0(470), s: H1, pose: K([[0, P.reachUp], [.3, P.crouch, 'out']])(lt) };
-  else if (lt < .7) { const g = runner(lt, .3, 470, H1, 1, 2.4, RUN); st = { x: Math.min(g.x, 600), y: g0(Math.min(g.x, 600)), s: H1, pose: g.x < 590 ? g.pose : P.takeoff }; }
-  else if (lt < 1.3) { const j = win(lt, .7, 1.3); st = { x: lerp(600, 840, j), y: lerp(g0(600), 1000, j), s: lerp(H1, .55, j), pose: P.tuck, lift: 380 * Math.sin(j * Math.PI * .85) - 40 * j, emo: '!', emoK: win(lt, .8, .9) }; }
-  else if (lt < 1.9) st = { x: 840, y: 1000 + 85, s: .55, pose: K([[1.3, P.hang], [1.55, P.hang], [1.9, P.scramble]])(lt), shadow: false };
-  else st = { x: K([[1.9, 850], [2.5, 870]])(lt), y: 997, s: .55, pose: K([[1.9, P.crouch], [2.1, P.stand, 'out'], [2.3, { ...P.angry }]])(lt), emo: lt > 2.2 ? 'anger' : null, emoK: win(lt, 2.2, 2.35) };
-  drawStick(G(0, { ...st, face: lt < 2.1 ? 'neutral' : 'angry' }), lt);
-  if (lt > 1.3 && lt < 1.6) accent(840, 1000, win(lt, 1.3, 1.6), .5);
-}, [[.35, 'step', { gain: .3 }], [.5, 'step', { gain: .3 }], [.65, 'step', { gain: .3 }], [.7, 'boing', { dur: .3, gain: .3, pitch: 1.4 }], [1.3, 'bonk', { gain: .6 }], [1.6, 'skid', { dur: .3, gain: .25, pitch: .5 }], [2.2, 'wah', { dur: .3, gain: .3, pitch: .55 }]]);
+  if (lt < .35) st = { x: K([[0, 1350], [.35, 1300]])(lt), y: gL(1350), s: HP, pose: K([[0, P.reachUp], [.35, P.crouch, 'out']])(lt) };
+  else if (lt < .75) { const g = runner(lt, .35, 1300, HP, 1, 2.4, RUN); st = { x: Math.min(g.x, 1440), y: gL(1440), s: HP, pose: g.x < 1430 ? g.pose : P.takeoff }; }
+  else if (lt < 1.4) { const j = win(lt, .75, 1.4); st = { x: lerp(1440, 2425, j), y: lerp(gL(1440), gR + 200, j * j), s: HP, pose: P.tuck, lift: 330 * Math.sin(j * Math.PI * .9), shadow: false, emo: '!', emoK: win(lt, .85, .95) }; }
+  else if (lt < 2.0) st = { x: 2440, y: gR + 300 * (1 - E.out(win(lt, 1.5, 2.0))) + 0, s: HP, pose: K([[1.4, P.hang], [1.6, P.hang], [2.0, P.scramble]])(lt), shadow: false, clip: true };
+  else st = { x: K([[2.0, 2450], [2.6, 2470]])(lt), y: gR, s: HP, pose: K([[2.0, P.crouch], [2.2, P.stand, 'out'], [2.4, P.angry]])(lt), emo: lt > 2.3 ? 'anger' : null, emoK: win(lt, 2.3, 2.45) };
+  if (st.clip) { ctx.save(); ctx.beginPath(); ctx.rect(0, 0, PW, gR + 2); ctx.rect(0, 0, 2425, H); ctx.clip(); }
+  drawStick(G(0, { ...st, face: lt < 2.2 ? 'neutral' : 'angry' }), lt);
+  if (st.clip) ctx.restore();
+  if (lt > 1.4 && lt < 1.7) { accent(2430, gR, win(lt, 1.4, 1.7), .6); stones(2428, gR + 5, win(lt, 1.4, 2.3), 4, 30, 500, .7, 23); }
+}, [[.4, 'step', { gain: .3 }], [.55, 'step', { gain: .3 }], [.7, 'step', { gain: .3 }], [.75, 'boing', { dur: .3, gain: .3, pitch: 1.4 }], [1.4, 'bonk', { gain: .6 }], [1.65, 'skid', { dur: .3, gain: .25, pitch: .5 }], [2.3, 'wah', { dur: .3, gain: .3, pitch: .55 }]]);
 // клон вылезает за спиной героя — двойной взгляд
-const B5 = shot(1.7, lt => { setCam(720, 900, 1.3); drawBG('bg3');
+const B5 = shot(1.7, lt => { setCamP(2600, 680, 1.4); drawPano();
   const up = E.out(win(lt, .15, .7));
-  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, 982); ctx.clip();
-  if (lt < .75) drawStick(G(0, { x: 600, y: 982 + lerp(330, 0, up), s: 1.05, pose: lt < .45 ? P.hang : P.scramble, shadow: false, face: 'angry' }), lt);
-  ctx.restore();
-  if (lt >= .75) drawStick(G(0, { x: K([[.75, 610], [1.7, 650]])(lt), y: 985, s: 1.05, pose: K([[.75, P.crouch], [.95, P.angry, 'out']])(lt), face: 'angry', emo: 'anger', emoK: win(lt, .95, 1.1) }), lt);
-  drawStick({ x: 800, y: 985, s: 1.05, pose: K([[0, P.cheer], [.25, P.crouch], [.45, P.cheer], [1.05, P.cheer], [1.2, P.recoil, 'back']])(lt), lift: 60 * pulse(lt, .25, .45), f: lt > 1.1 ? -1 : 1, face: lt < 1.1 ? 'happy' : 'surprised', emo: lt > 1.15 ? '!' : null, emoK: win(lt, 1.15, 1.3) }, lt);
+  if (lt < .75) { ctx.save(); ctx.beginPath(); ctx.rect(0, 0, PW, gR + 2); ctx.clip(); drawStick(G(0, { x: 2445, y: gR + lerp(300, 0, up), s: HP, pose: lt < .45 ? P.hang : P.scramble, shadow: false, face: 'angry' }), lt); ctx.restore(); }
+  else drawStick(G(0, { x: K([[.75, 2460], [1.7, 2510]])(lt), y: gR, s: HP, pose: K([[.75, P.crouch], [.95, P.angry, 'out']])(lt), face: 'angry', emo: 'anger', emoK: win(lt, .95, 1.1) }), lt);
+  drawStick({ x: 2680, y: gR, s: HP, pose: K([[0, P.cheer], [.25, P.crouch], [.45, P.cheer], [1.05, P.cheer], [1.2, P.recoil, 'back']])(lt), lift: 60 * pulse(lt, .25, .45), f: lt > 1.1 ? -1 : 1, face: lt < 1.1 ? 'happy' : 'surprised', emo: lt > 1.15 ? '!' : null, emoK: win(lt, 1.15, 1.3) }, lt);
 }, [[.2, 'skid', { dur: .25, gain: .3, pitch: .5 }], [1.15, 'boing', { dur: .3, gain: .3, pitch: 2.2 }]]);
-shot(0.9, lt => { setCam(705, 860, 1.9); drawBG('bg3');
-  drawStick(G(0, { x: 650, y: 985, s: 1.05, pose: K([[0, P.angry], [.2, P.point, 'back']])(lt), face: 'angry' }), lt);
-  drawStick({ x: 800, y: 985, s: 1.05, pose: tremble(P.scared, 2), f: -1, face: 'scared', emo: 'sweat', emoK: win(lt, .3, .45) }, lt);
+shot(0.9, lt => { setCamP(2590, 560, 2.0); drawPano();
+  drawStick(G(0, { x: 2510, y: gR, s: HP, pose: K([[0, P.angry], [.2, P.point, 'back']])(lt), face: 'angry' }), lt);
+  drawStick({ x: 2680, y: gR, s: HP, pose: tremble(P.scared, 2), f: -1, face: 'scared', emo: 'sweat', emoK: win(lt, .3, .45) }, lt);
 }, [[.25, 'pop', { gain: .2, pitch: .5 }]]);
 
 // ═══ В. НАКОВАЛЬНЯ: тень → падение → попытка → пропуск → тяжёлый удар ═══
@@ -527,12 +530,12 @@ shot(0.5, lt => { setCam(450, 1080, 2.3); drawBG('bg5');
 shot(1.0, lt => { setCam(540, 520, 1.45); drawBG('bg4'); // снизу: огромная наковальня
   const k = win(lt, 0, 1.0); ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.65)'; ctx.lineWidth = 6;
   for (let i = -3; i <= 3; i++) { ctx.beginPath(); ctx.moveTo(540 + i * 70, 330 - 150 * k); ctx.lineTo(540 + i * 70 * (1 + k), 120 - 260 * k); ctx.stroke(); } ctx.restore();
-  drawAnvil(540, 620 + 60 * k, lerp(.55, 2.0, E.in2(k)), -6 + 8 * k);
+  drawAnvil(540, 620 + 60 * k, lerp(.55, 2.0, E.in2(k)), -6 + 8 * k, 'below');
 });
 const heroPanicC = lt => ({ x: K([[0, 448], [.25, 480, 'out'], [.45, 470], [.75, 500, 'out']])(lt), y: gy5, s: 1.25, pose: K([[0, tremble(P.scared, 4)], [.2, t => runPh(t * 2.6, 34, 'panic')], [.45, P.slip, 'out'], [.6, P.reachUp, 'out'], [.75, P.press, 'out']])(lt), face: 'panic', emo: 'sweat', emoK: 1 });
 shot(0.9, lt => { setCam(470, 1230, 1.6); drawBG('bg5'); // пытается бежать, спотыкается, тянется к кнопке
   anvShadow(445, 1); ctx.fillStyle = `rgba(20,10,40,${.35})`; ctx.fillRect(0, 0, W, H);
-  drawAnvil(440, lerp(520, 900, E.in2(win(lt, .2, .9))), 1.15, -6);
+  drawAnvil(440, lerp(520, 900, E.in2(win(lt, .2, .9))), 1.15, -6, 'falling');
   drawStick(heroPanicC(lt), lt);
   btn(590, 1000, btnScale(lt, .2, .75, .9) * .55, { flash: lt > .75 });
 }, [[.2, 'bloop', { gain: .5 }], [.45, 'skid', { dur: .2, gain: .3, pitch: .8 }], [.75, 'click', { gain: .85 }]]);
@@ -545,8 +548,8 @@ const C6 = shot(2.3, lt => { setCam(500, 1180, 1.12); drawBG('bg5');
   if (!landed) drawStick(G(1, { x: lerp(470, 430, win(lt, .05, hit)), y: gy5, s: 1.25, pose: K([[0, P.press], [.15, P.dodge, 'out']])(lt), lift: 60 * win(lt, .15, hit), alpha: .9 * E.out(win(lt, 0, .1)), face: 'panic' }), lt);
   else drawStick(G(1, { x: 300, y: gy5 + 3, s: 1.25, pose: P.splat, sq: lerp(.12, .16, pulse(lt, hit, hit + .25)), shadow: false, rot: 0 }), lt);
   const ay = landed ? gy5 + 10 : lerp(700, gy5 + 10, E.in2(win(lt, 0, hit)));
-  ctx.save(); if (landed && lt < hit + .07) { ctx.translate(440, ay); ctx.scale(1.08, .9); ctx.translate(-440, -ay); } drawAnvil(440, ay, 1.15, 0); ctx.restore();
-  if (landed) { cloudPuff(440, gy5 + 12, win(lt, hit, hit + .9), 1.05); debris(440, gy5 - 40, win(lt, hit, hit + .8), 1, 3); stones(440, gy5 - 20, win(lt, hit, hit + 1.0), 6, 200, 120, 1, 17); accent(440, gy5 - 130, win(lt, hit, hit + .3), 1.3); }
+  ctx.save(); if (landed && lt < hit + .07) { ctx.translate(440, ay); ctx.scale(1.08, .9); ctx.translate(-440, -ay); } drawAnvil(440, ay, 1.15, 0, landed ? 'landed' : 'falling'); ctx.restore();
+  if (landed) { cloudPuff(440, gy5 + 12, win(lt, hit, hit + .9), .75); debris(440, gy5 - 40, win(lt, hit, hit + .8), 1, 3); stones(440, gy5 - 20, win(lt, hit, hit + 1.0), 6, 200, 120, 1, 17); accent(440, gy5 - 130, win(lt, hit, hit + .3), 1.3); }
   // оригинал — вынесен вправо, вздрагивает от удара
   const hd = l => l < .28 ? { x: lerp(500, 740, E.out(win(l, 0, .28))), y: gy5, s: 1.25, pose: P.run } : null;
   afterimages(hd, lt, 4, .04); const h = hd(lt);
@@ -559,7 +562,7 @@ const C6 = shot(2.3, lt => { setCam(500, 1180, 1.12); drawBG('bg5');
   hud(lt, 0, 5, .9, REVERSE);
 }, [[0, 'ff', { dur: .35, gain: .5 }], [0, 'glitch', { dur: .2, gain: .35 }], [.38, 'thud', { dur: .9, gain: 1.0 }], [.39, 'boom', { dur: .8, gain: .5, pitch: 1.4 }], [.45, 'tick', { gain: .25, pitch: .5 }], [.6, 'tick', { gain: .2, pitch: .45 }]]);
 const C7 = shot(1.8, lt => { setCam(470, 1250, 1.3); drawBG('bg5'); // «блин» отлипает, оба злые, погоня начинается
-  drawAnvil(440, gy5 + 10, 1.15);
+  drawAnvil(440, gy5 + 10, 1.15, 0, 'landed');
   const peel = E.back(win(lt, .2, .7));
   drawStick(G(1, { x: lerp(300, 290, win(lt, .2, .7)), y: gy5, s: 1.25, pose: lt < .7 ? P.splat : P.angry, sq: lerp(.12, 1, peel), face: lt < 1.0 ? 'dizzy' : 'angry', emo: lt < 1.0 ? 'stars' : 'anger', emoK: lt < 1.0 ? win(lt, .7, .8) : win(lt, 1.0, 1.15) }), lt);
   drawStick(G(0, { x: 150, y: gy5, s: 1.25, pose: K([[0, P.fear], [.8, P.angry]])(lt), face: lt < .8 ? 'scared' : 'angry', emo: 'anger', emoK: win(lt, 1.05, 1.2) }), lt);
@@ -583,7 +586,7 @@ const tracking = (lt, d, mir, pressAt, extra) => { const cx = lerp(270, 810, win
   btn(g.x + 90, 960, btnScale(lt, pressAt - .35, pressAt, pressAt + .1) * .5, { flash: lt > pressAt });
   pulseRing(g.x + 90, 960, win(lt, pressAt, pressAt + .3)); if (extra) extra(lt);
   const k = win(lt, pressAt, pressAt + .2); if (k > 0 && k < 1) skipFX(Math.sin(k * Math.PI) * .7, lt + pressAt, false); };
-shot(1.0, lt => tracking(lt, 1.0, false, .7), [[.35, 'bloop', { gain: .35, pitch: 1.2 }], [.7, 'click', { gain: .75 }], [.72, 'glitch', { dur: .15, gain: .35 }], ...stepCues(1.0)]);
+shot(0.85, lt => tracking(lt, .85, false, .6), [[.35, 'bloop', { gain: .35, pitch: 1.2 }], [.7, 'click', { gain: .75 }], [.72, 'glitch', { dur: .15, gain: .35 }], ...stepCues(1.0)]);
 const D3 = shot(2.3, lt => { setCam(540, 1150, 1.0, true); drawBG('bg1', true); // клон 3 возникает в точке пропуска, рывками врезается в клона 1
   const h = passer(lt, { ts: 0, x0: 250, s: 1.2, freq: 2.0, posePh: LOOKBACK });
   pulseRing(380, 1180, win(lt, 0, .4));
@@ -611,7 +614,7 @@ const D5 = shot(2.4, lt => { setCam(540, 1150, 1.0); drawBG('bg1'); // каме�
   if (c4) drawStick(G(3, { ...c4, face: c4.rot ? 'dizzy' : 'angry', alpha: .9 * E.out(win(lt, .1, .25)) }), lt);
   if (h) drawStick({ ...h, face: 'panic' }, lt);
 }, [...stepCues(2.4), [1.05, 'bonk', { gain: .8 }], [1.6, 'boing', { dur: .3, gain: .3 }], [1.9, 'glitch', { dur: .15, gain: .25 }]]);
-const D6 = shot(1.0, lt => tracking(lt, 1.0, false, .65, l => { if (l > .75) { drawStick(G(4, { x: lerp(560, 1100, E.in(win(l, .75, .95))), y: gy1, s: 1.15, pose: P.run, glitch: 1, alpha: .9 * (1 - win(l, .85, .95)) }), l); } }),
+const D6 = shot(0.85, lt => tracking(lt, .85, false, .55, l => { if (l > .75) { drawStick(G(4, { x: lerp(560, 1100, E.in(win(l, .75, .95))), y: gy1, s: 1.15, pose: P.run, glitch: 1, alpha: .9 * (1 - win(l, .85, .95)) }), l); } }),
   [[.3, 'bloop', { gain: .35, pitch: 1.2 }], [.65, 'click', { gain: .75 }], [.78, 'ff', { dur: .2, gain: .4 }], ...stepCues(1.0)]);
 // клон 5 перехватывает впереди: герой резко тормозит, чуть не падает с края, уворачивается, жмёт ещё раз → клон 6
 const D7 = shot(2.4, lt => { setCam(500, 1180, 1.12); drawBG('bg5');
@@ -644,47 +647,48 @@ const D9 = shot(2.4, lt => { setCam(lerp(540, 600, win(lt, 0, 2.4)), 1140, lerp(
   if (h) { speedLines(h.x - 60, gy1 - 240, 220, lt); drawStick({ ...h, face: 'panic', emo: 'sweat', emoK: 1 }, lt); }
 }, [...stepCues(2.4, .15, .3), [.9, 'skid', { dur: .25, gain: .3, pitch: .6 }], [1.4, 'bonk', { gain: .5 }], [.75, 'glitch', { dur: .1, gain: .2 }], [1.75, 'glitch', { dur: .1, gain: .2 }]]);
 
-// ═══ Д. ТУПИК: ждём нападения — получаем предложение ═══
-shot(1.2, lt => { setCam(700, 1020, 1.45, true); drawBG('bg5', true);
-  const g = runner(Math.min(lt, .22), 0, 520, 1.25, 1, 2.4, PANIC), x = lt < .22 ? g.x : K([[.22, g.x], [.3, 845, 'out'], [.5, 820, 'out']])(lt);
-  drawStick({ x, y: gyW, s: 1.25, pose: K([[0, g.pose], [.22, g.pose], [.27, P.bonk, 'out'], [.6, P.bonk], [.9, tremble(P.fear, 3)]])(lt), f: lt > .6 ? -1 : 1, sq: 1 - .18 * pulse(lt, .25, .4), face: lt < .6 ? 'dizzy' : 'panic', emo: lt < .6 ? 'stars' : 'sweat', emoK: win(lt, .27, .4) }, lt);
-  if (lt > .25) accent(875, 790, win(lt, .25, .6), 1);
+// ═══ Д. ТУПИК (bg6): ждём нападения — получаем предложение ═══
+const gyD = 1400, HX = 845;
+shot(1.2, lt => { setCam(700, 1150, 1.3); drawBG('bg6');
+  const g = runner(Math.min(lt, .22), 0, 420, 1.25, 1, 2.4, PANIC), x = lt < .22 ? g.x : K([[.22, g.x], [.3, 880, 'out'], [.5, HX, 'out']])(lt);
+  drawStick({ x, y: gyD, s: 1.25, pose: K([[0, g.pose], [.22, g.pose], [.27, P.bonk, 'out'], [.6, P.bonk], [.9, tremble(P.fear, 3)]])(lt), f: lt > .6 ? -1 : 1, sq: 1 - .18 * pulse(lt, .25, .4), face: lt < .6 ? 'dizzy' : 'panic', emo: lt < .6 ? 'stars' : 'sweat', emoK: win(lt, .27, .4) }, lt);
+  if (lt > .25) accent(925, 1130, win(lt, .25, .6), 1);
 }, [[.27, 'bonk', { gain: .8 }]]);
-const RING = [[470, 1110, 1.5, 0], [600, 1150, 1.62, 1], [340, 1160, 1.62, 2], [420, 1040, 1.3, 3], [560, 1050, 1.3, 4], [290, 1060, 1.3, 5]];
-const E2 = shot(1.8, lt => { setCam(lerp(640, 700, win(lt, 0, 1.8)), 1020, lerp(1.2, 1.45, E.io(win(lt, 0, 1.8))), true); drawBG('bg5', true);
-  drawStick({ x: 820, y: gyW, s: 1.25, pose: tremble(P.fear, 3), f: -1, face: 'panic', emo: 'sweat', emoK: 1 }, lt);
+const RING = [[520, 1470, 1.45, 0], [660, 1510, 1.55, 1], [370, 1520, 1.55, 2], [450, 1390, 1.2, 3], [600, 1400, 1.2, 4], [310, 1405, 1.2, 5]];
+const E2 = shot(1.8, lt => { setCam(lerp(620, 700, win(lt, 0, 1.8)), lerp(1250, 1200, win(lt, 0, 1.8)), lerp(1.1, 1.35, E.io(win(lt, 0, 1.8)))); drawBG('bg6');
+  drawStick({ x: HX, y: gyD, s: 1.25, pose: tremble(P.fear, 3), f: -1, face: 'panic', emo: 'sweat', emoK: 1 }, lt);
   [5, 3, 4, 2, 1, 0].forEach(i => { const [x, y, s] = RING[i], t0 = i * .12, k = E.out(win(lt, t0, t0 + .7));
-    const how = i === 4 ? { x: x, glitch: lt < t0 + .3 ? 1 : 0, alpha: .9 * win(lt, t0, t0 + .2) } : i === 1 ? { x: lerp(x - 260, x, k), pose: lt < t0 + .7 ? P.backRun : P.angry, f: lt < t0 + .7 ? -1 : 1 } : { x: lerp(x - 320, x, k), pose: lt < t0 + .7 ? P.run : P.angry };
+    const how = i === 4 ? { x, glitch: lt < t0 + .3 ? 1 : 0, alpha: .9 * win(lt, t0, t0 + .2) } : i === 1 ? { x: lerp(x - 260, x, k), pose: lt < t0 + .7 ? P.backRun : P.angry, f: lt < t0 + .7 ? -1 : 1 } : { x: lerp(x - 320, x, k), pose: lt < t0 + .7 ? P.run : P.angry };
     drawStick(G(i, { y, s, pose: P.angry, face: 'angry', ...how }), lt); });
 }, [...stepCues(.9, .15, .22), [.5, 'glitch', { dur: .15, gain: .25 }], [.9, 'drone', { dur: 5.0, gain: .5 }]]);
-shot(1.0, lt => { setCam(540, 700, 1.25); drawBG('bg4'); ctx.fillStyle = 'rgba(30,15,50,.3)'; ctx.fillRect(0, 0, W, H);
-  const k = E.out(win(lt, 0, 1.0));
+shot(0.8, lt => { setCam(540, 700, 1.25); drawBG('bg4'); ctx.fillStyle = 'rgba(30,15,50,.3)'; ctx.fillRect(0, 0, W, H);
+  const k = E.out(win(lt, 0, .8));
   [[60, 1700, -25], [300, 1850, -8], [560, 1880, 4], [820, 1830, 14], [1040, 1700, 26], [180, 1420, -30]].forEach(([x, y, r], i) => { ctx.save(); ctx.translate(540 + (x - 540) * (1.25 - .25 * k), y + 120 * (1 - k)); ctx.rotate(r * D2R);
     drawStick(G(i, { x: 0, y: 0, s: 3.4, pose: { ...P.angry, h: 25 }, f: x < 540 ? 1 : -1, face: 'angry', shadow: false }), lt); ctx.restore(); });
 });
-shot(0.9, lt => { setCam(790, 880, 2.2, true); drawBG('bg5', true);
-  drawStick({ x: 820, y: gyW, s: 1.25, pose: tremble(P.fear, 4), f: -1, face: 'panic', emo: 'sweat', emoK: 1 }, lt);
+shot(0.9, lt => { setCam(810, 1180, 2.2); drawBG('bg6');
+  drawStick({ x: HX, y: gyD, s: 1.25, pose: tremble(P.fear, 4), f: -1, face: 'panic', emo: 'sweat', emoK: 1 }, lt);
 });
-shot(1.4, lt => { setCam(600, 930, 1.75, true); drawBG('bg5', true); // клон протягивает −5, остальные переглядываются
-  drawStick(G(2, { x: 340, y: 1160, s: 1.62, pose: P.angry, f: lt > .8 && lt < 1.2 ? -1 : 1, face: lt > .8 ? 'suspicious' : 'angry' }), lt);
-  drawStick(G(1, { x: 600, y: 1150, s: 1.62, pose: P.angry, f: lt > .85 && lt < 1.2 ? -1 : 1, face: lt > .85 ? 'suspicious' : 'angry' }), lt);
-  drawStick(G(0, { x: 470, y: 1110, s: 1.5, pose: K([[0, P.angry], [.3, P.hold, 'back']])(lt), face: lt < .3 ? 'angry' : 'neutral' }), lt);
-  drawButton(705, 900, btnScale(lt, .3, null, 99) * .75, '−5 SEC', true);
-  pulseRing(705, 900, win(lt, .3, .7));
+shot(1.4, lt => { setCam(620, 1220, 1.7); drawBG('bg6'); // клон протягивает −5, остальные переглядываются
+  drawStick(G(2, { x: 370, y: 1520, s: 1.55, pose: P.angry, f: lt > .8 && lt < 1.2 ? -1 : 1, face: lt > .8 ? 'suspicious' : 'angry' }), lt);
+  drawStick(G(1, { x: 660, y: 1510, s: 1.55, pose: P.angry, f: lt > .85 && lt < 1.2 ? -1 : 1, face: lt > .85 ? 'suspicious' : 'angry' }), lt);
+  drawStick(G(0, { x: 520, y: 1470, s: 1.45, pose: K([[0, P.angry], [.3, P.hold, 'back']])(lt), face: lt < .3 ? 'angry' : 'neutral' }), lt);
+  drawButton(745, 1250, btnScale(lt, .3, null, 99) * .72, '−5 SEC', true);
+  pulseRing(745, 1250, win(lt, .3, .7));
 }, [[.3, 'pop', { gain: .55 }], [.85, 'tick', { gain: .25 }], [1.0, 'tick', { gain: .25, pitch: .8 }]]);
-shot(0.8, lt => { setCam(780, 860, 2.0, true); drawBG('bg5', true);
-  drawStick({ x: 820, y: gyW, s: 1.25, pose: K([[0, P.fear], [.25, P.peek, 'out'], [.55, P.surprised]])(lt), f: -1, face: lt < .3 ? 'panic' : 'surprised', emo: '?', emoK: win(lt, .3, .45) }, lt);
+shot(0.8, lt => { setCam(820, 1150, 2.0); drawBG('bg6');
+  drawStick({ x: HX, y: gyD, s: 1.25, pose: K([[0, P.fear], [.25, P.peek, 'out'], [.55, P.surprised]])(lt), f: -1, face: lt < .3 ? 'panic' : 'surprised', emo: '?', emoK: win(lt, .3, .45) }, lt);
 }, [[.3, 'boing', { dur: .2, pitch: 2.4, gain: .22 }]]);
-const E8 = shot(1.5, lt => { setCam(640, 1000, 1.5, true); drawBG('bg5', true);
-  [[430, 1130, 1.25, -1, 0], [520, 1090, 1.05, 0, 1], [560, 1150, 1.3, 1, 2]].forEach(([x, y, s, j, i]) => drawStick(G(i, { x: x + 30 * j * E.out(win(lt, .1, .6)), y, s, pose: K([[0, P.angry], [.5, P.reachIn, 'out']])(lt), face: 'neutral' }), lt + i));
-  drawStick({ x: 830, y: gyW, s: 1.25, pose: tremble(P.surprised, 2), f: -1, face: 'surprised', emo: '!?', emoK: 1 }, lt);
-  drawButton(690, 930, .75 * (1 - .25 * pulse(lt, 1.2, 1.45)), '−5 SEC', true, { flash: lt > 1.25 });
-  if (lt > 1.25) drawBurst(690, 930, win(lt, 1.25, 1.5), '#fff', 14, 80, 30);
+const E8 = shot(1.5, lt => { setCam(660, 1250, 1.45); drawBG('bg6');
+  [[450, 1470, 1.25, -1, 0], [540, 1430, 1.05, 0, 1], [590, 1500, 1.3, 1, 2]].forEach(([x, y, s, j, i]) => drawStick(G(i, { x: x + 30 * j * E.out(win(lt, .1, .6)), y, s, pose: K([[0, P.angry], [.5, P.reachIn, 'out']])(lt), face: 'neutral' }), lt + i));
+  drawStick({ x: HX, y: gyD, s: 1.25, pose: tremble(P.surprised, 2), f: -1, face: 'surprised', emo: '!?', emoK: 1 }, lt);
+  drawButton(720, 1270, .72 * (1 - .25 * pulse(lt, 1.2, 1.45)), '−5 SEC', true, { flash: lt > 1.25 });
+  if (lt > 1.25) drawBurst(720, 1270, win(lt, 1.25, 1.5), '#fff', 14, 80, 30);
   flash(.8 * pulse(lt, 1.25, 1.45));
 }, [[1.25, 'click', { gain: .9, pitch: .8 }], [1.28, 'boom', { dur: 1.2, gain: .75 }]]);
 
 // ═══ Е. ПЕРЕМОТКА: мир откатывается назад событие за событием ═══
-shot(1.0, lt => { setCam(640, 1000, 1.5, true); drawBG('bg5', true); bigClock(-lt * 16, E.out(win(lt, 0, .3)), .8 + .35 * E.out(win(lt, 0, 1))); skipFX(.4, lt + 50, true); }, [[0, 'rewind', { dur: 7.2, gain: .7 }]]);
+shot(1.0, lt => { setCam(660, 1250, 1.45); drawBG('bg6'); bigClock(-lt * 16, E.out(win(lt, 0, .3)), .8 + .35 * E.out(win(lt, 0, 1))); skipFX(.4, lt + 50, true); }, [[0, 'rewind', { dur: 7.2, gain: .7 }]]);
 rshot(.6, E2, 1.8);
 rshot(.75, D9, 2.4);
 rshot(.75, D5, 2.4, 2.4, 0, [[.6, 'pop', { gain: .35, pitch: 1.4 }]]);
@@ -692,34 +696,35 @@ rshot(.7, D3, 2.3, 2.3, 0, [[.6, 'pop', { gain: .35, pitch: 1.3 }]]);
 rshot(1.0, C6, 2.3, 2.3, 0, [[.7, 'pop', { gain: .45, pitch: 1.2 }]]);
 rshot(.9, B4, 2.5);
 rshot(.5, B1, .9, .9, 0, [[.4, 'pop', { gain: .45, pitch: 1.1 }]]);
-rshot(.55, A1, 2.2, 1.0, 0);
-shot(0.5, lt => { setCam(540, 980, 1.05); drawBG('bg0'); drawStick({ x: 120, y: g0(120), s: H1, pose: P.stand, face: 'neutral' }, lt);
-  pulseRing(160, 900, clamp(.4 + lt)); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = .4 * (1 - win(lt, 0, .5)); neonClock(540, 900, .9, 0); ctx.globalAlpha = 1; });
+rshot(.55, A1, 2.4, 1.1, 0);
+shot(0.5, lt => { setCamP(880, 800, 1.1); drawPano(); drawStick({ x: 990, y: gL(990), s: HP, pose: P.stand, face: 'neutral' }, lt);
+  pulseRing(1000, 600, clamp(.4 + lt)); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = .4 * (1 - win(lt, 0, .5)); neonClock(540, 900, .9, 0); ctx.globalAlpha = 1; });
 
 // ═══ Ж. ФИНАЛ: предложение → взгляд → отказ → реакция кнопки ═══
-shot(1.4, lt => { setCam(540, 980, 1.05); drawBG('bg0');
-  drawStick({ x: 120, y: g0(120), s: H1, pose: K([[0, P.stand], [.3, { ...P.stand, h: -15 }], [.6, { ...P.stand, h: 15 }], [.85, P.exhale], [1.4, P.exhale]])(lt), face: lt < .85 ? 'surprised' : 'relieved', emo: lt < .8 ? '?' : null, emoK: win(lt, .2, .35) }, lt);
-  if (lt > .85) drawPuff(190, g0(120) - 330, win(lt, .85, 1.35));
+const FX0 = 990, FY = gL(990);
+shot(1.3, lt => { setCamP(880, 800, 1.1); drawPano();
+  drawStick({ x: FX0, y: FY, s: HP, pose: K([[0, P.stand], [.3, { ...P.stand, h: -15 }], [.6, { ...P.stand, h: 15 }], [.85, P.exhale], [1.4, P.exhale]])(lt), face: lt < .85 ? 'surprised' : 'relieved', emo: lt < .8 ? '?' : null, emoK: win(lt, .2, .35) }, lt);
+  if (lt > .85) drawPuff(FX0 + 65, FY - 300, win(lt, .85, 1.35));
 }, [[.9, 'puff', { dur: .55, gain: .4 }]]);
-shot(1.0, lt => { setCam(230, 930, 1.75); drawBG('bg0');
-  drawStick({ x: 140, y: g0(140), s: H1, pose: K([[0, P.exhale], [.3, { ...P.stand, h: -20 }]])(lt), face: lt < .3 ? 'relieved' : 'suspicious', emo: '...', emoK: win(lt, .45, .6) }, lt);
-  crackFX(290, 760, win(lt, .05, .3)); btn(290, 760, btnScale(lt, .1, null, 99) * .5);
+shot(1.0, lt => { setCamP(1080, 620, 1.75); drawPano();
+  drawStick({ x: FX0, y: FY, s: HP, pose: K([[0, P.exhale], [.3, { ...P.stand, h: -20 }]])(lt), face: lt < .3 ? 'relieved' : 'suspicious', emo: '...', emoK: win(lt, .45, .6) }, lt);
+  crackFX(1140, 440, win(lt, .05, .3)); btn(1140, 440, btnScale(lt, .1, null, 99) * .48);
 }, [[.1, 'bloop', { gain: .5 }]]);
-shot(1.0, lt => { setCam(220, 830, 2.3); drawBG('bg0'); // взгляд на кнопку → в камеру, пауза
-  drawStick({ x: 140, y: g0(140), s: H1, pose: { ...P.stand, h: lt < .4 ? -20 : 0 }, face: 'annoyed', look: lt > .4 ? 'cam' : null }, lt);
-  btn(300, 760, .5);
+shot(1.0, lt => { setCamP(1060, 520, 2.3); drawPano(); // взгляд на кнопку → в камеру, пауза
+  drawStick({ x: FX0, y: FY, s: HP, pose: { ...P.stand, h: lt < .4 ? -20 : 0 }, face: 'annoyed', look: lt > .4 ? 'cam' : null }, lt);
+  btn(1140, 440, .48);
 });
-shot(1.2, lt => { setCam(220, 830, 2.3); drawBG('bg0');
-  drawStick({ x: 140, y: g0(140), s: H1, pose: K([[0, P.stand], [.25, P.raise, 'back']])(lt), face: 'annoyed', look: 'cam', finger: E.back(win(lt, .25, .45)) }, lt);
-  btn(300, 760, .5 * (1 + .04 * pulse(lt, .5, .7)));
+shot(1.2, lt => { setCamP(1060, 520, 2.3); drawPano();
+  drawStick({ x: FX0, y: FY, s: HP, pose: K([[0, P.stand], [.25, P.raise, 'back']])(lt), face: 'annoyed', look: 'cam', finger: E.back(win(lt, .25, .45)) }, lt);
+  btn(1140, 440, .48 * (1 + .04 * pulse(lt, .5, .7)));
 }, [[.3, 'pop', { gain: .35, pitch: .7 }]]);
-shot(1.4, lt => { setCam(240, 820, 2.0); drawBG('bg0'); // кнопка обижается: дрожит, теряет надпись, пустой контур, рассыпается
-  drawStick({ x: 140, y: g0(140), s: H1, pose: P.raise, face: 'annoyed', look: 'cam', finger: 1 }, lt);
-  const bx = 300, by = 760, wr = win(lt, 0, .45);
-  if (lt < .45) drawButton(bx + Math.sin(lt * 70) * 6 * wr, by + 30 * wr, .5 * (1 - .25 * wr), '+5 SEC', false, { sy: 1 - .2 * wr, rot: -10 * wr });
-  else if (lt < .85) { ctx.save(); ctx.globalAlpha = 1 - .3 * win(lt, .7, .85); drawButton(bx, by + 30, .38, '+5 SEC', false, { dashed: true }); ctx.restore(); }
+shot(1.4, lt => { setCamP(1070, 520, 2.0); drawPano(); // кнопка обижается: дрожит, теряет надпись, пустой контур, рассыпается
+  drawStick({ x: FX0, y: FY, s: HP, pose: P.raise, face: 'annoyed', look: 'cam', finger: 1 }, lt);
+  const bx = 1140, by = 440, wr = win(lt, 0, .45);
+  if (lt < .45) drawButton(bx + Math.sin(lt * 70) * 6 * wr, by + 30 * wr, .48 * (1 - .25 * wr), '+5 SEC', false, { sy: 1 - .2 * wr, rot: -10 * wr });
+  else if (lt < .85) { ctx.save(); ctx.globalAlpha = 1 - .3 * win(lt, .7, .85); drawButton(bx, by + 30, .36, '+5 SEC', false, { dashed: true }); ctx.restore(); }
   else if (lt < 1.4) { const k = win(lt, .85, 1.4), r = mulberry(77); ctx.save(); ctx.fillStyle = RED; ctx.shadowColor = RED; ctx.shadowBlur = 12;
-    for (let i = 0; i < 40; i++) { const px = bx + (r() - .5) * 170, py = by + 30 + (r() - .5) * 60; ctx.globalAlpha = 1 - k; ctx.fillRect(px + (r() - .5) * 200 * k, py + 260 * k * k * r(), 9, 9); } ctx.restore(); }
+    for (let i = 0; i < 40; i++) { const px = bx + (r() - .5) * 160, py = by + 30 + (r() - .5) * 56; ctx.globalAlpha = 1 - k; ctx.fillRect(px + (r() - .5) * 200 * k, py + 260 * k * k * r(), 8, 8); } ctx.restore(); }
 }, [[0, 'wah', { dur: .45, gain: .5 }], [.85, 'glitch', { dur: .3, gain: .35, pitch: 1.6 }]]);
 shot(0.25, () => { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); });
 
@@ -729,7 +734,7 @@ window.CLONES = CLONES;
 function shotAt(T) { for (let i = SHOTS.length - 1; i >= 0; i--) if (T >= SHOTS[i][0]) return SHOTS[i]; return SHOTS[0]; }
 function drawFrame(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; REVERSE = false; shotAt(t)[2](t); if (t < CUR - .25) vignette(); }
 window.renderFrame = t => drawFrame(Math.min(t, CUR - 0.001));
-window.READY = Promise.all([BG_READY, document.fonts.load('900 54px Inter')]).then(() => drawFrame(0));
+window.READY = Promise.all([BG_READY, SPR_READY, document.fonts.load('900 54px Inter')]).then(() => drawFrame(0));
 </script>
 </body>
 </html>
