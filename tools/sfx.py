@@ -6,7 +6,7 @@
 cues.json — список событий:
     [{"t": 0.15, "type": "step", "gain": 0.6}, {"t": 3.6, "type": "ff", "dur": 0.8}, ...]
 
-Типы: step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
+Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom.
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
 
@@ -86,6 +86,11 @@ def lib_sound(c):
 def gen(c):
     ty, p = c["type"], c.get("pitch", 1.0)
     d = c.get("dur")
+    if ty == "note":  # нота с тембром маримбы: {"type": "note", "freq": 659.25}
+        d = d or 0.6
+        n = int(d * SR); t = np.arange(n) / SR; f = c.get("freq", 440.0) * p
+        x = np.sin(2 * np.pi * f * t) + 0.28 * np.sin(2 * np.pi * 4.0 * f * t) * np.exp(-t * 30) + 0.12 * np.sin(2 * np.pi * 10 * f * t) * np.exp(-t * 60)
+        return x * np.minimum(1, t / 0.002) * np.exp(-t * 6.5)
     if ty == "step":
         n = int(0.09 * SR)
         x = lowpass(noise(n), 0.08) * 3 + 0.6 * sweep(120 * p, 60 * p, 0.09)

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мотивация против отмазок</title>
+<!--
+  «Сможет ли мотивация пробить все отмазки?» — формат «выберется ли шарик» с бытовой темой.
+  1080×1920, 30 fps, 29.5 с. Физика: sim.js (режиссёрский режим — кольца ломаются по расписанию).
+-->
+<style>
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #08081a; }
+  canvas { display: block; }
+  .fw { position: absolute; left: -9999px; font: 900 40px 'Inter'; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div class="fw">Отмазок МОТИВАЦИЯ ДЕЛАЮ</div>
+<script src="sim.js"></script>
+<script>
+'use strict';
+const W = 1080, H = 1920, CX = 540, CY = 860, DUR = 29.5;
+window.SCENE = { duration: DUR, fps: 30, width: W, height: H };
+const ctx = document.getElementById('c').getContext('2d');
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k;
+const win = (t, a, b) => clamp((t - a) / (b - a)), pulse = (t, a, b) => Math.sin(win(t, a, b) * Math.PI);
+const E = { out: k => 1 - Math.pow(1 - k, 3), in: k => k * k * k, io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, back: k => { const c1 = 2.2, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); } };
+function mulberry(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+// ───────── физика ─────────
+const SCHEDULE = [0.9, 1.8, 2.8, 3.9, 5.4, 7.4, 9.6, 12.2, 15.2, 18.6, 22.0, 26.2];
+const SIM = simulate({ schedule: SCHEDULE, gap: .6, cx: CX, cy: CY, T: 30 });
+const RINGS = SIM.R, BREAKS = SIM.breaks.map(b => b.t), BOUNCES = SIM.bounces, NR = RINGS.length;
+const ESCAPE = BREAKS[NR - 1];
+const EXCUSES = ['Сначала кофе', 'Проверю телефон', 'Ещё одно видео', 'Неудобно сидеть', 'Надо убраться', 'Сначала поем',
+  'Нет настроения', 'Сделаю вечером', 'Я устал', 'Завтра будет время', 'Не идеально — не начну', 'Начну с понедельника'];
+const ringColor = (i, l = 62) => `hsl(${190 + i * 13}, 100%, ${l}%)`;
+function ballAt(t) {
+  if (t > ESCAPE + .25) { // после побега — режиссура: вылет вверх, затем в центр, ловушка «перерыв»
+    const p0 = ballSim(ESCAPE + .25);
+    if (t < 27.4) { const k = E.out(win(t, ESCAPE + .25, 27.4)); return { x: lerp(p0.x, 540, k), y: lerp(p0.y, 560, k) }; }
+    if (t < 28.2) { const k = E.io(win(t, 27.4, 28.2)); return { x: 540, y: lerp(560, CY, k) }; }
+    const b = Math.abs(Math.sin((t - 28.2) * 7)) * 120 * Math.exp(-(t - 28.2) * 1.2); return { x: 540 + 40 * Math.sin((t - 28.2) * 3), y: CY + 60 - b };
+  }
+  return ballSim(t);
+}
+function ballSim(t) { const f = clamp(t * 30, 0, SIM.frames.length - 2), i = Math.floor(f), k = f - i, a = SIM.frames[i], b = SIM.frames[i + 1]; return { x: lerp(a.x, b.x, k), y: lerp(a.y, b.y, k) }; }
+const lastBounce = (t, ring) => { let tb = -9; for (const b of BOUNCES) { if (b.t > t) break; if (b.ring === ring) tb = b.t; } return tb; };
+
+// ───────── рисование ─────────
+const STARS = (() => { const r = mulberry(3), a = []; for (let i = 0; i < 140; i++) a.push([r() * W, r() * H, r() * 2 + .5, r()]); return a; })();
+function background(t) {
+  const g = ctx.createRadialGradient(CX, CY, 100, CX, CY, 1300); g.addColorStop(0, '#1b1240'); g.addColorStop(.55, '#0d0b26'); g.addColorStop(1, '#050512');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  for (const [x, y, s, p] of STARS) { ctx.globalAlpha = .25 + .35 * Math.sin(t * 2 + p * 9) ** 2; ctx.fillStyle = '#cfd6ff'; ctx.fillRect(x, y, s, s); } ctx.globalAlpha = 1;
+}
+function curvedText(text, r, ang, size, color, alpha) { // подпись по дуге, центр в угле ang
+  ctx.save(); ctx.font = `800 ${size}px Inter`; ctx.fillStyle = color; ctx.globalAlpha = alpha; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const total = ctx.measureText(text).width / r; let a = ang - total / 2;
+  for (const ch of text) { const w = ctx.measureText(ch).width / r; ctx.save(); ctx.translate(CX + Math.cos(a + w / 2) * r, CY + Math.sin(a + w / 2) * r); ctx.rotate(a + w / 2 + Math.PI / 2); ctx.fillText(ch, 0, 0); ctx.restore(); a += w; }
+  ctx.restore(); }
+function drawRings(t) {
+  for (let i = NR - 1; i >= 0; i--) {
+    const R = RINGS[i], gapC = R.a + R.w * t, tb = BREAKS[i];
+    if (t >= tb) { shards(i, t - tb, tb); continue; }
+    const hit = Math.exp(-(t - lastBounce(t, i)) * 9), current = (i === 0 || t >= BREAKS[i - 1]);
+    ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = ringColor(i, 60 + 25 * hit); ctx.shadowColor = ringColor(i); ctx.shadowBlur = 18 + 30 * hit + (current ? 10 : 0);
+    ctx.lineWidth = SIM.P.thick + 4 * hit; ctx.globalAlpha = current ? 1 : .8;
+    ctx.beginPath(); ctx.arc(CX, CY, R.r, gapC + SIM.P.gap / 2, gapC - SIM.P.gap / 2 + Math.PI * 2); ctx.stroke(); ctx.restore();
+    curvedText(EXCUSES[i], R.r + (i === NR - 1 ? 26 : 13), gapC + Math.PI, i === NR - 1 ? 24 : 15, '#ffffff', current ? .95 : .45);
+  }
+}
+function shards(i, dt, tb) { // кольцо разлетается осколками
+  if (dt > 1.1) return; const R = RINGS[i], gapC = R.a + R.w * tb, r = mulberry(i * 31 + 7), n = 26;
+  ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = ringColor(i, 70); ctx.shadowColor = ringColor(i); ctx.shadowBlur = 20; ctx.lineWidth = SIM.P.thick; ctx.globalAlpha = 1 - dt / 1.1;
+  for (let j = 0; j < n; j++) { const a0 = gapC + SIM.P.gap / 2 + j / n * (Math.PI * 2 - SIM.P.gap), a1 = a0 + (Math.PI * 2 - SIM.P.gap) / n * .8, am = (a0 + a1) / 2;
+    const sp = 300 + r() * 700, rr = R.r + sp * dt, rot = (r() - .5) * 6 * dt;
+    ctx.beginPath(); ctx.arc(CX + Math.cos(am) * (rr - R.r), CY + Math.sin(am) * (rr - R.r) + 600 * dt * dt, R.r, a0 + rot, a1 + rot); ctx.stroke(); }
+  ctx.restore();
+  if (dt < .25) { ctx.save(); ctx.globalAlpha = (1 - dt / .25) * .5; ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(CX, CY, R.r + dt * 900, 0, Math.PI * 2); ctx.stroke(); ctx.restore(); }
+}
+function drawBall(t) {
+  const k = BREAKS.filter(b => b <= t).length, col = ringColor(Math.min(k, NR - 1), 70);
+  for (let i = 10; i >= 1; i--) { const p = ballAt(t - i / 60); ctx.globalAlpha = .35 * (1 - i / 11); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p.x, p.y, SIM.P.br * (1 - i / 14), 0, Math.PI * 2); ctx.fill(); }
+  ctx.globalAlpha = 1; const p = ballAt(t);
+  ctx.save(); ctx.shadowColor = col; ctx.shadowBlur = 40; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(p.x, p.y, SIM.P.br * (t > ESCAPE ? 1.3 : 1), 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  return p;
+}
+function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function text(s, x, y, size, color = '#fff', weight = 900, align = 'center', alpha = 1, sc = 1) {
+  ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.scale(sc, sc); ctx.font = `${weight} ${size}px Inter`; ctx.textAlign = align; ctx.textBaseline = 'middle';
+  ctx.lineWidth = size * .14; ctx.strokeStyle = 'rgba(5,4,20,.9)'; ctx.lineJoin = 'round'; ctx.strokeText(s, 0, 0); ctx.fillStyle = color; ctx.fillText(s, 0, 0); ctx.restore(); }
+function hud(t) {
+  // хук
+  if (t < 3.0) { const a = 1 - win(t, 2.6, 3.0), s = E.back(win(t, 0, .35));
+    text('Сможет ли', 500, 270, 64, '#fff', 800, 'center', a, s); text('МОТИВАЦИЯ', 500, 350, 96, '#7ef9ff', 900, 'center', a, s);
+    text('пробить все', 500, 430, 64, '#fff', 800, 'center', a, s); text('ОТМАЗКИ?', 500, 510, 96, '#ff6fae', 900, 'center', a, s);
+    const p = ballAt(t); ctx.save(); ctx.globalAlpha = a * win(t, .3, .6); ctx.strokeStyle = '#7ef9ff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(p.x + 30, p.y - 30); ctx.lineTo(p.x + 90, p.y - 90); ctx.stroke(); ctx.restore();
+    text('мотивация', p.x + 100, p.y - 112, 36, '#7ef9ff', 800, 'left', a * win(t, .3, .6));
+    return; }
+  if (t > ESCAPE + .3 && t < 28.2) return;
+  // карточка: сколько отмазок осталось и текущая
+  const k = t >= 28.2 ? NR - 1 : BREAKS.filter(b => b <= t).length, left = t >= 28.2 ? 1 : NR - k, a = win(t, 3.0, 3.3);
+  ctx.save(); ctx.globalAlpha = a * .9; ctx.fillStyle = 'rgba(12,8,36,.78)'; roundRect(100, 225, 800, 230, 34); ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 3; ctx.stroke(); ctx.restore();
+  const lastB = BREAKS.filter(b => b <= t).pop() || -9, bump = pulse(t, lastB, lastB + .3);
+  text(`ОТМАЗОК ОСТАЛОСЬ: ${left}`, 500, 285, 40, '#ffd46b', 900, 'center', a, 1 + .15 * bump);
+  const name = t >= 28.2 ? 'Перерыв 5 минут' : (k < NR ? EXCUSES[k] : ''), prev = k > 0 ? EXCUSES[k - 1] : null;
+  if (prev && t - lastB < .35 && t < 28.2) { // зачёркиваем пробитую
+    const kk = win(t, lastB, lastB + .2); text(`«${prev}»`, 500, 380, 58, '#ffffff', 900, 'center', a * (1 - win(t, lastB + .2, lastB + .35)));
+    ctx.save(); ctx.font = '900 58px Inter'; const w = ctx.measureText(`«${prev}»`).width; ctx.strokeStyle = '#ff3355'; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(500 - w / 2, 384); ctx.lineTo(500 - w / 2 + w * kk, 380); ctx.stroke(); ctx.restore();
+  } else if (name) text(`«${name}»`, 500, 380, name.length > 18 ? 50 : 58, t >= 28.2 ? '#ff8a3d' : '#ffffff', 900, 'center', a, E.back(win(t, lastB + .35, lastB + .6)) * .1 + .9);
+}
+function finale(t) {
+  if (t < ESCAPE) return;
+  const k = t - ESCAPE;
+  if (k < .5) { ctx.fillStyle = `rgba(255,255,255,${.6 * (1 - k / .5)})`; ctx.fillRect(0, 0, W, H); }
+  if (t > ESCAPE + .15 && t < 28.3) { const r = mulberry(5); for (let i = 0; i < 120; i++) { const vx = (r() - .5) * 1400, vy = -400 - r() * 900, tt = t - ESCAPE - .15, x = 540 + vx * tt, y = 760 + vy * tt + 900 * tt * tt;
+      ctx.fillStyle = `hsl(${r() * 360},100%,65%)`; ctx.save(); ctx.translate(x, y); ctx.rotate(tt * 8 + i); ctx.fillRect(-7, -4, 14, 8); ctx.restore(); }
+    const s = E.back(win(t, ESCAPE + .4, ESCAPE + .75)); text('ДЕЛАЮ!!!', 500, 360, 150, '#7dff9a', 900, 'center', 1 - win(t, 27.95, 28.2), s); }
+  if (t >= 28.0) { // ловушка «ПЕРЕРЫВ 5 МИНУТ»
+    const s = lerp(4.2, 1, E.out(win(t, 28.0, 28.25))), r = 230 * s, a = win(t, 28.0, 28.1);
+    ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = '#ff8a3d'; ctx.shadowColor = '#ff6a00'; ctx.shadowBlur = 40; ctx.lineWidth = 18; ctx.beginPath(); ctx.arc(CX, CY, r, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    if (s < 1.05) curvedText('ПЕРЕРЫВ 5 МИНУТ', 230 + 36, -Math.PI / 2, 40, '#ffb27a', 1);
+    if (t > 28.25 && t < 28.6) { ctx.fillStyle = `rgba(255,140,60,${.35 * (1 - win(t, 28.25, 28.6))})`; ctx.fillRect(0, 0, W, H); }
+  }
+}
+function vignette() { const g = ctx.createRadialGradient(CX, CY, 700, CX, CY, 1300); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.55)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+function drawFrame(t) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
+  const lastB = BREAKS.filter(b => b <= t).pop() || -9, sh = 14 * Math.exp(-(t - lastB) * 10) * (t - lastB < .3 ? 1 : 0) + (t > 28.22 && t < 28.45 ? 16 : 0);
+  background(t);
+  ctx.save(); if (sh > .5) ctx.translate(Math.sin(t * 97) * sh, Math.cos(t * 83) * sh);
+  if (t < 28.0 || true) drawRings(t);
+  drawBall(t); finale(t); ctx.restore();
+  hud(t); vignette();
+}
+// звуки — из событий физики (для tools/sfx.py)
+const ODE = 'E E F G G F E D C C D E E D D E E F G G F E D C C D E D C C D D E C D E F E C D E F E D C D G3 E E F G G F E D C C D E D C C'.split(' ');
+const FREQ = { C: 523.25, D: 587.33, E: 659.25, F: 698.46, G: 783.99, G3: 392.0 };
+window.SFX_CUES = [
+  ...BOUNCES.filter(b => b.t < ESCAPE).map((b, i) => ({ t: +b.t.toFixed(3), type: 'note', freq: FREQ[ODE[i % ODE.length]], gain: .55 })),
+  ...BREAKS.slice(0, NR - 1).map((t, i) => ({ t: +t.toFixed(3), type: 'lib', id: 'appear-burst', gain: .45, rate: .9 + i * .03 })),
+  { t: 24.2, type: 'lib', id: 'riser-2s-strong', gain: .55, align: 'start' },
+  { t: +ESCAPE.toFixed(3), type: 'lib', id: 'cinematic-drum-big', gain: .9 }, { t: +(ESCAPE + .15).toFixed(3), type: 'lib', id: 'celebration-confetti', gain: .6, align: 'start' },
+  { t: +(ESCAPE + .45).toFixed(3), type: 'lib', id: 'pop-large-in', gain: .7 },
+  { t: 28.22, type: 'lib', id: 'cinematic-metal-big', gain: .8 }, { t: 28.6, type: 'lib', id: 'notification-failure-fall', gain: .7, align: 'start' },
+];
+window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
+window.READY = Promise.all(['900 64px Inter', '800 64px Inter', '800 15px Inter'].map(f => document.fonts.load(f))).then(() => drawFrame(0));
+</script>
+</body>
+</html>
