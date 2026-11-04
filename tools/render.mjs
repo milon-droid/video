@@ -11,6 +11,7 @@
 //   --width/--height    размер холста (иначе SCENE.width/height или 1080×1920)
 //   --from S --to S     отрендерить только отрезок
 //   --draft             черновик: половинное разрешение, быстрее
+//   --scale K           масштаб вывода (0.6667 = 720×1280 из 1080×1920)
 //   --safe              наложить безопасные зоны TikTok/Reels (для превью)
 //   --audio FILE        подложить звук (обрезается по длине видео)
 //   --crf N             качество x264 (по умолчанию 18; меньше = лучше)
@@ -55,6 +56,7 @@ function parseArgs(argv) {
       case '--crf': o.crf = +next(); break;
       case '--still': o.still = +next(); break;
       case '--draft': o.draft = true; break;
+      case '--scale': o.scale = +next(); break;
       case '--safe': o.safe = true; break;
       case '--alpha': o.alpha = true; break;
       case '--workers': o.workers = +next(); break;
@@ -120,7 +122,7 @@ async function main() {
     const fps = o.fps || meta.fps || 30;
     const duration = o.duration || meta.duration;
     if (!duration && o.still === undefined) throw new Error('Не задана длительность: --duration или window.SCENE.duration');
-    const scale = o.draft ? 0.5 : 1;
+    const scale = o.scale || (o.draft ? 0.5 : 1);
 
     const openPage = async (_, k = 0) => {
       // Каждому потоку — свой процесс браузера: вкладки одного браузера рисуют в одном потоке.
