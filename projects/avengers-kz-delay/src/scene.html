@@ -23,6 +23,7 @@ const toOrig = t => { for (const [n0, n1, o0, o1] of RT) if (t < n1) return o0 +
 const toNew = to => { for (const [n0, n1, o0, o1] of RT) if (to < o1) return n0 + (to - o0) * (n1 - n0) / (o1 - o0); return DUR; };
 window.SCENE = { duration: DUR, fps: 30, width: W, height: H };
 const ctx = document.getElementById('c').getContext('2d');
+const IMG_READY = Promise.resolve();
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k;
 const win = (t, a, b) => clamp((t - a) / (b - a)), pulse = (t, a, b) => Math.sin(win(t, a, b) * Math.PI);
 const E = { out: k => 1 - Math.pow(1 - k, 3), in: k => k * k * k, io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
@@ -49,8 +50,11 @@ const enter = (t, t0, dx = 0, dy = 80) => { const k = E.out(win(t, t0, t0 + .35)
 function cinema(t, x, y) { // экран кинозала + ряды кресел
   ctx.save(); ctx.translate(x, y);
   ctx.fillStyle = '#05081a'; rr(-420, -280, 840, 520, 30); ctx.fill();
-  ctx.shadowColor = '#ff8a5c'; ctx.shadowBlur = 70; ctx.fillStyle = '#2a0f3a'; rr(-380, -240, 760, 420, 18); ctx.fill(); ctx.shadowBlur = 0;
-  ctx.save(); rr(-380, -240, 760, 420, 18); ctx.clip(); poster(t); ctx.restore();
+  ctx.shadowColor = '#bcd0ff'; ctx.shadowBlur = 60; ctx.fillStyle = '#ffffff'; rr(-380, -240, 760, 420, 18); ctx.fill(); ctx.shadowBlur = 0;
+  ctx.save(); rr(-380, -240, 760, 420, 18); ctx.clip(); ctx.fillStyle = '#ffffff'; ctx.fillRect(-380, -240, 760, 420);
+  emblem(0, -30, t);
+  ctx.fillStyle = 'rgba(255,255,255,.1)'; ctx.fillRect(-380, -240, 760, 420); ctx.restore();
+  ctx.save(); ctx.font = '900 120px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineWidth = 18; ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineJoin = 'round'; ctx.strokeText('СКОРО', 0, -30); ctx.fillStyle = '#14204a'; ctx.fillText('СКОРО', 0, -30); ctx.restore();
   for (let r = 0; r < 3; r++) for (let i = -5; i <= 5; i++) { ctx.fillStyle = r % 2 ? '#2a3a78' : '#22306a'; rr(i * 76 - 32 + (r % 2) * 38, 300 + r * 90, 64, 70, 16); ctx.fill(); }
   ctx.restore(); }
 function poster(t) { // своя афиша блокбастера: вспышка, лучи, силуэты героев (оригинальные), название текстом
@@ -68,6 +72,13 @@ function poster(t) { // своя афиша блокбастера: вспышк
   line([['МСТИТЕЛИ', '#ffffff']], 0, -150, 92, { stroke: true }); line([['СУДНЫЙ ДЕНЬ', C.yel]], 0, -82, 38, { weight: 800 });
   ctx.fillStyle = C.red; rr(-372, -232, 150, 46, 10); ctx.fill(); line([['СКОРО', '#fff']], -297, -208, 30, { stroke: false });
 }
+function emblem(x, y, t) { // своя эмблема «блокбастера»: неоновое кольцо красный→синий и молния
+  ctx.save(); ctx.translate(x, y);
+  const g = ctx.createLinearGradient(-170, -170, 170, 170); g.addColorStop(0, '#ff2d55'); g.addColorStop(.5, '#3a5bff'); g.addColorStop(1, '#1b3fd1');
+  ctx.shadowColor = '#3a5bff'; ctx.shadowBlur = 40; ctx.strokeStyle = g; ctx.lineWidth = 34; ctx.beginPath(); ctx.arc(0, 0, 160, 0, Math.PI * 2); ctx.stroke();
+  const b = ctx.createLinearGradient(0, -200, 0, 200); b.addColorStop(0, '#5f86ff'); b.addColorStop(1, '#1631a8');
+  ctx.fillStyle = b; ctx.beginPath(); ctx.moveTo(40, -205); ctx.lineTo(-95, 25); ctx.lineTo(-5, 25); ctx.lineTo(-45, 205); ctx.lineTo(105, -45); ctx.lineTo(15, -45); ctx.closePath(); ctx.fill();
+  ctx.shadowBlur = 0; ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 4; ctx.stroke(); ctx.restore(); }
 function stamp(t, x, y, t0, text, col = C.red, rot = -12) {
   if (t < t0) return; const k = E.out(win(t, t0, t0 + .18)), s = lerp(3.2, 1, k), a = win(t, t0, t0 + .08);
   ctx.save(); ctx.translate(x, y); ctx.rotate(rot * Math.PI / 180); ctx.scale(s, s); ctx.globalAlpha = a;
@@ -125,8 +136,8 @@ function card(x, y, k, icon, l1, l2) { const s = lerp(.6, 1, E.back(k)); ctx.sav
   ctx.save(); ctx.translate(-275, 0); icon(); ctx.restore();
   line([[l1, C.white]], -150, -28, 44, { align: 'left', stroke: false }); line([[l2, C.yel]], -150, 32, 40, { weight: 800, align: 'left', stroke: false }); ctx.restore(); }
 const iconPirate = () => { ctx.fillStyle = '#111'; rr(-70, -60, 140, 100, 8); ctx.fill(); ctx.fillStyle = '#888'; ctx.fillRect(-80, -70, 8, 150);
-  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, -18, 26, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(-14, 0, 28, 16); ctx.fillStyle = '#111'; for (const dx of [-10, 10]) { ctx.beginPath(); ctx.arc(dx, -20, 7, 0, Math.PI * 2); ctx.fill(); }
-  ctx.strokeStyle = '#fff'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-40, 14); ctx.lineTo(40, 34); ctx.moveTo(40, 14); ctx.lineTo(-40, 34); ctx.stroke(); };
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, -36, 22, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(-12, -20, 24, 13); ctx.fillStyle = '#111'; for (const dx of [-8, 8]) { ctx.beginPath(); ctx.arc(dx, -38, 6, 0, Math.PI * 2); ctx.fill(); }
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-38, -2); ctx.lineTo(38, 20); ctx.moveTo(38, -2); ctx.lineTo(-38, 20); ctx.stroke(); };
 const iconTickets = () => { for (const [dx, r, col] of [[-22, -.3, C.yel], [22, .3, C.cyan]]) { ctx.save(); ctx.translate(dx, 0); ctx.rotate(r); ctx.fillStyle = col; rr(-40, -60, 80, 120, 12); ctx.fill(); ctx.restore(); }
   ctx.fillStyle = C.red; ctx.font = '900 44px Inter'; ctx.textAlign = 'center'; ctx.fillText('VS', 0, 16); };
 const iconHourglass = () => { ctx.fillStyle = '#c9d3f5'; ctx.fillRect(-50, -70, 100, 14); ctx.fillRect(-50, 56, 100, 14);
@@ -228,7 +239,7 @@ const SHOTS = [
     hits.forEach((h, i) => { const side = i % 2 ? 1 : -1, k = win(t, h - .45, h), back = win(t, h, h + .6); if (k <= 0 || back >= 1) return;
       const x = h > t ? lerp(CX + side * 600, CX + side * 330, E.in(k)) : CX + side * (330 + 400 * E.out(back)), y = 1060 + (i - 2) * 70 - (h > t ? 0 : 300 * back);
       ctx.save(); ctx.translate(x, y); ctx.rotate((h > t ? 0 : side * back * 3)); ctx.globalAlpha = 1 - back; ctx.fillStyle = C.red; rr(-110, -36, 220, 72, 20); ctx.fill(); line([['СПОЙЛЕР', '#fff']], 0, 2, 36, { stroke: false }); ctx.restore(); });
-    line([['Как пытаешься', C.white]], CX, 290, 64, { sc: pop(t, 23.55) }); line([['защититься от ', C.white], ['спойлеров?', C.red]], CX, 370, 64, { sc: pop(t, 23.7) });
+    line([['Как планируешь', C.white]], CX, 290, 64, { sc: pop(t, 23.55) }); line([['защититься от ', C.white], ['спойлеров?', C.red]], CX, 370, 64, { sc: pop(t, 23.7) });
     const ak = pop(t, 24.0); line([['Пиши в комментах', C.yel]], CX, 455, 58, { sc: ak });
     ctx.save(); ctx.globalAlpha = win(t, 24.0, 24.2); ctx.fillStyle = C.yel; ctx.translate(CX, 540 + 12 * Math.sin(t * 8));
     ctx.beginPath(); ctx.moveTo(-30, -20); ctx.lineTo(30, -20); ctx.lineTo(30, 10); ctx.lineTo(55, 10); ctx.lineTo(0, 60); ctx.lineTo(-55, 10); ctx.lineTo(-30, 10); ctx.closePath(); ctx.fill(); ctx.restore();
@@ -264,7 +275,7 @@ const SFX0 = [
 window.SFX_CUES = [...SFX0.map(c => ({ ...c, t: +toNew(c.t).toFixed(3), gain: (c.gain || .7) * .55 })), ...(window.VO_CUES || [])];
 window.SCENE.duration = +DUR.toFixed(2);
 window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
-window.READY = Promise.all(['900 60px Inter', '800 40px Inter', '600 28px Inter'].map(f => document.fonts.load(f))).then(() => drawFrame(0));
+window.READY = Promise.all([IMG_READY, ...['900 60px Inter', '800 40px Inter', '600 28px Inter'].map(f => document.fonts.load(f))]).then(() => drawFrame(0));
 </script>
 </body>
 </html>
