@@ -9,6 +9,10 @@ cues.json — список событий:
 Типы: step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom.
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
+
+Звуки из библиотеки (сначала bash tools/get-sfx.sh, найти: python3 tools/sfx-find.py "запрос"):
+    {"t": 10.15, "type": "lib", "id": "oc-METLImpt_HammerAnvil_OS_01", "gain": 0.9, "rate": 1.0, "align": "sync"}
+    align: "sync" — точка синхронизации звука (момент удара) ставится ровно на t; "start" — начало звука на t.
 """
 import argparse
 import json
@@ -52,6 +56,31 @@ def sweep(f0, f1, dur, shape="sin", curve=1.0):
     if shape == "sq":
         return np.sign(np.sin(ph))
     return np.sin(ph)
+
+
+LIB = None
+
+
+def lib_sound(c):
+    """Загрузить звук из assets/sfx-library через ffmpeg (моно 48 кГц), со сдвигом по точке синхронизации."""
+    global LIB
+    import subprocess
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent / "assets" / "sfx-library"
+    if LIB is None:
+        LIB = {s["id"]: s for s in json.loads((root / "index.json").read_text())}
+    s = LIB.get(c["id"])
+    if s is None:
+        raise ValueError(f"нет звука в библиотеке: {c['id']} (python3 tools/sfx-find.py)")
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(root / s["file"]), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout
+    x = np.frombuffer(raw, dtype=np.float32).astype(np.float64)
+    rate = c.get("rate", 1.0)
+    if rate != 1.0:
+        x = np.interp(np.arange(0, len(x), rate), np.arange(len(x)), x)
+    if c.get("dur"):
+        n = int(c["dur"] * SR); x = x[:n] * np.minimum(1, np.linspace(1, 0, len(x[:n])) * 12)
+    shift = (s.get("sync") or 0) / rate if c.get("align", "sync") == "sync" else 0
+    return x, shift
 
 
 def gen(c):
@@ -163,8 +192,15 @@ def main():
     n = int(a.duration * SR)
     mix = np.zeros((n, 2))
     for c in cues:
-        x = gen(c) * c.get("gain", 0.7)
-        i = int(c["t"] * SR)
+        shift = 0
+        if c["type"] == "lib":
+            x, shift = lib_sound(c)
+            x = x * c.get("gain", 0.7)
+        else:
+            x = gen(c) * c.get("gain", 0.7)
+        i = int((c["t"] - shift) * SR)
+        if i < 0:
+            x, i = x[-i:], 0
         if i >= n:
             continue
         x = x[: n - i]

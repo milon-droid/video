@@ -89,6 +89,15 @@ ffmpeg -i video.mp4 -i music.mp3 -filter_complex "[1:a]volume=-18dB[m];[0:a][m]a
 ffmpeg -i in.mp4 -af loudnorm=I=-14:TP=-1:LRA=11 -c:v copy -c:a aac -b:a 192k out.mp4
 ```
 
+## 4б. Звук
+- `bash tools/get-sfx.sh`, затем подбирать звуки `python3 tools/sfx-find.py "<что>"`.
+- Cue прямо в монтаже (shot(..., cues)), выгрузить и собрать дорожку:
+  `python3 tools/sfx.py sfx.json -o assets/sfx.wav --duration <с>`.
+- Каждое действие — звук: шаги, появление/нажатие кнопок, удары, перемотки, реакции.
+  Тишина — только как приём (пауза перед шуткой).
+- Мастеринг: `alimiter=limit=0.5,loudnorm=I=-14.5:TP=-2:LRA=11`, пик ≤ −1 dBFS.
+- Если брали звуки Oculus Audio Pack — указать автора в подписи к посту (CC BY 4.0).
+
 ## 5. Субтитры
 Разметить текст с таймингом и сгенерировать стиль «TikTok»:
 ```bash

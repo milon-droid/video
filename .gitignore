@@ -8,3 +8,11 @@ __pycache__/
 
 # Звук собирается из sfx.json (tools/sfx.py)
 projects/*/assets/sfx.wav
+
+# Библиотеки звуков (скачиваются tools/get-sfx.sh)
+assets/sfx-library/
+
+# Референсы: исходные видео и кадры не храним (авторские права, вес)
+refs/**/source.*
+refs/**/frames/
+refs/**/list.txt
