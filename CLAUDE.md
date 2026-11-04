@@ -16,15 +16,20 @@
 | скилл `video-by-reference` | ролик «в стиле вот этого видео» (сторонний, MIT) |
 | скилл `find-skills` | поиск новых скиллов в каталоге skills.sh (ставить в проект, без `-g`) |
 | скиллы `hyperframes`, `hyperframes-cli`, `hyperframes-registry` | сторонний движок HeyGen HyperFrames (Apache-2.0) и ~450 готовых блоков — **см. ниже** |
+| скиллы `remotion-best-practices`, `remotion-create`, `remotion-render`, `remotion-captions` | официальные скиллы движка Remotion — **см. ниже** |
 
-### HyperFrames: пока запасной вариант
-Основной движок — свой `tools/render.mjs`. Скиллы HyperFrames установлены, но
-их CLI (`npx hyperframes`) ещё **не запускался**: система безопасности требует
+### HyperFrames и Remotion: пока запасные варианты
+Основной движок — свой `tools/render.mjs`. Скиллы HyperFrames и Remotion
+установлены, но сами движки (`npx hyperframes`, пакет `remotion`) ещё **не запускались**: система безопасности требует
 разрешения пользователя на запуск внешней программы. Пока он не разрешён и не
 проверен — не строить на нём проекты, а брать из его скиллов и каталога блоков
 идеи и приёмы (переносить в свои сцены). При запуске всегда
 `HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1`; облачный рендер,
 вход в аккаунт HeyGen и платные функции не использовать.
+Remotion бесплатен для частных лиц и команд до 3 человек; для компании
+больше — нужна платная лицензия (скилл `remotion-license` не ставили, см. remotion.dev/docs/license).
+Если пользователь разрешит запуск — сначала тестовый ролик и сравнение с `tools/render.mjs`,
+результат записать в `knowledge/toolbox.md`.
 
 ## Система учится
 

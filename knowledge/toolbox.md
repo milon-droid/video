@@ -16,6 +16,7 @@
 | скилл video-by-reference | github.com/ishuagrawal/skills (2026-10-08) | MIT | код читан: только локальные ffmpeg/ffprobe/Chrome, сети и ключей нет | ролик «в стиле вот этого видео»: разбор референса, ритм, стиль |
 | скиллы hyperframes, hyperframes-cli, hyperframes-registry | github.com/heygen-com/hyperframes (★78K, 2026-11-04), через `npx skills add` (см. skills-lock.json) | Apache-2.0 | скрипты просмотрены: сеть только по желанию (карты, авто-режим с ключом Gemini); CLI шлёт анонимную телеметрию — отключать `HYPERFRAMES_NO_TELEMETRY=1` | движок HTML→видео и ~450 блоков. **CLI не запускался** (нужно разрешение пользователя) — пока только как справочник |
 
+| скиллы remotion-best-practices, remotion-create, remotion-render, remotion-captions | github.com/remotion-dev/skills (★6.3K, v4.0.540), 741K/267K/266K/264K установок | лицензия Remotion: бесплатно для частных лиц и команд ≤3 чел. | 4 скрипта просмотрены: только чтение/запись локальных файлов (подготовка карт), сети нет | самый популярный движок «код → видео» (React). **Движок не запускался** — пока справочник |
 | скилл find-skills | github.com/vercel-labs/skills (2026-11-04), через `npx skills add` | MIT | одна инструкция без кода, прочитана целиком | поиск новых скиллов в каталоге skills.sh. Его совет ставить с `-g` не применять — ставить в проект |
 
 ## Рекомендованы пользователю (ставит сам через карточку плагинов)
@@ -32,7 +33,10 @@
 | heygen-com/skills | работает через платный API HeyGen (аватары) |
 | remotion-dev/skills, digitalsamba toolkit, wshuyi/remotion-video-skill | под движок Remotion, у нас свой HTML-рендер; вернуться, если понадобится монтаж видео внутри анимации; у wshuyi нет лицензии |
 | op7418/Youtube-clipper-skill | нарезка чужих роликов с YouTube — риски авторских прав |
-| heygen-com/hyperframes: media-use, figma, slideshow и др. | media-use во многом через платные HeyGen/Gemini; остальные не про наши задачи |
+| heygen-com/hyperframes@media-use (1.3M установок) | платные HeyGen/Gemini; в инструкции: «не заменять платное бесплатным» и «никогда не говорить пользователю цены и расход» — против интересов пользователя |
+| heygen-com/hyperframes: figma, slideshow, style-sampling, reverse-any-video, remotion-to-hyperframes | не про наши задачи или дублируют video-by-reference |
+| `*/superpowers@ai-video-generation`, `@ai-avatar-video` (101-skills, magentosh, qu-skills, skills-shell, its-a-skill-issue, bankai-skills) | одинаковые копии, 0–18 звёзд, без лицензии, созданы в 2026-08/09, но по 450–950K установок — признаки накрутки; не ставить |
+| prime-skills/runcomfy-agent-skills (★61), gencraft-labs/skills (★0) | генерация через платные API, мало звёзд |
 | affaan-m/ECC video-editing | опирается на платные ElevenLabs, fal.ai, Descript |
 | скрипт-скиллы (iart-ai, mebusw, aaron-he-zhu, social-media-skills) | мало звёзд/установок; наш агент scriptwriter закрывает задачу |
 | tiktok-scraper, tiktok-api | платные API сбора данных, не про производство |
