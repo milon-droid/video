@@ -8,7 +8,7 @@ cues.json — список событий:
 
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
-wind, tires, hum (печка), engine, snowstep, heartbeat.
+wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора).
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
 
 Звуки из библиотеки (сначала bash tools/get-sfx.sh, найти: python3 tools/sfx-find.py "запрос"):
@@ -217,6 +217,12 @@ def gen(c):
         ph = 2 * np.pi * np.cumsum(f) / SR
         x = np.sin(ph) + 0.5 * np.sin(2 * ph) + 0.3 * np.sign(np.sin(3 * ph)) * 0.3 + 0.4 * band(nz, 30, 300)
         return np.tanh(x * 1.2) / 1.6 * e
+    if ty == "murmur":  # неразборчивая речь за стеной / из телевизора
+        d = d or 5.0
+        n = int(d * SR); t = np.arange(n) / SR
+        syl = slow(n, 9, 7) ** 2 * (0.4 + 0.6 * slow(n, 0.8, 8))
+        x = band(noise(n), 250 * p, 2600 * p) * syl + 0.3 * np.sin(2 * np.pi * (140 + 30 * slow(n, 3, 9)) * t) * syl
+        return x / (np.abs(x).max() or 1) * np.minimum(1, t / .3) * np.minimum(1, (d - t) / .3)
     if ty == "snowstep":
         n = int(0.22 * SR); t = np.arange(n) / SR
         crunch = band(noise(n), 1500, 7000) * (rng.uniform(0, 1, n) > 0.55)

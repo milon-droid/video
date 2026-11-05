@@ -1,0 +1,355 @@
+{
+  "episode": 2,
+  "title": "Правила",
+  "duration": 57,
+  "hud": {
+    "night": 1,
+    "temp": "−31°",
+    "balanceStart": "72:45:00"
+  },
+  "scenes": [
+    {
+      "id": "e2s01",
+      "start": 0,
+      "end": 3,
+      "vo": {
+        "speaker": "beka",
+        "text": "В ЗЕРКАЛЕ СИДЕЛ МАРАТ. ГОД КАК ПРОПАВШИЙ",
+        "accent": [
+          "МАРАТ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 0
+        },
+        {
+          "id": "file",
+          "at": 0
+        },
+        {
+          "id": "notification-alert-clear",
+          "at": 0
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 0.25
+        },
+        {
+          "id": "bsb-ice-crack-1",
+          "at": 0.35
+        }
+      ],
+      "hud": {
+        "time": "04:05",
+        "balance": "72:44:59"
+      },
+      "overlays": [
+        "PartSticker:2"
+      ]
+    },
+    {
+      "id": "e2s02",
+      "start": 3,
+      "end": 6,
+      "vo": {
+        "speaker": "marat",
+        "text": "— НЕ ОБОРАЧИВАЙСЯ",
+        "accent": [
+          "НЕ",
+          "ОБОРАЧИВАЙСЯ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 4
+        }
+      ],
+      "hud": {
+        "time": "04:05",
+        "balance": "72:44:56"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s03",
+      "start": 6,
+      "end": 13,
+      "vo": {
+        "speaker": "marat",
+        "text": "— НЕ ОТМЕНЯЙ ЗАКАЗ. СМОТРИ ТОЛЬКО В ЗЕРКАЛО. И НИКОГДА НЕ ВОЗИ К СВОИМ",
+        "accent": [
+          "СВОИМ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 6
+        },
+        {
+          "id": "file",
+          "at": 6.3
+        },
+        {
+          "id": "notification-alert-soft",
+          "at": 6.3
+        },
+        {
+          "id": "notification-alert-soft",
+          "at": 7.699
+        },
+        {
+          "id": "notification-alert-soft",
+          "at": 8.902
+        }
+      ],
+      "hud": {
+        "time": "04:05",
+        "balance": "72:44:53"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s04",
+      "start": 13,
+      "end": 19,
+      "vo": {
+        "speaker": "marat",
+        "text": "— А ЕСЛИ ОТМЕНИТЬ? — Я ОТМЕНИЛ ОДИН",
+        "accent": [
+          "ОДИН"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 13.6
+        },
+        {
+          "id": "file",
+          "at": 15.4
+        },
+        {
+          "id": "bsb-wind-whistle-chimney",
+          "at": 15.2
+        }
+      ],
+      "hud": {
+        "time": "04:05",
+        "balance": "72:44:46"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s05",
+      "start": 19,
+      "end": 23,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "bsb-drops-water",
+          "at": 19.5
+        }
+      ],
+      "hud": {
+        "time": "04:05",
+        "balance": "72:44:40"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s06a",
+      "start": 23,
+      "end": 27,
+      "vo": {
+        "speaker": "beka",
+        "text": "УТРОМ В НОВОСТЯХ ПОКАЗАЛИ ТОТ ДОМ. ОКНО — ОТКРЫТО",
+        "accent": [
+          "ОТКРЫТО"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 24
+        },
+        {
+          "id": "bsb-kettle-electric",
+          "at": 23
+        },
+        {
+          "id": "murmur",
+          "at": 23
+        }
+      ],
+      "hud": {
+        "time": "08:12",
+        "balance": "68:37:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s06b",
+      "start": 27,
+      "end": 31,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "08:12",
+        "balance": "68:37:55"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s07a",
+      "start": 31,
+      "end": 34,
+      "vo": {
+        "speaker": "beka",
+        "text": "МИНУТА В МИНУТУ. Я ВЁЗ НЕ ПАССАЖИРА.",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 31.4
+        }
+      ],
+      "hud": {
+        "time": "08:12",
+        "balance": "68:37:51"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s07b",
+      "start": 34,
+      "end": 37,
+      "vo": {
+        "speaker": "beka",
+        "text": "Я ВЁЗ СМЕРТЬ",
+        "accent": [
+          "СМЕРТЬ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "money-coin-drop",
+          "at": 34.3
+        }
+      ],
+      "hud": {
+        "time": "08:12",
+        "balance": "68:37:48"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s08",
+      "start": 37,
+      "end": 50,
+      "vo": {
+        "speaker": "beka",
+        "text": "У МАРАТА ТОЖЕ БЫЛ СЧЁТЧИК. ОН ДОТИКАЛ МНЕ ОСТАВАЛОСЬ МЕНЬШЕ ТРЁХ СУТОК",
+        "accent": [
+          "ДОТИКАЛ",
+          "ТРЁХ",
+          "СУТОК"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 38
+        },
+        {
+          "id": "file",
+          "at": 45
+        },
+        {
+          "id": "bass-sub-drop-long",
+          "at": 37.4
+        },
+        {
+          "id": "data-tick",
+          "at": 44.2
+        },
+        {
+          "id": "data-tick",
+          "at": 45.2
+        },
+        {
+          "id": "data-tick",
+          "at": 46.2
+        },
+        {
+          "id": "data-tick",
+          "at": 47.2
+        },
+        {
+          "id": "data-tick",
+          "at": 48.2
+        },
+        {
+          "id": "data-tick",
+          "at": 49.2
+        }
+      ],
+      "hud": {
+        "time": "12:36",
+        "balance": "64:13:58"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s10",
+      "start": 50,
+      "end": 51,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "12:36",
+        "balance": "64:13:45"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s11",
+      "start": 51,
+      "end": 57.01,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЧТОБЫ ЖИТЬ, МНЕ ПРИДЁТСЯ ВОЗИТЬ СМЕРТЬ",
+        "accent": [
+          "ВОЗИТЬ",
+          "СМЕРТЬ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 51
+        },
+        {
+          "id": "file",
+          "at": 51.6
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 51
+        },
+        {
+          "id": "notification-alert-clear",
+          "at": 56
+        }
+      ],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}

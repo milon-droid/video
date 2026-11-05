@@ -5,7 +5,7 @@
 
 lines.json: [{"id": "s1", "text": "Фраза для плана 1"}, ...]
 Для каждой фразы можно задать: "voice" (другой голос, напр. kk_KZ-issai-high), "speaker" (номер диктора
-в многоголосой модели), "speed", "pitch" (0.9 — ниже), "fx": "whisper" (шёпот) | "radio" (как из динамика).
+в многоголосой модели), "speed", "pitch" (0.9 — ниже), "fx": "whisper" (шёпот) | "dead" (хрип с эхом) | "radio" (как из динамика).
 Результат: <id>.wav для каждой фразы и durations.json {id: секунды}.
 Голос скачать (один раз, ~63 МБ, лицензия датасета CC0):
   https://huggingface.co/rhasspy/piper-voices/tree/main/ru/ru_RU/dmitri/medium → assets/voices/
@@ -39,6 +39,8 @@ for ln in json.loads(Path(a.lines).read_text(encoding="utf-8")):
     pitch = ln.get("pitch", 1.0)
     if pitch != 1.0: af = f"aresample=48000,asetrate={int(48000 * pitch)},aresample=48000,atempo={1 / pitch:.4f}," + af  # ниже/выше без изменения темпа
     if ln.get("fx") == "whisper": af += ",highpass=f=500,lowpass=f=7000,acompressor=threshold=-30dB:ratio=4,volume=0.8,aecho=0.8:0.7:60|120:0.25|0.15"
+    if ln.get("fx") == "dead":  # хрипловатый, с реверберацией (голос мёртвого)
+        af += ",highpass=f=120,lowpass=f=5200,acrusher=bits=12:mix=0.15,aecho=0.8:0.85:70|150|260:0.35|0.25|0.15,volume=0.9"
     if ln.get("fx") == "radio": af += ",highpass=f=300,lowpass=f=3400,acrusher=bits=10:mix=0.3"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-af", af, str(wav)], check=True); raw.unlink()
     d = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(wav)], capture_output=True, text=True).stdout)
