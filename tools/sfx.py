@@ -192,6 +192,7 @@ def main():
     ap.add_argument("cues")
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--duration", type=float, required=True)
+    ap.add_argument("--no-norm", action="store_true", help="не нормализовать громкость (для сравнения дорожек между собой)")
     a = ap.parse_args()
     cues = json.load(open(a.cues, encoding="utf-8"))
     n = int(a.duration * SR)
@@ -218,8 +219,10 @@ def main():
         pan = c.get("pan", 0.0)
         mix[i:i + len(x), 0] += x * np.sqrt((1 - pan) / 2) * 1.414
         mix[i:i + len(x), 1] += x * np.sqrt((1 + pan) / 2) * 1.414
-    peak = np.abs(mix).max() or 1
-    mix = mix / peak * 0.89
+    if not a.no_norm:
+        peak = np.abs(mix).max() or 1
+        mix = mix / peak * 0.89
+    mix = np.clip(mix, -1, 1)
     pcm = (mix * 32767).astype(np.int16)
     with wave.open(a.out, "wb") as w:
         w.setnchannels(2)

@@ -37,7 +37,7 @@ def loudness(path):
     return (float(i[-1]) if i else None, float(p[-1]) if p else None)
 
 
-def contact_sheet(path, out, duration, w, h, n, safe):
+def contact_sheet(path, out, duration, w, h, n, safe, fps=30):
     cols = 3
     rows = (n + cols - 1) // cols
     step = duration / n
@@ -52,12 +52,13 @@ def contact_sheet(path, out, duration, w, h, n, safe):
             for x, y, zw, zh in zones
         )
     vf = (
-        f"fps=1/{step:.4f},scale={tw}:{th}{boxes},"
+        # кадры из середины каждого отрезка, по номеру кадра — подпись = реальное время кадра
+        f"select='gte(n\\,{round(step*fps/2)})*not(mod(n-{round(step*fps/2)}\\,{max(1, round(step*fps))}))',scale={tw}:{th}{boxes},"
         f"drawtext=fontfile='{FONT}':text='%{{pts\\:hms}}':x=8:y=8:fontsize=22:"
         f"fontcolor=white:box=1:boxcolor=black@0.6,tile={cols}x{rows}:padding=6:color=0x222222"
     )
-    r = run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-ss", f"{step/2:.3f}", "-i", str(path),
-             "-vf", vf, "-frames:v", "1", str(out)])
+    r = run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", str(path),
+             "-vf", vf, "-fps_mode", "passthrough", "-frames:v", "1", str(out)])
     return r.returncode == 0, r.stderr.strip()
 
 
@@ -109,7 +110,7 @@ def main():
     out_dir = path.parent / "qa"
     out_dir.mkdir(exist_ok=True)
     sheet = out_dir / f"{path.stem}-sheet.png"
-    ok, err = contact_sheet(path, sheet, dur, w, h, a.frames, not a.no_safe)
+    ok, err = contact_sheet(path, sheet, dur, w, h, a.frames, not a.no_safe, fps or 30)
     print(f"Контактный лист: {sheet}" if ok else f"Контактный лист не создан: {err}")
     if ok and not a.no_safe:
         print("  (красное — зоны интерфейса: текст и важное туда не ставить)")
