@@ -1,7 +1,7 @@
 {
   "episode": 2,
   "title": "Правила",
-  "duration": 57,
+  "duration": 53.5,
   "hud": {
     "night": 1,
     "temp": "−31°",
@@ -248,16 +248,14 @@
       "overlays": []
     },
     {
-      "id": "e2s08",
+      "id": "e2s08a",
       "start": 37,
-      "end": 50,
+      "end": 41,
       "vo": {
         "speaker": "beka",
-        "text": "У МАРАТА ТОЖЕ БЫЛ СЧЁТЧИК. ОН ДОТИКАЛ МНЕ ОСТАВАЛОСЬ МЕНЬШЕ ТРЁХ СУТОК",
+        "text": "У МАРАТА ТОЖЕ БЫЛ СЧЁТЧИК. ОН ДОТИКАЛ",
         "accent": [
-          "ДОТИКАЛ",
-          "ТРЁХ",
-          "СУТОК"
+          "ДОТИКАЛ"
         ]
       },
       "sfx": [
@@ -266,12 +264,44 @@
           "at": 38
         },
         {
-          "id": "file",
-          "at": 45
-        },
-        {
           "id": "bass-sub-drop-long",
           "at": 37.4
+        }
+      ],
+      "hud": {
+        "time": "12:36",
+        "balance": "64:13:58"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s08b",
+      "start": 41,
+      "end": 44,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "12:36",
+        "balance": "64:13:54"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s09a",
+      "start": 44,
+      "end": 48,
+      "vo": {
+        "speaker": "beka",
+        "text": "МНЕ ОСТАВАЛОСЬ МЕНЬШЕ ТРЁХ СУТОК",
+        "accent": [
+          "ТРЁХ",
+          "СУТОК"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 45
         },
         {
           "id": "data-tick",
@@ -288,7 +318,20 @@
         {
           "id": "data-tick",
           "at": 47.2
-        },
+        }
+      ],
+      "hud": {
+        "time": "12:36",
+        "balance": "64:13:51"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s09b",
+      "start": 48,
+      "end": 50,
+      "vo": null,
+      "sfx": [
         {
           "id": "data-tick",
           "at": 48.2
@@ -300,7 +343,7 @@
       ],
       "hud": {
         "time": "12:36",
-        "balance": "64:13:58"
+        "balance": "64:13:47"
       },
       "overlays": []
     },
@@ -319,7 +362,7 @@
     {
       "id": "e2s11",
       "start": 51,
-      "end": 57.01,
+      "end": 53.51,
       "vo": {
         "speaker": "beka",
         "text": "ЧТОБЫ ЖИТЬ, МНЕ ПРИДЁТСЯ ВОЗИТЬ СМЕРТЬ",
@@ -335,7 +378,7 @@
         },
         {
           "id": "file",
-          "at": 51.6
+          "at": 51.25
         },
         {
           "id": "impact-deep-firm",
@@ -343,7 +386,7 @@
         },
         {
           "id": "notification-alert-clear",
-          "at": 56
+          "at": 52.9
         }
       ],
       "hud": null,
