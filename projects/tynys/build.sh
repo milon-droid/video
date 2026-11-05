@@ -9,7 +9,7 @@ for n in "$@"; do
   D=$(python3 -c "import json;print(json.load(open('$P/storyboard/ep$n.json'))['duration'])")
   python3 tools/sfx.py $P/sfx-ep$n.json -o $P/out/ep$n-mix.wav --duration $D >/dev/null
   node tools/render.mjs $P/src/ep$n.html --scale $SCALE --crf $CRF -o $P/out/raw$n.mp4 2>&1 | tr '\r' '\n' | grep -E "Готово|rror" | head -2
-  tag=$([ "$SCALE" = "1" ] && echo "1080" || echo "draft-720"); out=$P/out/ep$n-$tag.mp4; [ "$SCALE" = "1" ] && out=$P/out/ep$n.mp4
+  tag=$([ "$SCALE" = "1" ] && echo "1080" || echo "draft-v2-720"); out=$P/out/ep$n-$tag.mp4; [ "$SCALE" = "1" ] && out=$P/out/ep$n.mp4
   python3 tools/master.py $P/out/raw$n.mp4 $out --duration $D --audio $P/out/ep$n-mix.wav
   python3 tools/qa.py $out --frames 12 --step 2 --caption-zone 1150-1400 | grep -E "Длит|Аудио|ВНИМАНИЕ|ОШИБКА" | grep -v разрешение || true
 done
