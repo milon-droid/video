@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заказ из дома — серия 1</title>
+<!-- Аниматик серии 1. Картинки ИИ кладутся в ../assets/img/NN.png (1080×1920); пока их нет — плашка «ASSET #NN».
+     Интерфейсы, субтитры, плашки времени, дождь — рисуются кодом. -->
+<style>
+  html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #05060d; }
+  canvas { display: block; }
+  @font-face { font-family: 'Inter'; font-weight: 900; src: url('../../../fonts/Inter-Black.otf'); }
+  @font-face { font-family: 'Inter'; font-weight: 800; src: url('../../../fonts/Inter-ExtraBold.otf'); }
+  @font-face { font-family: 'Inter'; font-weight: 600; src: url('../../../fonts/Inter-SemiBold.otf'); }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+'use strict';
+const W = 1080, H = 1920, CX = 490, DUR = 53;
+window.SCENE = { duration: DUR, fps: 30, width: W, height: H };
+const ctx = document.getElementById('c').getContext('2d');
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k;
+const win = (t, a, b) => clamp((t - a) / (b - a));
+const E = { out: k => 1 - Math.pow(1 - k, 3), io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
+  back: k => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); } };
+const C = { red: '#ff3b47', yel: '#ffcc33', white: '#fff', soft: '#9aa3c7', ui: '#151a2e', ui2: '#1f2640', green: '#2fd27a', ink: '#05060d' };
+function rr(x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function txt(s, x, y, size, col = C.white, { weight = 800, align = 'left', alpha = 1 } = {}) {
+  ctx.save(); ctx.globalAlpha *= alpha; ctx.font = `${weight} ${size}px Inter`; ctx.textBaseline = 'middle'; ctx.textAlign = align; ctx.fillStyle = col; ctx.fillText(s, x, y); ctx.restore(); }
+
+// ───── картинки ИИ (или плашка-заглушка) ─────
+const ASSETS = {
+  '01': 'Салон такси ночью, дождь на лобовом, телефон на держателе', '02': 'Крупно лицо Даурена в свете экрана',
+  '03': 'Утро: смятая постель, рука на простыне', '04': 'Открытый холодильник, полупустые полки',
+  '05': 'Прихожая: пустой крючок, фото Даурена в жёлтой куртке', '06': 'Двор пятиэтажки ночью, горит одно окно',
+  '07': 'Дверь подъезда, выцветший плакат', '08': 'Мужчина в жёлтой куртке выходит из подъезда',
+  '09': 'Мужчина падает на заднее сиденье', '10': 'Зеркало заднего вида: глаза под капюшоном',
+  '11': 'Мужчина снимает капюшон — лицо Марата' };
+const IMG = {};
+const loadImg = id => new Promise(res => { const im = new Image(); im.onload = () => { IMG[id] = im; res(); }; im.onerror = () => res(); im.src = `../assets/img/${id}.png`; });
+function plate(id, t, z = 1, dx = 0, dy = 0) {
+  ctx.save(); ctx.translate(W / 2 + dx, H / 2 + dy); ctx.scale(z, z); ctx.translate(-W / 2, -H / 2);
+  if (IMG[id]) ctx.drawImage(IMG[id], 0, 0, W, H);
+  else { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0b1230'); g.addColorStop(1, '#170d2c'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.setLineDash([24, 18]); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 4; rr(70, 230, 840, 1260, 30); ctx.stroke(); ctx.setLineDash([]);
+    txt(`ASSET #${id}`, CX, 820, 84, 'rgba(255,255,255,.32)', { weight: 900, align: 'center' });
+    txt(ASSETS[id], CX, 910, 30, 'rgba(255,255,255,.28)', { weight: 600, align: 'center' }); }
+  ctx.restore(); }
+function vignette(k = .65) { const g = ctx.createRadialGradient(540, 900, 400, 540, 960, 1200); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${k})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+// дождь на стекле: детерминированные капли
+const DROPS = (() => { let s = 7; const r = () => (s = (s * 16807) % 2147483647) / 2147483647; return Array.from({ length: 90 }, () => [r() * W, r() * H, 2 + r() * 5, .3 + r() * .7, r()]); })();
+function rain(t, a = .5) { ctx.save(); ctx.globalAlpha = a;
+  for (const [x, y0, r, sp, ph] of DROPS) { const y = (y0 + t * 140 * sp) % (H + 60) - 30; ctx.fillStyle = 'rgba(190,210,255,.35)'; ctx.beginPath(); ctx.ellipse(x, y, r * .7, r * 1.4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(190,210,255,.12)'; ctx.lineWidth = r * .6; ctx.beginPath(); ctx.moveTo(x, y - r * 8 * sp); ctx.lineTo(x, y); ctx.stroke(); }
+  ctx.restore(); }
+
+// ───── плашка времени (как в референсах) ─────
+function stamp(s, col = C.red) { ctx.save(); ctx.font = '800 30px Inter'; const w = ctx.measureText(s).width + 44;
+  ctx.fillStyle = 'rgba(5,6,13,.72)'; rr(80, 236, w, 56, 12); ctx.fill(); ctx.strokeStyle = col; ctx.globalAlpha = .7; ctx.lineWidth = 2; ctx.stroke(); ctx.globalAlpha = 1;
+  ctx.fillStyle = col; ctx.beginPath(); ctx.arc(102, 264, 6, 0, Math.PI * 2); ctx.fill(); txt(s, 118, 265, 30, col); ctx.restore(); }
+
+// ───── телефон и приложение «Жол» ─────
+const PH = { x: CX - 290, y: 300, w: 580, h: 960 };
+function phone(t, inner, k = 1) { ctx.save(); ctx.globalAlpha *= k; const s = lerp(.92, 1, E.out(k)); ctx.translate(CX, PH.y + PH.h / 2); ctx.scale(s, s); ctx.translate(-CX, -(PH.y + PH.h / 2));
+  ctx.shadowColor = 'rgba(80,120,255,.35)'; ctx.shadowBlur = 80; ctx.fillStyle = '#0a0c14'; rr(PH.x - 18, PH.y - 18, PH.w + 36, PH.h + 36, 70); ctx.fill(); ctx.shadowBlur = 0;
+  ctx.fillStyle = '#0d1120'; rr(PH.x, PH.y, PH.w, PH.h, 54); ctx.fill(); ctx.save(); rr(PH.x, PH.y, PH.w, PH.h, 54); ctx.clip();
+  txt('03:12', PH.x + 50, PH.y + 44, 26, C.white, { weight: 800 }); ctx.fillStyle = '#fff'; rr(PH.x + PH.w - 86, PH.y + 34, 40, 20, 5); ctx.fill(); ctx.fillStyle = '#0a0c14'; ctx.fillRect(PH.x + PH.w - 60, PH.y + 38, 10, 12);
+  inner(t); ctx.restore(); ctx.restore(); }
+function hl(x, y, w, h, k, col = C.yel) { if (k <= 0) return; ctx.save(); ctx.globalAlpha = .28; ctx.fillStyle = col; rr(x, y, w * E.out(k), h, 10); ctx.fill(); ctx.restore(); }
+function orderCard(t, t0) { const X = PH.x + 40, w = PH.w - 80;
+  txt('ЖОЛ', X, PH.y + 110, 30, C.yel, { weight: 900 }); txt('водитель · на линии', X + 90, PH.y + 111, 24, C.soft, { weight: 600 });
+  const k = E.back(win(t, t0, t0 + .45)); ctx.save(); ctx.translate(0, (1 - k) * 300); ctx.globalAlpha = clamp(k * 1.5);
+  ctx.fillStyle = C.ui; rr(X - 10, PH.y + 160, w + 20, 760, 34); ctx.fill();
+  ctx.fillStyle = C.yel; ctx.beginPath(); ctx.arc(X + 22, PH.y + 220, 10, 0, Math.PI * 2); ctx.fill();
+  txt('Новый заказ', X + 44, PH.y + 220, 40, C.white, { weight: 900 }); txt('1 200 ₸', X + w - 10, PH.y + 220, 40, C.yel, { weight: 900, align: 'right' });
+  txt('ПОДАЧА', X + 10, PH.y + 300, 22, C.soft, { weight: 800 });
+  hl(X + 4, PH.y + 322, 470, 56, win(t, t0 + 1.7, t0 + 2.2));
+  txt('ул. Тополиная, 12, кв. 31', X + 10, PH.y + 350, 34, C.white, { weight: 800 });
+  txt('1,8 км от вас', X + 10, PH.y + 395, 24, C.soft, { weight: 600 });
+  txt('ПАССАЖИР', X + 10, PH.y + 460, 22, C.soft, { weight: 800 });
+  hl(X + 4, PH.y + 486, 300, 76, win(t, t0 + 3.0, t0 + 3.5));
+  ctx.fillStyle = '#3a4466'; ctx.beginPath(); ctx.arc(X + 44, PH.y + 524, 32, 0, Math.PI * 2); ctx.fill(); txt('Д', X + 44, PH.y + 526, 32, '#fff', { weight: 900, align: 'center' });
+  txt('Даурен', X + 92, PH.y + 512, 36, C.white, { weight: 900 }); txt('★ 4,9 · это вы', X + 92, PH.y + 550, 22, C.soft, { weight: 600, alpha: win(t, t0 + 3.4, t0 + 3.8) });
+  txt('КОММЕНТАРИЙ', X + 10, PH.y + 620, 22, C.soft, { weight: 800 });
+  ctx.fillStyle = C.ui2; rr(X, PH.y + 640, w, 84, 18); ctx.fill(); txt('«Срочно. Не звоните.»', X + 24, PH.y + 683, 32, C.white, { weight: 800 });
+  ctx.fillStyle = C.ui2; rr(X, PH.y + 780, w * .42, 96, 24); ctx.fill(); txt('Позвонить', X + w * .21, PH.y + 829, 30, C.white, { weight: 800, align: 'center' });
+  ctx.fillStyle = C.yel; rr(X + w * .46, PH.y + 780, w * .54, 96, 24); ctx.fill(); txt('Принять', X + w * .73, PH.y + 829, 34, C.ink, { weight: 900, align: 'center' });
+  ctx.restore(); }
+function callScreen(t, t0) { if (t < t0) return; const k = E.out(win(t, t0, t0 + .3)); ctx.save(); ctx.globalAlpha = k; ctx.fillStyle = '#0b0f1c'; ctx.fillRect(PH.x, PH.y, PH.w, PH.h);
+  ctx.fillStyle = '#3a4466'; ctx.beginPath(); ctx.arc(CX, PH.y + 300, 90, 0, Math.PI * 2); ctx.fill(); txt('Д', CX, PH.y + 304, 90, '#fff', { weight: 900, align: 'center' });
+  txt('Даурен', CX, PH.y + 450, 54, C.white, { weight: 900, align: 'center' }); txt('пассажир · Жол', CX, PH.y + 505, 26, C.soft, { weight: 600, align: 'center' });
+  const fail = t > t0 + 1.2; if (!fail) { const n = Math.max(0, Math.floor((t - t0) * 3)) % 4; txt('Вызов' + '.'.repeat(n), CX, PH.y + 600, 36, C.soft, { weight: 800, align: 'center' }); }
+  else { ctx.save(); const s = lerp(1.3, 1, E.out(win(t, t0 + 1.2, t0 + 1.45))); ctx.translate(CX, PH.y + 600); ctx.scale(s, s); txt('Абонент недоступен', 0, 0, 40, C.red, { weight: 900, align: 'center' }); ctx.restore(); }
+  ctx.fillStyle = C.red; ctx.beginPath(); ctx.arc(CX, PH.y + 820, 52, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+function toast(t, t0, s) { const k = E.back(win(t, t0, t0 + .4)); if (k <= 0) return; ctx.save(); ctx.translate(0, (1 - k) * -160); ctx.globalAlpha = clamp(k * 2);
+  ctx.fillStyle = 'rgba(21,26,46,.94)'; rr(110, 330, 760, 120, 30); ctx.fill(); ctx.strokeStyle = 'rgba(255,204,51,.6)'; ctx.lineWidth = 3; ctx.stroke();
+  txt('ЖОЛ', 150, 370, 26, C.yel, { weight: 900 }); txt('сейчас', 830, 370, 22, C.soft, { weight: 600, align: 'right' }); txt(s, 150, 412, 34, C.white, { weight: 800 }); ctx.restore(); }
+
+// ───── субтитры: короткие фразы, ключевое слово цветом ─────
+// [начало, конец, [[текст, цвет], ...]]
+const Y = C.yel, R = C.red, Wt = C.white;
+const CAPS = [
+  [0.3, 1.7, [['В три ночи мне пришёл ', Wt], ['заказ.', Y]]], [2.05, 2.95, [['С моего ', Wt], ['адреса.', Y]]], [3.3, 4.5, [['С моего ', Wt], ['аккаунта.', Y]]],
+  [4.9, 6.5, [['А я живу ', Wt], ['один.', R]]],
+  [7.9, 9.2, [['Этот аккаунт есть только', Wt]]], [9.2, 10.5, [['на моём ', Wt], ['старом телефоне.', Y]]], [10.85, 12.45, [['Он лежит дома, ', Wt], ['в ящике.', Y]]],
+  [12.8, 14.2, [['Странности были весь месяц.', Wt]]], [14.55, 15.6, [['Прихожу в шесть утра —', Wt]]], [15.6, 16.65, [['постель ', Wt], ['тёплая.', R]]],
+  [16.9, 17.8, [['Пропадает ', Wt], ['еда.', R]]], [18.2, 19.6, [['Пропала моя ', Wt], ['куртка.', Y]]],
+  [21.4, 22.85, [['На кухне ', Wt], ['горел свет.', Y]]], [22.85, 24.7, [['Я всегда его ', Wt], ['выключаю.', R]]],
+  [31.6, 33.3, [['На нём была ', Wt], ['моя куртка.', Y]]],
+  [37.0, 39.8, [['— Гони. Пожалуйста. ', Wt], ['Быстрее.', R]]],
+  [47.6, 49.6, [['— …Ну вот и ', Wt], ['познакомились.', R]]],
+];
+function caption(t) { const c = CAPS.find(([a, b]) => t >= a && t < b); if (!c) return; const [a, , spans] = c;
+  const sc = lerp(.85, 1, E.back(win(t, a, a + .22))), size = 60; ctx.save(); ctx.font = `900 ${size}px Inter`; ctx.textBaseline = 'middle';
+  // перенос по словам в 2 строки при ширине > 820
+  const words = []; for (const [s, col] of spans) for (const w of s.split(/(?<= )/)) if (w) words.push([w, col]);
+  const lines = [[]]; let lw = 0; for (const wd of words) { const w = ctx.measureText(wd[0]).width; if (lw + w > 860 && lines[lines.length - 1].length) { lines.push([]); lw = 0; } lines[lines.length - 1].push(wd); lw += w; }
+  ctx.translate(CX, 1400); ctx.scale(sc, sc);
+  lines.forEach((ln, i) => { const tw = ln.reduce((s, [w]) => s + ctx.measureText(w).width, 0); let x = -tw / 2, y = (i - (lines.length - 1) / 2) * size * 1.15;
+    for (const [w, col] of ln) { ctx.lineWidth = 14; ctx.strokeStyle = 'rgba(0,0,0,.85)'; ctx.lineJoin = 'round'; ctx.strokeText(w, x, y); ctx.fillStyle = col; ctx.fillText(w, x, y); x += ctx.measureText(w).width; } });
+  ctx.restore(); }
+
+// ───── планы: [начало, конец, функция] ─────
+const kb = (t, a, b, z0, z1, dx = 0, dy = 0) => { const k = E.io(win(t, a, b)); return [lerp(z0, z1, k), dx * k, dy * k]; };
+const SHOTS = [
+  [0, 4.6, t => { plate('01', t, ...kb(t, 0, 4.6, 1.04, 1.1)); rain(t, .55); vignette(); phone(t, tt => orderCard(tt, .35), E.out(win(t, 0, .3))); stamp('НОЧЬ · 03:12'); }],
+  [4.6, 6.6, t => { plate('02', t, ...kb(t, 4.6, 6.6, 1.0, 1.12)); vignette(.8); }],
+  [6.6, 12.6, t => { plate('01', t, 1.1); rain(t, .55); vignette(); phone(t, tt => { orderCard(tt, -5); callScreen(tt, 6.8); }); stamp('НОЧЬ · 03:12'); }],
+  [12.6, 16.8, t => { plate('03', t, ...kb(t, 12.6, 16.8, 1.0, 1.1, 0, -40)); vignette(.5); stamp('УТРО · 06:10', C.soft); }],
+  [16.8, 18.1, t => { plate('04', t, ...kb(t, 16.8, 18.1, 1.06, 1.0)); vignette(.5); stamp('УТРО · 06:12', C.soft); }],
+  [18.1, 20.4, t => { plate('05', t, ...kb(t, 18.1, 20.4, 1.0, 1.08, 40, 0)); vignette(.5); stamp('УТРО · 06:13', C.soft); }],
+  [20.4, 25.5, t => { plate('06', t, ...kb(t, 20.4, 25.5, 1.0, 1.25, 0, 180)); rain(t, .35); vignette(); stamp('НОЧЬ · 03:16'); }],
+  [25.5, 29.0, t => { plate('07', t, ...kb(t, 25.5, 29.0, 1.0, 1.12, 0, 60)); rain(t, .3); vignette(); toast(t, 26.3, 'Пассажир выходит'); stamp('НОЧЬ · 03:17'); }],
+  [29.0, 36.0, t => { plate('08', t, ...kb(t, 29.0, 36.0, 1.08, 1.0)); rain(t, .45); vignette(); stamp('НОЧЬ · 03:17'); }],
+  [36.0, 41.0, t => { plate('09', t, ...kb(t, 36.0, 41.0, 1.0, 1.05)); vignette(.7); stamp('НОЧЬ · 03:18'); }],
+  [41.0, 46.0, t => { plate('10', t, ...kb(t, 41.0, 46.0, 1.0, 1.18)); vignette(.85); }],
+  [46.0, 50.0, t => { plate('11', t, ...kb(t, 46.0, 50.0, 1.05, 1.15)); vignette(.85); }],
+  [50.0, 53.01, t => { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); const k = E.out(win(t, 50.3, 50.9));
+    txt('ЗАКАЗ ИЗ ДОМА', CX, 860, 76, C.white, { weight: 900, align: 'center', alpha: k }); txt('— ЧАСТЬ 2 —', CX, 950, 40, C.red, { weight: 900, align: 'center', alpha: win(t, 50.9, 51.3) }); }],
+];
+function drawFrame(t) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  let i = SHOTS.length - 1; while (i > 0 && SHOTS[i][0] > t) i--;
+  ctx.save(); SHOTS[i][2](t); ctx.restore();
+  const t0 = SHOTS[i][0]; if (i > 0) { const k = 1 - win(t, t0, t0 + .18); if (k > 0) { ctx.fillStyle = `rgba(0,0,0,${k})`; ctx.fillRect(0, 0, W, H); } } // короткое затемнение на склейке
+  if (i === 9 && t > 40.6) { ctx.fillStyle = `rgba(0,0,0,${win(t, 40.6, 41)})`; ctx.fillRect(0, 0, W, H); }
+  caption(t);
+}
+
+// ───── звук: голос (черновой) + эффекты ─────
+const VO = { n1: .3, n2: 4.9, n3: 7.9, n4: 12.8, n5: 21.4, n6: 31.6, m1: 37.0, m2: 47.6 };
+const run = (a, b, step) => { const r = []; for (let x = a; x < b; x += step) r.push(+x.toFixed(2)); return r; };
+window.SFX_CUES = [
+  ...Object.entries(VO).map(([id, t]) => ({ t, type: 'file', path: `projects/zakaz-iz-doma/assets/vo/${id}.wav`, gain: 1.0 })),
+  { t: 0, type: 'lib', id: 'oc-RAINInt_ForestCabinRain_LOOP_01', gain: .32, align: 'start', dur: 12.6 },
+  { t: 20.4, type: 'lib', id: 'oc-RAINInt_ForestCabinRain_LOOP_01', gain: .32, align: 'start', dur: 29.6 },
+  { t: 0, type: 'lib', id: 'oc-DSGNDron_DroneCreepy_OS_02', gain: .28, align: 'start', dur: 50 },
+  ...[0, 4, 8].map(t => ({ t, type: 'lib', id: 'oc-VEHCar_CarEngineSlow_LOOP_01', gain: .12, align: 'start', dur: 4.1 })),
+  { t: .35, type: 'lib', id: 'notification-alert-clear', gain: .6 },
+  { t: 6.8, type: 'lib', id: 'phone-keypad', gain: .35, align: 'start', dur: .5 }, { t: 7.0, type: 'lib', id: 'phone-ring-modern', gain: .25, align: 'start', dur: .9 },
+  { t: 8.0, type: 'lib', id: 'notification-failure-wobble', gain: .6 },
+  { t: 15.6, type: 'lib', id: 'bass-rumble-short', gain: .6 }, { t: 18.6, type: 'lib', id: 'bass-rumble-short', gain: .5 },
+  { t: 21.4, type: 'lib', id: 'bass-rumble-medium', gain: .5 },
+  { t: 26.3, type: 'lib', id: 'notification-alert-clear', gain: .5, rate: .85 },
+  { t: 29.3, type: 'lib', id: 'mechanical-latch-heavy', gain: .8 }, { t: 29.4, type: 'lib', id: 'impact-deep-firm', gain: .45 },
+  ...run(29.9, 35.6, .34).map((t, i) => ({ t, type: 'lib', id: 'oc-FEETHmn_ShoeConcreteRun_OS_0' + (i % 3 + 1), gain: .45 + i * .02 })),
+  { t: 36.1, type: 'lib', id: 'oc-VEHDoor_CarDoorClose_OS_01', gain: .8 },
+  { t: 36.4, type: 'lib', id: 'oc-HMNBrth_MaleBreathing_OS_01', gain: .5, align: 'start', dur: 4.6 },
+  { t: 41.2, type: 'lib', id: 'bass-rumble-long', gain: .55, align: 'start' },
+  { t: 47.3, type: 'lib', id: 'whoosh-slow-soft', gain: .4 },
+  { t: 49.8, type: 'lib', id: 'cinematic-drum-massive', gain: .8 },
+];
+window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
+window.READY = Promise.all([...Object.keys(ASSETS).map(loadImg), ...['900 60px Inter', '800 40px Inter', '600 24px Inter'].map(f => document.fonts.load(f))]).then(() => drawFrame(0));
+</script>
+</body>
+</html>
