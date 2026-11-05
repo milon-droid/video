@@ -115,6 +115,10 @@ function drawFrame(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
 // ───── звук ─────
 const M = 'projects/schetchik/assets/music-ep5.wav';
 window.SFX_CUES = [
+  // ретро-звук: акценты в сценах без своего звука (2026-11-05)
+  { t: 22, type: 'engine', dur: 2.4, gain: .1 }, { t: 22, type: 'tires', dur: 2.4, gain: .07 },                    // такси в снегу
+  { t: 40.05, type: 'lib', id: 'impact-deep-firm', gain: .45 },                                                      // «получатель — я»
+  { t: 47.7, type: 'lib', id: 'bsb-car-door-outside', gain: .45, align: 'start', dur: 1.6 }, { t: 48, type: 'lib', id: 'bsb-wind-whistle-chimney', gain: .12, align: 'start', dur: 3 }, // Марат ушёл
   { t: 0, type: 'file', path: M, gain: .09, dur: 37 }, { t: 51, type: 'file', path: M, gain: .08, from: 51, dur: 8 }, // 37–50: аккорды вместо гула; тишина 50–51
   ...Object.entries(VO_AT).map(([id, t]) => ({ t, type: 'file', path: `projects/schetchik/assets/vo/ep5/${id}.wav`, gain: VO_GAIN[id] || 3.0 })),
   { t: 0, type: 'lib', id: 'bsb-vhs-playback', gain: .12, align: 'start', dur: 22 },                                       // tape_hiss под всей записью

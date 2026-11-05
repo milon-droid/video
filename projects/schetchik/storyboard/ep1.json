@@ -155,7 +155,12 @@
       "start": 16,
       "end": 18,
       "vo": null,
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "bsb-heartbeat-slow",
+          "at": 16.2
+        }
+      ],
       "hud": {
         "time": "03:18",
         "balance": null
@@ -199,7 +204,12 @@
       "start": 21,
       "end": 24,
       "vo": null,
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "hiss",
+          "at": 21.2
+        }
+      ],
       "hud": {
         "time": "03:24",
         "balance": null
@@ -239,7 +249,16 @@
       "start": 27,
       "end": 30,
       "vo": null,
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "click-button-soft",
+          "at": 27.15
+        },
+        {
+          "id": "note",
+          "at": 27.2
+        }
+      ],
       "hud": {
         "time": "03:41",
         "balance": null
@@ -511,6 +530,18 @@
         "accent": []
       },
       "sfx": [
+        {
+          "id": "hum",
+          "at": 55.2
+        },
+        {
+          "id": "hum",
+          "at": 55.9
+        },
+        {
+          "id": "hum",
+          "at": 56.6
+        },
         {
           "id": "file",
           "at": 55

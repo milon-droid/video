@@ -135,6 +135,11 @@ function drawFrame(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
 
 // ───── звук (только CC0 и синтез). Имена из ТЗ — в комментариях ─────
 window.SFX_CUES = [
+  // ретро-звук: акценты в сценах без своего звука (2026-11-05)
+  { t: 16.2, type: 'lib', id: 'bsb-heartbeat-slow', gain: .35, align: 'start', dur: 1.8 },                         // реакция Беки в зеркале
+  { t: 21.2, type: 'hiss', dur: 2.6, lo: 2500, hi: 8000, gain: .04, attack: .6, pulse: 1.2 },                       // пар из термоса
+  { t: 27.15, type: 'lib', id: 'click-button-soft', gain: .5 }, { t: 27.2, type: 'note', freq: 1318.5, gain: .12 },  // табло печки «+24°»
+  ...[55.2, 55.9, 56.6].map(t => ({ t, type: 'hum', dur: .45, gain: .18, pitch: 1.9 })),                             // телефон вибрирует в бардачке
   { t: 0, type: 'file', path: 'projects/schetchik/assets/music-ep1.wav', gain: .1, dur: 54 },   // фон: тёмный эмбиент (tools/music.py --style dark), без мелодии и ритма
   { t: 55, type: 'file', path: 'projects/schetchik/assets/music-ep1.wav', gain: .08, from: 55, dur: 4.4 }, // 54–55 — тишина перед финальной фразой
   ...Object.entries(VO_AT).map(([id, t]) => ({ t, type: 'file', path: `projects/schetchik/assets/vo/ep1/${id}.wav`, gain: VO_GAIN[id] || 3.0 })),

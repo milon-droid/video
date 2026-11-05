@@ -118,6 +118,10 @@ function drawFrame(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
 const M = 'projects/schetchik/assets/music-ep4.wav';
 const ticks = (a, b, s0, s1) => { const r = []; let t = a; while (t < b) { r.push(+t.toFixed(2)); t += lerp(s0, s1, (t - a) / (b - a)); } return r; };
 window.SFX_CUES = [
+  // ретро-звук: акценты в сценах без своего звука (2026-11-05)
+  { t: 0.05, type: 'lib', id: 'whoosh-fast-hard', gain: .4 }, ...[0.4, 0.9, 1.4, 1.9, 2.4].map((t, i) => ({ t, type: 'lib', id: 'data-tick', gain: .25 + i * .05 })), // маршрут рисуется
+  { t: 40, type: 'hum', dur: 8, gain: .05, pitch: 1.2 }, ...[40.5, 41.5, 42.5, 43.5, 45.5, 46.5, 47.5].map(t => ({ t, type: 'lib', id: 'data-tick', gain: .1, rate: .7 })), // тишина квартиры, часы
+  { t: 44.15, type: 'lib', id: 'click-button-firm', gain: .55 },                                                     // выключатель
   { t: 0, type: 'file', path: M, gain: .1, dur: 52 }, { t: 53, type: 'file', path: M, gain: .08, from: 53, dur: 5 }, // тишина 52–53
   ...Object.entries(VO_AT).map(([id, t]) => ({ t, type: 'file', path: `projects/schetchik/assets/vo/ep4/${id}.wav`, gain: VO_GAIN[id] || 3.0 })),
   { t: 3.2, type: 'lib', id: 'bsb-breathing-man-slow', gain: .3, align: 'start', dur: 3.8 },                               // breath_rear

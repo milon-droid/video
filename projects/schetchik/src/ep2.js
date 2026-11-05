@@ -90,6 +90,10 @@ function drawFrame(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
 // ───── звук: голос, тёмный эмбиент, CC0-шумы ─────
 const M = 'projects/schetchik/assets/music-ep2.wav';
 window.SFX_CUES = [
+  // ретро-звук: акценты в сценах без своего звука (2026-11-05)
+  { t: 3.3, type: 'lib', id: 'bsb-ice-crack-1', gain: .3, align: 'start', dur: 1.2 },                               // иней на зеркале
+  { t: 27, type: 'lib', id: 'bsb-tv-zapping', gain: .18, align: 'start', dur: .6 }, { t: 27.5, type: 'murmur', dur: 6.5, gain: .06 }, // утренние новости по ТВ
+  ...[41.3, 42.1, 42.9].map(t => ({ t, type: 'lib', id: 'click-button-soft', gain: .35 })),                          // листает историю водителей
   { t: 0, type: 'file', path: M, gain: .1, dur: 3.9 }, { t: 6.0, type: 'file', path: M, gain: .1, from: 6.0, dur: 44 }, { t: 51, type: 'file', path: M, gain: .08, from: 51, dur: 2.5 }, // «всё стихает» 3.9–6, тишина 50–51
   ...Object.entries(VO_AT).map(([id, t]) => ({ t, type: 'file', path: `projects/schetchik/assets/vo/ep2/${id}.wav`, gain: VO_GAIN[id] || 3.0 })),
   { t: 0.0, type: 'lib', id: 'notification-alert-clear', gain: .5 },                                 // ping в начале (продолжение звонка из бардачка)

@@ -30,7 +30,7 @@
           "at": 0
         },
         {
-          "id": "engine",
+          "id": "roar",
           "at": 0
         },
         {
@@ -44,6 +44,14 @@
         {
           "id": "cinematic-thunder-big",
           "at": 2.2
+        },
+        {
+          "id": "debris",
+          "at": 2.25
+        },
+        {
+          "id": "crackle",
+          "at": 2.3
         }
       ],
       "hud": {
@@ -76,7 +84,7 @@
           "at": 3
         },
         {
-          "id": "engine",
+          "id": "bsb-car-engine-accel",
           "at": 3
         },
         {
@@ -162,16 +170,8 @@
           "at": 12.3
         },
         {
-          "id": "swish-soft",
-          "at": 12.6
-        },
-        {
-          "id": "swish-medium",
-          "at": 13.3
-        },
-        {
-          "id": "swish-soft",
-          "at": 14.1
+          "id": "brush",
+          "at": 12.5
         }
       ],
       "hud": {
@@ -404,8 +404,8 @@
           "at": 31.85
         },
         {
-          "id": "impact-heavy-firm",
-          "at": 31.92
+          "id": "debris",
+          "at": 31.65
         },
         {
           "id": "bsb-breathless-man",
