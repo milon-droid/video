@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Проверка готового ролика под TikTok/Reels/Shorts.
 
-    python3 tools/qa.py video.mp4 [--frames 9] [--no-safe]
+    python3 tools/qa.py video.mp4 [--frames 9] [--no-safe] [--step 2] [--caption-zone 1150-1400]
+
+--step N        — дополнительно лист раскадровки: кадр каждые N с (по нему смотреть ролик глазами до сдачи);
+--caption-zone  — полоса субтитров (в координатах 1080×1920): где фон под ней слишком светлый (>0,45) — предупреждение.
+Всегда: поиск «застывших» отрезков длиннее 5 с (кадр почти не меняется) и громкость −14 ±1 LUFS.
 
 Печатает отчёт (разрешение, fps, кодек, длительность, громкость) и сохраняет
 контактный лист кадров с наложенными зонами интерфейса:
@@ -62,11 +66,30 @@ def contact_sheet(path, out, duration, w, h, n, safe, fps=30):
     return r.returncode == 0, r.stderr.strip()
 
 
+def gray_frames(path, fps=2, w=108, h=192):
+    """Кадры в оттенках серого, маленькие (для автопроверок)."""
+    import numpy as np
+    raw = run_bytes(["ffmpeg", "-v", "error", "-i", str(path), "-vf", f"fps={fps},scale={w}:{h},format=gray", "-f", "rawvideo", "-"])
+    return np.frombuffer(raw, dtype=np.uint8).reshape(-1, h, w).astype(float) / 255
+
+
+def run_bytes(cmd):
+    return subprocess.run(cmd, capture_output=True).stdout
+
+
+def storyboard_sheet(path, out, step):
+    vf = (f"fps=1/{step},scale=200:-1,drawtext=fontfile='{FONT}':text='%{{pts\\:hms}}':x=4:y=4:fontsize=14:fontcolor=white:box=1:boxcolor=black@0.6,tile=6x6:padding=4:color=0x222222")
+    r = run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", str(path), "-vf", vf, "-fps_mode", "passthrough", str(out)])
+    return r.returncode == 0, r.stderr.strip()
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("video")
     ap.add_argument("--frames", type=int, default=9)
     ap.add_argument("--no-safe", action="store_true")
+    ap.add_argument("--step", type=float, default=0, help="лист раскадровки: кадр каждые N секунд")
+    ap.add_argument("--caption-zone", default="", help="полоса субтитров y0-y1 в координатах 1080×1920, напр. 1150-1400")
     a = ap.parse_args()
     path = Path(a.video)
     info = probe(path)
@@ -100,8 +123,10 @@ def main():
     if au:
         lufs, peak = loudness(path)
         print(f"Аудио:       {au['codec_name']}, {au.get('sample_rate')} Гц, {lufs} LUFS, пик {peak} dBFS")
-        if lufs is not None and not -16 <= lufs <= -12:
-            warns.append(f"громкость {lufs} LUFS, рекомендуется около −14 (loudnorm=I=-14:TP=-1:LRA=11)")
+        if lufs is not None and not -15 <= lufs <= -13:
+            warns.append(f"громкость {lufs} LUFS, нужно −14 ±1 (двухпроходный loudnorm=I=-14:TP=-1:LRA=9)")
+        if peak is not None and peak > -1.0:
+            warns.append(f"пик {peak} dBFS выше −1 — нужен true peak ≤ −1")
         if peak is not None and peak > -0.5:
             warns.append(f"пик {peak} dBFS — возможен клиппинг")
     else:
@@ -114,6 +139,32 @@ def main():
     print(f"Контактный лист: {sheet}" if ok else f"Контактный лист не создан: {err}")
     if ok and not a.no_safe:
         print("  (красное — зоны интерфейса: текст и важное туда не ставить)")
+
+    if a.step:
+        sb = out_dir / f"{path.stem}-sb%02d.png"
+        ok2, err2 = storyboard_sheet(path, sb, a.step)
+        print(f"Лист раскадровки (кадр каждые {a.step:g} с): {out_dir}/{path.stem}-sb01.png …" if ok2 else f"Лист раскадровки не создан: {err2}")
+    # автопроверки по маленьким кадрам: застывшие отрезки и светлый фон под субтитрами
+    try:
+        import numpy as np
+        g = gray_frames(path); fpsg = 2
+        # одна и та же композиция дольше 5 с: сравниваем сильно размытые кадры (без полосы субтитров и снега) с шагом 5 с
+        hh, ww = g.shape[1], g.shape[2]; mask = np.ones(hh, bool); mask[int(1100 / 1920 * hh):int(1450 / 1920 * hh)] = False
+        small = np.stack([f[mask] for f in g]); r4 = small.shape[1] // 4 * 4
+        small = small[:, :r4].reshape(len(g), -1, 4, ww).mean(2)  # размыть по вертикали — снег и зерно не мешают
+        k = int(5 * fpsg); flagged = []
+        for i in range(0, len(g) - k):
+            a0, b0 = small[i], small[i + k]
+            d = np.abs(a0 - b0).mean()
+            if d < 0.012 and (not flagged or i / fpsg - flagged[-1][1] > 0.6): flagged.append([i / fpsg, (i + k) / fpsg])
+            elif d < 0.012: flagged[-1][1] = (i + k) / fpsg
+        for a1, b1 in flagged: warns.append(f"одна композиция {a1:.1f}–{b1:.1f} с (≥5 с без нового плана) — разбить на общий/крупный или добавить элемент")
+        if a.caption_zone:
+            y0, y1 = (int(v) for v in a.caption_zone.split("-")); hh = g.shape[1]; z = g[:, int(y0 / 1920 * hh):int(y1 / 1920 * hh), int(.1 * g.shape[2]):int(.9 * g.shape[2])]
+            light = [i / fpsg for i, m in enumerate(z.mean(axis=(1, 2))) if m > 0.45]
+            if light: warns.append(f"светлый фон под субтитрами ({len(light)} кадров), например {', '.join(f'{x:.1f}' for x in light[:6])} с — нужна подложка/обводка")
+    except Exception as e:
+        warns.append(f"автопроверки кадров не выполнены: {e}")
 
     for p in problems:
         print(f"[ОШИБКА] {p}")
