@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Счётчик · обложка 3</title>
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #0E1630; } canvas { display: block; }
+@font-face { font-family: 'Mont'; font-weight: 100 900; src: url('../../../fonts/Montserrat-VF.ttf'); }
+@font-face { font-family: 'JBM'; font-weight: 100 800; src: url('../../../fonts/JetBrainsMono-VF.ttf'); }</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script><script src="ep3-words.js"></script>
+<script src="ep3.js"></script>
+<script>
+// обложка: пустое заднее сиденье в зеркале, ремень сам пристёгнут, крупный хук
+window.SCENE = { duration: 1, fps: 30, width: W, height: H };
+function drawCover() { ctx.setTransform(1, 0, 0, 1, 0, 0); MirrorShot(9, tt => lampMirror(tt)); post(0);
+  Hud(0, { night: 2, time: '03:17', temp: '−28°', balance: '49:32:00' }); PartSticker(3, 0);
+  txt('СЧЁТЧИК', CXC, 1060, 150, T.text, { weight: 900, align: 'center', stroke: 16 }); txt('3/5 · ШАХТА', CXC, 1180, 60, T.window, { weight: 900, align: 'center', stroke: 12 });
+  txt('ПЯТЬ ЧАСОВ', CXC, 1310, 72, T.text, { weight: 900, align: 'center', stroke: 14 }); txt('ЧУЖОЙ ЖИЗНИ', CXC, 1395, 72, T.danger, { weight: 900, align: 'center', stroke: 14 }); }
+window.renderFrame = () => drawCover(); window.READY = window.READY.then(drawCover);
+</script></body></html>

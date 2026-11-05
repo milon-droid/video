@@ -1,0 +1,454 @@
+{
+  "episode": 3,
+  "title": "Шахта",
+  "duration": 58,
+  "hud": {
+    "night": 2,
+    "temp": "−28°",
+    "balanceStart": "49:32:00"
+  },
+  "scenes": [
+    {
+      "id": "e3s01",
+      "start": 0,
+      "end": 3,
+      "vo": {
+        "speaker": "beka",
+        "text": "ВТОРАЯ НОЧЬ. ЗАКАЗ НА ПЯТЬ ЧАСОВ ЧУЖОЙ ЖИЗНИ",
+        "accent": [
+          "ПЯТЬ",
+          "ЧАСОВ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 0
+        },
+        {
+          "id": "file",
+          "at": 0
+        },
+        {
+          "id": "notification-alert-clear",
+          "at": 0
+        },
+        {
+          "id": "heartbeat",
+          "at": 0.2
+        },
+        {
+          "id": "heartbeat",
+          "at": 1
+        },
+        {
+          "id": "heartbeat",
+          "at": 1.8
+        },
+        {
+          "id": "heartbeat",
+          "at": 2.6
+        }
+      ],
+      "hud": {
+        "time": "03:17",
+        "balance": "49:31:59"
+      },
+      "overlays": [
+        "PartSticker:3"
+      ]
+    },
+    {
+      "id": "e3s02",
+      "start": 3,
+      "end": 8,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЗАБРОШЕННАЯ БАНЯ ШАХТЫ. ОН ВЫШЕЛ ИЗ ТЕМНОТЫ",
+        "accent": [
+          "ТЕМНОТЫ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 3.6
+        },
+        {
+          "id": "bsb-wind-whistle-chimney",
+          "at": 3
+        },
+        {
+          "id": "bsb-heavy-chain",
+          "at": 4.6
+        }
+      ],
+      "hud": {
+        "time": "03:20",
+        "balance": "49:28:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s03",
+      "start": 8,
+      "end": 12,
+      "vo": {
+        "speaker": "beka",
+        "text": "В ЗЕРКАЛЕ — ТОЛЬКО СВЕТ ЕГО ФОНАРЯ",
+        "accent": [
+          "СВЕТ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 8.6
+        },
+        {
+          "id": "bsb-cough-man",
+          "at": 10.4
+        }
+      ],
+      "hud": {
+        "time": "03:22",
+        "balance": "49:26:49"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s04",
+      "start": 12,
+      "end": 16,
+      "vo": {
+        "speaker": "beka",
+        "text": "ПОЛУЧАТЕЛЮ ВОСЕМЬДЕСЯТ ОДИН. ЕГО ЧАСЫ СТАНУТ МОИМИ",
+        "accent": [
+          "МОИМИ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 12.3
+        },
+        {
+          "id": "click-button-soft",
+          "at": 12.15
+        }
+      ],
+      "hud": {
+        "time": "03:23",
+        "balance": "49:25:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s05",
+      "start": 16,
+      "end": 23,
+      "vo": {
+        "speaker": "mom_voice",
+        "text": "— БЕКА… БАЛАМ. ОБЕРНИСЬ. ЭТО Я",
+        "accent": [
+          "Я"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 17.2
+        },
+        {
+          "id": "tires",
+          "at": 16
+        },
+        {
+          "id": "heartbeat",
+          "at": 16.3
+        },
+        {
+          "id": "heartbeat",
+          "at": 17.2
+        },
+        {
+          "id": "heartbeat",
+          "at": 18.03
+        },
+        {
+          "id": "heartbeat",
+          "at": 18.8
+        },
+        {
+          "id": "heartbeat",
+          "at": 19.5
+        },
+        {
+          "id": "heartbeat",
+          "at": 20.15
+        },
+        {
+          "id": "heartbeat",
+          "at": 20.75
+        },
+        {
+          "id": "heartbeat",
+          "at": 21.31
+        },
+        {
+          "id": "heartbeat",
+          "at": 21.82
+        },
+        {
+          "id": "heartbeat",
+          "at": 22.29
+        },
+        {
+          "id": "heartbeat",
+          "at": 22.73
+        }
+      ],
+      "hud": {
+        "time": "03:35",
+        "balance": "49:13:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s06",
+      "start": 23,
+      "end": 28,
+      "vo": {
+        "speaker": "beka",
+        "text": "ГОЛОС МАМЫ. НО МАМА СПИТ ДОМА",
+        "accent": [
+          "СПИТ",
+          "ДОМА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 24.6
+        },
+        {
+          "id": "digital-glitch-clear",
+          "at": 23.2
+        }
+      ],
+      "hud": {
+        "time": "03:38",
+        "balance": "49:10:59"
+      },
+      "overlays": [
+        "Glitch",
+        "RuleCard:2"
+      ]
+    },
+    {
+      "id": "e3s07",
+      "start": 28,
+      "end": 32,
+      "vo": {
+        "speaker": "dead_voice",
+        "text": "— МОЛОДЕЦ",
+        "accent": [
+          "МОЛОДЕЦ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 29
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 29
+        }
+      ],
+      "hud": {
+        "time": "03:40",
+        "balance": "49:08:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s08",
+      "start": 32,
+      "end": 40,
+      "vo": {
+        "speaker": "beka",
+        "text": "СТАРИК ОТКРЫЛ САМ. БУДТО ЖДАЛ СЫНА ТРИДЦАТЬ ЛЕТ",
+        "accent": [
+          "ЖДАЛ",
+          "СЫНА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 33.6
+        },
+        {
+          "id": "bsb-door-creak-open",
+          "at": 32.5
+        },
+        {
+          "id": "click-button-firm",
+          "at": 36
+        }
+      ],
+      "hud": {
+        "time": "03:52",
+        "balance": "48:56:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s09",
+      "start": 40,
+      "end": 44,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЕГО ПЯТЬ ЧАСОВ. ТЕПЕРЬ — МОИ",
+        "accent": [
+          "МОИ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 41.8
+        },
+        {
+          "id": "money-coin-drop",
+          "at": 41.5
+        }
+      ],
+      "hud": {
+        "time": "03:54",
+        "balance": "48:54:31"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s10",
+      "start": 44,
+      "end": 48,
+      "vo": {
+        "speaker": "beka",
+        "text": "Я НЕ НАЖИМАЛ «ПРИНЯТЬ»",
+        "accent": [
+          "НЕ",
+          "НАЖИМАЛ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 45.2
+        },
+        {
+          "id": "digital-glitch-clear",
+          "at": 44.1
+        },
+        {
+          "id": "digital-glitch-subtle",
+          "at": 46.4
+        }
+      ],
+      "hud": {
+        "time": "03:55",
+        "balance": "54:05:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s11",
+      "start": 48,
+      "end": 52,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "bsb-car-door-slam-inside",
+          "at": 48.4
+        },
+        {
+          "id": "bsb-ice-crack-2",
+          "at": 48.7
+        }
+      ],
+      "hud": {
+        "time": "03:55",
+        "balance": "54:05:39"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s12",
+      "start": 52,
+      "end": 53,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "03:55",
+        "balance": "54:05:19"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s13a",
+      "start": 53,
+      "end": 55.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "АДРЕС — МОЙ ДОМ.",
+        "accent": [
+          "МОЙ",
+          "ДОМ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 53
+        },
+        {
+          "id": "file",
+          "at": 54
+        },
+        {
+          "id": "notification-alert-clear",
+          "at": 53
+        }
+      ],
+      "hud": {
+        "time": "03:55",
+        "balance": "54:05:18"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s13b",
+      "start": 55.6,
+      "end": 58.01,
+      "vo": {
+        "speaker": "beka",
+        "text": "ТАМ СПИТ МАМА",
+        "accent": [
+          "МАМА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 55.6
+        }
+      ],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}

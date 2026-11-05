@@ -106,7 +106,7 @@ function PhoneScreen(t, variant, lines = [], t0 = 0) { const X = PHN.x + 44, w =
       if (v2) txt(v2, X, y + 160, 44, T.frost, { weight: 900 }); ctx.restore(); y += 290; });
     ctx.restore(); return; }
   let y = variant === 'accepted' || variant === 'system' ? PHN.y + 560 : PHN.y + 300;
-  for (const [s, acc] of lines.slice(0, 2)) { const size = acc ? 64 : 44; ctx.font = `900 ${size}px Mont`; const words = s.toUpperCase().split(' '); let line = '', rows = [];
+  for (const [s, acc] of lines.slice(0, 2)) { let size = acc ? 64 : 44; ctx.font = `900 ${size}px Mont`; const longest = Math.max(...s.toUpperCase().split(' ').map(x => ctx.measureText(x).width)); if (longest > w) { size = Math.max(40, Math.floor(size * w / longest)); ctx.font = `900 ${size}px Mont`; } const words = s.toUpperCase().split(' '); let line = '', rows = [];
     for (const wd of words) { const tt = line ? line + ' ' + wd : wd; if (ctx.measureText(tt).width > w && line) { rows.push(line); line = wd; } else line = tt; } rows.push(line);
     for (const r of rows) { txt(r, X, y, size, acc ? (variant === 'accepted' ? T.ok : T.danger) : T.text, { weight: 900 }); y += size * 1.2; } y += 40; }
   ctx.restore(); }
@@ -237,3 +237,7 @@ function momBack(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
   ctx.beginPath(); ctx.moveTo(-20, -380); ctx.lineTo(0, -330); ctx.lineTo(20, -380); fillOL('#3c5a8a', 4); ctx.restore(); }
 function tvSet(x, y, w, h, draw) { rr(x - 20, y - 20, w + 40, h + 60, 20); fillOL('#2a2d36', 6); ctx.save(); rr(x, y, w, h, 10); ctx.clip(); draw(); ctx.restore(); ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 3; rr(x, y, w, h, 10); ctx.stroke();
   rr(x + w / 2 - 60, y + h + 40, 120, 30, 6); fillOL('#2a2d36', 5); }
+
+// мигающая метка в углу (например «ПРАВИЛО 2»)
+function CornerTag(t, text, col = T.frost) { if (Math.floor(t * 3) % 2) return; ctx.save(); ctx.font = '800 30px JBM'; const w = ctx.measureText(text).width + 40; const x = 1010 - w, y = 330;
+  ctx.fillStyle = 'rgba(14,22,48,.9)'; rr(x, y, w, 54, 10); ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.stroke(); txt(text, x + 20, y + 28, 30, col, { font: 'JBM', weight: 800 }); ctx.restore(); }
