@@ -166,7 +166,16 @@
       "start": 22,
       "end": 24.3,
       "vo": null,
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "engine",
+          "at": 22
+        },
+        {
+          "id": "tires",
+          "at": 22
+        }
+      ],
       "hud": {
         "time": "03:17",
         "balance": 17699.98000000001
@@ -330,7 +339,12 @@
         "text": "А ПОЛУЧАТЕЛЬ — Я",
         "accent": []
       },
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 40.05
+        }
+      ],
       "hud": {
         "time": "03:17",
         "balance": 17663.98000000001
@@ -400,6 +414,14 @@
         ]
       },
       "sfx": [
+        {
+          "id": "bsb-car-door-outside",
+          "at": 47.7
+        },
+        {
+          "id": "bsb-wind-whistle-chimney",
+          "at": 48
+        },
         {
           "id": "file",
           "at": 47.6

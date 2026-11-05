@@ -22,6 +22,30 @@
       },
       "sfx": [
         {
+          "id": "whoosh-fast-hard",
+          "at": 0.05
+        },
+        {
+          "id": "data-tick",
+          "at": 0.4
+        },
+        {
+          "id": "data-tick",
+          "at": 0.9
+        },
+        {
+          "id": "data-tick",
+          "at": 1.4
+        },
+        {
+          "id": "data-tick",
+          "at": 1.9
+        },
+        {
+          "id": "data-tick",
+          "at": 2.4
+        },
+        {
           "id": "file",
           "at": 0
         },
@@ -515,6 +539,26 @@
       },
       "sfx": [
         {
+          "id": "hum",
+          "at": 40
+        },
+        {
+          "id": "data-tick",
+          "at": 40.5
+        },
+        {
+          "id": "data-tick",
+          "at": 41.5
+        },
+        {
+          "id": "data-tick",
+          "at": 42.5
+        },
+        {
+          "id": "data-tick",
+          "at": 43.5
+        },
+        {
           "id": "file",
           "at": 40.3
         }
@@ -536,7 +580,24 @@
           "ПУСТО"
         ]
       },
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "data-tick",
+          "at": 45.5
+        },
+        {
+          "id": "data-tick",
+          "at": 46.5
+        },
+        {
+          "id": "data-tick",
+          "at": 47.5
+        },
+        {
+          "id": "click-button-firm",
+          "at": 44.15
+        }
+      ],
       "hud": {
         "time": "05:27",
         "balance": "26:44:54"

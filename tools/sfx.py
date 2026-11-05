@@ -9,7 +9,9 @@ cues.json — список событий:
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
 wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack), pluck (струна/домбра: freq), breath_in, hiss (шипение: lo, hi, pulse),
+roar (рёв ракеты), crackle (огонь), debris (обломки), brush (смахнуть снег),
 hum50 (гул сети 50 Гц), charge (подключение зарядки), lowbat (тройной писк), powerdown (выключение), zap (треск тока).
+Всем библиотечным и синтезированным звукам автоматически добавляется «верхний слой» для динамика телефона (phone_bright).
 duck — приглушение всего, кроме cue с "keep": true (звук суперсилы).
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
 
@@ -72,6 +74,20 @@ def sweep(f0, f1, dur, shape="sin", curve=1.0):
     if shape == "sq":
         return np.sign(np.sin(ph))
     return np.sin(ph)
+
+
+def phone_bright(x, c):
+    """Верхний слой для телефона: динамик смартфона не играет ниже ~300 Гц, поэтому гул, сердце, мотор, рокот и
+    глухие удары на нём пропадают. Если звук теряет на фильтре 300 Гц больше 8 дБ — добавляем его же гармоники
+    (насыщение низа → полоса 300–4000 Гц), чтобы осталось слышно ≈ −7 дБ. Отключить: "bright": false; сила: "bright": 0.5..2."""
+    b = c.get("bright", True)
+    if b is False or len(x) < 64: return x
+    full = np.sqrt(np.mean(x ** 2)) + 1e-12; hp = np.sqrt(np.mean(band(x, 300, 20000) ** 2)) + 1e-12
+    if 20 * np.log10(full / hp) <= 8: return x
+    low = band(x, 25, 320); pk = np.abs(low).max() or 1
+    harm = band(np.tanh(low / pk * 4.0) * pk, 300, 4000)  # нечётные гармоники низа: тот же ритм и атака, но в слышимой полосе
+    hr = np.sqrt(np.mean(harm ** 2)) + 1e-12; target = full * 10 ** (-7 / 20) * (b if not isinstance(b, bool) else 1.0)
+    return x + harm * max(0.0, target - hp) / hr
 
 
 LIB = None
@@ -226,6 +242,29 @@ def gen(c):
             out[i] = buf[i % N]; buf[i % N] = k * 0.5 * (buf[i % N] + buf[(i + 1) % N])
         out = out - band(out, 0, 90) * 0.0
         return out * np.minimum(1, np.arange(n) / 30) * np.minimum(1, (n - np.arange(n)) / (0.05 * SR))
+    if ty == "roar":  # рёв ракеты/реактивной струи: шумовая полоса + рокот + потрескивание, "dur", "dist" 0..1 (дальше — глуше)
+        d = d or 3.0
+        n = int(d * SR); t = np.arange(n) / SR; nz = noise(n); dist = c.get("dist", 0.3)
+        x = band(nz, 60 * p, 900 * p) * (0.7 + 0.3 * slow(n, 4, 3)) + (1 - dist) * 0.6 * band(nz, 900, 5000) * slow(n, 9, 4)
+        cr = (rng.uniform(0, 1, n) > 0.9993).astype(float); x = x + (1 - dist) * 0.8 * band(np.convolve(cr, np.exp(-np.arange(200) / 30), "same"), 400, 6000)
+        e = np.minimum(1, t / c.get("attack", 0.8)) * np.minimum(1, (d - t) / 0.3)
+        return x / (np.abs(x).max() or 1) * e
+    if ty == "crackle":  # треск огня: редкие сухие щелчки разной силы + шипящая подложка
+        d = d or 3.0
+        n = int(d * SR); t = np.arange(n) / SR; imp = (rng.uniform(0, 1, n) > 0.9985) * rng.uniform(.2, 1, n)
+        x = band(np.convolve(imp, np.exp(-np.arange(300) / 40) * np.sin(np.arange(300) * .9), "same"), 800, 9000) + 0.15 * band(noise(n), 2000, 8000)
+        return x / (np.abs(x).max() or 1) * np.minimum(1, t / .3) * np.minimum(1, (d - t) / .4)
+    if ty == "debris":  # сыплющиеся обломки/камни/грунт после удара: частые щелчки, которые редеют, "dur", "size" (крупнее — ниже)
+        d = d or 1.6
+        n = int(d * SR); t = np.arange(n) / SR; dens = np.exp(-t * 3.5 / d * 1.6); sz = c.get("size", 1.0)
+        imp = (rng.uniform(0, 1, n) < 0.004 * dens) * rng.uniform(.2, 1, n)
+        x = band(np.convolve(imp, np.exp(-np.arange(600) / (60 * sz)) * np.sin(np.arange(600) * (.35 / sz)), "same"), 250 / sz, 7000) + 0.3 * band(noise(n), 300, 3000) * dens ** 2
+        return x / (np.abs(x).max() or 1)
+    if ty == "brush":  # смахнуть снег/пыль ладонью: шорох с огибающей мазка, "strokes": число мазков
+        d = d or 1.2
+        n = int(d * SR); t = np.arange(n) / SR; k = c.get("strokes", 3); stroke = np.abs(np.sin(np.pi * k * t / d)) ** 1.5  # не «env»: так называется общая функция огибающей
+        x = band(noise(n), 1500 * p, 9000) * stroke + 0.4 * band(rng.uniform(0, 1, n) > 0.97, 2000, 8000) * stroke
+        return x / (np.abs(x).max() or 1)
     if ty == "hiss":  # шипение (клапан, газ, иней): {"type": "hiss", "dur": 1.5, "lo": 2500, "hi": 9000, "pulse": 0}
         d = d or 1.5
         n = int(d * SR); t = np.arange(n) / SR; x = band(noise(n), c.get("lo", 2500) * p, c.get("hi", 9000) * p)
@@ -307,10 +346,12 @@ def main():
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--duration", type=float, required=True)
     ap.add_argument("--no-norm", action="store_true", help="не нормализовать громкость (для сравнения дорожек между собой)")
+    ap.add_argument("--stems", help="папка: сохранить голос и фон отдельно (после приглушения) — для tools/vo-balance.py")
+    ap.add_argument("--voice-margin", type=float, default=10, help="автоприглушение: голос громче фона на столько дБ (0 — выключить)")
     a = ap.parse_args()
     cues = json.load(open(a.cues, encoding="utf-8"))
     n = int(a.duration * SR)
-    mix = np.zeros((n, 2)); keep = np.zeros((n, 2))
+    mix = np.zeros((n, 2)); keep = np.zeros((n, 2)); voice = np.zeros((n, 2))
     # {"type": "duck", "t": 24.6, "dur": 7, "db": -30, "ramp": 0.2, "lp": 500} — «звук силы»: всё, кроме cue с "keep": true,
     # уходит в глухой фильтр и на −30 дБ за ramp секунд, в конце возвращается разом
     ducks = [c for c in cues if c["type"] == "duck"]; cues = [c for c in cues if c["type"] != "duck"]
@@ -318,7 +359,7 @@ def main():
         shift = 0
         if c["type"] == "lib":
             x, shift = lib_sound(c)
-            x = x * c.get("gain", 0.7)
+            x = phone_bright(x, c) * c.get("gain", 0.7)
         elif c["type"] == "file":  # любой звуковой файл (озвучка, музыка): {"type": "file", "path": "...", "t": 1.0, "from"?: с, "dur"?: с}
             import subprocess
             from pathlib import Path
@@ -330,7 +371,7 @@ def main():
                 x = x[:int(c["dur"] * SR)].copy(); f = min(len(x) // 2, int(0.05 * SR))
                 if f: x[:f] *= np.linspace(0, 1, f); x[-f:] *= np.linspace(1, 0, f)
         else:
-            x = gen(c) * c.get("gain", 0.7)
+            x = phone_bright(gen(c), c) * c.get("gain", 0.7)
         i = int((c["t"] - shift) * SR)
         if i < 0:
             x, i = x[-i:], 0
@@ -338,7 +379,8 @@ def main():
             continue
         x = x[: n - i]
         pan = c.get("pan", 0.0)
-        dst = keep if c.get("keep") else mix
+        is_vo = c.get("voice", c["type"] == "file" and "/vo/" in c.get("path", ""))  # голос: не уходит в «звук силы», по нему приглушается фон
+        dst = voice if is_vo else keep if c.get("keep") else mix
         dst[i:i + len(x), 0] += x * np.sqrt((1 - pan) / 2) * 1.414
         dst[i:i + len(x), 1] += x * np.sqrt((1 + pan) / 2) * 1.414
     if ducks:
@@ -350,6 +392,26 @@ def main():
         lowp = np.stack([band(mix[:, ch], 0, lp) for ch in range(2)], 1)
         mix = mix * env[:, None] + lowp * wet[:, None]
     mix = mix + keep
+    if a.voice_margin > 0 and np.abs(voice).max() > 0:  # автоприглушение фона под голосом (sidechain): фон тише голоса на voice_margin дБ
+        hop = SR // 100; m = n // hop
+        rms = lambda x: np.sqrt(np.mean(x[:m * hop].mean(1).reshape(m, hop) ** 2, 1) + 1e-12)
+        vdb, bdb = 20 * np.log10(rms(voice)), 20 * np.log10(rms(mix))
+        sm = lambda x, k: np.convolve(x, np.ones(k) / k, "same")
+        vs = sm(vdb, 10); hold = np.array([vs[max(0, i - 25):i + 25].max() for i in range(m)])  # уровень речи с удержанием 0,5 с — паузы между словами не «душат» фон
+        speak = hold > hold.max() - 30
+        bdb = sm(bdb, 30); off = 3.0  # речь в среднем тише своих пиков; 3 дБ подобрано на 3 проектах: голос выходит на +10…15 дБ над фоном
+        red = np.clip(np.where(speak, (hold - off - a.voice_margin) - bdb, 0), -14, 0)  # только убавлять, не больше −14 дБ
+        att = np.minimum.accumulate  # быстрее вниз (атака), медленнее вверх (отпускание)
+        g = red.copy()
+        for i in range(1, m): g[i] = min(red[i], g[i - 1] + 0.12)  # отпускание ≈ 12 дБ/с
+        for i in range(m - 2, -1, -1): g[i] = min(g[i], g[i + 1] + 0.6)  # атака заранее ≈ 50 мс
+        gain = np.repeat(10 ** (g / 20), hop); gain = np.concatenate([gain, np.full(n - len(gain), gain[-1] if len(gain) else 1)])
+        mix = mix * gain[:, None]
+    if a.stems:
+        sd = __import__("pathlib").Path(a.stems); sd.mkdir(parents=True, exist_ok=True)
+        for nm, buf in (("voice", voice), ("bg", mix)):
+            with wave.open(str(sd / f"{nm}.wav"), "wb") as w2: w2.setnchannels(2); w2.setsampwidth(2); w2.setframerate(SR); w2.writeframes((np.clip(buf, -1, 1) * 32767).astype(np.int16).tobytes())
+    mix = mix + voice
     if not a.no_norm:
         peak = np.abs(mix).max() or 1
         mix = mix / peak * 0.89

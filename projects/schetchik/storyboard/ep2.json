@@ -63,6 +63,10 @@
       },
       "sfx": [
         {
+          "id": "bsb-ice-crack-1",
+          "at": 3.3
+        },
+        {
           "id": "file",
           "at": 4
         }
@@ -196,7 +200,16 @@
       "start": 27,
       "end": 31,
       "vo": null,
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "bsb-tv-zapping",
+          "at": 27
+        },
+        {
+          "id": "murmur",
+          "at": 27.5
+        }
+      ],
       "hud": {
         "time": "08:12",
         "balance": "68:37:55"
@@ -279,7 +292,20 @@
       "start": 41,
       "end": 44,
       "vo": null,
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "click-button-soft",
+          "at": 41.3
+        },
+        {
+          "id": "click-button-soft",
+          "at": 42.1
+        },
+        {
+          "id": "click-button-soft",
+          "at": 42.9
+        }
+      ],
       "hud": {
         "time": "12:36",
         "balance": "64:13:54"

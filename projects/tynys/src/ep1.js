@@ -148,19 +148,19 @@ const RIFF = 'projects/tynys/assets/riff.wav', BED = 'projects/tynys/assets/bed-
 const beats = (() => { const out = []; let t = ON + .2; while (t < OFF - .05) { out.push(+t.toFixed(3)); t += lerp(.95, .38, (t - ON) / (OFF - ON)); } return out; })(); // сердце ускоряется
 window.SFX_CUES = [
   ...Object.entries(VO_AT).map(([id, t]) => ({ t, type: 'file', path: `projects/tynys/assets/vo/ep1/${id}.wav`, gain: VO_GAIN[id] || 3.0 })),
-  { t: 0, type: 'lib', id: 'bass-rumble-long', gain: .25 }, { t: 0, type: 'engine', dur: 2.3, gain: .1, pitch: .7 }, { t: 1.6, type: 'lib', id: 'whoosh-slow-hard', gain: .4 }, // далёкий рёв
-  { t: 2.2, type: 'lib', id: 'impact-deep-hard', gain: 1.0 }, { t: 2.2, type: 'lib', id: 'cinematic-thunder-big', gain: .35 },                                        // удар
-  { t: 3, type: 'file', path: RIFF, gain: .17, dur: 4.2 }, { t: 3, type: 'engine', dur: 4, gain: .07, pitch: 1.4 }, { t: 3, type: 'tires', dur: 4, gain: .03 },     // мотор, рифф домбры
+  { t: 0, type: 'lib', id: 'bass-rumble-long', gain: .25 }, { t: 0, type: 'roar', dur: 2.25, gain: .35, dist: .5, attack: .3 }, { t: 1.6, type: 'lib', id: 'whoosh-slow-hard', gain: .4 }, // далёкий рёв
+  { t: 2.2, type: 'lib', id: 'impact-deep-hard', gain: 1.0 }, { t: 2.2, type: 'lib', id: 'cinematic-thunder-big', gain: .35 }, { t: 2.25, type: 'debris', dur: 1.8, gain: .45 }, { t: 2.3, type: 'crackle', dur: 4.6, gain: .12 }, // комья грунта, огонь                                        // удар
+  { t: 3, type: 'file', path: RIFF, gain: .17, dur: 4.2 }, { t: 3, type: 'lib', id: 'bsb-car-engine-accel', gain: .3, align: 'start', dur: 4 }, { t: 3, type: 'tires', dur: 4, gain: .03 },     // мотор, рифф домбры
   { t: 7, type: 'wind', dur: 17.6, gain: .07 }, { t: 7, type: 'file', path: BED, gain: .09, dur: 17.6 },
   { t: 9.6, type: 'lib', id: 'bsb-metal-gate-creak', gain: .45, align: 'start', dur: 1.9 },                                                                           // скрип металла
-  { t: 12.6, type: 'lib', id: 'swish-soft', gain: .5 }, { t: 13.3, type: 'lib', id: 'swish-medium', gain: .4 }, { t: 14.1, type: 'lib', id: 'swish-soft', gain: .4 }, // снег смахивают
+  { t: 12.5, type: 'brush', dur: 2.3, strokes: 4, gain: .35 }, // снег смахивают
   { t: 16.3, type: 'lib', id: 'bsb-door-creak-open', gain: .45, align: 'start', dur: 1.2 }, { t: 16.8, type: 'hiss', dur: 4.2, lo: 3000, hi: 9000, gain: .05, attack: .6, pulse: .35 }, // крышка, шипение инея
   { t: 17.85, type: 'heartbeat', gain: .3, pitch: .6 }, { t: 20.71, type: 'heartbeat', gain: .3, pitch: .6 }, { t: 18.6, type: 'lib', id: 'bsb-ice-crack-1', gain: .35, align: 'start', dur: 1.2 }, // пульс сферы
   { t: 21.1, type: 'lib', id: 'whoosh-medium-soft', gain: .5 }, { t: 21.75, type: 'lib', id: 'bsb-cough-man', gain: .8, align: 'start', dur: 1.95 },
   { t: 23.75, type: 'breath_in', dur: .45, gain: .7 },                                                                                                                 // резкий вдох
   { t: ON, type: 'duck', dur: OFF - ON, db: -30, ramp: .2, lp: 500 },                                                                                                  // звук пропадает
   ...beats.map(t => ({ t, type: 'heartbeat', gain: .9, keep: true })), { t: ON, type: 'tone', freq: 8000, dur: OFF - ON, gain: .035, keep: true },                     // остаются сердце и 8 кГц
-  { t: OFF, type: 'lib', id: 'impact-deep-hard', gain: 1.0 }, { t: OFF, type: 'lib', id: 'cinematic-metal-big', gain: .7 }, { t: OFF + .25, type: 'lib', id: 'impact-heavy-firm', gain: .5 }, { t: OFF + .32, type: 'lib', id: 'impact-heavy-firm', gain: .4, rate: 1.2 }, // мир возвращается ударом, лязг
+  { t: OFF, type: 'lib', id: 'impact-deep-hard', gain: 1.0 }, { t: OFF, type: 'lib', id: 'cinematic-metal-big', gain: .7, bright: 1.8 }, { t: OFF + .25, type: 'lib', id: 'impact-heavy-firm', gain: .5 }, { t: OFF + .05, type: 'debris', dur: 1.4, size: .6, gain: .5 }, // болты и камни сыплются с отскоками { t: OFF + .32, type: 'lib', id: 'impact-heavy-firm', gain: .4, rate: 1.2 }, // мир возвращается ударом, лязг
   { t: OFF + .1, type: 'lib', id: 'bsb-breathless-man', gain: .75, align: 'start', dur: 7.2 }, { t: OFF, type: 'wind', dur: 21.4, gain: .07 }, { t: 35.5, type: 'file', path: BED, gain: .08, from: 17.6, dur: 17.4 },
   { t: 39, type: 'lib', id: 'bsb-wind-strong-outside', gain: .22, align: 'start', dur: 5 },                                                                           // ветер
   { t: 44, type: 'hum', dur: 5, gain: .06, pitch: .5 },                                                                                                                // низкий гул
