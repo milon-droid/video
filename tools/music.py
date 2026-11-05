@@ -5,6 +5,7 @@
 
 synthwave — неоновые 80-е / Майами: бочка-снейр, басовые восьмые, широкий пэд, арпеджио.
 trap      — медленный хип-хоп бит: 808-бас, хэты с триолями, мягкий пэд.
+dark      — тёмный эмбиент для хоррора: низкий гул, медленно дышащий минорный кластер, холодный шелест; без мелодии и ритма.
 Громкость на выходе умеренная; в ролике ставить тихо (gain 0.25–0.4) под эффекты.
 """
 import argparse, wave
@@ -55,6 +56,22 @@ def hat(t, open_=False, g=0.18):
     ln = 0.12 if not open_ else 0.3; m = int(ln * SR); x = rng.uniform(-1, 1, m); x = x - smooth(x, 3)
     add(x * env(ln, 0.0005, 0.02 if not open_ else 0.09) * g, t, 0.8, 1.0)
 
+def band(x, lo, hi):
+    X = np.fft.rfft(x); f = np.fft.rfftfreq(len(x), 1 / SR); X[(f < lo) | (f > hi)] = 0; return np.fft.irfft(X, len(x))
+if a.style == "dark":
+    tt = np.arange(n) / SR
+    lfo = lambda hz, ph=0: 0.5 + 0.5 * np.sin(2 * np.pi * hz * tt + ph)
+    base = (np.sin(2 * np.pi * 55 * tt) + 0.6 * np.sin(2 * np.pi * 55.4 * tt + 1) + 0.35 * np.sin(2 * np.pi * 82.4 * tt)) * (0.6 + 0.4 * lfo(0.05))
+    grit = band(saw(55, a.duration, 0.003)[:n] + saw(54.7, a.duration)[:n], 40, 400) * 0.25 * lfo(0.03, 2)
+    pad = np.zeros(n)
+    for i, m in enumerate([45, 48, 52, 53, 57]):  # A, C, E, F, A — минор с полутоном (тревога)
+        w = smooth(saw(note(m), a.duration, 0.002 * (i - 2))[:n], 60); pad += w * (0.25 + 0.75 * lfo(0.021 + i * 0.006, i * 1.3)) ** 2
+    pad = band(pad, 80, 900) * 0.18
+    air = band(rng.uniform(-1, 1, n), 2500, 6500) * 0.05 * lfo(0.04, 4) ** 3
+    sub = np.sin(2 * np.pi * 36.7 * tt) * 0.25 * lfo(0.017, 1)
+    mono = base * 0.35 + grit + pad + air + sub
+    d = int(0.023 * SR); L[:] = mono; R[d:] = mono[:-d]; R[:d] = mono[:d]
+    total_beats = 0
 for b in range(total_beats):
     t = b * beat; bi = b % 4; chord = PROG[(b // 8) % 4]
     if a.style == "trap":

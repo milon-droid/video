@@ -52,7 +52,7 @@ function fiveStorey(t, off = null) { nightSky(); terricons(1150); panelBlock(60,
   ctx.fillStyle = '#dfe9f7'; ctx.fillRect(0, 1450, W, H); rr(440, 1260, 200, 190, 6); fillOL('#141a30', 5); rr(470, 1230, 140, 24, 6); fillOL('#2a3150', 4); glow(540, 1240, 140, 'rgba(242,179,61,.45)'); // подъезд
   sedan(820, 1610, .9, { lights: 1 }); snow(t, .8, 20); }
 function noTracks(t) { nightSky(); terricons(1000); ctx.fillStyle = '#e6eef9'; ctx.fillRect(0, 1180, W, H); const g = ctx.createLinearGradient(0, 1180, 0, 1700); g.addColorStop(0, 'rgba(120,150,200,.45)'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = g; ctx.fillRect(0, 1180, W, 520);
-  const sh = t > 38.15 ? Math.sin((t - 38.15) * 60) * 10 * Math.exp(-(t - 38.15) * 9) : 0; sedan(760 + sh, 1250, 2.4, { lights: 0, tail: 1 }); // машина вблизи, хлопок задней двери
+  const sh = t > 37.15 ? Math.sin((t - 37.15) * 60) * 10 * Math.exp(-(t - 37.15) * 9) : 0; sedan(760 + sh, 1250, 2.4, { lights: 0, tail: 1 }); // машина вблизи, хлопок задней двери
   ctx.fillStyle = 'rgba(120,150,200,.35)'; ctx.beginPath(); ctx.ellipse(760, 1262, 640, 40, 0, 0, Math.PI * 2); ctx.fill(); // тень, снег ровный — ни одного следа
   const r = seeded(9); for (let i = 0; i < 30; i++) { const x = r() * 640, y = 1300 + r() * 260, a = .4 + .6 * Math.sin(t * 4 + i); ctx.fillStyle = `rgba(255,255,255,${a})`; circle(x, y, 3); ctx.fill(); } snow(t, .7, 10); }
 function drift(t) { nightSky(); terricons(1150); ctx.fillStyle = '#0a0d1a'; ctx.fillRect(860, 640, 14, 700); rr(800, 630, 90, 18, 9); ctx.fill(); glow(820, 660, 340, 'rgba(242,179,61,.45)');
@@ -61,20 +61,23 @@ function drift(t) { nightSky(); terricons(1150); ctx.fillStyle = '#0a0d1a'; ctx.
   if (t > 51.2) { const pk = win(t, 51.2, 52.0), r = seeded(5); for (let i = 0; i < 26; i++) { const a = r() * Math.PI, d = pk * (60 + r() * 120); ctx.fillStyle = `rgba(240,246,255,${1 - pk})`; circle(330 + Math.cos(a) * d * 1.4, 1170 - Math.sin(a) * d, 6 + r() * 6); ctx.fill(); } }
   sedan(820 + 900 * Math.pow(win(t, 51.5, 53.8), 1.8), 1560, 1, { lights: 1 }); snow(t, .8, 30); }
 
-// ───── субтитры (равномерно внутри сцены, пока нет голоса) ─────
+// ───── голос (черновой синтез) и субтитры по пословным меткам из tools/words.py ─────
+const VO_AT = { e1s01: 0.0, e1s02: 3.2, e1s03: 8.4, e1s04: 13.3, e1s05: 18.6, e1s06: 24.4, e1s07: 30.6, e1s08: 36.6, e1s09: 42.0, e1s10: 45.2, e1s11: 50.2, e1s13: 55.1 };
+const VO_GAIN = { e1s07: 11, e1s13: 7 }; // шёпот тише — поднять
+const VT = id => (window.VO_WORDS && window.VO_WORDS[id] || null) && window.VO_WORDS[id].map(x => x + VO_AT[id]);
 const CAPS = buildCaptions([
-  [0.0, 3.0, 'За эту поездку мне заплатили **чужой жизнью**'],
-  [3.0, 8.0, 'Машина досталась мне от брата. Марат пропал **год назад**'],
-  [8.0, 13.0, 'Его телефон год был разряжен. В 03:17 он **сам** принял заказ'],
-  [13.0, 18.0, 'Откуда — кладбище. Оплата — не в тенге. **В минутах**'],
-  [18.0, 24.0, 'Она ждала у ворот. С термосом. **Для него**'],
-  [24.0, 30.0, 'В салоне плюс двадцать четыре. А снег **не тает**'],
-  [30.0, 35.0, '«Он всегда ждёт меня с **открытым окном**»', { color: T.frost }],
-  [35.0, 41.0, 'Она вышла. На снегу — **ни одного следа**'],
-  [41.0, 45.0, 'Четыре ноль три. Сорок семь минут — **мне**'],
-  [45.0, 50.0, 'А потом включился второй счётчик. **Мой**'],
-  [50.0, 54.0, 'Я выкинул телефон в сугроб'],
-  [55.0, 56.5, 'Через минуту он зазвонил в бардачке'],
+  [0.0, 3.0, 'За эту поездку мне заплатили **чужой жизнью**', { times: VT('e1s01') }],
+  [3.0, 8.0, 'Машина досталась мне от брата. Марат пропал **год назад**', { times: VT('e1s02') }],
+  [8.0, 13.0, 'Его телефон год был разряжен. В 03:17 он **сам** принял заказ', { times: VT('e1s03') }],
+  [13.0, 18.0, 'Откуда — кладбище. Оплата — не в тенге. **В минутах**', { times: VT('e1s04') }],
+  [18.0, 24.0, 'Она ждала у ворот. С термосом. **Для него**', { times: VT('e1s05') }],
+  [24.0, 30.0, 'В салоне плюс двадцать четыре. А снег **не тает**', { times: VT('e1s06') }],
+  [30.0, 35.0, '«Он всегда ждёт меня с **открытым окном**»', { color: T.frost, times: VT('e1s07') }],
+  [35.0, 41.0, 'Она вышла. На снегу — **ни одного следа**', { times: VT('e1s08') }],
+  [41.0, 45.0, 'Четыре ноль три. Сорок семь минут — **мне**', { times: VT('e1s09') }],
+  [45.0, 50.0, 'А потом включился второй счётчик. **Мой**', { times: VT('e1s10') }],
+  [50.0, 54.0, 'Я выкинул телефон в сугроб', { times: VT('e1s11') }],
+  [55.0, 58.0, 'Через минуту он зазвонил в бардачке', { times: VT('e1s13') }],
 ], { tail: .3 });
 CAPS[0].words[0].t = 0; CAPS[0].a = 0; // первый кадр: субтитр уже виден
 window.CAPTION_PHRASES = CAPS;
@@ -89,8 +92,8 @@ const SC = [
   [18, 24, 'e1s05', t => push(t, 18, 24, () => cemetery(t), 520, 1000), t => ({ night: 1, time: '03:24', temp: '−31°' })],
   [24, 30, 'e1s06', t => push(t, 24, 30, () => MirrorShot(t, tt => { rearSeat(tt); snowPile(tt); }, { glare: 1, dash: dashTemp }), 540, 760), t => ({ night: 1, time: '03:40', temp: '−31°' })],
   [30, 35, 'e1s07', t => carSide(t), t => ({ night: 1, time: '03:52', temp: '−31°' })],
-  [35, 38, 'e1s08a', t => push(t, 35, 38, () => fiveStorey(t), 600, 900), t => ({ night: 1, time: '04:02', temp: '−31°' })],
-  [38, 41, 'e1s08b', t => push(t, 38, 41, () => noTracks(t), 540, 1300), t => ({ night: 1, time: '04:02', temp: '−31°' })],
+  [35, 37, 'e1s08a', t => push(t, 35, 37, () => fiveStorey(t), 600, 900), t => ({ night: 1, time: '04:02', temp: '−31°' })],
+  [37, 41, 'e1s08b', t => push(t, 37, 41, () => noTracks(t), 540, 1300), t => ({ night: 1, time: '04:02', temp: '−31°' })],
   [41, 42.6, 'e1s09a', t => cam(lerp(2.2, 2.4, win(t, 41, 42.6)), 627, 1030, () => fiveStorey(t, 41.6)), t => ({ night: 1, time: '04:03', temp: '−31°' })],
   [42.6, 45, 'e1s09b', t => { windshield(t, .6); HandPhone(t, tt => PhoneScreen(tt, 'system', [['Поездка завершена · 04:03'], ['+47 мин', true]], 42.7), { k: E.out(win(t, 42.6, 42.9)), cracked: true }); }, t => ({ night: 1, time: '04:03', temp: '−31°' })],
   [45, 50, 'e1s10', t => { windshield(t, .5); ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(0, 0, W, H); const c = clk(4, 3, 1, t, 45), sk = E.io(win(t, 47.9, 48.6));
@@ -109,23 +112,25 @@ function drawFrame(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1;
 
 // ───── звук (только CC0 и синтез). Имена из ТЗ — в комментариях ─────
 window.SFX_CUES = [
-  { t: 0, type: 'drone', dur: 54, pitch: .85, gain: .32 },                               // дрон под всей серией (до тишины)
-  { t: 55, type: 'drone', dur: 3, pitch: .85, gain: .25 },
-  { t: 1.2, type: 'lib', id: 'click-clip-firm', gain: .9 }, { t: 1.2, type: 'lib', id: 'mechanical-latch-light', gain: .8 }, { t: 1.22, type: 'lib', id: 'impact-deep-hard', gain: .7 }, // belt_click + удар баса
-  { t: 3, type: 'wind', dur: 5.2, gain: .45 },                                            // wind
+  { t: 0, type: 'file', path: 'projects/schetchik/assets/music-ep1.wav', gain: .1, dur: 54 },   // фон: тёмный эмбиент (tools/music.py --style dark), без мелодии и ритма
+  { t: 55, type: 'file', path: 'projects/schetchik/assets/music-ep1.wav', gain: .08, from: 55, dur: 3 }, // 54–55 — тишина перед финальной фразой
+  ...Object.entries(VO_AT).map(([id, t]) => ({ t, type: 'file', path: `projects/schetchik/assets/vo/ep1/${id}.wav`, gain: VO_GAIN[id] || 3.0 })),
+  { t: 1.2, type: 'lib', id: 'bsb-seatbelt-in', gain: 1.0, align: 'start', dur: .6 }, { t: 1.22, type: 'lib', id: 'impact-deep-hard', gain: .7 }, // belt_click + удар баса
+  { t: 3, type: 'lib', id: 'bsb-wind-strong-outside', gain: .14, align: 'start', dur: 5.2 },                                            // wind
+  { t: 8.1, type: 'lib', id: 'bsb-glovebox', gain: .8, align: 'start', dur: 1.2 },
   { t: 10.7, type: 'lib', id: 'notification-alert-clear', gain: .8 },                      // ping
   { t: 13.15, type: 'lib', id: 'click-button-soft', gain: .7 },                            // ui_click
-  ...[18.6, 19.2, 19.8, 20.4, 21.0, 21.6, 22.2].map(t => ({ t, type: 'snowstep', gain: .45 })), { t: 18, type: 'wind', dur: 6, gain: .3, pitch: .8 }, // snow_steps
-  { t: 24, type: 'hum', dur: 6, gain: .3 },                                               // heater_hum
-  { t: 30, type: 'tires', dur: 5, gain: .4 }, { t: 30, type: 'engine', dur: 5, gain: .3 }, // tires_snow (+ whisper_rear_left — голос от заказчика)
-  { t: 38.15, type: 'lib', id: 'impact-heavy-firm', gain: .8 }, { t: 38.15, type: 'lib', id: 'mechanical-latch-heavy', gain: .8 }, // door
-  { t: 35, type: 'wind', dur: 6, gain: .3 },
+  { t: 18.4, type: 'lib', id: 'bsb-snow-footsteps-loop', gain: .55, align: 'start', dur: 4.2 }, { t: 18, type: 'lib', id: 'bsb-wind-foley', gain: .35, align: 'start', dur: 6 }, // snow_steps
+  { t: 24, type: 'hum', dur: 6, gain: .1 },                                               // heater_hum
+  { t: 30, type: 'tires', dur: 5, gain: .1 }, { t: 30, type: 'engine', dur: 5, gain: .08 }, // tires_snow (+ whisper_rear_left — голос от заказчика)
+  { t: 37.15, type: 'lib', id: 'bsb-car-door-slam-inside', gain: .6, align: 'start', dur: 1.2 }, // door
+  { t: 35, type: 'lib', id: 'bsb-wind-whistle-chimney', gain: .1, align: 'start', dur: 6 },
   { t: 41.6, type: 'lib', id: 'click-button-firm', gain: .5, rate: .7 },                  // свет гаснет
   { t: 42.8, type: 'lib', id: 'money-coin-drop', gain: .7, rate: .62 },                   // coin_distorted
   ...[45, 46, 47, 47.7, 48.3, 48.8, 49.2, 49.6, 49.9, 50.2, 50.5, 50.8, 51.05].map((t, i) => ({ t, type: 'lib', id: 'data-tick', gain: .35 + i * .04 })), // tick нарастает, обрывается
-  { t: 50.3, type: 'lib', id: 'whoosh-medium-soft', gain: .5 }, { t: 51.2, type: 'puff', gain: .5 }, { t: 51.4, type: 'engine', dur: 2.6, gain: .4, pitch: 1.1 }, // бросок, сугроб, engine
-  { t: 55.0, type: 'lib', id: 'notification-alert-clear', gain: .9 },                     // ping в конце
-  { t: 56.5, type: 'lib', id: 'impact-deep-firm', gain: .6 },
+  { t: 50.3, type: 'lib', id: 'whoosh-medium-soft', gain: .25 }, { t: 51.2, type: 'puff', gain: .25 }, { t: 51.4, type: 'engine', dur: 2.6, gain: .14, pitch: 1.1 }, // бросок, сугроб, engine
+  { t: 54.95, type: 'lib', id: 'notification-alert-clear', gain: .55 },                     // ping в конце
+  { t: 56.5, type: 'lib', id: 'impact-deep-firm', gain: .4 },
 ];
 // ───── раскадровка для storyboard/ep1.json (схема ТЗ, раздел 7) ─────
 window.STORYBOARD = { episode: 1, title: 'Минуты', duration: DUR, hud: { night: 1, temp: '−31°', balanceStart: '72:00:00' },

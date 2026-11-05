@@ -244,12 +244,16 @@ def main():
         if c["type"] == "lib":
             x, shift = lib_sound(c)
             x = x * c.get("gain", 0.7)
-        elif c["type"] == "file":  # любой звуковой файл (озвучка, музыка): {"type": "file", "path": "...", "t": 1.0}
+        elif c["type"] == "file":  # любой звуковой файл (озвучка, музыка): {"type": "file", "path": "...", "t": 1.0, "from"?: с, "dur"?: с}
             import subprocess
             from pathlib import Path
             fp = Path(c["path"]); fp = fp if fp.is_absolute() else Path(__file__).resolve().parent.parent / fp
             raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(fp), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout
             x = np.frombuffer(raw, dtype=np.float32).astype(np.float64) * c.get("gain", 1.0)
+            if c.get("from"): x = x[int(c["from"] * SR):]  # начать файл не с начала
+            if c.get("dur"):  # обрезать с короткими затуханиями
+                x = x[:int(c["dur"] * SR)].copy(); f = min(len(x) // 2, int(0.05 * SR))
+                if f: x[:f] *= np.linspace(0, 1, f); x[-f:] *= np.linspace(1, 0, f)
         else:
             x = gen(c) * c.get("gain", 0.7)
         i = int((c["t"] - shift) * SR)

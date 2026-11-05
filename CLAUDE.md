@@ -27,8 +27,10 @@
 
 - Перед звуком: `bash tools/get-sfx.sh` (библиотеки в git не хранятся), поиск —
   `python3 tools/sfx-find.py "heavy impact"`, в cue-листе — `{"type": "lib", "id": ...}`.
-- Библиотеки: sfx-kit (320 звуков для видео, CC0) и Oculus Audio Pack (шаги, удары,
+- Библиотеки: sfx-kit (320 звуков для видео, CC0), BigSoundBank (47 звуков: снег, ветер, машина, ремень,
+  лёд, сердце, шёпот…, CC0; добрать — `python3 tools/get-bsb.py <номер>`) и Oculus Audio Pack (шаги, удары,
   мультяшные, голоса; **CC BY 4.0 — в описании поста указать «Sounds: Oculus Audio Pack by Meta (CC BY 4.0)»**).
+- Фоновая музыка-эмбиент для хоррора: `python3 tools/music.py --style dark`. Субтитры по голосу: `tools/words.py` (faster-whisper).
 - Синтез `tools/sfx.py` — только запасной вариант. Музыку и голос просить у пользователя.
 - Каждое событие на экране — свой звук; звуки генерировать из монтажа (cue прямо в shot()).
 

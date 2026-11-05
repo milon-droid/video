@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Собрать общий каталог звуков assets/sfx-library/index.json из sfx-kit и Oculus Audio Pack."""
+"""Собрать общий каталог звуков assets/sfx-library/index.json из sfx-kit, Oculus Audio Pack и BigSoundBank."""
 import json, re, sys
 from pathlib import Path
 lib = Path(sys.argv[1] if len(sys.argv) > 1 else "assets/sfx-library")
@@ -22,5 +22,10 @@ if oc.exists():
         extra = " ".join(v for k, v in UCS.items() if f.stem.startswith(k))
         out.append({"id": "oc-" + f.stem, "file": str(f.relative_to(lib)), "license": "CC BY 4.0 (Oculus Audio Pack by Meta)", "name": f.stem,
                     "text": (words + " " + extra).lower(), "dur": None, "sync": 0, "lufs": None})
+bsb = lib / "bigsoundbank" / "sounds.json"
+if bsb.exists():
+    for n, m in json.loads(bsb.read_text()).items():
+        out.append({"id": "bsb-" + m["name"], "file": "bigsoundbank/" + m.get("file", f"{n}.flac"), "license": "CC0 (BigSoundBank)", "name": m["title"],
+                    "text": (m["title"] + " " + m["name"].replace("-", " ") + " " + m["tags"]).lower(), "dur": None, "sync": 0, "lufs": None})
 (lib / "index.json").write_text(json.dumps(out, ensure_ascii=False))
 print(f"каталог: {len(out)} звуков → {lib / 'index.json'}")

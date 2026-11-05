@@ -22,15 +22,15 @@
       },
       "sfx": [
         {
-          "id": "drone",
+          "id": "file",
           "at": 0
         },
         {
-          "id": "click-clip-firm",
-          "at": 1.2
+          "id": "file",
+          "at": 0
         },
         {
-          "id": "mechanical-latch-light",
+          "id": "bsb-seatbelt-in",
           "at": 1.2
         },
         {
@@ -60,7 +60,11 @@
       },
       "sfx": [
         {
-          "id": "wind",
+          "id": "file",
+          "at": 3.2
+        },
+        {
+          "id": "bsb-wind-strong-outside",
           "at": 3
         }
       ],
@@ -79,7 +83,16 @@
         "text": "ЕГО ТЕЛЕФОН ГОД БЫЛ РАЗРЯЖЕН. В 03:17 ОН",
         "accent": []
       },
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "file",
+          "at": 8.4
+        },
+        {
+          "id": "bsb-glovebox",
+          "at": 8.1
+        }
+      ],
       "hud": {
         "time": "03:17",
         "balance": null
@@ -123,6 +136,10 @@
       },
       "sfx": [
         {
+          "id": "file",
+          "at": 13.3
+        },
+        {
           "id": "click-button-soft",
           "at": 13.15
         }
@@ -147,35 +164,15 @@
       },
       "sfx": [
         {
-          "id": "snowstep",
+          "id": "file",
           "at": 18.6
         },
         {
-          "id": "snowstep",
-          "at": 19.2
+          "id": "bsb-snow-footsteps-loop",
+          "at": 18.4
         },
         {
-          "id": "snowstep",
-          "at": 19.8
-        },
-        {
-          "id": "snowstep",
-          "at": 20.4
-        },
-        {
-          "id": "snowstep",
-          "at": 21
-        },
-        {
-          "id": "snowstep",
-          "at": 21.6
-        },
-        {
-          "id": "snowstep",
-          "at": 22.2
-        },
-        {
-          "id": "wind",
+          "id": "bsb-wind-foley",
           "at": 18
         }
       ],
@@ -198,6 +195,10 @@
         ]
       },
       "sfx": [
+        {
+          "id": "file",
+          "at": 24.4
+        },
         {
           "id": "hum",
           "at": 24
@@ -223,6 +224,10 @@
       },
       "sfx": [
         {
+          "id": "file",
+          "at": 30.6
+        },
+        {
           "id": "tires",
           "at": 30
         },
@@ -240,7 +245,7 @@
     {
       "id": "e1s08a",
       "start": 35,
-      "end": 38,
+      "end": 37,
       "vo": {
         "speaker": "beka",
         "text": "ОНА ВЫШЛА. НА СНЕГУ —",
@@ -248,7 +253,11 @@
       },
       "sfx": [
         {
-          "id": "wind",
+          "id": "file",
+          "at": 36.6
+        },
+        {
+          "id": "bsb-wind-whistle-chimney",
           "at": 35
         }
       ],
@@ -260,7 +269,7 @@
     },
     {
       "id": "e1s08b",
-      "start": 38,
+      "start": 37,
       "end": 41,
       "vo": {
         "speaker": "beka",
@@ -273,12 +282,8 @@
       },
       "sfx": [
         {
-          "id": "impact-heavy-firm",
-          "at": 38.15
-        },
-        {
-          "id": "mechanical-latch-heavy",
-          "at": 38.15
+          "id": "bsb-car-door-slam-inside",
+          "at": 37.15
         }
       ],
       "hud": {
@@ -293,12 +298,14 @@
       "end": 42.6,
       "vo": {
         "speaker": "beka",
-        "text": "ЧЕТЫРЕ НОЛЬ ТРИ. СОРОК СЕМЬ МИНУТ — МНЕ",
-        "accent": [
-          "МНЕ"
-        ]
+        "text": "ЧЕТЫРЕ НОЛЬ ТРИ.",
+        "accent": []
       },
       "sfx": [
+        {
+          "id": "file",
+          "at": 42
+        },
         {
           "id": "click-button-firm",
           "at": 41.6
@@ -314,7 +321,13 @@
       "id": "e1s09b",
       "start": 42.6,
       "end": 45,
-      "vo": null,
+      "vo": {
+        "speaker": "beka",
+        "text": "СОРОК СЕМЬ МИНУТ — МНЕ",
+        "accent": [
+          "МНЕ"
+        ]
+      },
       "sfx": [
         {
           "id": "money-coin-drop",
@@ -339,6 +352,10 @@
         ]
       },
       "sfx": [
+        {
+          "id": "file",
+          "at": 45.2
+        },
         {
           "id": "data-tick",
           "at": 45
@@ -393,6 +410,10 @@
       },
       "sfx": [
         {
+          "id": "file",
+          "at": 50.2
+        },
+        {
           "id": "data-tick",
           "at": 50.2
         },
@@ -432,7 +453,12 @@
       "start": 54,
       "end": 55,
       "vo": null,
-      "sfx": [],
+      "sfx": [
+        {
+          "id": "notification-alert-clear",
+          "at": 54.95
+        }
+      ],
       "hud": {
         "time": "04:05",
         "balance": "72:44:59"
@@ -450,12 +476,12 @@
       },
       "sfx": [
         {
-          "id": "drone",
+          "id": "file",
           "at": 55
         },
         {
-          "id": "notification-alert-clear",
-          "at": 55
+          "id": "file",
+          "at": 55.1
         }
       ],
       "hud": {

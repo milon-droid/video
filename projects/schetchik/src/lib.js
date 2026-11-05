@@ -61,8 +61,10 @@ function buildCaptions(list, { lead = .05, tail = .35 } = {}) {
     const split = []; for (const sg of segs) { if (sg.length <= 5) { split.push(sg); continue; } const parts = Math.ceil(sg.length / 5), per = Math.ceil(sg.length / parts); for (let i = 0; i < sg.length; i += per) split.push(sg.slice(i, i + per)); }
     const nw = a => a.filter(w => w.text !== '—').length;
     const ph = []; for (const sg of split) { const last = ph[ph.length - 1]; if (last && (nw(last) < 3 || nw(sg) < 3) && nw(last) + nw(sg) <= 5) last.push(...sg); else if (last && nw(sg) < 2) { const all = [...last, ...sg], h = Math.ceil(all.length / 2); ph[ph.length - 1] = all.slice(0, h); ph.push(all.slice(h)); } else ph.push([...sg]); }
-    const n = words.length, t0 = a + lead, t1 = b - tail; let k = 0;
-    for (const p of ph) { for (const w of p) { w.t = +(t0 + (t1 - t0) * k / n).toFixed(3); k++; } out.push({ a: p[0].t, b, words: p, ...opt }); }
+    const n = words.length, t0 = a + lead, t1 = b - tail; let k = 0, j = 0, prev = t0;
+    // opt.times — времена слов по голосу (tools/words.py, без тире); иначе — равномерно внутри сцены
+    for (const p of ph) { for (const w of p) { if (opt.times) { w.t = w.text === '—' ? prev : +(opt.times[j++] ?? prev).toFixed(3); prev = w.t; } else w.t = +(t0 + (t1 - t0) * k / n).toFixed(3); k++; }
+      const { times, ...rest } = opt; out.push({ a: p[0].t, b, words: p, ...rest }); }
   }
   out.forEach((p, i) => { const nx = out[i + 1]; if (nx && nx.a < p.b) p.b = nx.a; });
   return out;

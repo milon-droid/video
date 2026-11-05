@@ -26,3 +26,4 @@ projects/*/assets/vo/
 projects/*/out/*.mp4
 projects/*/out/*.wav
 projects/*/out/qa/
+projects/*/assets/music-*.wav
