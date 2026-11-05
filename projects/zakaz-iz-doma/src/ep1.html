@@ -138,9 +138,16 @@ function hallway(t) { ctx.fillStyle = '#242b48'; ctx.fillRect(0, 0, W, H); ctx.f
   ctx.save(); ctx.translate(490, 870); ctx.rotate(-.03); rr(-120, -110, 240, 220, 8); fillOL('#6b5234', 6); rr(-100, -90, 200, 180, 4); fillOL('#9cc3e8', 4); // фото в рамке
   ctx.fillStyle = '#7fae6a'; ctx.fillRect(-100, 50, 200, 40); ctx.save(); ctx.beginPath(); ctx.rect(-100, -90, 200, 180); ctx.clip(); taxiCar(40, 84, .3, 0); person(-45, 86, .33, { face: 'dauren', jacket: YEL, mouth: 'smile', armUp: true }); ctx.restore(); ctx.restore(); }
 
-function faceShot(t, a, b, o) { const z = lerp(1, 1.1, E.io(win(t, a, b))); cam(z, CX, 820, () => { ctx.fillStyle = '#070912'; ctx.fillRect(0, 0, W, H); bokeh(t, 21, 14, 200, 900, .6); rain(t, .4);
-    rr(CX - 330, 620, 660, 1200, 160); fillOL('#141826', 8); rr(CX - 330, 1060, 660, 700, 200); fillOL('#2b2f3d', 8);
-    head(CX, 820, 250, { face: 'dauren', tired: true, ...o }); if (o.warm) glow(CX + 200, 500, 700, 'rgba(255,170,80,.18)'); else glow(CX, 1180, 520, 'rgba(80,130,255,.32)'); }); vignette(.8); }
+function cabinBg(t) { ctx.fillStyle = '#070912'; ctx.fillRect(0, 0, W, H);
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-20, 260); ctx.lineTo(560, 200); ctx.lineTo(620, 1000); ctx.lineTo(-20, 1060); ctx.closePath(); ctx.clip(); // боковое окно
+  const g = ctx.createLinearGradient(0, 200, 0, 1060); g.addColorStop(0, '#0d1838'); g.addColorStop(1, '#22163a'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); bokeh(t, 21, 18, 300, 1000, 1); rain(t, .7); ctx.restore();
+  ctx.fillStyle = '#0e1120'; ctx.beginPath(); ctx.moveTo(560, 160); ctx.lineTo(700, 150); ctx.lineTo(760, 1100); ctx.lineTo(620, 1100); ctx.closePath(); ctx.fill(); // стойка
+  rr(640, 420, 380, 900, 120); fillOL('#141826', 8); } // подголовник/сиденье
+function wheel(t) { ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = '#0b0c14'; ctx.lineWidth = 70; ctx.beginPath(); ctx.ellipse(CX + 80, 1820, 520, 330, 0, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke();
+  ctx.strokeStyle = 'rgba(120,140,200,.18)'; ctx.lineWidth = 8; ctx.beginPath(); ctx.ellipse(CX + 80, 1790, 520, 330, 0, Math.PI * 1.15, Math.PI * 1.6); ctx.stroke(); ctx.restore(); }
+function faceShot(t, a, b, o) { const z = lerp(1, 1.1, E.io(win(t, a, b))); cam(z, CX, 820, () => { cabinBg(t);
+    rr(CX - 300, 1080, 640, 760, 220); fillOL('#2b2f3d', 8); ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(CX - 60, 1110); ctx.lineTo(CX - 90, 1500); ctx.moveTo(CX + 80, 1110); ctx.lineTo(CX + 110, 1500); ctx.stroke(); // капюшон-толстовка
+    head(CX, 830, 250, { face: 'dauren', tired: true, ...o }); if (o.warm) glow(CX + 260, 420, 700, 'rgba(255,170,80,.2)'); else glow(CX, 1240, 560, 'rgba(80,130,255,.34)'); wheel(t); }); vignette(.8); }
 function drawer(t) { ctx.fillStyle = '#1b1f33'; ctx.fillRect(0, 0, W, H); // воспоминание: комод, ящик, старый телефон
   rr(60, 520, 860, 1100, 16); fillOL('#4b3a33', 6); const op = E.out(win(t, 10.2, 10.9));
   rr(110, 1180, 760, 300, 10); fillOL('#3c2e29', 6); // нижний ящик
@@ -149,7 +156,7 @@ function drawer(t) { ctx.fillStyle = '#1b1f33'; ctx.fillRect(0, 0, W, H); // в�
   if (op > .05) { ctx.save(); ctx.beginPath(); ctx.rect(110, 620, 760, 420 * op + 20); ctx.clip();
     ctx.strokeStyle = '#2b2b33'; ctx.lineWidth = 12; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(150, 760); ctx.bezierCurveTo(300, 640, 360, 980, 520, 860); ctx.stroke(); // провод
     ctx.save(); ctx.translate(560, 820); ctx.rotate(-.12); rr(-110, -170, 220, 340, 30); fillOL('#20232e', 6); rr(-92, -146, 184, 270, 12); const lit = win(t, 11.15, 11.35);
-    fillOL(lit > 0 ? `rgba(${lerp(15, 225, lit)},${lerp(18, 235, lit)},${lerp(28, 255, lit)},1)` : '#0d0f16', 4); if (lit > 0) { txt('ЖОЛ', 0, -40, 34, C.yel, { weight: 900, align: 'center', alpha: lit }); txt('Заказ создан', 0, 10, 22, '#223', { weight: 800, align: 'center', alpha: lit }); } ctx.restore();
+    ctx.save(); fillOL(lit > 0 ? `rgba(${lerp(15, 225, lit)},${lerp(18, 235, lit)},${lerp(28, 255, lit)},1)` : '#0d0f16', 4); if (lit > 0) { txt('ЖОЛ', 0, -40, 34, C.yel, { weight: 900, align: 'center', alpha: lit }); txt('Заказ создан', 0, 10, 22, '#223', { weight: 800, align: 'center', alpha: lit }); } ctx.restore(); ctx.strokeStyle = 'rgba(200,210,230,.55)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-60, -140); ctx.lineTo(-10, -60); ctx.lineTo(-40, 20); ctx.moveTo(-10, -60); ctx.lineTo(60, -20); ctx.stroke(); ctx.restore();
     if (lit > 0) glow(560, 800, 380, `rgba(200,220,255,${.45 * lit})`);
     ctx.fillStyle = '#b6a46a'; circle(300, 900, 22); ctx.fill(); ctx.fillRect(300, 894, 90, 12); ctx.restore(); } // ключ
   ctx.restore(); rr(420, 830 + op * 120 + 120 * 0, 140, 26, 12); // ручка
@@ -178,6 +185,16 @@ function poster(t, x, y, sc, k = {}) { ctx.save(); ctx.translate(x, y); ctx.scal
   L.forEach(([s2, i]) => { const yy = 62 + i * 30, h = k.hl ? k.hl[i] || 0 : 0; if (h > 0) { ctx.save(); ctx.globalAlpha = .55; ctx.fillStyle = i === 3 ? YEL : '#ffe36b'; rr(-128, yy - 13, 256 * E.out(h), 26, 4); ctx.fill(); ctx.restore(); }
     txt(s2, 0, yy, 21, '#222', { weight: 800, align: 'center' }); });
   ctx.fillStyle = 'rgba(40,40,40,.35)'; ctx.fillRect(-110, 182, 220, 6); ctx.restore(); }
+function kitchenWindow(t, shadowK) { ctx.fillStyle = '#141a33'; ctx.fillRect(0, 0, W, H); ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.lineWidth = 3; for (let y = 0; y < H; y += 120) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  glow(490, 860, 760, 'rgba(255,180,80,.35)'); rr(150, 420, 680, 820, 10); fillOL('#2c2f45', 10); ctx.save(); rr(180, 450, 620, 760, 6); ctx.clip();
+  const g = ctx.createRadialGradient(470, 560, 40, 470, 700, 700); g.addColorStop(0, '#ffe3a0'); g.addColorStop(1, '#d98a2f'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = '#3a2a1a'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(470, 450); ctx.lineTo(470, 560); ctx.stroke(); ctx.beginPath(); ctx.moveTo(400, 620); ctx.quadraticCurveTo(470, 540, 540, 620); ctx.closePath(); fillOL('#3a2a1a', 5); glow(470, 640, 220, 'rgba(255,255,220,.7)'); // лампа
+  if (shadowK > 0 && shadowK < 1) { ctx.fillStyle = 'rgba(40,20,10,.72)'; const x = lerp(120, 900, shadowK); circle(x, 760, 80); ctx.fill(); rr(x - 110, 830, 220, 500, 90); ctx.fill(); } // тень человека
+  ctx.fillStyle = '#e9b46a'; ctx.beginPath(); ctx.moveTo(180, 450); ctx.quadraticCurveTo(300, 800, 230, 1210); ctx.lineTo(180, 1210); ctx.fill(); ctx.beginPath(); ctx.moveTo(800, 450); ctx.quadraticCurveTo(690, 800, 760, 1210); ctx.lineTo(800, 1210); ctx.fill(); // шторы
+  ctx.restore(); ctx.strokeStyle = '#2c2f45'; ctx.lineWidth = 16; ctx.beginPath(); ctx.moveTo(490, 450); ctx.lineTo(490, 1210); ctx.moveTo(180, 720); ctx.lineTo(800, 720); ctx.stroke();
+  rr(130, 1200, 720, 50, 8); fillOL('#3a3f58', 6); rr(560, 1110, 90, 92, 12); fillOL('#8a4f36', 5); // подоконник, горшок
+  ctx.fillStyle = '#2f6b3f'; for (const a of [-.9, -.4, 0, .4, .9]) { ctx.save(); ctx.translate(605, 1112); ctx.rotate(a); ctx.beginPath(); ctx.ellipse(0, -60, 18, 60, 0, 0, Math.PI * 2); fillOL('#2f6b3f', 4); ctx.restore(); }
+  rr(280, 1120, 46, 82, 8); fillOL('#5c7a5a', 4); rr(340, 1145, 40, 57, 8); fillOL('#7a5a4a', 4); }
 function building(t, litK = 1, carX = 800, shadowK = 0) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#070a18'); g.addColorStop(1, '#111733'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   rr(20, 250, 1040, 1060, 4); fillOL('#1f2747', 6);
   for (let f = 0; f < 5; f++) for (let c = 0; c < 5; c++) { const x = 70 + c * 196, y = 300 + f * 196, lit = f === 1 && c === 1;
@@ -206,6 +223,13 @@ function backSeat(t, drop) { ctx.fillStyle = '#080a14'; ctx.fillRect(0, 0, W, H)
   const breath = 1 + .012 * Math.sin(t * 3), y = 1330 - 90 * (1 - E.io(drop));
   ctx.save(); ctx.translate(560, y); ctx.scale(1, breath); ctx.translate(-560, -y); person(560, y, 1.45, { seated: true, jacket: YEL, hood: 1, face: 'marat', shadow: .95, eyes: .8 }); ctx.restore();
   ctx.fillStyle = '#05060b'; rr(-60, 1450, 420, 600, 80); ctx.fill(); rr(700, 1450, 440, 600, 80); ctx.fill(); }
+function overShoulder(t, drop = 1) { ctx.fillStyle = '#080a14'; ctx.fillRect(0, 0, W, H);
+  rr(60, 380, 900, 460, 40); fillOL('#141a33', 6); ctx.save(); rr(60, 380, 900, 460, 40); ctx.clip(); bokeh(t * 3, 9, 20, 400, 820, 1); streaks(t, .3); ctx.restore();
+  rr(20, 800, 1000, 700, 80); fillOL('#22283d', 6);
+  const y = 1380 - 90 * (1 - E.io(drop)); person(360, y, 1.35, { seated: true, jacket: YEL, hood: 1, face: 'marat', shadow: .95, eyes: .8 });
+  rr(560, 1080, 700, 900, 200); fillOL('#2b2f3d', 8); // плечо водителя
+  ctx.save(); ctx.translate(860, 860); circle(0, 0, 250); fillOL(SKIN, 10); ctx.beginPath(); ctx.arc(0, 0, 250, Math.PI * .62, Math.PI * 2.1); ctx.quadraticCurveTo(-120, 60, -230, 110); ctx.closePath(); fillOL(HAIR, 10); // затылок
+  circle(-215, 40, 48); fillOL(SKIN, 8); ctx.restore(); glow(700, 900, 300, 'rgba(80,130,255,.15)'); }
 function mirrorScene(t, who = 'p') { carDark(t); ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(0, 0, W, H);
   ctx.strokeStyle = '#0d0e15'; ctx.lineWidth = 30; ctx.beginPath(); ctx.moveTo(CX, 0); ctx.lineTo(CX, 620); ctx.stroke();
   rr(CX - 400, 600, 800, 330, 60); fillOL('#0f1220', 10); ctx.save(); rr(CX - 380, 618, 760, 294, 46); ctx.clip(); ctx.fillStyle = '#0a0d1a'; ctx.fillRect(0, 0, W, H);
@@ -310,7 +334,8 @@ const SHOTS = [
   [14.6, 17.2, t => { cam(lerp(1.08, 1, E.io(win(t, 14.6, 17.2))), 520, 800, () => pillow(t)); vignette(.55); stamp('УТРО · 06:10', C.soft); }],
   [17.2, 19.9, t => { cam(lerp(1, 1.12, E.io(win(t, 17.2, 19.9))), 480, 700, () => wardrobe(t)); vignette(.6); stamp('УТРО · 06:14', C.soft); }],
   [19.9, 21.6, t => { building(t, 1, lerp(-300, 800, E.out(win(t, 19.9, 21.3)))); streaks(t, .3); vignette(); stamp('НОЧЬ · 03:16'); }],
-  [21.6, 24.0, t => { const k = E.io(win(t, 21.6, 23.6)); cam(lerp(1, 2.3, k), 326, 566, () => building(t, 1, 800, win(t, 23.2, 23.9))); streaks(t, .3); vignette(lerp(.65, .9, k)); stamp('НОЧЬ · 03:16'); }],
+  [21.6, 22.7, t => { const k = E.io(win(t, 21.6, 22.7)); cam(lerp(1, 2.6, k), 326, 566, () => building(t)); streaks(t, .3); vignette(lerp(.65, .9, k)); stamp('НОЧЬ · 03:16'); }],
+  [22.7, 24.0, t => { cam(lerp(1, 1.12, E.io(win(t, 22.7, 24))), 490, 820, () => kitchenWindow(t, win(t, 23.0, 23.9))); streaks(t, .3); vignette(.85); }],
   [24.0, 26.0, t => faceShot(t, 24.0, 26.0, { brows: 'worried', eyes: 1.15, mouth: 'flat', lookY: -1, warm: true })],
   [26.0, 33.2, t => { DOORK = { hl: [win(t, 28.7, 29.2), win(t, 29.9, 30.5), win(t, 30.7, 31.3), win(t, 32.1, 32.6)] };
     const z = lerp(1, 1.75, E.io(win(t, 26.3, 28.6))); cam(z, 490, 830, () => doorScene(t)); streaks(t, .2); vignette(.8); stamp('НОЧЬ · 03:17'); }],
@@ -318,7 +343,7 @@ const SHOTS = [
       const wk = E.out(win(t, 33.9, 35.6)), x = lerp(490, 760, wk), s = lerp(.85, 1.15, wk), walking = t < 35.5;
       if (t > 33.85) person(x, lerp(1300, 1420, wk) * .62 + 1100 * .38, s, { jacket: YEL, hood: 1, face: 'marat', shadow: .95, walk: walking ? (t - 33.9) * 5 : null, look: (t > 34.4 && t < 34.9) ? -1 : 0, flip: t > 34.4 && t < 34.9 });
       streaks(t, .35); vignette(); toast(t, 33.3, 'Пассажир выходит'); stamp('НОЧЬ · 03:17'); }],
-  [37.0, 40.4, t => { backSeat(t, win(t, 37.0, 37.6)); vignette(.7); stamp('НОЧЬ · 03:18'); }],
+  [37.0, 40.4, t => { cam(lerp(1, 1.06, E.io(win(t, 37, 40.4))), 400, 1000, () => overShoulder(t, win(t, 37.0, 37.6))); vignette(.7); stamp('НОЧЬ · 03:18'); }],
   [40.4, 42.4, t => { cam(lerp(1, 1.08, E.io(win(t, 40.4, 42.4))), CX, 765, () => mirrorScene(t, 'd')); vignette(.85); }],
   [42.4, 44.4, t => { cam(lerp(1.05, 1.15, E.io(win(t, 42.4, 44.4))), 560, 850, () => backSeat(t, 1)); vignette(.85); }],
   [44.4, 47.8, t => { cam(lerp(1, 1.25, E.io(win(t, 44.4, 47.8))), CX, 765, () => mirrorScene(t, 'p')); vignette(.9); }],
