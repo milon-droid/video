@@ -102,7 +102,7 @@ function VacuumBubble(t, cx, cy, r, k) { if (k <= 0) return; const c = ctx.canva
   ctx.strokeStyle = `rgba(155,231,255,${.5 * k})`; ctx.lineWidth = 3; circle(cx, cy, r * (1 + .01 * Math.sin(t * 7))); ctx.stroke();
   const v = ctx.createRadialGradient(540, 900, 500, 540, 960, 1200); v.addColorStop(0, 'rgba(0,175,202,0)'); v.addColorStop(1, `rgba(0,120,160,${.55 * k})`); ctx.fillStyle = v; ctx.fillRect(0, 0, W, H); } // голубая виньетка на весь кадр
 // невесомые предметы: [x, y, вид, размер, фаза]; lift 0..1 — подъём, drop 0..1 — падение
-function FloatObjects(t, items, lift, drop = 0) { for (const [x, y, kind, s2, ph] of items) { const up = E.out(lift) * (120 + ph * 60) * (1 - AK.drop(clamp(drop * (1 + ph * .3)), 2)), a = (t * .4 + ph) * (1 - drop) + ph * 3; // падают с отскоками, не одновременно ctx.save(); ctx.translate(x + Math.sin(t * .5 + ph) * 10 * lift, y - up); ctx.rotate(a * lift);
+function FloatObjects(t, items, lift, drop = 0) { for (const [x, y, kind, s2, ph] of items) { const up = E.out(lift) * (120 + ph * 60) * (1 - AK.drop(clamp(drop * (1 + ph * .3)), 2)), a = (t * .4 + ph) * (1 - drop) + ph * 3; /* падают с отскоками, не одновременно */ ctx.save(); ctx.translate(x + Math.sin(t * .5 + ph) * 10 * lift, y - up); ctx.rotate(a * lift);
     if (kind === 'bolt') { rr(-s2 * .18, -s2, s2 * .36, s2 * 2, 4); fillOL('#8a8f98', 3); rr(-s2 * .4, -s2 * 1.1, s2 * .8, s2 * .35, 4); fillOL('#6b707a', 3); }
     else if (kind === 'rock') { ctx.beginPath(); ctx.ellipse(0, 0, s2, s2 * .7, ph, 0, Math.PI * 2); fillOL('#7a6a5a', 3); }
     else if (kind === 'plate') { rr(-s2, -s2 * .4, s2 * 2, s2 * .8, 4); fillOL('#b9bec6', 3); }

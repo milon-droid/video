@@ -1,0 +1,762 @@
+{
+  "episode": 2,
+  "title": "200 тенге",
+  "duration": 58,
+  "hud": {
+    "place": "АСТАНА",
+    "temp": "−29°",
+    "battery": {
+      "start": 98,
+      "mid": 36,
+      "end": 18
+    }
+  },
+  "scenes": [
+    {
+      "id": "e2s01",
+      "start": 0,
+      "end": 3,
+      "vo": {
+        "speaker": "beka",
+        "text": "200 ТЕНГЕ ЗА ТО, ЧТО Я ПОДЕРЖУ ВАШ ТЕЛЕФОН",
+        "accent": [
+          "ПОДЕРЖУ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "hum50",
+          "at": 0.35
+        },
+        {
+          "id": "charge",
+          "at": 0.9
+        },
+        {
+          "id": "hum50",
+          "at": 0.9
+        },
+        {
+          "id": "charge",
+          "at": 0.95
+        },
+        {
+          "id": "hum50",
+          "at": 0.95
+        },
+        {
+          "id": "charge",
+          "at": 1
+        },
+        {
+          "id": "hum50",
+          "at": 1
+        }
+      ],
+      "hud": {
+        "time": "12:41",
+        "battery": 88,
+        "batteryEnd": 82
+      },
+      "overlays": [
+        "PartSticker:2",
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e2s02a",
+      "start": 3,
+      "end": 5.4,
+      "vo": {
+        "speaker": "beka",
+        "text": "ПРОСПАЛ ДЕСЯТЬ ЧАСОВ. ЗАРЯДИЛСЯ ДО ДЕВЯНОСТА ВОСЬМИ",
+        "accent": [
+          "ДЕВЯНОСТА",
+          "ВОСЬМИ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "time-alarm",
+          "at": 3.05
+        },
+        {
+          "id": "hum",
+          "at": 3
+        }
+      ],
+      "hud": {
+        "time": "10:03",
+        "battery": 98,
+        "batteryEnd": 98
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s02b",
+      "start": 5.4,
+      "end": 8,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "pop",
+          "at": 6.1
+        }
+      ],
+      "hud": {
+        "time": "10:03",
+        "battery": 98,
+        "batteryEnd": 98
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s03a",
+      "start": 8,
+      "end": 11.3,
+      "vo": {
+        "speaker": "beka",
+        "text": "К ОБЕДУ ВСЯ ОБЩАГА ЗНАЛА НОМЕР КОМНАТЫ",
+        "accent": [
+          "НОМЕР",
+          "КОМНАТЫ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "bloop",
+          "at": 8.2
+        },
+        {
+          "id": "bloop",
+          "at": 9
+        },
+        {
+          "id": "bloop",
+          "at": 9.8
+        },
+        {
+          "id": "bloop",
+          "at": 10.5
+        },
+        {
+          "id": "bloop",
+          "at": 10.9
+        }
+      ],
+      "hud": {
+        "time": "10:31",
+        "battery": 98,
+        "batteryEnd": 98
+      },
+      "overlays": [
+        "GroupChat"
+      ]
+    },
+    {
+      "id": "e2s03b",
+      "start": 11.3,
+      "end": 13,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "murmur",
+          "at": 11.3
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 11.7
+        }
+      ],
+      "hud": {
+        "time": "11:49",
+        "battery": 98,
+        "batteryEnd": 98
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s04a",
+      "start": 13,
+      "end": 15.6,
+      "vo": {
+        "speaker": "erzhan",
+        "text": "НАЛИЧНЫМИ ИЛИ ПЕРЕВОДОМ, БИЗНЕС!",
+        "accent": [
+          "БИЗНЕС!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "murmur",
+          "at": 13
+        },
+        {
+          "id": "murmur",
+          "at": 13
+        },
+        {
+          "id": "charge",
+          "at": 13.4
+        },
+        {
+          "id": "hum50",
+          "at": 13.4
+        },
+        {
+          "id": "charge",
+          "at": 13.85
+        },
+        {
+          "id": "hum50",
+          "at": 13.85
+        },
+        {
+          "id": "charge",
+          "at": 14.3
+        },
+        {
+          "id": "hum50",
+          "at": 14.3
+        },
+        {
+          "id": "charge",
+          "at": 14.75
+        },
+        {
+          "id": "hum50",
+          "at": 14.75
+        },
+        {
+          "id": "charge",
+          "at": 15.2
+        },
+        {
+          "id": "hum50",
+          "at": 15.2
+        },
+        {
+          "id": "money-coin-drop",
+          "at": 13.4
+        },
+        {
+          "id": "money-coin-drop",
+          "at": 14.5
+        }
+      ],
+      "hud": {
+        "time": "12:30",
+        "battery": 98,
+        "batteryEnd": 89
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e2s04b",
+      "start": 15.6,
+      "end": 18,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "money-coin-drop",
+          "at": 15.6
+        },
+        {
+          "id": "money-coin-drop",
+          "at": 16.7
+        },
+        {
+          "id": "money-coin-stack",
+          "at": 15.7
+        },
+        {
+          "id": "money-coin-spin",
+          "at": 16.3
+        },
+        {
+          "id": "celebration-applause-small",
+          "at": 15.9
+        }
+      ],
+      "hud": {
+        "time": "12:30",
+        "battery": 88,
+        "batteryEnd": 88
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s05",
+      "start": 18,
+      "end": 22.4,
+      "vo": {
+        "speaker": "beka",
+        "text": "МИНУС ДВА ПРОЦЕНТА ЗА ТЕЛЕФОН. МИНУС ШЕСТЬ ЗА НОУТБУК",
+        "accent": [
+          "НОУТБУК"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "charge",
+          "at": 18.15
+        },
+        {
+          "id": "charge",
+          "at": 18.18
+        },
+        {
+          "id": "charge",
+          "at": 18.21
+        },
+        {
+          "id": "charge",
+          "at": 18.5
+        },
+        {
+          "id": "charge",
+          "at": 18.75
+        },
+        {
+          "id": "charge",
+          "at": 19
+        },
+        {
+          "id": "charge",
+          "at": 19.25
+        },
+        {
+          "id": "charge",
+          "at": 19.5
+        },
+        {
+          "id": "charge",
+          "at": 19.8
+        },
+        {
+          "id": "charge",
+          "at": 20.1
+        },
+        {
+          "id": "charge",
+          "at": 20.4
+        },
+        {
+          "id": "charge",
+          "at": 20.8
+        },
+        {
+          "id": "charge",
+          "at": 21.05
+        },
+        {
+          "id": "charge",
+          "at": 21.25
+        },
+        {
+          "id": "charge",
+          "at": 21.45
+        },
+        {
+          "id": "charge",
+          "at": 21.65
+        },
+        {
+          "id": "charge",
+          "at": 21.85
+        },
+        {
+          "id": "charge",
+          "at": 22
+        },
+        {
+          "id": "charge",
+          "at": 22.08
+        },
+        {
+          "id": "charge",
+          "at": 22.16
+        },
+        {
+          "id": "charge",
+          "at": 22.24
+        },
+        {
+          "id": "charge",
+          "at": 22.32
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 20.8
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 21.85
+        }
+      ],
+      "hud": {
+        "time": "12:40",
+        "battery": 88,
+        "batteryEnd": 36
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e2s06a",
+      "start": 22.4,
+      "end": 24.8,
+      "vo": {
+        "speaker": "beka",
+        "text": "НИЖЕ ДВАДЦАТИ Я ЗАСЫПАЮ ГДЕ УГОДНО",
+        "accent": [
+          "ГДЕ",
+          "УГОДНО"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "murmur",
+          "at": 22.4
+        },
+        {
+          "id": "writing-chalk-write",
+          "at": 22.6
+        },
+        {
+          "id": "lowbat",
+          "at": 22.5
+        }
+      ],
+      "hud": {
+        "time": "14:06",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s06b",
+      "start": 24.8,
+      "end": 27,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "thud",
+          "at": 25.25
+        }
+      ],
+      "hud": {
+        "time": "14:06",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s07a",
+      "start": 27,
+      "end": 29.4,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "hum",
+          "at": 27
+        },
+        {
+          "id": "click-latch-firm",
+          "at": 27.2
+        },
+        {
+          "id": "click-rocker-medium",
+          "at": 27.4
+        },
+        {
+          "id": "charge",
+          "at": 27.6
+        },
+        {
+          "id": "hum50",
+          "at": 27.6
+        },
+        {
+          "id": "charge",
+          "at": 28.4
+        },
+        {
+          "id": "hum50",
+          "at": 28.4
+        }
+      ],
+      "hud": {
+        "time": "21:10",
+        "battery": 22,
+        "batteryEnd": 18
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e2s07b",
+      "start": 29.4,
+      "end": 32,
+      "vo": {
+        "speaker": "apai",
+        "text": "ЭНЕРГИЯ НИОТКУДА НЕ БЕРЁТСЯ, СЫНОК",
+        "accent": [
+          "НИОТКУДА"
+        ]
+      },
+      "sfx": [],
+      "hud": {
+        "time": "21:10",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s08a",
+      "start": 32,
+      "end": 34.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "НАША ВАХТЁРША ТРИДЦАТЬ ЛЕТ БЫЛА ЭЛЕКТРИКОМ НА ТЭЦ",
+        "accent": [
+          "НА",
+          "ТЭЦ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click-latch-soft",
+          "at": 32.4
+        },
+        {
+          "id": "tone",
+          "at": 33.6
+        }
+      ],
+      "hud": {
+        "time": "21:14",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s08b",
+      "start": 34.6,
+      "end": 37,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "21:14",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s09a",
+      "start": 37,
+      "end": 39.8,
+      "vo": {
+        "speaker": "apai",
+        "text": "КТО ОТДАЁТ ТОТ СЛАБЕЕТ",
+        "accent": [
+          "СЛАБЕЕТ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "charge",
+          "at": 38
+        },
+        {
+          "id": "hum50",
+          "at": 38
+        },
+        {
+          "id": "click-clap-firm",
+          "at": 38.45
+        }
+      ],
+      "hud": {
+        "time": "21:20",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e2s09b",
+      "start": 39.8,
+      "end": 42,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "21:20",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s10",
+      "start": 42,
+      "end": 47,
+      "vo": {
+        "speaker": "beka",
+        "text": "Я ХОТЕЛ ПРОСТО ЗАРАБОТАТЬ. НА МАМУ И НА ПЕРЕСДАЧУ",
+        "accent": [
+          "МАМУ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "wind",
+          "at": 42
+        },
+        {
+          "id": "thud",
+          "at": 46.3
+        }
+      ],
+      "hud": {
+        "time": "21:30",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s11",
+      "start": 47,
+      "end": 52,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "click",
+          "at": 47.4
+        },
+        {
+          "id": "click",
+          "at": 47.88
+        },
+        {
+          "id": "click",
+          "at": 48.36
+        },
+        {
+          "id": "click",
+          "at": 48.84
+        },
+        {
+          "id": "click",
+          "at": 49.32
+        },
+        {
+          "id": "click",
+          "at": 49.8
+        },
+        {
+          "id": "click",
+          "at": 50.28
+        },
+        {
+          "id": "click",
+          "at": 50.76
+        },
+        {
+          "id": "click",
+          "at": 51.24
+        },
+        {
+          "id": "hum50",
+          "at": 47
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 51.7
+        },
+        {
+          "id": "powerdown",
+          "at": 51.7
+        }
+      ],
+      "hud": {
+        "time": "21:31",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": [
+        "CityGrid"
+      ]
+    },
+    {
+      "id": "e2s12",
+      "start": 52,
+      "end": 53,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "21:34",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s13",
+      "start": 53,
+      "end": 55.5,
+      "vo": {
+        "speaker": "beka",
+        "text": "ГОРОД ПОГАС. А Я ЕДИНСТВЕННАЯ РОЗЕТКА",
+        "accent": [
+          "ПОГАС."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click",
+          "at": 53.3
+        },
+        {
+          "id": "hum50",
+          "at": 53.6
+        },
+        {
+          "id": "charge",
+          "at": 53.6
+        }
+      ],
+      "hud": {
+        "time": "21:35",
+        "battery": 18,
+        "batteryEnd": 18
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e2s14",
+      "start": 55.5,
+      "end": 58,
+      "vo": null,
+      "sfx": [],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}

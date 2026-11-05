@@ -7,12 +7,19 @@
 //   • хук: первый субтитр виден с 0 с и дочитан к 1,5 с — по window.CAPTION_PHRASES;
 //   • паузы без субтитров длиннее 4 с (кроме финальной тишины и карточки);
 //   • повторы: план, почти совпадающий с другим планом (в этой или другой серии) — «шаблонность».
+//   • код после «//» в одной строке (комментарий «съедает» конец строки) — статическая проверка исходников.
 // Сцена должна отдавать window.renderFrame(t), window.SCENE.duration и window.READY (как в tools/render.mjs).
 const { createRequire } = require('module'); const rq = createRequire(process.cwd() + '/'); const { chromium } = rq('playwright'); const path = require('path'); const fs = require('fs');
 const args = process.argv.slice(2), files = args.filter(a => a.endsWith('.html')), opt = k => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : null; };
 const FPS = +(opt('--fps') || 5);
+// статическая проверка: «//» внутри однострочного кода съедает конец строки (трижды ломало сборку в двух проектах)
+function lintComments(html) { const dir = path.dirname(path.resolve(html)), srcs = [...fs.readFileSync(html, 'utf8').matchAll(/<script src="([^"]+)"/g)].map(m => path.resolve(dir, m[1])).filter(f => fs.existsSync(f) && !/-words\.js$|-mouth\.js$/.test(f)), out = [];
+  for (const f of srcs) fs.readFileSync(f, 'utf8').split('\n').forEach((ln, i) => { const m = ln.match(/(^|[^:'"`\\])\/\/(?!\/)(.*)$/); if (!m) return; const c = m[2];
+    if (/(\bctx\.\w+\(|\b(const|let|return)\s+\w+\s*[=(;]|\w\([^()]*\);\s*[\w}]|;\s*\}|=>\s*\{)/.test(c)) out.push(`${path.relative(process.cwd(), f)}:${i + 1}: после «//» похоже на код — он не выполнится: «${c.trim().slice(0, 70)}»`); });
+  return out; }
 (async () => {
   const b = await chromium.launch(), all = [], thumbs = [];
+  for (const f of files) for (const w of lintComments(f)) console.log('[!] ' + w);
   for (const f of files) {
     const p = await b.newPage({ viewport: { width: 1080, height: 1920 } }); await p.goto('file://' + path.resolve(f)); await p.evaluate(() => window.READY);
     const r = await p.evaluate(async FPS => {

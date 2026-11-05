@@ -8,7 +8,9 @@ cues.json — список событий:
 
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
-wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack), pluck (струна/домбра: freq), breath_in, hiss (шипение: lo, hi, pulse), roar (рёв ракеты), crackle (огонь), debris (обломки), brush (смахнуть снег).
+wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack), pluck (струна/домбра: freq), breath_in, hiss (шипение: lo, hi, pulse),
+roar (рёв ракеты), crackle (огонь), debris (обломки), brush (смахнуть снег),
+hum50 (гул сети 50 Гц), charge (подключение зарядки), lowbat (тройной писк), powerdown (выключение), zap (треск тока).
 Всем библиотечным и синтезированным звукам автоматически добавляется «верхний слой» для динамика телефона (phone_bright).
 duck — приглушение всего, кроме cue с "keep": true (звук суперсилы).
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
@@ -260,8 +262,8 @@ def gen(c):
         return x / (np.abs(x).max() or 1)
     if ty == "brush":  # смахнуть снег/пыль ладонью: шорох с огибающей мазка, "strokes": число мазков
         d = d or 1.2
-        n = int(d * SR); t = np.arange(n) / SR; k = c.get("strokes", 3); env = np.abs(np.sin(np.pi * k * t / d)) ** 1.5
-        x = band(noise(n), 1500 * p, 9000) * env + 0.4 * band(rng.uniform(0, 1, n) > 0.97, 2000, 8000) * env
+        n = int(d * SR); t = np.arange(n) / SR; k = c.get("strokes", 3); stroke = np.abs(np.sin(np.pi * k * t / d)) ** 1.5  # не «env»: так называется общая функция огибающей
+        x = band(noise(n), 1500 * p, 9000) * stroke + 0.4 * band(rng.uniform(0, 1, n) > 0.97, 2000, 8000) * stroke
         return x / (np.abs(x).max() or 1)
     if ty == "hiss":  # шипение (клапан, газ, иней): {"type": "hiss", "dur": 1.5, "lo": 2500, "hi": 9000, "pulse": 0}
         d = d or 1.5
@@ -301,6 +303,40 @@ def gen(c):
         n = int(0.7 * SR); t = np.arange(n) / SR
         b = lambda t0: np.sin(2 * np.pi * 50 * p * (t - t0)) * np.exp(-np.maximum(t - t0, 0) * 18) * (t >= t0)
         return np.tanh((b(0) + 0.7 * b(0.24)) * 1.5)
+    # ── электричество («ҚУАТ»): свои звуки, не похожие на фирменные звуки телефонов ──
+    if ty == "hum50":  # гул сети 50 Гц с гармониками и лёгким дребезгом: {"type": "hum50", "dur": 2, "attack": .15}
+        d = d or 2.0
+        n = int(d * SR); t = np.arange(n) / SR; f = 50 * p
+        x = sum(a_ * np.sin(2 * np.pi * f * k * t + k) for k, a_ in ((1, 1.0), (2, .55), (3, .45), (4, .2), (6, .12)))
+        x = np.tanh(x * 1.8) + 0.08 * band(noise(n), 2000, 6000) * (0.5 + 0.5 * np.sign(np.sin(2 * np.pi * 100 * p * t)))
+        e = np.minimum(1, t / c.get("attack", .15)) * np.minimum(1, (d - t) / max(.05, c.get("release", .25)))
+        return x / (np.abs(x).max() or 1) * e * 0.6
+    if ty == "charge":  # «подключение»: короткий щелчок + восходящая квинта с пузырьком: {"type": "charge"}
+        n = int(0.42 * SR); t = np.arange(n) / SR
+        tone = lambda f0, t0, ln: np.sin(2 * np.pi * f0 * p * (t - t0) * (1 + 0.04 * np.clip((t - t0) / ln, 0, 1))) * np.exp(-np.maximum(t - t0, 0) * 9) * (t >= t0) * np.minimum(1, np.maximum(t - t0, 0) / .004)
+        x = tone(659.3, 0.02, .2) * .7 + tone(987.8, 0.11, .3) * .8 + tone(1975.5, 0.11, .3) * .15
+        clickx = noise(n) * np.exp(-t * 300) * 0.5
+        return x + clickx
+    if ty == "lowbat":  # тройной писк «низкий заряд»: {"type": "lowbat"}
+        n = int(0.5 * SR); t = np.arange(n) / SR; x = np.zeros(n)
+        for i in range(3):
+            t0 = i * 0.16; m = (t >= t0) & (t < t0 + .1)
+            x[m] = np.sign(np.sin(2 * np.pi * 1180 * p * (t[m] - t0))) * np.minimum(1, (t0 + .1 - t[m]) / .01)
+        return lowpass(x, 0.35) * 0.55
+    if ty == "powerdown":  # «выключение»: тон падает 700 → 40 Гц, щелчок и глухой удар: {"type": "powerdown", "dur": 1.1}
+        d = d or 1.1
+        n = int(d * SR); t = np.arange(n) / SR
+        f = 40 * p + (700 - 40) * p * (1 - t / d) ** 2.2
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * (1 - t / d) ** .6 + 0.35 * np.sign(np.sin(2 * np.pi * np.cumsum(f * 1.5) / SR)) * (1 - t / d) ** 2 * 0.4
+        i_ = int(d * .82 * SR); x[i_:] += np.exp(-np.arange(n - i_) / SR * 40) * np.sin(2 * np.pi * 55 * np.arange(n - i_) / SR) * 1.2
+        return np.tanh(x * 1.3) * np.minimum(1, t / .01)
+    if ty == "zap":  # электрический треск: {"type": "zap", "dur": .6}
+        d = d or 0.6
+        n = int(d * SR); t = np.arange(n) / SR
+        pulses = (rng.uniform(0, 1, n) > 0.985).astype(float) * rng.uniform(.3, 1, n)
+        x = band(pulses + 0.25 * noise(n), 900, 9000) * (0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 100 * t)))
+        x = x + 0.3 * np.tanh(np.sin(2 * np.pi * 50 * p * t) * 4) * 0.5
+        return x / (np.abs(x).max() or 1) * np.minimum(1, t / .005) * np.minimum(1, (d - t) / .08)
     raise ValueError(f"неизвестный тип звука: {ty}")
 
 

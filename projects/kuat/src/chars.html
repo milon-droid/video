@@ -1,0 +1,21 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>ҚУАТ — персонажи</title>
+<style>html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#101B33}canvas{display:block}
+@font-face{font-family:'Mont';font-weight:100 900;src:url('../../../fonts/Montserrat-VF.ttf')}@font-face{font-family:'JBM';font-weight:100 800;src:url('../../../fonts/JetBrainsMono-VF.ttf')}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas><script src="lib.js"></script><script src="art.js"></script><script>
+initLib(document.getElementById('c')); window.SCENE = { duration: 1, fps: 30 };
+function draw(t) { ctx.setTransform(1,0,0,1,0,0); nightSky(t); dim(.3); snow(t, .4);
+  txt('ҚУАТ · ПЕРСОНАЖИ', 540, 120, 64, T.charge, { align: 'center', stroke: 10 });
+  const lab = (x, y, a, b, col, fs = 40) => { txt(a, x, y, fs, col, { align: 'center', stroke: 8 }); txt(b, x, y + fs + 6, fs * .62, '#cfd6e6', { align: 'center', weight: 700 }); };
+  // ряд 1: Бека до и после
+  beka(270, 880, 1.2, t, { straps: true, face: { mouth: 'smirk' } }); lab(270, 960, 'БЕКА, 20', 'до молнии', T.text);
+  const p = beka(790, 880, 1.2, t, { straps: true, face: { streak: 1, mouth: 'flat', brow: 'up' }, armR: [.9, .6] }); lab(790, 960, 'БЕКА, 20', 'после: седая прядь', T.text);
+  ChargeFlow(.6, { t0: 0, dur: 5, path: [p.handR, p.elbowR, p.shoulderR, p.heart], dir: 'take' });
+  // ряд 2
+  erzhan(190, 1700, 1.05, t, { face: { mouth: 'grin' }, armR: [2.75, .2], holdR: (x, y) => { ctx.strokeStyle = '#222'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 10, y - 120); ctx.stroke(); phone(x - 12, y - 170, 1, 1); } });
+  lab(190, 1750, 'ЕРЖАН, 20', 'сосед, стример', T.cyan, 30);
+  apai(445, 1700, 1.05, t, { face: { mouth: 'flat' }, holdR: (x, y) => thermos(x, y), holdL: (x, y) => keys(x, y) }); lab(445, 1750, 'САУЛЕ АПАЙ, 62', 'вахтёрша, ТЭЦ', T.warm, 30);
+  dana(690, 1700, 1.05, t, { face: { mouth: 'flat' }, holdR: (x, y) => medBag(x, y + 20) }); lab(690, 1750, 'ДАНА, 20', 'медик', T.pink, 30);
+  ruslan(925, 1700, 1.05, t, { face: { mouth: 'smirk' }, holdR: (x, y) => watch(x, y - 30) }); lab(925, 1750, 'РУСЛАН, 29', '«Майнер»', T.miner, 30);
+}
+window.renderFrame = t => draw(t); window.READY = Promise.all(['900 72px Mont', '800 32px JBM'].map(f => document.fonts.load(f))).then(() => draw(0));
+</script></body></html>

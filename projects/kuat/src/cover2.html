@@ -1,0 +1,7 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>ҚУАТ · обложка 2</title>
+<style>html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#101B33}canvas{display:block}
+@font-face{font-family:'Mont';font-weight:100 900;src:url('../../../fonts/Montserrat-VF.ttf')}@font-face{font-family:'JBM';font-weight:100 800;src:url('../../../fonts/JetBrainsMono-VF.ttf')}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas><script src="lib.js"></script><script src="art.js"></script><script src="ep2-words.js"></script><script src="ep2.js"></script><script>
+window.SCENE = { duration: 1, fps: 30 };
+window.renderFrame = () => { ctx.setTransform(1,0,0,1,0,0); PosterFrame(() => { push(1.5, 0, 3, () => hookPhones(1.3), 520, 900, 1.04, 1.12); post(1); }, 'ҚУАТ', '2/5 · 200 ТЕНГЕ'); txt('ДЕРЖУ ТВОЙ ТЕЛЕФОН', 510, 1275, 62, T.text, { align: 'center', stroke: 12 }); txt('= 100% ЗА 200 ₸', 510, 1350, 62, T.charge, { align: 'center', stroke: 12 }); };
+</script></body></html>
