@@ -52,7 +52,7 @@
       ],
       "hud": {
         "time": "03:17",
-        "balance": "49:31:59"
+        "balance": "49:32:59"
       },
       "overlays": [
         "PartSticker:3"
@@ -85,7 +85,7 @@
       ],
       "hud": {
         "time": "03:20",
-        "balance": "49:28:59"
+        "balance": "49:29:59"
       },
       "overlays": []
     },
@@ -112,7 +112,7 @@
       ],
       "hud": {
         "time": "03:22",
-        "balance": "49:26:49"
+        "balance": "49:27:49"
       },
       "overlays": []
     },
@@ -139,16 +139,16 @@
       ],
       "hud": {
         "time": "03:23",
-        "balance": "49:25:59"
+        "balance": "49:26:59"
       },
       "overlays": []
     },
     {
-      "id": "e3s05",
+      "id": "e3s05a",
       "start": 16,
-      "end": 23,
+      "end": 19.5,
       "vo": {
-        "speaker": "mom_voice",
+        "speaker": "beka",
         "text": "— БЕКА… БАЛАМ. ОБЕРНИСЬ. ЭТО Я",
         "accent": [
           "Я"
@@ -178,7 +178,20 @@
         {
           "id": "heartbeat",
           "at": 18.8
-        },
+        }
+      ],
+      "hud": {
+        "time": "03:35",
+        "balance": "49:14:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s05b",
+      "start": 19.5,
+      "end": 23,
+      "vo": null,
+      "sfx": [
         {
           "id": "heartbeat",
           "at": 19.5
@@ -210,7 +223,7 @@
       ],
       "hud": {
         "time": "03:35",
-        "balance": "49:13:59"
+        "balance": "49:14:56"
       },
       "overlays": []
     },
@@ -238,7 +251,7 @@
       ],
       "hud": {
         "time": "03:38",
-        "balance": "49:10:59"
+        "balance": "49:11:59"
       },
       "overlays": [
         "Glitch",
@@ -246,16 +259,28 @@
       ]
     },
     {
-      "id": "e3s07",
+      "id": "e3s07a",
       "start": 28,
-      "end": 32,
+      "end": 28.9,
       "vo": {
-        "speaker": "dead_voice",
+        "speaker": "beka",
         "text": "— МОЛОДЕЦ",
         "accent": [
           "МОЛОДЕЦ"
         ]
       },
+      "sfx": [],
+      "hud": {
+        "time": "03:40",
+        "balance": "49:09:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s07b",
+      "start": 28.9,
+      "end": 32,
+      "vo": null,
       "sfx": [
         {
           "id": "file",
@@ -268,14 +293,14 @@
       ],
       "hud": {
         "time": "03:40",
-        "balance": "49:08:59"
+        "balance": "49:09:59"
       },
       "overlays": []
     },
     {
-      "id": "e3s08",
+      "id": "e3s08a",
       "start": 32,
-      "end": 40,
+      "end": 35.5,
       "vo": {
         "speaker": "beka",
         "text": "СТАРИК ОТКРЫЛ САМ. БУДТО ЖДАЛ СЫНА ТРИДЦАТЬ ЛЕТ",
@@ -292,7 +317,20 @@
         {
           "id": "bsb-door-creak-open",
           "at": 32.5
-        },
+        }
+      ],
+      "hud": {
+        "time": "03:52",
+        "balance": "48:57:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s08b",
+      "start": 35.5,
+      "end": 40,
+      "vo": null,
+      "sfx": [
         {
           "id": "click-button-firm",
           "at": 36
@@ -300,7 +338,7 @@
       ],
       "hud": {
         "time": "03:52",
-        "balance": "48:56:59"
+        "balance": "48:57:56"
       },
       "overlays": []
     },
@@ -327,7 +365,7 @@
       ],
       "hud": {
         "time": "03:54",
-        "balance": "48:54:31"
+        "balance": "48:55:31"
       },
       "overlays": []
     },
@@ -359,7 +397,7 @@
       ],
       "hud": {
         "time": "03:55",
-        "balance": "54:05:59"
+        "balance": "54:06:59"
       },
       "overlays": []
     },
@@ -380,7 +418,7 @@
       ],
       "hud": {
         "time": "03:55",
-        "balance": "54:05:39"
+        "balance": "54:06:39"
       },
       "overlays": []
     },
@@ -392,7 +430,7 @@
       "sfx": [],
       "hud": {
         "time": "03:55",
-        "balance": "54:05:19"
+        "balance": "54:06:19"
       },
       "overlays": []
     },
@@ -424,7 +462,7 @@
       ],
       "hud": {
         "time": "03:55",
-        "balance": "54:05:18"
+        "balance": "54:06:18"
       },
       "overlays": []
     },

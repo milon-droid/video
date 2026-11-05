@@ -119,8 +119,8 @@ function PhoneScreen(t, variant, lines = [], t0 = 0) { const X = PHN.x + 44, w =
   ctx.strokeStyle = 'rgba(244,241,234,.6)'; ctx.lineWidth = 3; rr(PHN.x + PHN.w - 96, PHN.y + 32, 46, 28, 5); ctx.stroke();
   txt('ПОСЛЕДНИЙ', X, PHN.y + 120, 30, 'rgba(207,232,255,.75)', { weight: 900 }); ctx.fillStyle = 'rgba(207,232,255,.25)'; ctx.fillRect(X, PHN.y + 148, w, 3);
   ctx.save(); ctx.globalAlpha = k; ctx.translate(0, (1 - k) * 40);
-  if (variant === 'accepted' || variant === 'system') { const col = variant === 'accepted' ? T.ok : T.frost; circle(PHN.x + PHN.w / 2, PHN.y + 380, 90); ctx.fillStyle = col; ctx.globalAlpha *= .18; ctx.fill(); ctx.globalAlpha /= .18;
-    ctx.strokeStyle = col; ctx.lineWidth = 10; ctx.beginPath(); if (variant === 'accepted') { ctx.moveTo(PHN.x + PHN.w / 2 - 40, PHN.y + 382); ctx.lineTo(PHN.x + PHN.w / 2 - 6, PHN.y + 416); ctx.lineTo(PHN.x + PHN.w / 2 + 46, PHN.y + 346); } else { ctx.arc(PHN.x + PHN.w / 2, PHN.y + 380, 50, 0, Math.PI * 1.5); } ctx.stroke(); }
+  if (variant === 'accepted' || variant === 'system') { const col = variant === 'accepted' ? T.ok : T.frost; circle(PHN.x + PHN.w / 2, PHN.y + 310, 72); ctx.fillStyle = col; ctx.globalAlpha *= .18; ctx.fill(); ctx.globalAlpha /= .18;
+    ctx.strokeStyle = col; ctx.lineWidth = 10; ctx.beginPath(); if (variant === 'accepted') { ctx.moveTo(PHN.x + PHN.w / 2 - 32, PHN.y + 312); ctx.lineTo(PHN.x + PHN.w / 2 - 5, PHN.y + 339); ctx.lineTo(PHN.x + PHN.w / 2 + 37, PHN.y + 283); } else { ctx.arc(PHN.x + PHN.w / 2, PHN.y + 310, 40, 0, Math.PI * 1.5); } ctx.stroke(); }
   if (variant === 'drivers') { txt('ВОДИТЕЛИ', X, PHN.y + 210, 52, T.text, { weight: 900 }); let y = PHN.y + 330;
     lines.slice(0, 2).forEach(([name, val, kind, at = 0]) => { const kk = E.out(win(t, at, at + .35)); if (kk <= 0) return; ctx.save(); ctx.globalAlpha *= kk; ctx.translate(0, (1 - kk) * 30);
       ctx.fillStyle = kind === 'dead' ? 'rgba(207,232,255,.08)' : 'rgba(229,56,59,.10)'; rr(X - 14, y - 70, w + 28, 250, 22); ctx.fill();
@@ -129,8 +129,9 @@ function PhoneScreen(t, variant, lines = [], t0 = 0) { const X = PHN.x + 44, w =
       const [v1, v2] = val.split(' · '); txt(v1, X, y + 100, kind === 'dead' ? 54 : 62, kind === 'dead' ? T.frost : T.danger, { font: 'JBM', weight: 800 });
       if (v2) txt(v2, X, y + 164, 52, T.frost, { weight: 900 }); ctx.restore(); y += 290; });
     ctx.restore(); return; }
-  let y = variant === 'accepted' || variant === 'system' ? PHN.y + 560 : PHN.y + 300;
-  for (const [s, acc] of lines.slice(0, 2)) { let size = acc ? 72 : 52; ctx.font = `900 ${size}px Mont`; const longest = Math.max(...s.toUpperCase().split(' ').map(x => ctx.measureText(x).width)); if (longest > w) { size = Math.max(52, Math.floor(size * w / longest)); ctx.font = `900 ${size}px Mont`; } const words = s.toUpperCase().split(' '); let line = '', rows = [];
+  let y = variant === 'accepted' || variant === 'system' ? PHN.y + 470 : PHN.y + 300;
+  for (const [s, acc] of lines.slice(0, 2)) { let size = acc ? 72 : 52; ctx.font = `900 ${size}px Mont`; const longest = Math.max(...s.toUpperCase().split(' ').map(x => ctx.measureText(x).width)); if (longest > w) { size = Math.max(52, Math.floor(size * w / longest)); ctx.font = `900 ${size}px Mont`; } const words = []; for (const wd of s.toUpperCase().split(' ')) { if (ctx.measureText(wd).width <= w) { words.push(wd); continue; } // слово шире экрана — перенос с дефисом
+      let cut = wd.length - 1; while (cut > 3 && ctx.measureText(wd.slice(0, cut) + '-').width > w) cut--; while (cut > 3 && !/[АЕЁИОУЫЭЮЯ]/.test(wd[cut - 1])) cut--; words.push(wd.slice(0, cut) + '-', wd.slice(cut)); } let line = '', rows = [];
     for (const wd of words) { const tt = line ? line + ' ' + wd : wd; if (ctx.measureText(tt).width > w && line) { rows.push(line); line = wd; } else line = tt; } rows.push(line);
     for (const r of rows) { txt(r, X, y, size, acc ? (variant === 'accepted' ? T.ok : T.danger) : T.text, { weight: 900 }); y += size * 1.2; } y += 40; }
   ctx.restore(); }

@@ -294,9 +294,9 @@
       "overlays": []
     },
     {
-      "id": "e4s06",
+      "id": "e4s06a",
       "start": 24,
-      "end": 29,
+      "end": 26.8,
       "vo": {
         "speaker": "beka",
         "text": "ИНЕЙ ДОПОЛЗ ДО МОЕГО ПЛЕЧА",
@@ -350,6 +350,27 @@
           "at": 26.55
         },
         {
+          "id": "bsb-ice-crack-3",
+          "at": 24.3
+        },
+        {
+          "id": "bsb-ice-crack-1",
+          "at": 26.5
+        }
+      ],
+      "hud": {
+        "time": "04:41",
+        "balance": "35:25:57"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s06b",
+      "start": 26.8,
+      "end": 29,
+      "vo": null,
+      "sfx": [
+        {
           "id": "data-tick",
           "at": 26.8
         },
@@ -392,19 +413,11 @@
         {
           "id": "data-tick",
           "at": 28.98
-        },
-        {
-          "id": "bsb-ice-crack-3",
-          "at": 24.3
-        },
-        {
-          "id": "bsb-ice-crack-1",
-          "at": 26.5
         }
       ],
       "hud": {
-        "time": "04:41",
-        "balance": "35:25:57"
+        "time": "04:51",
+        "balance": "31:05:53"
       },
       "overlays": []
     },
@@ -492,15 +505,13 @@
       "overlays": []
     },
     {
-      "id": "e4s09",
+      "id": "e4s09a",
       "start": 40,
-      "end": 48,
+      "end": 44,
       "vo": {
-        "speaker": "mom",
-        "text": "— ТЫ НОЧЬЮ ПРИХОДИЛ? ЛЕЖАЛ У СЕБЯ, НЕ ДЫШАЛ. ВКЛЮЧИЛА СВЕТ — ПУСТО",
-        "accent": [
-          "ПУСТО"
-        ]
+        "speaker": "beka",
+        "text": "— ТЫ НОЧЬЮ ПРИХОДИЛ? ЛЕЖАЛ У СЕБЯ, НЕ ДЫШАЛ.",
+        "accent": []
       },
       "sfx": [
         {
@@ -511,6 +522,24 @@
       "hud": {
         "time": "05:26",
         "balance": "26:45:44"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s09b",
+      "start": 44,
+      "end": 48,
+      "vo": {
+        "speaker": "beka",
+        "text": "ВКЛЮЧИЛА СВЕТ — ПУСТО",
+        "accent": [
+          "ПУСТО"
+        ]
+      },
+      "sfx": [],
+      "hud": {
+        "time": "05:27",
+        "balance": "26:44:54"
       },
       "overlays": []
     },
