@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Счётчик · обложка 5</title>
+<style>html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #0E1630; } canvas { display: block; }
+@font-face { font-family: 'Mont'; font-weight: 100 900; src: url('../../../fonts/Montserrat-VF.ttf'); }
+@font-face { font-family: 'JBM'; font-weight: 100 800; src: url('../../../fonts/JetBrainsMono-VF.ttf'); }</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script><script src="ep5-words.js"></script>
+<script src="ep5.js"></script>
+<script>
+// обложка: пустое заднее сиденье в зеркале, ремень сам пристёгнут, крупный хук
+window.SCENE = { duration: 1, fps: 30, width: W, height: H };
+function drawCover() { ctx.setTransform(1, 0, 0, 1, 0, 0); thumbButtons(34); post(0);
+  Hud(0, { night: 3, time: '03:17', temp: '−27°', balance: '04:54:39' }); PartSticker(5, 0, true);
+  ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(0, 960, W, 520);
+  txt('СЧЁТЧИК', CXC, 1060, 150, T.text, { weight: 900, align: 'center', stroke: 16 }); txt('5/5 · КОМИССИЯ', CXC, 1180, 60, T.window, { weight: 900, align: 'center', stroke: 12 });
+  txt('ДОВЕЗТИ', CXC, 1310, 72, T.ok, { weight: 900, align: 'center', stroke: 14 }); txt('ИЛИ ОТМЕНИТЬ?', CXC, 1395, 72, T.danger, { weight: 900, align: 'center', stroke: 14 }); }
+window.renderFrame = () => drawCover(); window.READY = window.READY.then(drawCover);
+</script></body></html>

@@ -8,7 +8,7 @@ cues.json — список событий:
 
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
-wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора).
+wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack).
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
 
 Звуки из библиотеки (сначала bash tools/get-sfx.sh, найти: python3 tools/sfx-find.py "запрос"):
@@ -217,6 +217,19 @@ def gen(c):
         ph = 2 * np.pi * np.cumsum(f) / SR
         x = np.sin(ph) + 0.5 * np.sin(2 * ph) + 0.3 * np.sign(np.sin(3 * ph)) * 0.3 + 0.4 * band(nz, 30, 300)
         return np.tanh(x * 1.2) / 1.6 * e
+    if ty == "tone":  # ровный писк (кардиомонитор): {"type": "tone", "freq": 1000, "dur": 1}
+        d = d or 1.0
+        n = int(d * SR); t = np.arange(n) / SR
+        return np.sin(2 * np.pi * c.get("freq", 1000) * p * t) * np.minimum(1, t / .01) * np.minimum(1, (d - t) / .03) * 0.5
+    if ty == "chord":  # нарастающий аккорд-пэд: {"type": "chord", "notes": [57, 60, 64], "dur": 4, "attack": 2}
+        d = d or 4.0
+        n = int(d * SR); t = np.arange(n) / SR; x = np.zeros(n)
+        for i, m in enumerate(c.get("notes", [57, 60, 64])):
+            f = 440 * 2 ** ((m - 69) / 12) * p
+            for det in (-.004, .004): x += 2 * ((t * f * (1 + det) + i * .13) % 1) - 1
+        x = band(x, 60, 2200 if c.get("warm") else 1500)
+        att = c.get("attack", 2.0); e = np.minimum(1, t / att) ** 2 * np.minimum(1, (d - t) / 0.8)
+        return x / (np.abs(x).max() or 1) * e
     if ty == "murmur":  # неразборчивая речь за стеной / из телевизора
         d = d or 5.0
         n = int(d * SR); t = np.arange(n) / SR
