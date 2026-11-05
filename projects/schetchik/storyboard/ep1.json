@@ -1,0 +1,484 @@
+{
+  "episode": 1,
+  "title": "Минуты",
+  "duration": 58,
+  "hud": {
+    "night": 1,
+    "temp": "−31°",
+    "balanceStart": "72:00:00"
+  },
+  "scenes": [
+    {
+      "id": "e1s01",
+      "start": 0,
+      "end": 3,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЗА ЭТУ ПОЕЗДКУ МНЕ ЗАПЛАТИЛИ ЧУЖОЙ ЖИЗНЬЮ",
+        "accent": [
+          "ЧУЖОЙ",
+          "ЖИЗНЬЮ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "drone",
+          "at": 0
+        },
+        {
+          "id": "click-clip-firm",
+          "at": 1.2
+        },
+        {
+          "id": "mechanical-latch-light",
+          "at": 1.2
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 1.22
+        }
+      ],
+      "hud": {
+        "time": "03:31",
+        "balance": null
+      },
+      "overlays": [
+        "PartSticker:1"
+      ]
+    },
+    {
+      "id": "e1s02",
+      "start": 3,
+      "end": 8,
+      "vo": {
+        "speaker": "beka",
+        "text": "МАШИНА ДОСТАЛАСЬ МНЕ ОТ БРАТА. МАРАТ ПРОПАЛ ГОД НАЗАД",
+        "accent": [
+          "ГОД",
+          "НАЗАД"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "wind",
+          "at": 3
+        }
+      ],
+      "hud": {
+        "time": "03:31",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s03a",
+      "start": 8,
+      "end": 10.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЕГО ТЕЛЕФОН ГОД БЫЛ РАЗРЯЖЕН. В 03:17 ОН",
+        "accent": []
+      },
+      "sfx": [],
+      "hud": {
+        "time": "03:17",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s03b",
+      "start": 10.6,
+      "end": 13,
+      "vo": {
+        "speaker": "beka",
+        "text": "САМ ПРИНЯЛ ЗАКАЗ",
+        "accent": [
+          "САМ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "notification-alert-clear",
+          "at": 10.7
+        }
+      ],
+      "hud": {
+        "time": "03:17",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s04",
+      "start": 13,
+      "end": 18,
+      "vo": {
+        "speaker": "beka",
+        "text": "ОТКУДА — КЛАДБИЩЕ. ОПЛАТА — НЕ В ТЕНГЕ. В МИНУТАХ",
+        "accent": [
+          "В",
+          "МИНУТАХ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click-button-soft",
+          "at": 13.15
+        }
+      ],
+      "hud": {
+        "time": "03:17",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s05",
+      "start": 18,
+      "end": 24,
+      "vo": {
+        "speaker": "beka",
+        "text": "ОНА ЖДАЛА У ВОРОТ. С ТЕРМОСОМ. ДЛЯ НЕГО",
+        "accent": [
+          "ДЛЯ",
+          "НЕГО"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "snowstep",
+          "at": 18.6
+        },
+        {
+          "id": "snowstep",
+          "at": 19.2
+        },
+        {
+          "id": "snowstep",
+          "at": 19.8
+        },
+        {
+          "id": "snowstep",
+          "at": 20.4
+        },
+        {
+          "id": "snowstep",
+          "at": 21
+        },
+        {
+          "id": "snowstep",
+          "at": 21.6
+        },
+        {
+          "id": "snowstep",
+          "at": 22.2
+        },
+        {
+          "id": "wind",
+          "at": 18
+        }
+      ],
+      "hud": {
+        "time": "03:24",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s06",
+      "start": 24,
+      "end": 30,
+      "vo": {
+        "speaker": "beka",
+        "text": "В САЛОНЕ ПЛЮС ДВАДЦАТЬ ЧЕТЫРЕ. А СНЕГ НЕ ТАЕТ",
+        "accent": [
+          "НЕ",
+          "ТАЕТ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "hum",
+          "at": 24
+        }
+      ],
+      "hud": {
+        "time": "03:40",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s07",
+      "start": 30,
+      "end": 35,
+      "vo": {
+        "speaker": "old_woman",
+        "text": "«ОН ВСЕГДА ЖДЁТ МЕНЯ С ОТКРЫТЫМ ОКНОМ»",
+        "accent": [
+          "ОТКРЫТЫМ",
+          "ОКНОМ»"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "tires",
+          "at": 30
+        },
+        {
+          "id": "engine",
+          "at": 30
+        }
+      ],
+      "hud": {
+        "time": "03:52",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s08a",
+      "start": 35,
+      "end": 38,
+      "vo": {
+        "speaker": "beka",
+        "text": "ОНА ВЫШЛА. НА СНЕГУ —",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "wind",
+          "at": 35
+        }
+      ],
+      "hud": {
+        "time": "04:02",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s08b",
+      "start": 38,
+      "end": 41,
+      "vo": {
+        "speaker": "beka",
+        "text": "НИ ОДНОГО СЛЕДА",
+        "accent": [
+          "НИ",
+          "ОДНОГО",
+          "СЛЕДА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "impact-heavy-firm",
+          "at": 38.15
+        },
+        {
+          "id": "mechanical-latch-heavy",
+          "at": 38.15
+        }
+      ],
+      "hud": {
+        "time": "04:02",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s09a",
+      "start": 41,
+      "end": 42.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЧЕТЫРЕ НОЛЬ ТРИ. СОРОК СЕМЬ МИНУТ — МНЕ",
+        "accent": [
+          "МНЕ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click-button-firm",
+          "at": 41.6
+        }
+      ],
+      "hud": {
+        "time": "04:03",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s09b",
+      "start": 42.6,
+      "end": 45,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "money-coin-drop",
+          "at": 42.8
+        }
+      ],
+      "hud": {
+        "time": "04:03",
+        "balance": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s10",
+      "start": 45,
+      "end": 50,
+      "vo": {
+        "speaker": "beka",
+        "text": "А ПОТОМ ВКЛЮЧИЛСЯ ВТОРОЙ СЧЁТЧИК. МОЙ",
+        "accent": [
+          "МОЙ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "data-tick",
+          "at": 45
+        },
+        {
+          "id": "data-tick",
+          "at": 46
+        },
+        {
+          "id": "data-tick",
+          "at": 47
+        },
+        {
+          "id": "data-tick",
+          "at": 47.7
+        },
+        {
+          "id": "data-tick",
+          "at": 48.3
+        },
+        {
+          "id": "data-tick",
+          "at": 48.8
+        },
+        {
+          "id": "data-tick",
+          "at": 49.2
+        },
+        {
+          "id": "data-tick",
+          "at": 49.6
+        },
+        {
+          "id": "data-tick",
+          "at": 49.9
+        }
+      ],
+      "hud": {
+        "time": "04:03",
+        "balance": "72:46:58"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s11",
+      "start": 50,
+      "end": 54,
+      "vo": {
+        "speaker": "beka",
+        "text": "Я ВЫКИНУЛ ТЕЛЕФОН В СУГРОБ",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "data-tick",
+          "at": 50.2
+        },
+        {
+          "id": "data-tick",
+          "at": 50.5
+        },
+        {
+          "id": "data-tick",
+          "at": 50.8
+        },
+        {
+          "id": "data-tick",
+          "at": 51.05
+        },
+        {
+          "id": "whoosh-medium-soft",
+          "at": 50.3
+        },
+        {
+          "id": "puff",
+          "at": 51.2
+        },
+        {
+          "id": "engine",
+          "at": 51.4
+        }
+      ],
+      "hud": {
+        "time": "04:04",
+        "balance": "72:45:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s12",
+      "start": 54,
+      "end": 55,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "04:05",
+        "balance": "72:44:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s13a",
+      "start": 55,
+      "end": 56.5,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЧЕРЕЗ МИНУТУ ОН ЗАЗВОНИЛ В БАРДАЧКЕ",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "drone",
+          "at": 55
+        },
+        {
+          "id": "notification-alert-clear",
+          "at": 55
+        }
+      ],
+      "hud": {
+        "time": "04:05",
+        "balance": "72:44:58"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s13b",
+      "start": 56.5,
+      "end": 58.01,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 56.5
+        }
+      ],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}

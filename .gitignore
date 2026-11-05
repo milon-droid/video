@@ -22,3 +22,7 @@ assets/voices/
 
 projects/*/assets/sfx_vo.wav
 projects/*/assets/vo/
+
+projects/*/out/*.mp4
+projects/*/out/*.wav
+projects/*/out/qa/

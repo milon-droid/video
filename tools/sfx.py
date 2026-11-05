@@ -7,7 +7,8 @@ cues.json — список событий:
     [{"t": 0.15, "type": "step", "gain": 0.6}, {"t": 3.6, "type": "ff", "dur": 0.8}, ...]
 
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
-boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom.
+boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
+wind, tires, hum (печка), engine, snowstep, heartbeat.
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
 
 Звуки из библиотеки (сначала bash tools/get-sfx.sh, найти: python3 tools/sfx-find.py "запрос"):
@@ -44,6 +45,19 @@ def lowpass(x, k):
         acc += k * (v - acc)
         y[i] = acc
     return y
+
+
+def band(x, lo=0.0, hi=24000.0):
+    """Быстрый полосовой фильтр через БПФ (для длинных шумов)."""
+    X = np.fft.rfft(x); f = np.fft.rfftfreq(len(x), 1 / SR)
+    X[(f < lo) | (f > hi)] = 0
+    return np.fft.irfft(X, len(x))
+
+
+def slow(n, rate, seed):
+    """Медленная случайная огибающая 0..1 (порывы)."""
+    r = np.random.default_rng(seed); k = max(2, int(n / SR * rate) + 2)
+    pts = r.uniform(0, 1, k); return np.interp(np.linspace(0, k - 1, n), np.arange(k), pts)
 
 
 def sweep(f0, f1, dur, shape="sin", curve=1.0):
@@ -184,6 +198,34 @@ def gen(c):
         x = sweep(700 * p, 240 * p, d, "saw", curve=0.8)
         x = lowpass(x, 0.18) * (1 + 0.4 * np.sin(2 * np.pi * 7 * np.arange(n) / SR))
         return x * np.minimum(1, np.linspace(0, 1, n) * 20) * np.linspace(1, .4, n)
+    # ── длинные фоны и бытовые шумы (синтез, CC0 по определению) ──
+    if ty in ("wind", "tires", "hum", "engine"):
+        d = d or 5.0
+        n = int(d * SR); t = np.arange(n) / SR; nz = noise(n)
+        e = np.minimum(1, t / 0.6) * np.minimum(1, (d - t) / 0.6)
+        if ty == "wind":
+            g = slow(n, 0.7, int(p * 100) % 999)
+            x = band(nz, 150 * p, 900 * p) * (0.35 + 0.9 * g) + 0.4 * band(nz, 900, 2500) * g ** 2
+            return x / (np.abs(x).max() or 1) * e
+        if ty == "tires":
+            x = band(nz, 300, 4000) * (0.8 + 0.2 * slow(n, 3, 5)) + 0.5 * band(nz, 40, 160)
+            return x / (np.abs(x).max() or 1) * e * 0.8
+        if ty == "hum":
+            x = 0.5 * band(nz, 60, 500) + 0.25 * np.sin(2 * np.pi * 100 * p * t) + 0.1 * np.sin(2 * np.pi * 200 * p * t)
+            return x / (np.abs(x).max() or 1) * e * 0.6
+        f = 32 * p * (1 + 0.04 * np.sin(2 * np.pi * 0.7 * t))
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        x = np.sin(ph) + 0.5 * np.sin(2 * ph) + 0.3 * np.sign(np.sin(3 * ph)) * 0.3 + 0.4 * band(nz, 30, 300)
+        return np.tanh(x * 1.2) / 1.6 * e
+    if ty == "snowstep":
+        n = int(0.22 * SR); t = np.arange(n) / SR
+        crunch = band(noise(n), 1500, 7000) * (rng.uniform(0, 1, n) > 0.55)
+        x = crunch * np.exp(-t * 18) + 0.6 * band(noise(n), 100, 600) * np.exp(-t * 30)
+        return x / (np.abs(x).max() or 1)
+    if ty == "heartbeat":
+        n = int(0.7 * SR); t = np.arange(n) / SR
+        b = lambda t0: np.sin(2 * np.pi * 50 * p * (t - t0)) * np.exp(-np.maximum(t - t0, 0) * 18) * (t >= t0)
+        return np.tanh((b(0) + 0.7 * b(0.24)) * 1.5)
     raise ValueError(f"неизвестный тип звука: {ty}")
 
 
