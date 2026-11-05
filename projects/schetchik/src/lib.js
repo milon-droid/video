@@ -43,13 +43,25 @@ function Hud(t, { night, label = null, time, temp, balance = null, flash = 0 }) 
   const left = `${label || 'НОЧЬ ' + night} · ${time} · ${temp}`; ctx.save(); ctx.font = '700 34px JBM'; const w = ctx.measureText(left).width + 64;
   ctx.fillStyle = 'rgba(7,10,22,.72)'; rr(70, 212, w, 58, 12); ctx.fill(); ctx.strokeStyle = 'rgba(229,56,59,.55)'; ctx.lineWidth = 2; ctx.stroke();
   ctx.fillStyle = T.danger; circle(96, 241, 7); ctx.fill(); txt(left, 116, 242, 34, T.text, { font: 'JBM', weight: 700 }); ctx.restore();
-  if (balance !== null) { const s = typeof balance === 'string' ? balance : hms(balance), x1 = 1010; ctx.save(); ctx.font = '800 34px JBM'; const bw = ctx.measureText(s).width + 48;
+  if (balance !== null) { const raw = typeof balance === 'string' ? balance : hms(balance), rows = raw.split(' · '), x1 = 1010; ctx.save(); ctx.font = '800 34px JBM';
+    const bw = Math.min(380, Math.max(...rows.map(r => ctx.measureText(r).width)) + 48), bh = 52 + rows.length * 40; // ширина ограничена — не налезает на левый HUD
     if (flash > 0) { ctx.shadowColor = T.danger; ctx.shadowBlur = 40 * flash; }
-    ctx.fillStyle = `rgba(${lerp(7, 120, flash)},${lerp(10, 16, flash)},${lerp(22, 22, flash)},.8)`; rr(x1 - bw, 212, bw, 92, 12); ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = T.danger; ctx.lineWidth = 2; ctx.stroke();
-    txt('БАЛАНС', x1 - bw + 24, 232, 20, 'rgba(244,241,234,.6)', { font: 'JBM', weight: 700 }); txt(s, x1 - bw + 24, 272, 34, T.danger, { font: 'JBM', weight: 800 }); ctx.restore(); } }
+    ctx.fillStyle = `rgba(${lerp(7, 120, flash)},${lerp(10, 16, flash)},22,.8)`; rr(x1 - bw, 212, bw, bh, 12); ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = T.danger; ctx.lineWidth = 2; ctx.stroke();
+    txt('БАЛАНС', x1 - bw + 24, 232, 20, 'rgba(244,241,234,.6)', { font: 'JBM', weight: 700 }); rows.forEach((r, i) => txt(r, x1 - bw + 24, 272 + i * 40, 34, T.danger, { font: 'JBM', weight: 800 })); ctx.restore(); } }
+// ───── единое сюжетное время и баланс для всех серий (правила мира, раздел 2 и 8 ТЗ) ─────
+// день 0 — ночь 1 (и её утро/день), день 1 — ночь 2, день 2 — ночь 3
+const ST = (day, h, m, s = 0) => day * 86400 + h * 3600 + m * 60 + s;
+function storyBalance(S) { const start = ST(0, 4, 3); if (S < start) return null; // счётчик включился в 04:03: бонус 72:00:00 + 47 мин
+  let b = 72 * 3600 + 47 * 60 - (S - start);
+  if (S >= ST(1, 3, 54, 30)) b += 5 * 3600 + 12 * 60;                                              // +05:12:00 за шахтёра
+  const p0 = ST(1, 3, 58), p1 = ST(1, 5, 0); if (S > p0) b -= 25 * 60 * Math.floor((Math.min(S, p1) - p0) / 60); // штраф −25 мин/мин объезда
+  return Math.max(0, b); }
 
 // ───── KineticCaption: слова загораются по одному, фразы по 3–5 слов ─────
-// buildCaptions([[начало, конец, 'текст с **акцентом**'], ...]) → фразы со временем каждого слова (равномерно — пока нет голоса)
+// buildCaptions([[начало, конец, 'текст с **акцентом**', { times, color, dead, whole, y, size }], ...]) → фразы со временем каждого слова
+// dead — реплика мёртвого (цвет инея, курсив); whole — не делить на фразы (хук целиком)
+const GLUE = new Set(['В', 'ВО', 'НА', 'К', 'КО', 'С', 'СО', 'У', 'О', 'ОБ', 'ПО', 'ИЗ', 'ЗА', 'ДО', 'ОТ', 'НЕ', 'НИ', 'И', 'А', 'НО', 'ДЛЯ', 'ПРО', 'ПРИ', 'БЕЗ', '—']);
+const glued = w => GLUE.has(w.text.replace(/[«»"]/g, '')) || /^\d/.test(w.text); // не оставлять в конце фразы/строки
 function buildCaptions(list, { lead = .05, tail = .35 } = {}) {
   const out = [];
   for (const [a, b, raw, opt = {}] of list) {
@@ -60,28 +72,40 @@ function buildCaptions(list, { lead = .05, tail = .35 } = {}) {
     const segs = []; let cur = []; words.forEach(w => { cur.push(w); if (/[.!?]$/.test(w.text)) { segs.push(cur); cur = []; } }); if (cur.length) segs.push(cur);
     const split = []; for (const sg of segs) { if (sg.length <= 5) { split.push(sg); continue; } const parts = Math.ceil(sg.length / 5), per = Math.ceil(sg.length / parts); for (let i = 0; i < sg.length; i += per) split.push(sg.slice(i, i + per)); }
     const nw = a => a.filter(w => w.text !== '—').length;
+    if (opt.whole) { split.length = 0; split.push([...words]); }
     const ph = []; for (const sg of split) { const last = ph[ph.length - 1]; if (last && (nw(last) < 3 || nw(sg) < 3) && nw(last) + nw(sg) <= 5) last.push(...sg); else if (last && nw(sg) < 2) { const all = [...last, ...sg], h = Math.ceil(all.length / 2); ph[ph.length - 1] = all.slice(0, h); ph.push(all.slice(h)); } else ph.push([...sg]); }
+    for (let i = 0; i < ph.length - 1; i++) while (ph[i].length > 1 && glued(ph[i][ph[i].length - 1])) ph[i + 1].unshift(ph[i].pop()); // «на пять / часов» → «на пять часов»
     const n = words.length, t0 = a + lead, t1 = b - tail; let k = 0, j = 0, prev = t0;
     // opt.times — времена слов по голосу (tools/words.py, без тире); иначе — равномерно внутри сцены
     for (const p of ph) { for (const w of p) { if (opt.times) { w.t = w.text === '—' ? prev : +(opt.times[j++] ?? prev).toFixed(3); prev = w.t; } else w.t = +(t0 + (t1 - t0) * k / n).toFixed(3); k++; }
-      const { times, ...rest } = opt; out.push({ a: p[0].t, b, words: p, ...rest }); }
+      const { times, ...rest } = opt; if (rest.dead) { rest.color = T.frost; rest.italic = true; } out.push({ a: p[0].t, b, words: p, ...rest }); }
   }
   out.forEach((p, i) => { const nx = out[i + 1]; if (nx && nx.a < p.b) p.b = nx.a; });
   return out;
 }
+let ENDCARD_AT = -1; // EndCard скрывает обычные субтитры (остаются только центральные фразы с y)
 function KineticCaption(t, phrases, y = 1275) {
-  const p = phrases.find(q => t >= q.a && t < q.b); if (!p) return; const size = p.size || 72, maxW = 780; if (p.y) y = p.y;
+  const p = phrases.find(q => t >= q.a && t < q.b); if (!p) return; if (ENDCARD_AT === t && !p.y) return; const size = p.size || 72, maxW = p.maxW || 780; if (p.y) y = p.y;
   ctx.save(); ctx.font = `900 ${size}px Mont`; ctx.textBaseline = 'middle'; const sp = ctx.measureText(' ').width * 1.7;
-  const lines = [[]]; let lw = 0; for (const w of p.words) { const ww = ctx.measureText(w.text).width; if (lw + ww > maxW && lines[lines.length - 1].length) { lines.push([]); lw = 0; } lines[lines.length - 1].push([w, ww]); lw += ww + sp; }
-  lines.forEach((ln, i) => { const tw = ln.reduce((s, [, ww]) => s + ww, 0) + sp * (ln.length - 1); let x = CXC - tw / 2; const yy = y + (i - (lines.length - 1) / 2) * size * 1.12;
+  const units = []; p.words.forEach((w, i) => { const u = units[units.length - 1]; if (u && glued(u[u.length - 1])) u.push(w); else units.push([w]); }); // предлог держится со словом
+  const lines = [[]]; let lw = 0; for (const u of units) { const uw = u.reduce((s2, w) => s2 + ctx.measureText(w.text).width, 0) + sp * (u.length - 1); if (lw + uw > maxW && lines[lines.length - 1].length) { lines.push([]); lw = 0; } for (const w of u) lines[lines.length - 1].push([w, ctx.measureText(w.text).width]); lw += uw + sp; }
+  const lh = size * 1.12, blockH = lines.length * lh, widest = Math.max(...lines.map(ln => ln.reduce((s2, [, ww]) => s2 + ww, 0) + sp * (ln.length - 1)));
+  // подложка, если фон под блоком светлый (средняя яркость > 0,40)
+  const bx = Math.max(0, CXC - widest / 2 - 40), by = y - blockH / 2 - 26, bw2 = Math.min(W - bx, widest + 80), bh2 = blockH + 52;
+  try { const im = ctx.getImageData(bx, by, bw2, bh2).data; let sum = 0, cnt = 0; for (let i = 0; i < im.length; i += 4 * 23) { sum += (.2126 * im[i] + .7152 * im[i + 1] + .0722 * im[i + 2]) / 255; cnt++; }
+    if (sum / cnt > .40) { ctx.fillStyle = 'rgba(14,22,48,.78)'; rr(bx, by, bw2, bh2, 28); ctx.fill(); } } catch (e) { }
+  lines.forEach((ln, i) => { const tw = ln.reduce((s2, [, ww]) => s2 + ww, 0) + sp * (ln.length - 1); let x = CXC - tw / 2; const yy = y + (i - (lines.length - 1) / 2) * lh;
     for (const [w, ww] of ln) { const on = t >= w.t, k = E.out(win(t, w.t, w.t + .12)), sc = w.accent && on ? lerp(1, 1.06, k) : 1;
-      ctx.save(); ctx.translate(x + ww / 2, yy); ctx.scale(sc, sc); ctx.lineWidth = 14; ctx.strokeStyle = 'rgba(5,7,16,.92)'; ctx.lineJoin = 'round'; ctx.strokeText(w.text, -ww / 2, 0);
-      ctx.fillStyle = !on ? T.dim : w.accent ? T.danger : (p.color || T.text); ctx.fillText(w.text, -ww / 2, 0); ctx.restore(); x += ww + sp; } });
+      ctx.save(); ctx.translate(x + ww / 2, yy); ctx.scale(sc, sc); if (p.italic) ctx.transform(1, 0, -.2, 1, 0, 0);
+      ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 12; ctx.shadowOffsetY = 4; ctx.lineWidth = 14; ctx.strokeStyle = '#0E1630'; ctx.lineJoin = 'round'; ctx.strokeText(w.text, -ww / 2, 0); ctx.shadowColor = 'transparent';
+      ctx.fillStyle = !on ? '#8d93a8' : w.accent ? T.danger : (p.color || T.text); ctx.fillText(w.text, -ww / 2, 0); ctx.restore(); x += ww + sp; } }); // ещё не сказанные — сплошным серым, не прозрачностью
   ctx.restore(); }
 
 // ───── телефон в руке и экран тарифа «Последний» ─────
 const PHN = { x: 270, y: 330, w: 520, h: 860 };
-function HandPhone(t, drawScreen, { k = 1, cracked = false, dy = 0 } = {}) { ctx.save(); ctx.globalAlpha *= k; ctx.translate(0, (1 - E.out(k)) * 260 + dy);
+const PH_S = .85; const phoneSpace = () => { ctx.translate(540, 330); ctx.scale(PH_S, PH_S); ctx.translate(-540, -330); }; // низ телефона — y≈1060, выше субтитров
+function withPhone(draw) { ctx.save(); phoneSpace(); draw(); ctx.restore(); }
+function HandPhone(t, drawScreen, { k = 1, cracked = false, dy = 0 } = {}) { ctx.save(); ctx.globalAlpha *= k; ctx.translate(0, (1 - E.out(k)) * 260 + dy); phoneSpace();
   ctx.fillStyle = '#1d2133'; ctx.beginPath(); ctx.moveTo(PHN.x + 70, H); ctx.lineTo(PHN.x + 110, PHN.y + PHN.h + 80); ctx.lineTo(PHN.x + PHN.w - 60, PHN.y + PHN.h + 80); ctx.lineTo(PHN.x + PHN.w + 10, H); ctx.fill(); // рукав пуховика
   ctx.beginPath(); ctx.ellipse(PHN.x + PHN.w / 2, PHN.y + PHN.h - 30, 240, 170, 0, 0, Math.PI * 2); fillOL('#e9b08a', 6); rr(PHN.x - 40, PHN.y + PHN.h - 320, 66, 250, 32); fillOL('#e9b08a', 6);
   ctx.shadowColor = 'rgba(207,232,255,.35)'; ctx.shadowBlur = 70; ctx.fillStyle = '#05060c'; rr(PHN.x - 16, PHN.y - 16, PHN.w + 32, PHN.h + 32, 64); ctx.fill(); ctx.shadowBlur = 0;
@@ -97,16 +121,16 @@ function PhoneScreen(t, variant, lines = [], t0 = 0) { const X = PHN.x + 44, w =
   ctx.save(); ctx.globalAlpha = k; ctx.translate(0, (1 - k) * 40);
   if (variant === 'accepted' || variant === 'system') { const col = variant === 'accepted' ? T.ok : T.frost; circle(PHN.x + PHN.w / 2, PHN.y + 380, 90); ctx.fillStyle = col; ctx.globalAlpha *= .18; ctx.fill(); ctx.globalAlpha /= .18;
     ctx.strokeStyle = col; ctx.lineWidth = 10; ctx.beginPath(); if (variant === 'accepted') { ctx.moveTo(PHN.x + PHN.w / 2 - 40, PHN.y + 382); ctx.lineTo(PHN.x + PHN.w / 2 - 6, PHN.y + 416); ctx.lineTo(PHN.x + PHN.w / 2 + 46, PHN.y + 346); } else { ctx.arc(PHN.x + PHN.w / 2, PHN.y + 380, 50, 0, Math.PI * 1.5); } ctx.stroke(); }
-  if (variant === 'drivers') { txt('ВОДИТЕЛИ', X, PHN.y + 210, 44, T.text, { weight: 900 }); let y = PHN.y + 330;
+  if (variant === 'drivers') { txt('ВОДИТЕЛИ', X, PHN.y + 210, 52, T.text, { weight: 900 }); let y = PHN.y + 330;
     lines.slice(0, 2).forEach(([name, val, kind, at = 0]) => { const kk = E.out(win(t, at, at + .35)); if (kk <= 0) return; ctx.save(); ctx.globalAlpha *= kk; ctx.translate(0, (1 - kk) * 30);
       ctx.fillStyle = kind === 'dead' ? 'rgba(207,232,255,.08)' : 'rgba(229,56,59,.10)'; rr(X - 14, y - 70, w + 28, 250, 22); ctx.fill();
       circle(X + 50, y, 46); fillOL(kind === 'dead' ? '#9fb6d6' : '#e9b08a', 4); if (kind === 'dead') FrostOverlay(1, { x: X + 4, y: y - 46, w: 92, h: 92 }, { x: X + 50, y }, 21);
-      txt(name.toUpperCase(), X + 120, y, 44, kind === 'dead' ? T.frost : T.text, { weight: 900 });
-      const [v1, v2] = val.split(' · '); txt(v1, X, y + 100, kind === 'dead' ? 46 : 56, kind === 'dead' ? T.frost : T.danger, { font: 'JBM', weight: 800 });
-      if (v2) txt(v2, X, y + 160, 44, T.frost, { weight: 900 }); ctx.restore(); y += 290; });
+      txt(name.toUpperCase(), X + 120, y, 52, kind === 'dead' ? T.frost : T.text, { weight: 900 });
+      const [v1, v2] = val.split(' · '); txt(v1, X, y + 100, kind === 'dead' ? 54 : 62, kind === 'dead' ? T.frost : T.danger, { font: 'JBM', weight: 800 });
+      if (v2) txt(v2, X, y + 164, 52, T.frost, { weight: 900 }); ctx.restore(); y += 290; });
     ctx.restore(); return; }
   let y = variant === 'accepted' || variant === 'system' ? PHN.y + 560 : PHN.y + 300;
-  for (const [s, acc] of lines.slice(0, 2)) { let size = acc ? 64 : 44; ctx.font = `900 ${size}px Mont`; const longest = Math.max(...s.toUpperCase().split(' ').map(x => ctx.measureText(x).width)); if (longest > w) { size = Math.max(40, Math.floor(size * w / longest)); ctx.font = `900 ${size}px Mont`; } const words = s.toUpperCase().split(' '); let line = '', rows = [];
+  for (const [s, acc] of lines.slice(0, 2)) { let size = acc ? 72 : 52; ctx.font = `900 ${size}px Mont`; const longest = Math.max(...s.toUpperCase().split(' ').map(x => ctx.measureText(x).width)); if (longest > w) { size = Math.max(52, Math.floor(size * w / longest)); ctx.font = `900 ${size}px Mont`; } const words = s.toUpperCase().split(' '); let line = '', rows = [];
     for (const wd of words) { const tt = line ? line + ' ' + wd : wd; if (ctx.measureText(tt).width > w && line) { rows.push(line); line = wd; } else line = tt; } rows.push(line);
     for (const r of rows) { txt(r, X, y, size, acc ? (variant === 'accepted' ? T.ok : T.danger) : T.text, { weight: 900 }); y += size * 1.2; } y += 40; }
   ctx.restore(); }
@@ -148,10 +172,10 @@ function FrostOverlay(progress, region, origin = 'edges', seed = 3) { if (progre
 // ───── карточки и титры ─────
 function PartSticker(n, t, final = false) { ctx.save(); ctx.translate(140, 360); ctx.rotate(-.06); const s = final ? 'ЧАСТЬ 5 · ФИНАЛ' : `ЧАСТЬ ${n}`; ctx.font = '900 44px Mont'; const w = ctx.measureText(s).width + 48;
   ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 16; ctx.fillStyle = '#FFD23F'; rr(-24, -38, w, 76, 8); ctx.fill(); ctx.shadowBlur = 0; txt(s, 0, 2, 44, '#111', { weight: 900 }); ctx.restore(); }
-function RuleCard(t, t0, n, text, y = 700) { const k = E.back(win(t, t0, t0 + .4)); if (k <= 0) return; ctx.save(); ctx.translate(0, (1 - k) * -220); ctx.globalAlpha = clamp(k * 2);
+function RuleCard(t, t0, n, text, y = 700) { const k = E.out(win(t, t0, t0 + .35)); if (k <= 0) return; ctx.save(); ctx.translate(0, (1 - k) * -40); ctx.globalAlpha = k;
   ctx.fillStyle = 'rgba(14,22,48,.95)'; rr(110, y, 820, 170, 30); ctx.fill(); ctx.strokeStyle = T.frost; ctx.lineWidth = 3; ctx.stroke();
   txt(`ПРАВИЛО ${n}`, 150, y + 50, 26, 'rgba(207,232,255,.75)', { font: 'JBM', weight: 800 }); txt(text.toUpperCase(), 150, y + 112, 48, T.text, { weight: 900 }); ctx.restore(); }
-function EndCard(t, t0, text, next) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); const k = E.out(win(t, t0, t0 + .5)); ctx.save(); ctx.font = '900 84px Mont';
+function EndCard(t, t0, text, next) { ENDCARD_AT = t; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); const k = E.out(win(t, t0, t0 + .5)); ctx.save(); ctx.font = '900 84px Mont';
   const words = text.toUpperCase().split(' '), rows = []; let line = ''; for (const w of words) { const tt = line ? line + ' ' + w : w; if (ctx.measureText(tt).width > 820 && line) { rows.push(line); line = w; } else line = tt; } rows.push(line); ctx.restore();
   rows.forEach((r, i) => { ctx.save(); ctx.shadowColor = T.danger; ctx.shadowBlur = 30; txt(r, CXC, 880 + (i - (rows.length - 1) / 2) * 96, 84, T.danger, { weight: 900, align: 'center', alpha: k }); ctx.restore(); });
   if (next) txt(next, CXC, 1080 + rows.length * 30, 44, T.text, { weight: 900, align: 'center', alpha: win(t, t0 + .5, t0 + .9) }); }
@@ -161,8 +185,11 @@ function Glitch(t, k = 1) { if (k <= 0) return; const r = seeded(Math.floor(t * 
 function TopDownMap(t, path, prog, routeColor = T.ok) { ctx.fillStyle = '#0b1226'; ctx.fillRect(0, 0, W, H); ctx.strokeStyle = '#1B2547'; ctx.lineWidth = 46; for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(0, 300 + i * 160); ctx.lineTo(W, 300 + i * 160); ctx.moveTo(100 + i * 120, 0); ctx.lineTo(100 + i * 120, H); ctx.stroke(); }
   ctx.strokeStyle = routeColor; ctx.lineWidth = 12; ctx.beginPath(); path.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke();
   const n = path.length - 1, f = prog * n, i = Math.min(n - 1, Math.floor(f)), u = f - i, [ax, ay] = path[i], [bx, by] = path[i + 1]; circle(lerp(ax, bx, u), lerp(ay, by, u), 22); fillOL(T.window, 5); }
-function DashcamFrame(t, stamp, draw, freezeAt = null) { const tt = freezeAt !== null && t > freezeAt ? freezeAt : t; ctx.save(); ctx.beginPath(); ctx.ellipse(540, 900, 640, 900, 0, 0, Math.PI * 2); ctx.clip(); draw(tt); ctx.restore();
-  ctx.fillStyle = 'rgba(40,120,60,.18)'; ctx.fillRect(0, 0, W, H); txt(stamp, 90, 1450, 34, '#e8ffe8', { font: 'JBM', weight: 700 }); }
+function DashcamFrame(t, stamp, draw, freezeAt = null) { const tt = freezeAt !== null && t > freezeAt ? freezeAt : t;
+  ctx.save(); ctx.translate(540, 900); ctx.scale(1.1, 1.06); ctx.translate(-540, -900); draw(tt); ctx.restore(); // лёгкая «бочка» — растяжение к центру
+  const g = ctx.createRadialGradient(540, 880, 380, 540, 880, 1150); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.75, 'rgba(0,0,0,.55)'); g.addColorStop(1, 'rgba(0,0,0,.95)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); // одна круглая виньетка
+  ctx.fillStyle = 'rgba(40,120,60,.16)'; ctx.fillRect(0, 0, W, H); ctx.strokeStyle = 'rgba(220,255,220,.35)'; ctx.lineWidth = 3; for (const [x, y, dx, dy] of [[90, 330, 1, 1], [990, 330, -1, 1], [90, 1480, 1, -1], [990, 1480, -1, -1]]) { ctx.beginPath(); ctx.moveTo(x, y + dy * 60); ctx.lineTo(x, y); ctx.lineTo(x + dx * 60, y); ctx.stroke(); }
+  txt(stamp, 110, 1450, 32, '#e8ffe8', { font: 'JBM', weight: 700 }); }
 
 // ───── персонажи и предметы ─────
 // старушка-пассажирка: силуэт (лица мёртвых не показываем), меховая шапка, термос, снег на плечах, морозная подсветка
@@ -241,3 +268,14 @@ function tvSet(x, y, w, h, draw) { rr(x - 20, y - 20, w + 40, h + 60, 20); fillO
 // мигающая метка в углу (например «ПРАВИЛО 2»)
 function CornerTag(t, text, col = T.frost) { if (Math.floor(t * 3) % 2) return; ctx.save(); ctx.font = '800 30px JBM'; const w = ctx.measureText(text).width + 40; const x = 1010 - w, y = 330;
   ctx.fillStyle = 'rgba(14,22,48,.9)'; rr(x, y, w, 54, 10); ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.stroke(); txt(text, x + 20, y + 28, 30, col, { font: 'JBM', weight: 800 }); ctx.restore(); }
+
+// крупный план Беки анфас: шапка, шрам над бровью; o.bg — свой фон, o.sweat — капля пота, o.look — взгляд
+function bekaFace(t, o = {}) { (o.bg || cabinBg3)(t); const cx = CXC, cy = 820, r = 230; rr(cx - 320, 1060, 640, 800, 230); fillOL('#1d2133', 8); // пуховик
+  circle(cx, cy, r); fillOL('#e9b08a', 8); ctx.fillStyle = '#111318'; ctx.beginPath(); ctx.arc(cx, cy - 10, r + 8, Math.PI * 1.02, Math.PI * 1.98); ctx.lineTo(cx + r, cy - 70); ctx.lineTo(cx - r, cy - 70); ctx.closePath(); ctx.fill(); ctx.fillRect(cx - r - 8, cy - 110, 2 * r + 16, 46); // шапка
+  for (const s2 of [-1, 1]) { ctx.fillStyle = T.ol; circle(cx + s2 * 80 + (o.look || 0) * 16, cy + 20 + (o.lookY || 0) * 12, 18 * (o.wide || 1)); ctx.fill(); ctx.fillStyle = '#fff'; circle(cx + s2 * 80 + 6 + (o.look || 0) * 16, cy + 14 + (o.lookY || 0) * 12, 5); ctx.fill();
+    ctx.strokeStyle = T.ol; ctx.lineWidth = 10; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(cx + s2 * 80 - 40, cy - 34 - (s2 > 0 ? 4 : 0)); ctx.lineTo(cx + s2 * 80 + 40, cy - 34 - (s2 < 0 ? 4 : 0)); ctx.stroke(); }
+  ctx.strokeStyle = '#f6d2bd'; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(cx + 70, cy - 66); ctx.lineTo(cx + 110, cy - 40); ctx.stroke(); // шрам над бровью
+  ctx.strokeStyle = T.ol; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(cx - 40, cy + 120); ctx.lineTo(cx + 40, cy + 116); ctx.stroke();
+  if (o.sweat) { ctx.fillStyle = 'rgba(207,232,255,.85)'; const y = cy - 40 + ((t * 40) % 80); ctx.beginPath(); ctx.ellipse(cx - 170, y, 8, 13, 0, 0, Math.PI * 2); ctx.fill(); }
+  glow(cx, cy + 300, 420, 'rgba(80,130,255,.22)'); }
+function cabinBg3(t) { ctx.fillStyle = '#05070f'; ctx.fillRect(0, 0, W, H); bokeh(t, 61, 10, 200, 1000, .4); snow(t, .3, 20, .5); }

@@ -5,7 +5,7 @@ window.SCENE = { duration: DUR, fps: 30, width: W, height: H };
 initLib(document.getElementById('c'));
 // баланс: 54:06:00 в 03:56, тикает вниз; с 03:58 до 05:00 — штраф 25 мин за каждую минуту объезда → в 05:00 ровно 27:12:00
 const B0 = 54 * 3600 + 6 * 60, T0356 = 3 * 3600 + 56 * 60, P0 = 3 * 3600 + 58 * 60, P1 = 5 * 3600;
-const bal = c => (c > P1 && c < P1 + 5 ? (c = P1) : 0, B0 - (c - T0356)) - 25 * 60 * Math.max(0, Math.floor((Math.min(c, P1) - P0) / 60));
+const bal = c => storyBalance(ST(1, 0, 0, c > P1 && c < P1 + 5 ? P1 : c)); // единая функция сюжета; на кадре паузы в 05:00 — ровно 27:12:00
 const hm = c => `${String(Math.floor(c / 3600)).padStart(2, '0')}:${String(Math.floor(c / 60) % 60).padStart(2, '0')}`;
 // часы сцены: [время ролика, время на часах] — между точками линейно (ночью время в кадре ускорено)
 const CLOCK = [[0, T0356], [7, T0356 + 60], [11, P0], [16, P0 + 120], [20, 4 * 3600 + 20 * 60], [24, 4 * 3600 + 41 * 60], [29, 4 * 3600 + 59 * 60], [29.5, P1], [34, P1 + 4.5], [34.01, P1 + 25 * 60], [58, P1 + 30 * 60]]; // в 05:00 штраф останавливается: на HUD ровно 27:12
@@ -59,6 +59,14 @@ function hug(t, close = 0) { const s = lerp(1, 1.35, close), cx = 520, cy = lerp
   ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 5; for (const yy of [-380, -280, -180, -80]) { ctx.beginPath(); ctx.moveTo(-230, yy); ctx.quadraticCurveTo(0, yy + 20, 230, yy); ctx.stroke(); }
   circle(-10, -560, 110); fillOL('#e9b08a', 6); ctx.beginPath(); ctx.arc(-10, -570, 118, Math.PI * .95, Math.PI * 2.05); ctx.lineTo(108, -500); ctx.lineTo(-128, -500); ctx.closePath(); fillOL('#111318', 6); // шапка, затылок
   for (const [hx, hy] of [[-190, -300], [180, -330]]) { ctx.beginPath(); ctx.ellipse(hx, hy, 46, 36, .4, 0, Math.PI * 2); fillOL('#d8a07c', 4); } ctx.restore(); } // руки мамы на спине
+function momClose(t) { homeKitchen(t); const cx = 470, cy = 760; // мама крупно через плечо Беки: лицо видно, спокойна
+  circle(cx, cy, 200); fillOL('#d8a07c', 7); ctx.beginPath(); ctx.arc(cx, cy - 6, 218, Math.PI * 1.0, Math.PI * 2.0); ctx.quadraticCurveTo(cx + 120, cy - 150, cx, cy - 150); ctx.quadraticCurveTo(cx - 140, cy - 150, cx - 218, cy - 6); ctx.closePath(); fillOL('#3c5a8a', 7); // платок
+  ctx.beginPath(); ctx.moveTo(cx - 218, cy - 6); ctx.quadraticCurveTo(cx - 250, cy + 160, cx - 150, cy + 250); ctx.lineTo(cx - 120, cy + 120); ctx.closePath(); fillOL('#3c5a8a', 6); ctx.beginPath(); ctx.moveTo(cx + 218, cy - 6); ctx.quadraticCurveTo(cx + 250, cy + 160, cx + 150, cy + 250); ctx.lineTo(cx + 120, cy + 120); ctx.closePath(); fillOL('#3c5a8a', 6);
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 6; for (let i = 0; i < 5; i++) { ctx.beginPath(); ctx.arc(cx, cy - 6, 190 - i * 2, Math.PI * (1.1 + i * .17), Math.PI * (1.18 + i * .17)); ctx.stroke(); } // узор платка
+  const blink = (t % 3.3) < .12; for (const s2 of [-1, 1]) { ctx.save(); ctx.translate(cx + s2 * 70, cy + 20); if (blink) { ctx.strokeStyle = T.ol; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(16, 0); ctx.stroke(); } else { ctx.fillStyle = T.ol; circle(0, 0, 15); ctx.fill(); ctx.fillStyle = '#fff'; circle(5, -5, 4); ctx.fill(); }
+    ctx.strokeStyle = 'rgba(120,70,60,.5)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 18, 16, .3, Math.PI - .3); ctx.stroke(); ctx.restore(); } // морщинки
+  ctx.strokeStyle = T.ol; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(cx - 34, cy + 110); ctx.quadraticCurveTo(cx, cy + 120, cx + 34, cy + 108); ctx.stroke(); // спокойный рот
+  ctx.beginPath(); ctx.ellipse(cx + 330, cy + 330, 330, 260, -.2, 0, Math.PI * 2); fillOL('#1d2133', 8); circle(cx + 420, cy + 60, 190); fillOL('#111318', 8); } // плечо и затылок Беки в чёрной шапке на переднем плане
 function bedImprint(t) { ctx.fillStyle = '#1a2240'; ctx.fillRect(0, 0, W, H); rr(140, 280, 300, 400, 8); fillOL('#2b3558', 6); ctx.save(); rr(156, 296, 268, 368, 4); ctx.clip(); ctx.fillStyle = '#0d1430'; ctx.fillRect(0, 0, W, H); FrostOverlay(.8, { x: 156, y: 296, w: 268, h: 368 }, 'edges', 17); ctx.restore();
   ctx.fillStyle = '#141a33'; ctx.fillRect(0, 1240, W, H); rr(100, 800, 880, 560, 30); fillOL('#3b2c2c', 6); rr(120, 760, 840, 520, 40); fillOL('#8590b3', 6); // кровать, одеяло
   ctx.save(); ctx.fillStyle = 'rgba(30,36,70,.55)'; ctx.beginPath(); ctx.ellipse(330, 860, 90, 70, 0, 0, Math.PI * 2); ctx.fill(); rr(380, 830, 520, 160, 80); ctx.fill(); rr(560, 980, 340, 90, 45); ctx.fill(); ctx.restore(); // вмятина по форме тела
@@ -71,11 +79,13 @@ const SC = [
   [11, 16, 'e4s04', t => { windshield(t, .5); HandPhone(t, tt => PhoneScreen(tt, 'system', [['Отклонение'], ['Штраф −25 мин за минуту', true]], 11.1), { k: E.out(win(t, 11, 11.3)), cracked: true }); }, NIGHT],
   [16, 19.4, 'e4s05a', t => loopMap(t), NIGHT],
   [19.4, 24, 'e4s05b', t => push(t, 19.4, 24, () => rearWindow(t, [19.6, 20.1, 20.6]), 540, 700), NIGHT],
-  [24, 29, 'e4s06', t => push(t, 24, 29, () => MirrorShot(t, tt => shoulderMirror(tt, E.io(win(tt, 24.2, 28.6)))), 600, 760), NIGHT],
+  [24, 26.8, 'e4s06a', t => push(t, 24, 26.8, () => MirrorShot(t, tt => shoulderMirror(tt, E.io(win(tt, 24.2, 28.6)))), 600, 760), NIGHT],
+  [26.8, 29, 'e4s06b', t => push(t, 26.8, 29, () => MirrorShot(t, tt => shoulderMirror(tt, E.io(win(tt, 24.2, 28.6)))), MIR.x + MIR.w - 170, MIR.y + 250, 2.1, 2.4), NIGHT], // крупно: иней у плеча
   [29, 30.4, 'e4s07a', t => MirrorShot(t, tt => shoulderMirror(tt, 1 - E.io(win(tt, 29.4, 30.4)))), NIGHT],
   [30.4, 34, 'e4s07b', t => { windshield(t, .4); HandPhone(t, tt => PhoneScreen(tt, 'system', [['Поездка приостановлена'], ['Продолжение 03:17', true]], 30.5), { k: E.out(win(t, 30.4, 30.7)), cracked: true }); }, NIGHT],
   [34, 40, 'e4s08', t => push(t, 34, 40, () => { homeKitchen(t); hug(t, 0); }, 540, 1000), HOME],
-  [40, 48, 'e4s09', t => push(t, 40, 48, () => { homeKitchen(t); hug(t, 1); }, 640, 900), HOME],
+  [40, 44, 'e4s09a', t => push(t, 40, 44, () => momClose(t), 520, 820), HOME],
+  [44, 48, 'e4s09b', t => push(t, 44, 48, () => bekaFace(t, { bg: homeKitchen, wide: 1.2 }), CXC, 820, 1, 1.12), HOME], // реакция Беки
   [48, 52, 'e4s10', t => push(t, 48, 52, () => bedImprint(t), 320, 840, 1, 1.12), HOME],
   [52, 53, 'e4s11', t => { bedImprint(t); ctx.fillStyle = 'rgba(0,0,0,.65)'; ctx.fillRect(0, 0, W, H); }, HOME],
   [53, 55.5, 'e4s12a', t => { windshield(t, .3); HandPhone(t, tt => PhoneScreen(tt, 'order', [['Получатель:'], ['Бекзат Н.', true]], 53.1), { k: E.out(win(t, 53, 53.3)), cracked: true }); }, HOME],
@@ -85,7 +95,7 @@ const SC = [
 // ───── субтитры по голосу ─────
 const T12 = VT('e4s12') || [];
 const CAPS = buildCaptions([
-  [0.0, 3.0, 'Смерть едет к моей **маме**. А везу её — **я**', { times: VT('e4s01') }],
+  [0.0, 3.0, 'Смерть едет к моей **маме**. А везу её — **я**', { times: VT('e4s01'), whole: true, size: 56, maxW: 940 }],
   [3.0, 7.0, 'Отменять нельзя. Но про **объезд** правил не было', { times: VT('e4s02') }],
   [11.0, 16.0, 'Каждая минута — почти **полчаса** моей жизни', { times: VT('e4s04') }],
   [16.0, 24.0, 'Я кружил по городу. Сзади стучали в стекло. **Изнутри**', { times: VT('e4s05') }],
@@ -100,8 +110,8 @@ CAPS[0].a = 0; CAPS[0].words[0].t = 0;
 window.CAPTION_PHRASES = CAPS;
 
 function drawFrame(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
-  let i = SC.length - 1; while (i > 0 && SC[i][0] > t) i--; const [a, , id, draw, hud] = SC[i];
-  ctx.save(); draw(t); ctx.restore(); const k = 1 - win(t, a, a + .15); if (i > 0 && k > 0 && id !== 'e4s11') { ctx.fillStyle = `rgba(0,0,0,${k * .8})`; ctx.fillRect(0, 0, W, H); }
+  let i = SC.length - 1; while (i > 0 && SC[i][0] > t) i--; const [a, b, id, draw, hud] = SC[i];
+  ctx.save(); if (hud) cam(lerp(1, 1.03, E.io(win(t, a, b))), 540, 900, () => draw(t)); else draw(t); ctx.restore(); const k = 1 - win(t, a, a + .15); if (i > 0 && k > 0 && id !== 'e4s11') { ctx.fillStyle = `rgba(0,0,0,${k * .8})`; ctx.fillRect(0, 0, W, H); }
   post(t); LAST = null; if (hud) Hud(t, hud(t)); if (t < 3) PartSticker(4, t); KineticCaption(t, CAPS); }
 
 // ───── звук ─────
