@@ -14,19 +14,20 @@ function dirtMound(x, y, w, h, col = '#6b4824') { ctx.beginPath(); ctx.ellipse(x
   const r = seeded(x | 0); ctx.fillStyle = 'rgba(242,245,247,.8)'; for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.ellipse(x + (r() - .5) * w * 1.4, y - r() * h * .6, 30 + r() * 40, 8, 0, 0, Math.PI * 2); ctx.fill(); } }
 function debris(t, t0, x, y, n = 18, spread = 1) { if (t < t0) return; const r = seeded(77), dt = t - t0; for (let i = 0; i < n; i++) { const a = -Math.PI * (.1 + .8 * r()), v = (500 + r() * 900) * spread, gx = x + Math.cos(a) * v * dt, gy = y + Math.sin(a) * v * dt + 900 * dt * dt;
     if (gy > y + 60) continue; ctx.save(); ctx.translate(gx, gy); ctx.rotate(dt * 8 + i); ctx.fillStyle = i % 3 ? '#5a3d20' : '#2a2a30'; ctx.fillRect(-8 - r() * 10, -6, 16 + r() * 20, 12); ctx.restore(); } }
-function dustRing(t, t0, x, y, w = 1, col = '201,144,57') { if (t < t0) return; const k = E.out(win(t, t0, t0 + 1.6)), r = seeded(31); for (let i = 0; i < 16; i++) { const a = r() * Math.PI, d = k * (200 + r() * 320) * w; ctx.fillStyle = `rgba(${col},${.7 * (1 - k * .7)})`; circle(x + Math.cos(a) * d * 1.6 * (i % 2 ? 1 : -1), y - Math.sin(a) * d * .35, (60 + r() * 80) * (0.5 + k) * w); ctx.fill(); } }
+function dustRing(t, t0, x, y, w = 1, col = '201,144,57') { AK.dust(t, t0, x, y, { w, rgb: col }); } // мягкое облако: вспухает и оседает
 
 // ───── 0:00–0:03 хук: огненная ступень падает в закатную степь ─────
 const STG = { x: 580, y: 740, s: 1.15, rot: Math.PI + .5 }, DIR = [-.479, .878];
 function fall(t) { const T0 = 2.2, [sx, sy] = shake(t, T0, 40, 5); ctx.save(); ctx.translate(sx, sy); steppe(t, { horizon: 1000 });
   if (t < T0) { // ступень летит издалека к нам: растёт, за ней огненный хвост и дым — всё в кадре с первого кадра
     const kk = q => E.in2(clamp(q)), P = q => { const e = kk(q); return [lerp(800, STG.x, e), lerp(400, STG.y, e), lerp(.36, STG.s, e)]; }, q0 = win(t, 0, T0) * .85 + .15 * win(t, 0, T0) ** 3, tail = (x, y, s2, d) => [x + 400 * .48 * s2 + d * .48, y - 400 * .88 * s2 - d * .88];
-    { const [px, py, ps] = P(q0); for (let i = 16; i >= 1; i--) { const [tx, ty] = tail(px, py, ps, i * 60); ctx.fillStyle = `rgba(60,50,55,${.5 * (1 - i / 17)})`; circle(tx + Math.sin(i * 1.3 + t) * 20, ty, 30 + i * 9); ctx.fill(); } } // дымный след до края кадра
+    { const [px, py, ps] = P(q0); for (let i = 16; i >= 1; i--) { const [tx, ty] = tail(px, py, ps, i * 60); AK.puff(tx + (AK.noise1(i * 1.3 + t) - .5) * 60, ty, 60 + i * 14, '60,50,55', .5 * (1 - i / 17)); } } // дымный след до края кадра
     const [x, y, s2] = P(q0), [fx, fy] = tail(x, y, s2, 0); glow(x, y, 700 * s2, 'rgba(255,150,50,.5)');
     ctx.save(); ctx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 8; i++) { const d = i * 70 * s2; ctx.fillStyle = `rgba(255,${200 - i * 15},${90 - i * 8},${.55 * (1 - i / 8)})`; circle(fx + d * .48, fy - d * .88, (80 - i * 4) * s2 + 20); ctx.fill(); } ctx.restore(); // огненный хвост
     rocketStage(x, y, s2, STG.rot, { fire: 1, scorch: .5 }); ctx.save(); ctx.globalCompositeOperation = 'lighter'; glow(x - 198 * s2 / STG.s, y + 363 * s2 / STG.s, 220 * s2, 'rgba(255,200,120,.8)'); ctx.restore(); // раскалённый нос
     const sp = seeded(Math.floor(t * 30)); ctx.fillStyle = '#ffd27a'; for (let i = 0; i < 18; i++) { const d = sp() * 600 * s2; circle(fx + d * .48 + (sp() - .5) * 140 * s2, fy - d * .88 + (sp() - .5) * 140 * s2, 3 + sp() * 6); ctx.fill(); } } // искры
-  else { smokeColumn(400, 1060, t - T0 + 1.5, E.out(win(t, T0, T0 + .6)), '60,50,50'); rocketStage(STG.x, STG.y, STG.s, STG.rot, { fire: Math.max(0, .6 - (t - T0) * 1.5), scorch: 1 }); dirtMound(390, 1110, 290, 110); dustRing(t, T0, 390, 1080, 1.1); debris(t, T0, 390, 1080, 22, 1); }
+  else { smokeColumn(400, 1060, t - T0 + 1.5, E.out(win(t, T0, T0 + .6)), '60,50,50'); const pen = AK.overshoot(win(t, T0, T0 + .3)), im = AK.impact(t, T0, { squash: .22, dur: .3 }); rocketStage(STG.x - 30 + 30 * pen, STG.y - 50 + 50 * pen, STG.s, STG.rot, { fire: Math.max(0, .6 - (t - T0) * 1.5), scorch: 1 }); // входит в грунт с перелётом
+    ctx.save(); ctx.translate(390, 1110); ctx.scale(im.sx, im.sy); ctx.translate(-390, -1110); dirtMound(390, 1110, 290, 110); ctx.restore(); dustRing(t, T0, 390, 1080, 1.1); debris(t, T0, 390, 1080, 22, 1); }
   ctx.restore(); flash(t, T0); }
 // ───── 0:03–0:07 УАЗ несётся к дыму ─────
 function uazCrew(x, y, s, t) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.translate(0, Math.sin(t * 22) * 4); ctx.beginPath(); ctx.rect(-60, -200, 110, 72); ctx.rect(70, -200, 70, 72); ctx.clip();
@@ -57,36 +58,36 @@ function sphereTop(t) { ctx.fillStyle = '#2b1e14'; ctx.fillRect(-200, -200, W + 
   ctx.save(); rr(140, 410, 800, 740, 12); ctx.clip(); FrostOverlay(.7, { x: 140, y: 410, w: 800, h: 740 }, 'edges', 17); sphere(540, 780, 300, t, 1); ctx.restore(); fog(540, 760, t, .9, -1, 1.4); fog(540, 760, t + 1.7, .9, 1, 1.4); }
 // ───── 0:21–0:24,6 туман в лицо: кашель, вдох, щёки надуты ─────
 function faceBg(t) { steppe(t, { horizon: 1250 }); ctx.save(); ctx.globalAlpha = .6; smokeColumn(820, 1200, t, 1); ctx.restore(); dim(.15); }
-function inhale(t) { faceBg(t); const cough = t > 21.7 && t < 23.7, jx = cough ? Math.sin(t * 40) * 10 : 0, gasp = t >= 23.7 && t < 24.15, puff = t >= 24.15;
+function inhale(t) { const [hx0, hy0, hr0] = AK.handheld(t, 9, 6); ctx.translate(hx0, hy0); ctx.rotate(hr0); faceBg(t); const cough = t > 21.7 && t < 23.7, jx = cough ? Math.sin(t * 40) * 10 : 0, gasp = t >= 23.7 && t < 24.15, puff = t >= 24.15;
   erasyl(540 + jx, 1909, 3.1, t, { cough, gasp: gasp ? (t - 23.7) : 0, puff: puff ? 1 : 0, eyes: puff ? 1.3 : cough ? .4 : gasp ? 1.4 : 1, strain: cough || puff });
   const fk = E.out(win(t, 21, 21.8)) * (1 - win(t, 23.9, 24.25)), fx = lerp(-100, 540, fk), fy = lerp(1300, 820, fk); // облако тумана летит в лицо, на вдохе втягивается
   for (let i = 0; i < 9; i++) { const a = i * .7 + t * 1.3, r0 = 60 + i * 16; ctx.fillStyle = `rgba(190,238,255,${.13 * (fk > 0 ? 1 : 0) * (1 - win(t, 23.9, 24.25))})`; circle(fx + Math.cos(a) * 180 - 120, fy + Math.sin(a) * 110 + 140, r0 + 60); ctx.fill(); } } // туман клубится у рта, лицо видно
 // ───── 0:24,6–0:31,6 сила: всё потеряло вес ─────
 const ITEMS = [[300, 1125, 'rock', 40, .1], [385, 1140, 'bolt', 34, .5], [660, 1138, 'plate', 52, .8], [730, 1118, 'rock', 30, .3], [440, 1100, 'bolt', 26, .9], [600, 1090, 'rock', 24, .6], [230, 1030, 'plate', 44, .2], [790, 1060, 'bolt', 30, .45], [530, 1150, 'rock', 46, .7], [170, 1110, 'rock', 34, .35], [880, 1140, 'plate', 38, .65]];
 const HAT0 = [860, 590], HAT1 = [700, 440];
-function hatPos(t) { const k = E.io(win(t, ON + .3, OFF)), d = E.in2(win(t, OFF, OFF + .4)); const x = lerp(HAT0[0], HAT1[0], k), y = lerp(HAT0[1], HAT1[1], k); return [lerp(x, 760, d), lerp(y, 1130, d), lerp(0, 2.4, k) * (1 - d) + d * .3]; }
-function powerWide(t) { const on = t < OFF, lift = win(t, ON + .1, ON + 1.6), drop = on ? 0 : win(t, OFF, OFF + .35), [sx, sy] = shake(t, OFF, 34, 6);
+function hatPos(t) { const k = E.io(win(t, ON + .3, OFF)), d = AK.drop(win(t, OFF, OFF + .8), 2); const x = lerp(HAT0[0], HAT1[0], k), y = lerp(HAT0[1], HAT1[1], k); return [lerp(x, 760, d), lerp(y, 1130, d), lerp(0, 2.4, k) * (1 - d) + d * .3]; }
+function powerWide(t) { const on = t < OFF, lift = win(t, ON + .1, ON + 1.6), drop = on ? 0 : win(t, OFF, OFF + .7), [sx, sy] = shake(t, OFF, 34, 6);
   ctx.save(); ctx.translate(sx, sy); craterScene(on ? ON : t, 0); dim(.1); glow(330, 960, 170, 'rgba(155,231,255,.5)');
-  const aLift = on ? E.out(lift) * 36 : 36 * (1 - E.in2(drop)); ata(860, 1135 - aLift, 1.2, t, { hat: false, look: -1, reach: on ? 1 : 0 });
+  const aLift = on ? E.out(lift) * 36 : 36 * (1 - AK.drop(win(t, OFF, OFF + .45), 1)); ata(860, 1135 - aLift, 1.2, t, { hat: false, look: -1, reach: on ? 1 : 0 });
   const [hx, hy, hr] = hatPos(t); tubeteika(hx, hy, 90, hr);
-  erasyl(520, 1135, 1.35, t, { puff: on ? 1 : 0, gasp: on ? 0 : t - OFF + .01, red: on ? .45 * win(t, ON, OFF) : 0, eyes: on ? 1.25 : 1.4, strain: on });
+  erasyl(520, 1135, 1.35, t, { lean: on ? 0 : .14 * Math.sin(win(t, OFF, OFF + .9) * Math.PI) * (1 - win(t, OFF + .9, OFF + 2) * .5), puff: on ? 1 : 0, gasp: on ? 0 : t - OFF + .01, red: on ? .45 * win(t, ON, OFF) : 0, eyes: on ? 1.25 : 1.4, strain: on });
   FloatObjects(t, ITEMS, lift, drop); if (!on) { for (const [x, y] of ITEMS) dustRing(t, OFF + .3, x, y + 10, .25); ctx.save(); ctx.globalAlpha = 1 - win(t, OFF, OFF + 1); fog(520, 720, t, 1, 1, .8); ctx.restore(); snow(t, .7, 10); } // выдох облаком, снег снова падает
   if (on) { frozenSnow(t, 1); VacuumBubble(t, 520, 800, 440, E.out(win(t, ON, ON + .25))); }
   ctx.restore(); if (!on) flash(t, OFF, .7); }
 function powerAta(t) { craterScene(ON, 0); dim(.15); cam(1.45, 790, 560, () => { ata(860, 1135 - 36, 1.2, t, { hat: false, look: -1, reach: 1 }); const [hx, hy, hr] = hatPos(t); tubeteika(hx, hy, 90, hr);
     FloatObjects(t, ITEMS, 1); }, -230, 260); frozenSnow(t, 1); VacuumBubble(t, -200, 820, 1100, 1); }
-function powerFace(t) { faceBg(ON); const red = lerp(.45, 1, win(t, 29.6, 31.4)), j = win(t, 30.4, 31.6) * Math.sin(t * 50) * 8;
+function powerFace(t) { const [hx0, hy0, hr0] = AK.handheld(t, 9, 9); ctx.translate(hx0, hy0); ctx.rotate(hr0); faceBg(ON); const red = lerp(.45, 1, win(t, 29.6, 31.4)), j = win(t, 30.4, 31.6) * Math.sin(t * 50) * 8;
   erasyl(540 + j, 2203, 3.7, t, { puff: 1, red, eyes: 1.3 + .1 * Math.sin(t * 9), strain: 1 });
   ctx.fillStyle = 'rgba(200,240,255,.9)'; for (const [x0, y0, ph] of [[300, 560, 0], [790, 600, .5]]) { const yy = y0 + ((t * 60 + ph * 100) % 120); ctx.beginPath(); ctx.ellipse(x0, yy, 12, 18, 0, 0, Math.PI * 2); ctx.fill(); } // пот висит в невесомости
   frozenSnow(t, 1); VacuumBubble(t, 540, 760, 470, 1); }
 // ───── 0:35,5–0:39 задыхается на коленях (правило 7) ─────
 function vapor(x, y, t, period = .7) { const ph = (t % period) / period; ctx.fillStyle = `rgba(242,245,247,${.55 * (1 - ph)})`; for (let i = 0; i < 4; i++) { circle(x + ph * 90 + i * 16, y - ph * 40 + i * 6, 18 + ph * 50 + i * 6); ctx.fill(); } }
-function gasping(t) { craterScene(t, 0); dim(.2); const bob = Math.sin(t * 9) * 8; erasyl(540, 1145 + bob * .3, 1.8, t, { kneel: 1, handsKnees: 1, gasp: t, eyes: .6 + .2 * Math.sin(t * 9) });
+function gasping(t) { const [hx0, hy0, hr0] = AK.handheld(t, 9, 7); ctx.translate(hx0, hy0); ctx.rotate(hr0); craterScene(t, 0); dim(.2); const bob = Math.sin(t * 9) * 8; erasyl(540, 1145 + bob * .3, 1.8, t, { kneel: 1, handsKnees: 1, gasp: t, eyes: .6 + .2 * Math.sin(t * 9) });
   vapor(560, 1145 - 330 * 1.8 + 80 * .47 * 1.8 + bob * .3, t); snow(t, .8, 10); }
 // ───── 0:39–0:44 Ата на коленях смотрит на ящик ─────
 function ataKneel(t) { craterScene(t, 0); dim(.15); ctx.save(); ctx.globalAlpha = .55; erasyl(120, 1010, .6, t, { kneel: 1, handsKnees: 1, gasp: t }); ctx.restore();
   ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, 1040 - 120 * .8 + 4); ctx.clip(); sphere(790, 955, 85, t, 1); ctx.restore(); crate(790, 1040, .8, { open: 1 });
-  ata(360, 1145, 1.7, t, { kneel: 1, look: 1, reach: E.io(win(t, 41.5, 42.6)) > .5 ? 1 : 0 }); snow(t, .8, 60); }
+  ata(360, 1145, 1.7, t, { mouth: AK.mouth(t, window.VO_MOUTH && VO_MOUTH.e1s11, VO_AT.e1s11), kneel: 1, look: 1, reach: E.io(win(t, 41.5, 42.6)) > .5 ? 1 : 0 }); snow(t, .8, 60); }
 // ───── 0:44–0:49 в глазах деда отражается сфера ─────
 function ataEyes(t) { ctx.fillStyle = '#1a2230'; ctx.fillRect(-200, -200, W + 400, H + 400); glow(540, 900, 900, 'rgba(155,231,255,.18)'); const rf = E.out(win(t, 44.3, 45.4));
   ataHead(540, 930, 580, t, { reflect: rf, look: .4 }); for (const s2 of [-1, 1]) { const ex = 540 + s2 * 580 * .32 + .4 * 580 * .1, ey = 930 + 580 * .02; glow(ex, ey, 90, `rgba(155,231,255,${.6 * rf})`); ctx.save(); ctx.globalAlpha = rf; const g = ctx.createRadialGradient(ex - 8, ey - 8, 2, ex, ey, 30); g.addColorStop(0, '#e9fbff'); g.addColorStop(.6, '#7fd6ef'); g.addColorStop(1, '#2a7c9a');
@@ -119,17 +120,17 @@ window.CAPTION_PHRASES = CAPS;
 const H0 = t => hudBase(t);
 const SC = [
   [0, 3, 'e1s01', t => push(t, 0, 3, () => fall(t), 540, 900, 1, 1.08), H0],
-  [3, 7, 'e1s02', t => push(t, 3, 7, () => drive(t), 540, 1000, 1, 1.06), H0],
+  [3, 7, 'e1s02', t => push(t, 3, 7, () => drive(t), 540, 1000, 1, 1.06), H0, 'whip'],
   [7, 9.6, 'e1s03a', t => push(t, 7, 9.6, () => craterScene(t), 540, 950, 1, 1.06), H0],
-  [9.6, 12, 'e1s03b', t => cam(lerp(1.9, 2.2, E.io(win(t, 9.6, 12))), 330, 990, () => craterScene(t), 210, -190), H0], // наезд на ящик в трещине
+  [9.6, 12, 'e1s03b', t => cam(lerp(1.9, 2.2, E.io(win(t, 9.6, 12))), 330, 990, () => craterScene(t), 210, -190), H0, 'none'], // наезд на ящик в трещине — склейка «в движении»
   [12, 16, 'e1s04', t => push(t, 12, 16, () => stencil(t), 540, 790, 1, 1.08), H0],
   [16, 18.5, 'e1s05a', t => push(t, 16, 18.5, () => crateOpen(t), 540, 780, 1, 1.08), H0],
   [18.5, 21, 'e1s05b', t => push(t, 18.5, 21, () => sphereTop(t), 540, 780, 1, 1.1), H0],
   [21, ON, 'e1s06', t => push(t, 21, ON, () => inhale(t), 540, 720, 1, 1.12), t => ({ ...H0(t), dem: t > 24.15 ? 0 : null })],
-  [ON, 27.4, 'e1s07a', t => push(t, ON, 27.4, () => powerWide(t), 520, 820, 1, 1.08), t => ({ ...H0(t), dem: t - ON })],
+  [ON, 27.4, 'e1s07a', t => push(t, ON, 27.4, () => powerWide(t), 520, 820, 1, 1.08), t => ({ ...H0(t), dem: t - ON }), 'none'],
   [27.4, 29.6, 'e1s07b', t => push(t, 27.4, 29.6, () => powerAta(t), 700, 700, 1, 1.08), t => ({ ...H0(t), dem: t - ON })],
   [29.6, OFF, 'e1s08', t => push(t, 29.6, OFF, () => powerFace(t), 540, 760, 1, 1.1), t => ({ ...H0(t), dem: Math.min(t - ON, OFF - ON - .001), alert: t > 30.6 ? .5 + .5 * Math.sin(t * 14) : 0 })],
-  [OFF, 35.5, 'e1s09', t => push(t, OFF + .3, 35.5, () => powerWide(t), 520, 820, 1, 1.1), t => ({ ...H0(t), record: t < 34.6 ? mmss(RECORDS[EP]) : null })],
+  [OFF, 35.5, 'e1s09', t => push(t, OFF + .3, 35.5, () => powerWide(t), 520, 820, 1, 1.1), t => ({ ...H0(t), record: t < 34.6 ? mmss(RECORDS[EP]) : null }), 'none'],
   [35.5, 39, 'e1s10', t => push(t, 35.5, 39, () => gasping(t), 540, 800, 1, 1.08), H0],
   [39, 44, 'e1s11', t => push(t, 39, 44, () => ataKneel(t), 560, 800, 1, 1.08), H0],
   [44, 49, 'e1s12', t => push(t, 44, 49, () => ataEyes(t), 560, 940, 1.25, 1.5), H0],
@@ -138,8 +139,8 @@ const SC = [
   [55.5, 58.01, 'e1s14', t => EndCard(t, 55.5, 'Когда я не дышу — мир теряет вес', 'ЧАСТЬ 2 →'), null],
 ];
 function drawFrame(t) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
-  let i = SC.length - 1; while (i > 0 && SC[i][0] > t) i--; const [a, b, id, draw, hud] = SC[i];
-  ctx.save(); if (hud) cam(lerp(1, 1.03, E.io(win(t, a, b))), 540, 900, () => draw(t)); else draw(t); ctx.restore(); const k = 1 - win(t, a, a + .15); if (i > 0 && k > 0) { ctx.fillStyle = `rgba(0,0,0,${k * .8})`; ctx.fillRect(0, 0, W, H); }
+  let i = SC.length - 1; while (i > 0 && SC[i][0] > t) i--; const [a, b, id, draw, hud, cutKind] = SC[i];
+  ctx.save(); if (hud) cam(lerp(1, 1.03, E.io(win(t, a, b))), 540, 900, () => draw(t)); else draw(t); ctx.restore(); if (i > 0) AK.cut(t, a, cutKind || 'dip');
   post(t); if (hud) Hud(t, hud(t)); if (t < 3) PartSticker(1, t); KineticCaption(t, CAPS); }
 
 // ───── звук: CC0-библиотеки и синтез; фирменный звук силы — duck + keep (сердце и 8 кГц) ─────

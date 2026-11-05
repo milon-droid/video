@@ -89,6 +89,7 @@ def main():
     ap.add_argument("--frames", type=int, default=9)
     ap.add_argument("--no-safe", action="store_true")
     ap.add_argument("--step", type=float, default=0, help="лист раскадровки: кадр каждые N секунд")
+    ap.add_argument("--srt", default="", help="субтитры: проверять светлый фон только когда субтитр на экране (по умолчанию ищется <имя>.srt / epN.srt рядом)")
     ap.add_argument("--caption-zone", default="", help="полоса субтитров y0-y1 в координатах 1080×1920, напр. 1150-1400")
     a = ap.parse_args()
     path = Path(a.video)
@@ -161,7 +162,15 @@ def main():
         for a1, b1 in flagged: warns.append(f"одна композиция {a1:.1f}–{b1:.1f} с (≥5 с без нового плана) — разбить на общий/крупный или добавить элемент")
         if a.caption_zone:
             y0, y1 = (int(v) for v in a.caption_zone.split("-")); hh = g.shape[1]; z = g[:, int(y0 / 1920 * hh):int(y1 / 1920 * hh), int(.1 * g.shape[2]):int(.9 * g.shape[2])]
-            light = [i / fpsg for i, m in enumerate(z.mean(axis=(1, 2))) if m > 0.45]
+            subs = None  # если рядом есть субтитры (.srt) — проверяем только кадры, где субтитр на экране, и только середину полосы (там подложка)
+            srt = Path(a.srt) if a.srt else next((c for c in [path.with_suffix('.srt'), path.parent / (path.stem.split('-')[0] + '.srt')] if c.exists()), None)
+            if srt:
+                import re as _re
+                tc = lambda x: sum(float(v) * m for v, m in zip(x.replace(',', '.').split(':'), (3600, 60, 1)))
+                subs = [(tc(a1), tc(b1)) for a1, b1 in _re.findall(r"(\d+:\d+:\d+,\d+) --> (\d+:\d+:\d+,\d+)", srt.read_text())]
+                z = g[:, int(y0 / 1920 * hh):int(y1 / 1920 * hh), int(.3 * g.shape[2]):int(.7 * g.shape[2])]
+            on = lambda tt: subs is None or any(a1 + .1 <= tt < b1 for a1, b1 in subs)
+            light = [i / fpsg for i, m in enumerate(z.mean(axis=(1, 2))) if m > 0.45 and on(i / fpsg)]
             if light: warns.append(f"светлый фон под субтитрами ({len(light)} кадров), например {', '.join(f'{x:.1f}' for x in light[:6])} с — нужна подложка/обводка")
     except Exception as e:
         warns.append(f"автопроверки кадров не выполнены: {e}")
