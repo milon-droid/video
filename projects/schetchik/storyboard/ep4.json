@@ -1,0 +1,599 @@
+{
+  "episode": 4,
+  "title": "Объезд",
+  "duration": 58,
+  "hud": {
+    "night": 2,
+    "temp": "−29°",
+    "balanceStart": "54:06:00"
+  },
+  "scenes": [
+    {
+      "id": "e4s01",
+      "start": 0,
+      "end": 3,
+      "vo": {
+        "speaker": "beka",
+        "text": "СМЕРТЬ ЕДЕТ К МОЕЙ МАМЕ. А ВЕЗУ ЕЁ — Я",
+        "accent": [
+          "МАМЕ.",
+          "Я"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 0
+        },
+        {
+          "id": "file",
+          "at": 0
+        },
+        {
+          "id": "file",
+          "at": 0
+        }
+      ],
+      "hud": {
+        "time": "03:56",
+        "balance": "54:05:59"
+      },
+      "overlays": [
+        "PartSticker:4"
+      ]
+    },
+    {
+      "id": "e4s02",
+      "start": 3,
+      "end": 7,
+      "vo": {
+        "speaker": "beka",
+        "text": "ОТМЕНЯТЬ НЕЛЬЗЯ. НО ПРО ОБЪЕЗД ПРАВИЛ НЕ БЫЛО",
+        "accent": [
+          "ОБЪЕЗД"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 3.5
+        },
+        {
+          "id": "bsb-breathing-man-slow",
+          "at": 3.2
+        }
+      ],
+      "hud": {
+        "time": "03:56",
+        "balance": "54:05:34"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s03",
+      "start": 7,
+      "end": 11,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "bsb-tires-screech",
+          "at": 8.9
+        }
+      ],
+      "hud": {
+        "time": "03:57",
+        "balance": "54:04:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s04",
+      "start": 11,
+      "end": 16,
+      "vo": {
+        "speaker": "beka",
+        "text": "КАЖДАЯ МИНУТА — ПОЧТИ ПОЛЧАСА МОЕЙ ЖИЗНИ",
+        "accent": [
+          "ПОЛЧАСА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 11.8
+        },
+        {
+          "id": "notification-failure-wobble",
+          "at": 11.1
+        },
+        {
+          "id": "digital-glitch-subtle",
+          "at": 12.5
+        },
+        {
+          "id": "digital-glitch-subtle",
+          "at": 14.5
+        },
+        {
+          "id": "data-tick",
+          "at": 11.2
+        },
+        {
+          "id": "data-tick",
+          "at": 11.7
+        },
+        {
+          "id": "data-tick",
+          "at": 12.2
+        },
+        {
+          "id": "data-tick",
+          "at": 12.7
+        },
+        {
+          "id": "data-tick",
+          "at": 13.2
+        },
+        {
+          "id": "data-tick",
+          "at": 13.7
+        },
+        {
+          "id": "data-tick",
+          "at": 14.2
+        },
+        {
+          "id": "data-tick",
+          "at": 14.7
+        },
+        {
+          "id": "data-tick",
+          "at": 15.2
+        },
+        {
+          "id": "data-tick",
+          "at": 15.7
+        }
+      ],
+      "hud": {
+        "time": "03:58",
+        "balance": "54:03:59"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s05a",
+      "start": 16,
+      "end": 19.4,
+      "vo": {
+        "speaker": "beka",
+        "text": "Я КРУЖИЛ ПО ГОРОДУ. СЗАДИ СТУЧАЛИ В СТЕКЛО. ИЗНУТРИ",
+        "accent": [
+          "ИЗНУТРИ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 17
+        },
+        {
+          "id": "data-tick",
+          "at": 16
+        },
+        {
+          "id": "data-tick",
+          "at": 16.5
+        },
+        {
+          "id": "data-tick",
+          "at": 16.99
+        },
+        {
+          "id": "data-tick",
+          "at": 17.46
+        },
+        {
+          "id": "data-tick",
+          "at": 17.93
+        },
+        {
+          "id": "data-tick",
+          "at": 18.38
+        },
+        {
+          "id": "data-tick",
+          "at": 18.83
+        },
+        {
+          "id": "data-tick",
+          "at": 19.26
+        },
+        {
+          "id": "tires",
+          "at": 16
+        }
+      ],
+      "hud": {
+        "time": "04:00",
+        "balance": "53:11:57"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s05b",
+      "start": 19.4,
+      "end": 24,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "data-tick",
+          "at": 19.68
+        },
+        {
+          "id": "data-tick",
+          "at": 20.09
+        },
+        {
+          "id": "data-tick",
+          "at": 20.5
+        },
+        {
+          "id": "data-tick",
+          "at": 20.89
+        },
+        {
+          "id": "data-tick",
+          "at": 21.27
+        },
+        {
+          "id": "data-tick",
+          "at": 21.65
+        },
+        {
+          "id": "data-tick",
+          "at": 22.01
+        },
+        {
+          "id": "data-tick",
+          "at": 22.37
+        },
+        {
+          "id": "data-tick",
+          "at": 22.72
+        },
+        {
+          "id": "data-tick",
+          "at": 23.05
+        },
+        {
+          "id": "data-tick",
+          "at": 23.39
+        },
+        {
+          "id": "data-tick",
+          "at": 23.71
+        },
+        {
+          "id": "bsb-knock-glass",
+          "at": 19.6
+        },
+        {
+          "id": "bsb-knock-glass",
+          "at": 20.1
+        },
+        {
+          "id": "bsb-knock-glass",
+          "at": 20.6
+        }
+      ],
+      "hud": {
+        "time": "04:17",
+        "balance": "45:49:57"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s06",
+      "start": 24,
+      "end": 29,
+      "vo": {
+        "speaker": "beka",
+        "text": "ИНЕЙ ДОПОЛЗ ДО МОЕГО ПЛЕЧА",
+        "accent": [
+          "ПЛЕЧА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 24.6
+        },
+        {
+          "id": "data-tick",
+          "at": 24.03
+        },
+        {
+          "id": "data-tick",
+          "at": 24.33
+        },
+        {
+          "id": "data-tick",
+          "at": 24.64
+        },
+        {
+          "id": "data-tick",
+          "at": 24.93
+        },
+        {
+          "id": "data-tick",
+          "at": 25.22
+        },
+        {
+          "id": "data-tick",
+          "at": 25.5
+        },
+        {
+          "id": "data-tick",
+          "at": 25.77
+        },
+        {
+          "id": "data-tick",
+          "at": 26.04
+        },
+        {
+          "id": "data-tick",
+          "at": 26.3
+        },
+        {
+          "id": "data-tick",
+          "at": 26.55
+        },
+        {
+          "id": "data-tick",
+          "at": 26.8
+        },
+        {
+          "id": "data-tick",
+          "at": 27.04
+        },
+        {
+          "id": "data-tick",
+          "at": 27.28
+        },
+        {
+          "id": "data-tick",
+          "at": 27.51
+        },
+        {
+          "id": "data-tick",
+          "at": 27.73
+        },
+        {
+          "id": "data-tick",
+          "at": 27.95
+        },
+        {
+          "id": "data-tick",
+          "at": 28.17
+        },
+        {
+          "id": "data-tick",
+          "at": 28.38
+        },
+        {
+          "id": "data-tick",
+          "at": 28.58
+        },
+        {
+          "id": "data-tick",
+          "at": 28.78
+        },
+        {
+          "id": "data-tick",
+          "at": 28.98
+        },
+        {
+          "id": "bsb-ice-crack-3",
+          "at": 24.3
+        },
+        {
+          "id": "bsb-ice-crack-1",
+          "at": 26.5
+        }
+      ],
+      "hud": {
+        "time": "04:41",
+        "balance": "35:25:57"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s07a",
+      "start": 29,
+      "end": 30.4,
+      "vo": {
+        "speaker": "beka",
+        "text": "ПЯТЬ УТРА. ПОЕЗДКУ",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 29.6
+        },
+        {
+          "id": "data-tick",
+          "at": 29.17
+        },
+        {
+          "id": "data-tick",
+          "at": 29.35
+        }
+      ],
+      "hud": {
+        "time": "04:59",
+        "balance": "27:37:58"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s07b",
+      "start": 30.4,
+      "end": 34,
+      "vo": {
+        "speaker": "beka",
+        "text": "НЕ ОТМЕНИЛИ. ОТЛОЖИЛИ",
+        "accent": [
+          "ОТЛОЖИЛИ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "notification-alert-soft",
+          "at": 30.5
+        }
+      ],
+      "hud": {
+        "time": "05:00",
+        "balance": "27:12:00"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s08",
+      "start": 34,
+      "end": 40,
+      "vo": {
+        "speaker": "beka",
+        "text": "МАМА БЫЛА ЖИВА",
+        "accent": [
+          "ЖИВА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 35.5
+        },
+        {
+          "id": "bsb-door-creak-close",
+          "at": 34
+        },
+        {
+          "id": "bsb-kettle-electric",
+          "at": 34
+        }
+      ],
+      "hud": {
+        "time": "05:25",
+        "balance": "26:47:00"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s09",
+      "start": 40,
+      "end": 48,
+      "vo": {
+        "speaker": "mom",
+        "text": "— ТЫ НОЧЬЮ ПРИХОДИЛ? ЛЕЖАЛ У СЕБЯ, НЕ ДЫШАЛ. ВКЛЮЧИЛА СВЕТ — ПУСТО",
+        "accent": [
+          "ПУСТО"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 40.3
+        }
+      ],
+      "hud": {
+        "time": "05:26",
+        "balance": "26:45:44"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s10",
+      "start": 48,
+      "end": 52,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "drone",
+          "at": 48
+        }
+      ],
+      "hud": {
+        "time": "05:27",
+        "balance": "26:44:04"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s11",
+      "start": 52,
+      "end": 53,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "05:28",
+        "balance": "26:43:14"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s12a",
+      "start": 53,
+      "end": 55.5,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЗАКАЗ БЫЛ НЕ ЗА МАМОЙ.",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 53
+        },
+        {
+          "id": "file",
+          "at": 54.2
+        },
+        {
+          "id": "notification-alert-clear",
+          "at": 53
+        }
+      ],
+      "hud": {
+        "time": "05:28",
+        "balance": "26:43:02"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e4s12b",
+      "start": 55.5,
+      "end": 58.01,
+      "vo": {
+        "speaker": "beka",
+        "text": "ЗА МНОЙ",
+        "accent": [
+          "ЗА",
+          "МНОЙ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 55.5
+        }
+      ],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}
