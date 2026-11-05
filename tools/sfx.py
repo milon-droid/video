@@ -8,7 +8,8 @@ cues.json — список событий:
 
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
-wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack).
+wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack), pluck (струна/домбра: freq), breath_in, hiss (шипение: lo, hi, pulse).
+duck — приглушение всего, кроме cue с "keep": true (звук суперсилы).
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
 
 Звуки из библиотеки (сначала bash tools/get-sfx.sh, найти: python3 tools/sfx-find.py "запрос"):
@@ -217,6 +218,23 @@ def gen(c):
         ph = 2 * np.pi * np.cumsum(f) / SR
         x = np.sin(ph) + 0.5 * np.sin(2 * ph) + 0.3 * np.sign(np.sin(3 * ph)) * 0.3 + 0.4 * band(nz, 30, 300)
         return np.tanh(x * 1.2) / 1.6 * e
+    if ty == "pluck":  # щипок струны (домбра), Карплус–Стронг: {"type": "pluck", "freq": 146.8, "dur": 1.2}
+        d = d or 1.2
+        n = int(d * SR); f = c.get("freq", 146.8) * p; N = max(2, int(SR / f)); buf = rng.uniform(-1, 1, N) * 0.9; out = np.empty(n); k = c.get("damp", 0.996)
+        for i in range(n):
+            out[i] = buf[i % N]; buf[i % N] = k * 0.5 * (buf[i % N] + buf[(i + 1) % N])
+        out = out - band(out, 0, 90) * 0.0
+        return out * np.minimum(1, np.arange(n) / 30) * np.minimum(1, (n - np.arange(n)) / (0.05 * SR))
+    if ty == "hiss":  # шипение (клапан, газ, иней): {"type": "hiss", "dur": 1.5, "lo": 2500, "hi": 9000, "pulse": 0}
+        d = d or 1.5
+        n = int(d * SR); t = np.arange(n) / SR; x = band(noise(n), c.get("lo", 2500) * p, c.get("hi", 9000) * p)
+        if c.get("pulse"): x = x * (0.55 + 0.45 * np.sin(2 * np.pi * c["pulse"] * t))
+        x = x * np.minimum(1, t / c.get("attack", .05)) * np.minimum(1, (d - t) / max(.05, c.get("release", .4)))
+        return x / (np.abs(x).max() or 1)
+    if ty == "breath_in":  # резкий вдох: шум с ростом высоты
+        d = d or 0.7
+        n = int(d * SR); t = np.arange(n) / SR; x = band(noise(n), 700 * p, 5000 * p) * np.sin(np.linspace(0, np.pi, n)) ** .6 * (0.4 + 0.6 * t / d)
+        return x / (np.abs(x).max() or 1)
     if ty == "tone":  # ровный писк (кардиомонитор): {"type": "tone", "freq": 1000, "dur": 1}
         d = d or 1.0
         n = int(d * SR); t = np.arange(n) / SR
@@ -257,7 +275,10 @@ def main():
     a = ap.parse_args()
     cues = json.load(open(a.cues, encoding="utf-8"))
     n = int(a.duration * SR)
-    mix = np.zeros((n, 2))
+    mix = np.zeros((n, 2)); keep = np.zeros((n, 2))
+    # {"type": "duck", "t": 24.6, "dur": 7, "db": -30, "ramp": 0.2, "lp": 500} — «звук силы»: всё, кроме cue с "keep": true,
+    # уходит в глухой фильтр и на −30 дБ за ramp секунд, в конце возвращается разом
+    ducks = [c for c in cues if c["type"] == "duck"]; cues = [c for c in cues if c["type"] != "duck"]
     for c in cues:
         shift = 0
         if c["type"] == "lib":
@@ -282,8 +303,18 @@ def main():
             continue
         x = x[: n - i]
         pan = c.get("pan", 0.0)
-        mix[i:i + len(x), 0] += x * np.sqrt((1 - pan) / 2) * 1.414
-        mix[i:i + len(x), 1] += x * np.sqrt((1 + pan) / 2) * 1.414
+        dst = keep if c.get("keep") else mix
+        dst[i:i + len(x), 0] += x * np.sqrt((1 - pan) / 2) * 1.414
+        dst[i:i + len(x), 1] += x * np.sqrt((1 + pan) / 2) * 1.414
+    if ducks:
+        env = np.ones(n); wet = np.zeros(n)
+        for dk in ducks:
+            i0, i1, r = int(dk["t"] * SR), int((dk["t"] + dk["dur"]) * SR), max(1, int(dk.get("ramp", .2) * SR)); i0 = max(0, i0); i1 = min(n, i1)
+            ramp = np.minimum(1, np.arange(i1 - i0) / r); env[i0:i1] = np.minimum(env[i0:i1], 1 - ramp); wet[i0:i1] = np.maximum(wet[i0:i1], ramp * 10 ** (dk.get("db", -30) / 20))
+            lp = dk.get("lp", 500)
+        lowp = np.stack([band(mix[:, ch], 0, lp) for ch in range(2)], 1)
+        mix = mix * env[:, None] + lowp * wet[:, None]
+    mix = mix + keep
     if not a.no_norm:
         peak = np.abs(mix).max() or 1
         mix = mix / peak * 0.89

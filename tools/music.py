@@ -5,6 +5,7 @@
 
 synthwave — неоновые 80-е / Майами: бочка-снейр, басовые восьмые, широкий пэд, арпеджио.
 trap      — медленный хип-хоп бит: 808-бас, хэты с триолями, мягкий пэд.
+tynys     — тема героя: 4-тактовый рифф, электронный бит + домбра (струна Карплус–Стронг), --bpm 100.
 dark      — тёмный эмбиент для хоррора: низкий гул, медленно дышащий минорный кластер, холодный шелест; без мелодии и ритма.
 Громкость на выходе умеренная; в ролике ставить тихо (gain 0.25–0.4) под эффекты.
 """
@@ -71,6 +72,28 @@ if a.style == "dark":
     sub = np.sin(2 * np.pi * 36.7 * tt) * 0.25 * lfo(0.017, 1)
     mono = base * 0.35 + grit + pad + air + sub
     d = int(0.023 * SR); L[:] = mono; R[d:] = mono[:-d]; R[:d] = mono[:d]
+    total_beats = 0
+def pluck(f, ln, damp=.996, amp=1.0):
+    m = int(ln * SR); N = max(2, int(SR / f)); buf = rng.uniform(-1, 1, N); out = np.empty(m)
+    for i in range(m):
+        j = i % N; out[i] = buf[j]; buf[j] = damp * .5 * (buf[j] + buf[(j + 1) % N])
+    return out * amp * np.minimum(1, (m - np.arange(m)) / (0.03 * SR))
+if a.style == "tynys":
+    s16 = beat / 4; strum = "x.xx.xx.x.xx.xxx"  # домбра: ритм «бас–верх» восьмыми и шестнадцатыми
+    riff = [(50, 57), (50, 57), (48, 55), (45, 52)]  # D, D, C, A — нижняя струна + квинта
+    mel = [69, 0, 72, 69, 67, 0, 65, 67, 69, 0, 72, 74, 72, 0, 69, 0]
+    for b in range(total_beats):
+        t = b * beat; bar = (b // 4) % 4; lo, hi = riff[bar]
+        if b % 4 in (0, 2): kick(t)
+        if b % 4 in (1, 3): snare(t)
+        for q in range(4): hat(t + q * s16, g=.08)
+        for q in range(4):
+            if strum[(b % 4) * 4 + q] == "x": tq = t + q * s16; add(pluck(note(lo), .5, .995, .32), tq, .9, 1); add(pluck(note(hi), .45, .994, .22), tq + .012, 1, .9)
+        if b % 8 >= 4:
+            for q in range(4):
+                m = mel[(b % 4) * 4 + q]
+                if m: add(pluck(note(m), .4, .993, .2), t + q * s16, .8, 1)
+        if b % 4 == 0: add(np.tanh(np.sin(2 * np.pi * note(lo - 24) * np.arange(int(bar * 0 + 4 * beat * SR)) / SR) * 1.5) * np.exp(-np.arange(int(4 * beat * SR)) / SR * 1.2) * .3, t)
     total_beats = 0
 for b in range(total_beats):
     t = b * beat; bi = b % 4; chord = PROG[(b // 8) % 4]

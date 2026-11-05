@@ -1,0 +1,571 @@
+{
+  "episode": 1,
+  "title": "Ступень",
+  "duration": 58,
+  "hud": {
+    "place": "ҰЛЫТАУ",
+    "temp": "−12°",
+    "record": "00:07"
+  },
+  "scenes": [
+    {
+      "id": "e1s01",
+      "start": 0,
+      "end": 3,
+      "vo": {
+        "speaker": "erasyl",
+        "text": "В НАШУ СТЕПЬ ПАДАЕТ НЕБО. РАЗ В МЕСЯЦ",
+        "accent": [
+          "ПАДАЕТ",
+          "НЕБО."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 0.05
+        },
+        {
+          "id": "bass-rumble-long",
+          "at": 0
+        },
+        {
+          "id": "engine",
+          "at": 0
+        },
+        {
+          "id": "whoosh-slow-hard",
+          "at": 1.6
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 2.2
+        },
+        {
+          "id": "cinematic-thunder-big",
+          "at": 2.2
+        }
+      ],
+      "hud": {
+        "time": "16:40",
+        "dem": null,
+        "record": null
+      },
+      "overlays": [
+        "PartSticker:1"
+      ]
+    },
+    {
+      "id": "e1s02",
+      "start": 3,
+      "end": 7,
+      "vo": {
+        "speaker": "erasyl",
+        "text": "МЫ ПРИЕЗЖАЕМ ПЕРВЫМИ. МЕТАЛЛ — ЭТО ДЕНЬГИ",
+        "accent": [
+          "ДЕНЬГИ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 3.2
+        },
+        {
+          "id": "file",
+          "at": 3
+        },
+        {
+          "id": "engine",
+          "at": 3
+        },
+        {
+          "id": "tires",
+          "at": 3
+        }
+      ],
+      "hud": {
+        "time": "16:40",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s03a",
+      "start": 7,
+      "end": 9.6,
+      "vo": {
+        "speaker": "erasyl",
+        "text": "НО В ЭТОТ РАЗ СТУПЕНЬ ВЫБИЛА ИЗ ЗЕМЛИ ЧТО-ТО СТАРОЕ",
+        "accent": [
+          "ВЫБИЛА",
+          "ИЗ",
+          "ЗЕМЛИ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 7.3
+        },
+        {
+          "id": "wind",
+          "at": 7
+        },
+        {
+          "id": "file",
+          "at": 7
+        }
+      ],
+      "hud": {
+        "time": "16:52",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s03b",
+      "start": 9.6,
+      "end": 12,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "bsb-metal-gate-creak",
+          "at": 9.6
+        }
+      ],
+      "hud": {
+        "time": "16:52",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s04",
+      "start": 12,
+      "end": 16,
+      "vo": {
+        "speaker": "erasyl",
+        "text": "«ОБЪЕКТ НОЛЬ». ТРИДЦАТЬ ВОСЕМЬ ЛЕТ ПОД ЗЕМЛЁЙ",
+        "accent": [
+          "ТРИДЦАТЬ",
+          "ВОСЕМЬ",
+          "ЛЕТ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 12.3
+        },
+        {
+          "id": "swish-soft",
+          "at": 12.6
+        },
+        {
+          "id": "swish-medium",
+          "at": 13.3
+        },
+        {
+          "id": "swish-soft",
+          "at": 14.1
+        }
+      ],
+      "hud": {
+        "time": "16:52",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s05a",
+      "start": 16,
+      "end": 18.5,
+      "vo": {
+        "speaker": "erasyl",
+        "text": "ВНУТРИ БЫЛО ЧТО-ТО, ЧТО ДЫШАЛО",
+        "accent": [
+          "ДЫШАЛО"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 16.5
+        },
+        {
+          "id": "bsb-door-creak-open",
+          "at": 16.3
+        },
+        {
+          "id": "hiss",
+          "at": 16.8
+        },
+        {
+          "id": "heartbeat",
+          "at": 17.85
+        }
+      ],
+      "hud": {
+        "time": "16:55",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s05b",
+      "start": 18.5,
+      "end": 21,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "heartbeat",
+          "at": 20.71
+        },
+        {
+          "id": "bsb-ice-crack-1",
+          "at": 18.6
+        }
+      ],
+      "hud": {
+        "time": "16:55",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s06",
+      "start": 21,
+      "end": 24.6,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "whoosh-medium-soft",
+          "at": 21.1
+        },
+        {
+          "id": "bsb-cough-man",
+          "at": 21.75
+        },
+        {
+          "id": "breath_in",
+          "at": 23.75
+        }
+      ],
+      "hud": {
+        "time": "16:56",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s07a",
+      "start": 24.6,
+      "end": 27.4,
+      "vo": {
+        "speaker": "title",
+        "text": "ВСЁ ПОТЕРЯЛО ВЕС",
+        "accent": [
+          "ПОТЕРЯЛО",
+          "ВЕС"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "duck",
+          "at": 24.6
+        },
+        {
+          "id": "heartbeat",
+          "at": 24.8
+        },
+        {
+          "id": "heartbeat",
+          "at": 25.73
+        },
+        {
+          "id": "heartbeat",
+          "at": 26.59
+        },
+        {
+          "id": "heartbeat",
+          "at": 27.38
+        },
+        {
+          "id": "tone",
+          "at": 24.6
+        }
+      ],
+      "hud": {
+        "time": "16:56",
+        "dem": "00:00",
+        "record": null
+      },
+      "overlays": [
+        "VacuumBubble",
+        "FloatObjects"
+      ]
+    },
+    {
+      "id": "e1s07b",
+      "start": 27.4,
+      "end": 29.6,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "heartbeat",
+          "at": 28.1
+        },
+        {
+          "id": "heartbeat",
+          "at": 28.77
+        },
+        {
+          "id": "heartbeat",
+          "at": 29.38
+        }
+      ],
+      "hud": {
+        "time": "16:56",
+        "dem": "00:02",
+        "record": null
+      },
+      "overlays": [
+        "VacuumBubble",
+        "FloatObjects"
+      ]
+    },
+    {
+      "id": "e1s08",
+      "start": 29.6,
+      "end": 31.6,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "heartbeat",
+          "at": 29.94
+        },
+        {
+          "id": "heartbeat",
+          "at": 30.45
+        },
+        {
+          "id": "heartbeat",
+          "at": 30.93
+        },
+        {
+          "id": "heartbeat",
+          "at": 31.36
+        }
+      ],
+      "hud": {
+        "time": "16:56",
+        "dem": "00:05",
+        "record": null
+      },
+      "overlays": [
+        "VacuumBubble",
+        "FloatObjects"
+      ]
+    },
+    {
+      "id": "e1s09",
+      "start": 31.6,
+      "end": 35.5,
+      "vo": {
+        "speaker": "erasyl",
+        "text": "Я ВЫДОХНУЛ — И ВСЁ РУХНУЛО",
+        "accent": [
+          "РУХНУЛО"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 32.2
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 31.6
+        },
+        {
+          "id": "cinematic-metal-big",
+          "at": 31.6
+        },
+        {
+          "id": "impact-heavy-firm",
+          "at": 31.85
+        },
+        {
+          "id": "impact-heavy-firm",
+          "at": 31.92
+        },
+        {
+          "id": "bsb-breathless-man",
+          "at": 31.7
+        },
+        {
+          "id": "wind",
+          "at": 31.6
+        }
+      ],
+      "hud": {
+        "time": "16:56",
+        "dem": null,
+        "record": "00:07"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s10",
+      "start": 35.5,
+      "end": 39,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "file",
+          "at": 35.5
+        }
+      ],
+      "hud": {
+        "time": "16:56",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s11",
+      "start": 39,
+      "end": 44,
+      "vo": {
+        "speaker": "ata",
+        "text": "Я ЗАКОПАЛ ЕГО В 1988-М",
+        "accent": [
+          "ЗАКОПАЛ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 39.6
+        },
+        {
+          "id": "bsb-wind-strong-outside",
+          "at": 39
+        }
+      ],
+      "hud": {
+        "time": "16:58",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s12",
+      "start": 44,
+      "end": 49,
+      "vo": {
+        "speaker": "erasyl",
+        "text": "ДЕД ЗНАЛ ЭТУ КОРОБКУ",
+        "accent": [
+          "КОРОБКУ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 44.5
+        },
+        {
+          "id": "hum",
+          "at": 44
+        }
+      ],
+      "hud": {
+        "time": "16:59",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s13a",
+      "start": 49,
+      "end": 52.4,
+      "vo": {
+        "speaker": "erasyl",
+        "text": "И НЕ ТОЛЬКО ДЕД",
+        "accent": [
+          "ДЕД"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "file",
+          "at": 50.7
+        },
+        {
+          "id": "hiss",
+          "at": 49.7
+        },
+        {
+          "id": "hiss",
+          "at": 51.6
+        }
+      ],
+      "hud": {
+        "time": "17:06",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s13b",
+      "start": 52.4,
+      "end": 55.5,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "hiss",
+          "at": 52.5
+        }
+      ],
+      "hud": {
+        "time": "17:06",
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s14",
+      "start": 55.5,
+      "end": 58,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "file",
+          "at": 55.5
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 55.5
+        }
+      ],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}
