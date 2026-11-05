@@ -16,7 +16,9 @@ const breathe = t => Math.sin(t * 2.2) * 6;
 // ───── 0:00–0:03 хук: метель, молния бьёт в антенну на крыше общаги, кадр белеет ─────
 const HOOK1 = .55, HOOK2 = 2.05;
 function hookRoof(t) { const L = lightK(t, HOOK1, 3), [sx, sy] = shake(t, HOOK1, 34, 5); ctx.save(); ctx.translate(sx, sy); roof(t, { mastX: MAST, flashK: L * .8 }); dim(.05);
-  const arm = [2.75, .15], hd = handOf(470, 1560, 1.6, 1, arm); beka(470 + (MAST - hd[0]), 1560, 1.6, t, { armR: arm, armL: [-1.2, -.6], face: { mouth: t > HOOK1 ? 'o' : 'grit', look: 1, lookY: -1, stat: t > HOOK1 ? 1 : .3, lid: 0, noBlink: 1 } });
+  const arm = [2.75, .15], hd = handOf(470, 1560, 1.6, 1, arm), zap = t > HOOK1 ? Math.exp(-(t - HOOK1) * 1.6) : 0, jx = Math.sin(t * 130) * 10 * zap, jy = Math.cos(t * 97) * 6 * zap; // судорога тока
+  ctx.save(); ctx.translate(jx, jy); if (zap > .05 && Math.floor(t * 20) % 2) { ctx.shadowColor = 'rgba(200,230,255,.9)'; ctx.shadowBlur = 50; } // контур светится через кадр
+  beka(470 + (MAST - hd[0]), 1560, 1.6, t, { armR: arm, armL: [-1.2 - .5 * zap * Math.sin(t * 40), -.6 + .4 * zap * Math.cos(t * 33)], lean: -.06 * zap, face: { mouth: t > HOOK1 ? 'o' : 'grit', look: 1, lookY: -1, stat: t > HOOK1 ? 1 : .3, lid: 0, noBlink: 1, brow: t > HOOK1 ? 'up' : 'angry' } }); ctx.restore();
   if (t >= HOOK1 && t < HOOK1 + .6) { bolt(MAST - 240, -80, MAST, 560, 31, { w: 18, a: 1 - (t - HOOK1) / .6 }); bolt(MAST + 280, -80, MAST, 560, 7, { w: 9, a: .7 * (1 - (t - HOOK1) / .6), branches: 1 }); }
   if (t > HOOK1) { const r = seeded(Math.floor(t * 30)); ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = 'rgba(200,230,255,.9)'; ctx.lineWidth = 5; for (let i = 0; i < 5; i++) { let x = MAST, y = 600 + r() * 300; ctx.beginPath(); ctx.moveTo(x, y); for (let j = 0; j < 5; j++) { x += (r() - .6) * 80; y += 50; ctx.lineTo(x, y); } ctx.stroke(); } ctx.restore(); } // ток по руке и мачте
   snow(t, .95, 300, 1.2); ctx.restore(); flash(t, HOOK1); }
@@ -45,10 +47,10 @@ function gradeClose(t) { ctx.fillStyle = '#9a6b45'; ctx.fillRect(-200, -200, W +
 const stick = (dx, dy, lvl, s = 1) => (x, y) => { ctx.strokeStyle = '#222'; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y + dy); ctx.stroke(); phone(x + dx * 1.15, y + dy * 1.15, s, lvl); };
 function erzhanBed(t) { roomWall(t, { winX: 120, winY: 320, winW: 300, clock: null }); ctx._t = t;
   bed(-60, 1560, 1200, { blanket: '#7a3b6a' }); const wave = Math.sin(t * 9) * .18;
-  erzhan(540, 1500, 2.1, t, { sit: true, armR: [2.35 + wave, .25], armL: [-.7, 1.6], face: { mouth: speaking(t, TALK.erzhan) ? 'open' : 'smile', brow: 'up', look: .6 }, holdR: stick(10, -80, 1, 1.25) });
+  erzhan(540, 1500, 2.1, t, { sit: true, armR: [2.35 + wave, .25], armL: [-.7, 1.6], face: { mouth: talking(t, TALK.erzhan) ? 'open' : 'smile', brow: 'up', look: .6 }, holdR: stick(10, -80, 1, 1.25) });
   ctx.fillStyle = '#7a3b6a'; rr(80, 1420, 920, 300, 60); fillOL('#7a3b6a', 6); } // одеяло на коленях
 function erzhanClose(t) { roomWall(t, { winX: -40, winY: 300, winW: 300 }); dim(.15); ctx._t = t; const jab = E.out(win(t, 10.6, 10.9));
-  erzhanHead(380, 760, 300, { mouth: speaking(t, TALK.erzhan) ? 'open' : 'flat', brow: 'up', look: 1 }); ctx.save(); ctx.translate(lerp(900, 780, jab), lerp(900, 760, jab)); ctx.rotate(.08); phone(0, 0, 4.4, 1); if (Math.floor(t * 3) % 2 === 0) glow(0, 0, 260, 'rgba(255,77,77,.35)'); ctx.restore();
+  erzhanHead(380, 760, 300, { mouth: talking(t, TALK.erzhan) ? 'open' : 'flat', brow: 'up', look: 1 }); ctx.save(); ctx.translate(lerp(900, 780, jab), lerp(900, 760, jab)); ctx.rotate(.08); phone(0, 0, 4.4, 1); if (Math.floor(t * 3) % 2 === 0) glow(0, 0, 260, 'rgba(255,77,77,.35)'); ctx.restore();
   hand(lerp(860, 760, jab), lerp(1230, 1110, jab), 1.1, .08, { pose: 'grip', skin: '#c98b64', cuff: '#ff8a2a' }); }
 // ───── 0:13–0:18 очередь к единственной розетке ─────
 const QUEUE = (() => { const r = seeded(12), hairs = ['short', 'long', 'bun', 'buzz', 'beanie', 'short', 'long'], tops = ['#5b7fb0', '#b0475f', '#3d8a6a', '#7a5cb0', '#c48a3a', '#4a5a7a', '#a34a8a', '#2f7f8f'];
@@ -93,8 +95,9 @@ function roofWide(t, { fly = 0, lie = 0, lit = 0 } = {}) { const [sx, sy] = shak
   roof(t, { mastX: MAST, flashK: lit }); dim(.08);
   ctx.save(); ctx.translate(MAST, 1330); ctx.rotate(MAST_TILT(t)); ctx.translate(-MAST, -1330); ctx.restore();
   if (!fly && !lie) { const arm = [2.75, .15], hd = handOf(470, 1560, 1.6, 1, arm); beka(470 + (MAST - hd[0]), 1560, 1.6, t, { armR: arm, armL: [-.4, -.5], face: { mouth: 'grit', look: 1, lookY: -1, stat: lit ? 1 : win(t, 26.4, 27) * .4 } }); }
-  else if (fly) { const k = E.out(win(t, STRIKE, STRIKE + 1.1)), x = lerp(520, 780, k), y = lerp(1560, 1660, k) - Math.sin(k * Math.PI) * 300; ctx.save(); ctx.translate(x, y); ctx.rotate(lerp(0, -1.5, k)); beka(0, 0, lerp(1.6, 1.3, k), t, { armR: [2.4, .2], armL: [-2.4, -.2], face: { mouth: 'o', streak: 1, stat: 1 - k * .5, lid: 0 } }); ctx.restore();
-    if (k > .95) { const pk = win(t, STRIKE + 1.05, STRIKE + 1.8); for (let i = 0; i < 12; i++) { ctx.fillStyle = `rgba(238,243,248,${.8 * (1 - pk)})`; circle(300 + i * 40 + Math.cos(i) * pk * 120, 1680 - Math.abs(Math.sin(i * 2.1)) * pk * 220, 26 + pk * 30); ctx.fill(); } } }
+  else if (fly) { const u = win(t, STRIKE + .05, STRIKE + 1.0), k = E.out(u), land = AK.drop(u, 2), x = lerp(520, 780, k), y = lerp(1560, 1660, land) - (1 - land) * 260 * Math.sin(u * Math.PI * .5 + .3), hit = AK.impact(t, STRIKE + .62, { amp: 0, squash: .22, dur: .3 }), fl = Math.sin(t * 26) * (1 - u); // полёт: руки и ноги болтаются, приземление с отскоком
+  ctx.save(); ctx.translate(x, y); ctx.rotate(lerp(0, -1.5, E.out(clamp(u * 1.3)))); ctx.scale(hit.sy, hit.sx); beka(0, 0, lerp(1.6, 1.3, k), t, { shadow: false, armR: [2.4 + .6 * fl, .2 - .5 * fl], armL: [-2.4 + .6 * fl, -.2 + .4 * fl], walk: t * 22 * (1 - u), face: { mouth: 'o', streak: 1, stat: 1 - k * .5, lid: 0, noBlink: 1 } }); ctx.restore();
+    if (u > .55) { const pk = win(t, STRIKE + .62, STRIKE + 1.5); AK.dust(t, STRIKE + .62, 560, 1660, { w: .8, rgb: '238,243,248', n: 12 }); for (let i = 0; i < 12; i++) { ctx.fillStyle = `rgba(238,243,248,${.8 * (1 - pk)})`; circle(300 + i * 40 + Math.cos(i) * pk * 120, 1680 - Math.abs(Math.sin(i * 2.1)) * pk * 220, 14 + pk * 16); ctx.fill(); } } }
   if (t >= STRIKE && t < STRIKE + .5) { bolt(MAST - 260, -80, MAST, 560, 31, { w: 16, a: 1 - (t - STRIKE) / .5 }); bolt(MAST + 300, -80, MAST, 560, 7, { w: 8, a: .7 * (1 - (t - STRIKE) / .5), branches: 1 }); }
   snow(t, .95, 300, 1.2); ctx.restore(); }
 // ───── 0:27–0:31 удар молнии ─────
@@ -104,7 +107,7 @@ function gripClose(t) { roof(t, { mastX: 760, flashK: lightK(t, 27.6, 8) * .5 })
   if (st > .2) { const r = seeded(Math.floor(t * 30)); ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = 'rgba(184,220,255,.9)'; ctx.lineWidth = 4; for (let i = 0; i < 4; i++) { let x = 760, y = 300 + r() * 500; ctx.beginPath(); ctx.moveTo(x, y); for (let j = 0; j < 4; j++) { x += (r() - .5) * 60; y += 30; ctx.lineTo(x, y); } ctx.stroke(); } ctx.restore(); } // искры по мачте
   snow(t, .9, 300, 1.2); }
 function lying(t) { roof(t, { mastX: MAST }); dim(.2); const sm = win(t, 29.6, 31); for (let i = 0; i < 6; i++) { const ph = (t * .3 + i / 6) % 1; ctx.fillStyle = `rgba(60,60,70,${.35 * (1 - ph)})`; circle(MAST + Math.sin(i + t) * 30, 560 - ph * 400, 40 + ph * 80); ctx.fill(); } // антенна дымится
-  ctx.save(); ctx.translate(780, 1660); ctx.rotate(-1.5); beka(0, 0, 1.3, t, { armR: [2.4, .2], armL: [-2.4, -.2], face: { lid: 1, streak: 1, mouth: 'flat' } }); ctx.restore();
+  ctx.save(); ctx.translate(780, 1660); ctx.rotate(-1.5); beka(0, 0, 1.3, t, { shadow: false, still: 1, armR: [2.4, .2], armL: [-2.4, -.2], face: { lid: 1, streak: 1, mouth: 'flat' } }); ctx.restore();
   if (Math.floor(t * 8) % 5 === 0) glow(MAST, 600, 80, 'rgba(184,220,255,.8)'); snow(t, .9, 260, 1.1); }
 // ───── 0:31–0:35 лежит в снегу: глаза открываются, седая прядь, точки по рукам ─────
 const snowBg = t => snowField(t);
@@ -118,8 +121,8 @@ function armSnow(t) { snowBg(t); ctx.strokeStyle = '#ff8a2a'; ctx.lineWidth = 18
 const WALK_V = 250, walkScroll = t => (t - 35) * WALK_V, BX = 330;
 const HALL_ST = HALL.map((tc, i) => ({ x: (tc - 35) * WALK_V + BX + 330, q: QUEUE[(i * 3 + 1) % 12], tc }));
 function hallway(t) { const sc = walkScroll(t); corridorSide(t, sc);
-  ctx.save(); ctx.translate(-sc, 0); for (const st of HALL_ST) { const on = t >= st.tc, sx = st.x - 140; student(sx, 1580, 1.5, t, { topCol: st.q.top, armR: [2.05, .2], skin: st.q.skin, face: { hair: st.q.hair, skin: st.q.skin, mouth: on ? 'o' : 'flat', look: on ? -.8 : 0, lookY: on ? 0 : 1, brow: on ? 'up' : null }, holdR: (hx, hy) => phone(hx + 10, hy - 20, 1.05, st.q.lvl, { full: on ? 1 - .7 * win(t, st.tc + .5, st.tc + 1.5) : 0 }) }); } ctx.restore();
-  const ph = t * Math.PI * 2 * 1.5, lean = .1 + Math.sin(t * 3.1) * .06, near = HALL_ST.find(st => t > st.tc - .35 && t < st.tc + .45), reach = near ? 1 - Math.abs(t - near.tc) / .45 : 0;
+  ctx.save(); ctx.translate(-sc, 0); for (const st of HALL_ST) { const on = t >= st.tc, sx = st.x - 140; const jump = st.tc < t ? AK.overshoot(win(t, st.tc, st.tc + .35)) * Math.exp(-(t - st.tc) * 2) : 0; student(sx, 1580 - jump * 40, 1.5, t, { lean: -jump * .12, topCol: st.q.top, armR: [2.05, .2], skin: st.q.skin, face: { hair: st.q.hair, skin: st.q.skin, mouth: on ? 'o' : 'flat', look: on ? -.8 : 0, lookY: on ? 0 : 1, brow: on ? 'up' : null }, holdR: (hx, hy) => phone(hx + 10, hy - 20, 1.05, st.q.lvl, { full: on ? 1 - .7 * win(t, st.tc + .5, st.tc + 1.5) : 0 }) }); } ctx.restore();
+  const ph = sc / 330 * Math.PI * 2, lean = .1 + Math.sin(t * 3.1) * .06, /* фаза шага от пройденного пути — ноги не скользят */ near = HALL_ST.find(st => t > st.tc - .35 && t < st.tc + .45), reach = near ? 1 - Math.abs(t - near.tc) / .45 : 0;
   const pts = beka(BX, 1700, 1.7, t, { walk: ph, lean, straps: true, armR: [lerp(.5, 1.85, clamp(reach * 1.4)), lerp(.2, -.1, reach)], armL: [-.5, .4], face: { streak: 1, lid: .45, mouth: 'open', brow: 'sad', look: 1 } });
   for (const st of HALL_ST) { const px = st.x - sc - 140, ph2 = handOf(px, 1580, 1.5, 1, [2.05, .2]); ChargeFlow(t, { t0: st.tc, dur: .55, path: [[ph2[0] + 10, ph2[1] - 20], pts.handR, pts.elbowR, pts.shoulderR, pts.heart], dir: 'give', popup: { x: ph2[0] + 10, y: ph2[1] - 130, text: '100%' } }); } }
 // ───── 0:41–0:46 удлинитель на 10 телефонов: HUD впервые, 23 → 3% ─────
@@ -127,7 +130,7 @@ function stripClose(t) { ctx.fillStyle = '#a9b39a'; ctx.fillRect(-200, -200, W +
   outlet(160, 560, 1.1); ctx.strokeStyle = '#f4f1ea'; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(160, 560); ctx.quadraticCurveTo(170, 660, 260, 640); ctx.stroke();
   const pts = powerStrip(540, 640, 1, 10, { phonesY: 360, spread: .95 });
   pts.forEach(([x, y], i) => { const on = t >= STRIP[i]; phone(x, y, 1.0, QUEUE[i].lvl, { full: on ? 1 - .6 * win(t, STRIP[i] + .4, STRIP[i] + 1.2) : 0, rot: (i - 4.5) * .05 }); });
-  const slam = E.out(win(t, 40.9, STRIP_AT)), hx = lerp(820, 600, slam), hy = lerp(240, 600, slam);
+  const slam = AK.anticip(win(t, 40.75, STRIP_AT), .2), hit = AK.impact(t, STRIP_AT, { amp: 18, dec: 9 }), hx = lerp(820, 600, slam) + hit.dx, hy = lerp(240, 600, slam) + hit.dy; /* замах вверх → удар → дрожь */ ctx.translate(hit.dx * .4, hit.dy * .4);
   armTo(1250, -150, hx + 30, hy - 70, { pose: 'flat', w: 140, bend: .12 });
   ChargeFlow(t, { t0: STRIP_AT, dur: STRIP[9] - STRIP_AT + .3, path: [[hx, hy], [hx + 160, hy - 260], [950, 120], [1150, -100]], dir: 'give', size: 1.5, dots: 20 });
   if (t > STRIP_AT && t < STRIP[9] + .3) { const r = seeded(Math.floor(t * 30)); ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = 'rgba(61,255,143,.9)'; ctx.lineWidth = 4; for (let i = 0; i < 3; i++) { let x = 300 + r() * 480, y = 600; ctx.beginPath(); ctx.moveTo(x, y); for (let j = 0; j < 3; j++) { x += (r() - .5) * 40; y += 26; ctx.lineTo(x, y); } ctx.stroke(); } ctx.restore(); }
@@ -143,7 +146,7 @@ function doorway(t) { const step = E.io(win(t, 48.3, 49.6)); roomWall(t, { winX:
   ctx.save(); ctx.translate(300, 420); ctx.rotate(0); rr(-190, 0, 190, 1100, 6); fillOL('#7a4e32', 5); rr(-150, 90, 110, 50, 6); fillOL('#e9e4d8', 3); txt('412', -95, 116, 32, T.ink, { align: 'center', font: 'JBM', weight: 800 }); ctx.restore(); // открытая дверь
   const s = lerp(2.0, 2.35, step), x = lerp(540, 600, step), y = lerp(1700, 1820, step), sway = Math.sin(t * 2.4) * .07;
   glow(530, 900, 520, 'rgba(240,250,255,.35)');
-  beka(x, y, s, t, { lean: sway + step * .12, armL: [lerp(-2.4, -.5, step), lerp(-.5, .3, step)], armR: [lerp(.4, 1.4, step), .3], straps: true, face: { streak: 1, lid: .6 + Math.sin(t * 5) * .08, mouth: 'open', brow: 'sad', look: .5 } });
+  beka(x, y, s, t, { walk: step > 0 && step < 1 ? step * Math.PI * 2 : null, lean: sway + step * .12, armL: [lerp(-2.4, -.5, step), lerp(-.5, .3, step)], armR: [lerp(.4, 1.4, step), .3], straps: true, face: { streak: 1, lid: .6 + Math.sin(t * 5) * .08, mouth: 'open', brow: 'sad', look: .5 } });
   erzhan(930, 2020, 1.6, t, { sit: true, armL: [-.4, 1.4], armR: [.6, -1.2], face: { mouth: 'o', look: -1, brow: 'up' } });
   rr(720, 1560, 300, 200, 14); fillOL('#2a2f3e', 6); txt('ЭФИР', 870, 1660, 40, T.cyan, { align: 'center' }); } // ноутбук Ержана (крышкой к нам)
 function laptopHand(t) { roomWall(t, { winX: -200, winY: 200, light: .55 }); bed(-200, 1700, 1500, { blanket: '#7a3b6a', back: 0 }); const lit = t >= LAPTOP;
@@ -184,7 +187,8 @@ const CAPS = buildCaptions([
 ], { tail: .3 });
 CAPS[0].words.forEach(w => w.t = Math.min(w.t, 1.4)); CAPS[0].a = 0; // хук виден с первого кадра и дочитан к 1,4 с
 window.CAPTION_PHRASES = CAPS;
-const TALK = { erzhan: [[VO_AT.e1s03 + .05, VO_AT.e1s03 + 2.7]] }; // губы двигаются, пока звучит реплика
+const TALK = { erzhan: ['e1s03'] }; // рот по огибающей голоса (tools/mouth.py → AK.mouth)
+const talking = (t, ids) => !!window.VO_MOUTH && ids.some(id => AK.mouth(t, window.VO_MOUTH[id], VO_AT[id]) > .3);
 
 // ───── сцены: [начало, конец, id, рисование, hud] ─────
 const HD = t => hudBase(t);
@@ -206,7 +210,8 @@ const SC = [
   [29.6, 31, 'e1s07c', t => push(t, 29.6, 31, () => lying(t), 300, 1500, 1, 1.15), HD],
   [31, 33, 'e1s08a', t => push(t, 31, 33, () => faceSnow(t), 500, 760, 1.05, 1.15), HD],
   [33, 35, 'e1s08b', t => push(t, 33, 35, () => armSnow(t), 500, 800, 1, 1.08), HD],
-  [35, 41, 'e1s09', t => hallway(t), HD],
+  [35, 38, 'e1s09a', t => hallway(t), HD],
+  [38, 41, 'e1s09b', t => cam(1.45, 560, 1080, () => hallway(t), 0, -60), HD], // ближе: новая крупность, касания крупно
   [41, 43.6, 'e1s10a', t => push(t, 41, 43.6, () => stripClose(t), 540, 700, 1, 1.08), HD],
   [43.6, 46, 'e1s10b', t => push(t, 43.6, 46, () => stripFace(t), 420, 800, 1, 1.1), HD],
   [46, 49.6, 'e1s11', t => push(t, 46, 49.6, () => doorway(t), 540, 900, 1, 1.08), HD],
@@ -255,6 +260,8 @@ window.SFX_CUES = [
   // 50,0–51,0 — тишина перед финальной фразой
   { t: LAPTOP, type: 'charge', gain: .35, pitch: .7 }, { t: LAPTOP, type: 'hum50', dur: .3, gain: .14 }, { t: PD + .1, type: 'powerdown', dur: 1.2, gain: .15 },
   { t: 53.05, type: 'charge', gain: .1, pitch: 1.2 }, { t: 53, type: 'murmur', dur: 2.5, gain: .015 },
+  { t: STRIKE + .05, type: 'lib', id: 'whoosh-medium-hard', gain: .3 }, { t: STRIKE + .62, type: 'thud', gain: .35 }, { t: STRIKE + .85, type: 'snowstep', gain: .3 },
+  { t: 23, type: 'drone', dur: 5.2, gain: .05, pitch: .8 }, { t: 35, type: 'file', path: BED, gain: .045, from: 20, dur: 6 }, ...HALL.map(t => ({ t: t + .05, type: 'lib', id: 'pop-large-in', gain: .08 })),
   { t: 55.5, type: 'file', path: THEME, gain: .38, dur: 2.5 }, { t: 55.5, type: 'zap', dur: .25, gain: .2 },
 ];
 // ───── раскадровка storyboard/ep1.json ─────
@@ -262,6 +269,6 @@ window.STORYBOARD = { episode: EP, title: 'Молния', duration: DUR, hud: { 
   scenes: SC.map(([a, b, id, , hud]) => { const h = hud ? hud(a + .01) : null, he = hud ? hud(Math.min(b, DUR) - .02) : null; const c = CAPS.filter(p => p.a >= a - .01 && p.a < b);
     return { id, start: a, end: +Math.min(b, DUR).toFixed(2), vo: c.length ? { speaker: c[0].speaker || 'beka', text: c.map(p => p.words.map(w => w.text).join(' ')).join(' '), accent: c.flatMap(p => p.words.filter(w => w.accent).map(w => w.text)) } : null,
       sfx: window.SFX_CUES.filter(s => s.t >= a && s.t < b && s.type !== 'file').map(s => ({ id: s.id || s.type, at: +s.t.toFixed(2) })), hud: h ? { time: h.time, battery: h.battery == null ? null : Math.round(h.battery), batteryEnd: he.battery == null ? null : Math.round(he.battery) } : null,
-      overlays: a === 0 ? ['PartSticker:1'] : id === 'e1s14' ? ['EndCard'] : id === 'e1s13' ? ['PowerDown'] : /e1s(08b|09|10a|10b|12)/.test(id) ? ['ChargeFlow'] : [] }; }) };
+      overlays: a === 0 ? ['PartSticker:1'] : id === 'e1s14' ? ['EndCard'] : id === 'e1s13' ? ['PowerDown'] : /e1s(08b|09a|09b|10a|10b|12)/.test(id) ? ['ChargeFlow'] : [] }; }) };
 window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
 window.READY = Promise.all(['900 72px Mont', '800 32px Mont', '800 44px JBM'].map(f => document.fonts.load(f))).then(() => drawFrame(0));

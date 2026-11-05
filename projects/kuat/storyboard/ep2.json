@@ -83,6 +83,10 @@
         {
           "id": "hum",
           "at": 3
+        },
+        {
+          "id": "swipe-fast-soft",
+          "at": 4.25
         }
       ],
       "hud": {
@@ -101,6 +105,10 @@
         {
           "id": "pop",
           "at": 6.1
+        },
+        {
+          "id": "breath_in",
+          "at": 5.5
         }
       ],
       "hud": {
@@ -242,6 +250,22 @@
         {
           "id": "money-coin-drop",
           "at": 14.5
+        },
+        {
+          "id": "step",
+          "at": 13.9
+        },
+        {
+          "id": "step",
+          "at": 14.35
+        },
+        {
+          "id": "step",
+          "at": 14.8
+        },
+        {
+          "id": "step",
+          "at": 15.25
         }
       ],
       "hud": {
@@ -278,6 +302,10 @@
         {
           "id": "celebration-applause-small",
           "at": 15.9
+        },
+        {
+          "id": "step",
+          "at": 15.7
         }
       ],
       "hud": {
@@ -394,6 +422,50 @@
         {
           "id": "impact-deep-firm",
           "at": 21.85
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 18.07
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 18.13
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 18.67
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 19.17
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 19.72
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 20.32
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 20.97
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 21.37
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 21.77
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 22
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 22.16
         }
       ],
       "hud": {
@@ -447,6 +519,10 @@
         {
           "id": "thud",
           "at": 25.25
+        },
+        {
+          "id": "thud",
+          "at": 25.45
         }
       ],
       "hud": {
@@ -489,6 +565,22 @@
         {
           "id": "hum50",
           "at": 28.4
+        },
+        {
+          "id": "tick",
+          "at": 27.1
+        },
+        {
+          "id": "tick",
+          "at": 27.28
+        },
+        {
+          "id": "tick",
+          "at": 27.46
+        },
+        {
+          "id": "tick",
+          "at": 27.64
         }
       ],
       "hud": {
