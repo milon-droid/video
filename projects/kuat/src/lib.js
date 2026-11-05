@@ -7,6 +7,11 @@ const T = { night: '#101B33', dorm: '#F2D7A6', snow: '#EEF3F8', charge: '#3DFF8F
   cyan: '#4FD8FF', warm: '#FFB347', pink: '#FF8FB1', ink: '#0A0F1E', text: '#FFFFFF', ol: '#0A0F1E' };
 const SPEAKER = { beka: T.text, erzhan: T.cyan, apai: T.warm, dana: T.pink, ruslan: T.miner };
 let ctx;
+let NOW = 0; // время текущего кадра (для автоморгания); ставится в drawFrame
+// моргание: раз в ~3,7 с на 0,13 с, у каждой головы своя фаза
+const autoBlink = seed => { const p = ((NOW + seed * 1.37) % 3.7 + 3.7) % 3.7; return p < .13 ? 1 : 0; };
+// рот говорящего: spans — [[начало, конец], ...] реплик в кадре; 0/1 с частотой слогов
+const speaking = (t, spans) => spans.some(([a, b]) => t >= a && t < b) && Math.sin(t * 2 * Math.PI * 5.2) + .35 * Math.sin(t * 2 * Math.PI * 8.3) > 0;
 const initLib = c => { ctx = c.getContext('2d'); };
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k, win = (t, a, b) => clamp((t - a) / (b - a));
 const E = { out: k => 1 - Math.pow(1 - k, 3), in2: k => k * k, io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, back: k => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); } };
@@ -44,7 +49,7 @@ const COST = { phone: -2, laptop: -6, defib: -20, powerbank: 5 };
 // BATTERY[ep] = { start, showAt, events: [[t, kind | число, ramp?]] } — событие меняет заряд за ramp секунд (цифры «бегут»)
 const BATTERY = {};
 function batteryAt(ep, t) { const b = BATTERY[ep]; if (!b) return null; let v = b.start;
-  for (const [t0, kind, ramp = .14] of b.events) { if (t < t0) break; const d = typeof kind === 'number' ? kind : COST[kind], k = win(t, t0, t0 + ramp), full = Math.max(0, v + d) - v; v += full * k; }
+  for (const [t0, kind, ramp = .14] of b.events) { if (t < t0) break; if (kind && kind.set !== undefined) { v = kind.set; continue; } const d = typeof kind === 'number' ? kind : COST[kind], k = win(t, t0, t0 + ramp), full = Math.max(0, v + d) - v; v += full * k; }
   return v; }
 const batteryShown = (ep, t) => { const b = BATTERY[ep]; return b && t >= b.showAt ? batteryAt(ep, t) : null; };
 const batteryRate = (ep, t) => { const a = batteryAt(ep, t - .05), b = batteryAt(ep, t); return a == null ? 0 : Math.sign(Math.round(b - a)); };
@@ -52,6 +57,7 @@ const battCol = v => v > 50 ? T.charge : v >= 20 ? T.low : T.empty;
 // ───── единое сюжетное время: опорные точки [сек серии, 'ЧЧ:ММ'] ─────
 const STORY_CLOCK = {};
 function storyClock(ep, t) { const ks = STORY_CLOCK[ep]; let i = ks.length - 1; while (i > 0 && ks[i][0] > t) i--; const [h, m] = ks[i][1].split(':').map(Number);
+  if (ks[i][2] === 'ff' && ks[i + 1]) { const [h2, m2] = ks[i + 1][1].split(':').map(Number); let a = h * 60 + m, b = h2 * 60 + m2; if (b < a) b += 1440; const v = Math.floor(lerp(a, b, win(t, ks[i][0], ks[i + 1][0]))) % 1440; return `${String(Math.floor(v / 60)).padStart(2, '0')}:${String(v % 60).padStart(2, '0')}`; } // ускоренная перемотка времени
   const nx = ks[i + 1], cap = nx ? (() => { const [h2, m2] = nx[1].split(':').map(Number); let v = h2 * 60 + m2; if (v < h * 60 + m) v += 1440; return v; })() : 1e9, mins = Math.min(cap, h * 60 + m + Math.floor((t - ks[i][0]) / 60)) % 1440;
   return `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`; }
 
@@ -80,15 +86,15 @@ function Hud(t, { place = 'АСТАНА', time, temp, battery = null, rate = 0, 
 // t0 — касание, dur — сколько течёт ток; popup: { x, y, text, col } — заряд устройства
 function polyAt(path, u) { const seg = []; let L = 0; for (let i = 1; i < path.length; i++) { const d = Math.hypot(path[i][0] - path[i - 1][0], path[i][1] - path[i - 1][1]); seg.push(d); L += d; }
   let s = clamp(u) * L; for (let i = 0; i < seg.length; i++) { if (s <= seg[i] || i === seg.length - 1) { const k = seg[i] ? clamp(s / seg[i]) : 0; return [lerp(path[i][0], path[i + 1][0], k), lerp(path[i][1], path[i + 1][1], k)]; } s -= seg[i]; } return path[0]; }
-function ChargeFlow(t, { t0, dur = .8, path, dir = 'give', popup = null, size = 1, dots = 14 }) {
-  if (t < t0 - .02 || !path) return; const on = t < t0 + dur, k = on ? E.out(win(t, t0, t0 + .15)) : 1 - win(t, t0 + dur, t0 + dur + .25);
+function ChargeFlow(t, { t0, dur = .8, path, dir = 'give', popup = null, size = 1, dots = 14, freezeAt = null, popLife = 1.3 }) {
+  if (t < t0 - .02 || !path) return; const tf = freezeAt !== null && t > freezeAt ? freezeAt : t, on = t < t0 + dur, k = (on ? E.out(win(t, t0, t0 + .15)) : 1 - win(t, t0 + dur, t0 + dur + .25)) * (freezeAt !== null ? 1 - .7 * win(t, freezeAt + .6, freezeAt + 2.2) : 1);
   if (k > 0) { ctx.save(); ctx.globalCompositeOperation = 'lighter';
-    for (let i = 0; i < dots; i++) { let u = ((t - t0) * 1.6 + i / dots) % 1; if (dir === 'give') u = 1 - u; const [x, y] = polyAt(path, u), r = (7 + 4 * Math.sin(i * 2.3)) * size;
+    for (let i = 0; i < dots; i++) { let u = ((tf - t0) * 1.6 + i / dots) % 1; if (dir === 'give') u = 1 - u; const [x, y] = polyAt(path, u), r = (7 + 4 * Math.sin(i * 2.3)) * size;
       ctx.fillStyle = `rgba(61,255,143,${.95 * k})`; circle(x, y, r); ctx.fill(); ctx.fillStyle = `rgba(184,255,212,${.35 * k})`; circle(x, y, r * 2.2); ctx.fill(); }
     ctx.strokeStyle = `rgba(61,255,143,${.25 * k})`; ctx.lineWidth = 16 * size; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); path.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke();
     glow(path[0][0], path[0][1], 120 * size, `rgba(61,255,143,${.55 * k})`); ctx.restore(); }
   if (t >= t0 && t < t0 + 2 / 30) { const [x, y] = path[0]; glow(x, y, 420 * size, 'rgba(220,255,235,1)'); glow(x, y, 200 * size, 'rgba(255,255,255,1)'); } // вспышка 2 кадра
-  if (popup && t >= t0) { const pk = win(t, t0, t0 + 1.3), rise = E.out(pk) * 90, a = pk < .75 ? 1 : 1 - (pk - .75) / .25, sc = E.back(clamp((t - t0) / .25)); if (a > 0) { ctx.save(); ctx.globalAlpha = a; ctx.translate(popup.x, popup.y - rise); ctx.scale(sc, sc);
+  if (popup && t >= t0) { const pk = win(t, t0, t0 + popLife), rise = E.out(pk) * 90, a = pk < .75 ? 1 : 1 - (pk - .75) / .25, sc = E.back(clamp((t - t0) / .25)); if (a > 0) { ctx.save(); ctx.globalAlpha = a; ctx.translate(popup.x, popup.y - rise); ctx.scale(sc, sc);
     const s = popup.text, fs = popup.size || 56; ctx.font = `900 ${fs}px Mont`; const tw = ctx.measureText(s).width; ctx.fillStyle = 'rgba(10,15,30,.88)'; rr(-tw / 2 - 22, -fs * .7, tw + 44, fs * 1.4, 18); ctx.fill(); ctx.strokeStyle = popup.col || T.charge; ctx.lineWidth = 4; ctx.stroke();
     txt(s, 0, 2, fs, popup.col || T.charge, { align: 'center' }); ctx.restore(); } } }
 

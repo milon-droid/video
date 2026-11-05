@@ -13,9 +13,9 @@
   },
   "scenes": [
     {
-      "id": "e1s01",
+      "id": "e1s01a",
       "start": 0,
-      "end": 3,
+      "end": 1.6,
       "vo": {
         "speaker": "beka",
         "text": "МЕНЯ УДАРИЛО МОЛНИЕЙ. ЗИМОЙ. В ОБЩАГЕ",
@@ -30,12 +30,28 @@
         },
         {
           "id": "cinematic-thunder-big",
-          "at": 0.85
+          "at": 0.55
         },
         {
           "id": "zap",
-          "at": 0.85
-        },
+          "at": 0.55
+        }
+      ],
+      "hud": {
+        "time": "23:40",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": [
+        "PartSticker:1"
+      ]
+    },
+    {
+      "id": "e1s01b",
+      "start": 1.6,
+      "end": 3,
+      "vo": null,
+      "sfx": [
         {
           "id": "cinematic-thunder-massive",
           "at": 2.05
@@ -50,9 +66,7 @@
         "battery": null,
         "batteryEnd": null
       },
-      "overlays": [
-        "PartSticker:1"
-      ]
+      "overlays": []
     },
     {
       "id": "e1s02a",
@@ -771,7 +785,7 @@
     {
       "id": "e1s13",
       "start": 51.3,
-      "end": 55.5,
+      "end": 53,
       "vo": {
         "speaker": "beka",
         "text": "НОЛЬ. ВЫКЛЮЧЕНИЕ",
@@ -793,6 +807,28 @@
       "overlays": [
         "PowerDown"
       ]
+    },
+    {
+      "id": "e1s13b",
+      "start": 53,
+      "end": 55.5,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "charge",
+          "at": 53.05
+        },
+        {
+          "id": "murmur",
+          "at": 53
+        }
+      ],
+      "hud": {
+        "time": "00:15",
+        "battery": 0,
+        "batteryEnd": 0
+      },
+      "overlays": []
     },
     {
       "id": "e1s14",
