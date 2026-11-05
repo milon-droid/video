@@ -29,31 +29,159 @@ function rr(x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx
 function txt(s, x, y, size, col = C.white, { weight = 800, align = 'left', alpha = 1 } = {}) {
   ctx.save(); ctx.globalAlpha *= alpha; ctx.font = `${weight} ${size}px Inter`; ctx.textBaseline = 'middle'; ctx.textAlign = align; ctx.fillStyle = col; ctx.fillText(s, x, y); ctx.restore(); }
 
-// ───── картинки ИИ (или плашка-заглушка) ─────
-const ASSETS = {
-  '01': 'Салон такси ночью, дождь на лобовом, телефон на держателе', '02': 'Крупно лицо Даурена в свете экрана',
-  '03': 'Утро: смятая постель, рука на простыне', '04': 'Открытый холодильник, полупустые полки',
-  '05': 'Прихожая: пустой крючок, фото Даурена в жёлтой куртке', '06': 'Двор пятиэтажки ночью, горит одно окно',
-  '07': 'Дверь подъезда, выцветший плакат', '08': 'Мужчина в жёлтой куртке выходит из подъезда',
-  '09': 'Мужчина падает на заднее сиденье', '10': 'Зеркало заднего вида: глаза под капюшоном',
-  '11': 'Мужчина снимает капюшон — лицо Марата' };
-const IMG = {};
-const loadImg = id => new Promise(res => { const im = new Image(); im.onload = () => { IMG[id] = im; res(); }; im.onerror = () => res(); im.src = `../assets/img/${id}.png`; });
-function plate(id, t, z = 1, dx = 0, dy = 0) {
-  ctx.save(); ctx.translate(W / 2 + dx, H / 2 + dy); ctx.scale(z, z); ctx.translate(-W / 2, -H / 2);
-  if (IMG[id]) ctx.drawImage(IMG[id], 0, 0, W, H);
-  else { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0b1230'); g.addColorStop(1, '#170d2c'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-    ctx.setLineDash([24, 18]); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 4; rr(70, 230, 840, 1260, 30); ctx.stroke(); ctx.setLineDash([]);
-    txt(`ASSET #${id}`, CX, 820, 84, 'rgba(255,255,255,.32)', { weight: 900, align: 'center' });
-    txt(ASSETS[id], CX, 910, 30, 'rgba(255,255,255,.28)', { weight: 600, align: 'center' }); }
+// ───── свой рисунок (плоский вектор, как в референсах) ─────
+const OL = '#151225', SKIN = '#f0b48a', SKIN2 = '#d98f62', HAIR = '#16131f', JEANS = '#3b5b9a', HOOD = '#3a3f4f', YEL = '#e8b021', YEL2 = '#b9860f';
+const seeded = seed => () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+function glow(x, y, r, col, a = 1) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = a; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); ctx.restore(); }
+function fillOL(col, lw = 5) { ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = lw; ctx.strokeStyle = OL; ctx.lineJoin = 'round'; ctx.stroke(); }
+function circle(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+// голова: o = { face: 'dauren'|'marat', look, eyes (0..1.6), brows: 'worried'|'calm', mouth: 'flat'|'o'|'smile'|'tense', hood (0..1), jacket, shadow (0..1) }
+function head(x, y, r, o = {}) { const lk = o.look || 0, jk = o.jacket || HOOD, hood = o.hood || 0;
+  ctx.save(); ctx.translate(x, y); const lw = Math.max(4, r * .06);
+  if (hood > 0) { ctx.save(); ctx.translate(0, (1 - hood) * r * .9); circle(0, -r * .08, r * 1.2); fillOL(jk, lw); ctx.restore(); }
+  circle(lk * r * .08, 0, r); fillOL(SKIN, lw);
+  circle(-r * .98 + lk * r * .25, r * .08, r * .2); fillOL(SKIN, lw * .8); // ухо
+  if (o.face === 'marat') { ctx.save(); ctx.beginPath(); ctx.arc(lk * r * .08, 0, r - lw / 2, 0, Math.PI * 2); ctx.clip(); ctx.fillStyle = 'rgba(70,60,90,.28)'; ctx.beginPath(); ctx.ellipse(lk * r * .1, r * .62, r * .78, r * .5, 0, 0, Math.PI * 2); ctx.fill();
+    const rnd = seeded(3); ctx.fillStyle = 'rgba(40,35,55,.35)'; for (let i = 0; i < 160; i++) { const a = Math.PI * (.2 + rnd() * .6), rr2 = r * (.6 + rnd() * .38); circle(Math.cos(a) * rr2 + lk * r * .1, Math.sin(a) * rr2 + r * .1, r * .011); ctx.fill(); } ctx.restore(); }
+  if (hood < .6) { ctx.save(); ctx.beginPath(); ctx.arc(lk * r * .08, 0, r, Math.PI * 1.03, Math.PI * 1.97); // волосы
+    ctx.quadraticCurveTo(r * .5 + lk * r * .2, -r * .55, lk * r * .1, -r * .5); ctx.quadraticCurveTo(-r * .5, -r * .62, -r * .99, -r * .1); ctx.closePath(); ctx.globalAlpha = 1 - hood / .6; fillOL(HAIR, lw); ctx.restore(); }
+  if (hood > 0) { ctx.save(); ctx.translate(0, (1 - hood) * r * .9); ctx.beginPath(); ctx.arc(0, -r * .08, r * 1.2, Math.PI * 1.05, Math.PI * 1.95); ctx.arc(0, r * .2, r * .98, Math.PI * 1.9, Math.PI * 1.1, true); ctx.closePath(); fillOL(jk, lw); ctx.restore(); }
+  const ex = r * .34, ey = r * .02, es = o.eyes ?? 1, ox = lk * r * .3;
+  for (const s of [-1, 1]) { ctx.save(); ctx.translate(ox + s * ex, ey); ctx.fillStyle = OL; ctx.beginPath(); ctx.ellipse(0, 0, r * .085 * Math.min(es, 1.25), r * .12 * es, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff'; circle(r * .03, -r * .04 * es, r * .03); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = OL; ctx.lineWidth = lw * 1.1; ctx.lineCap = 'round'; ctx.beginPath(); const by = ey - r * .26 * Math.max(es, .8), tilt = o.brows === 'worried' ? r * .09 : o.brows === 'angry' ? -r * .07 : 0;
+    const tl = o.brows === 'worried' ? r * .1 : o.brows === 'angry' ? -r * .08 : 0; ctx.moveTo(ox + s * (ex - r * .16), by - tl); ctx.lineTo(ox + s * (ex + r * .14), by + tl * .3); ctx.stroke(); ctx.restore();
+    if (o.face === 'marat' || o.tired) { ctx.save(); ctx.strokeStyle = 'rgba(120,70,80,.55)'; ctx.lineWidth = lw * .7; ctx.beginPath(); ctx.arc(ox + s * ex, ey + r * .1, r * .1, .3, Math.PI - .3); ctx.stroke(); ctx.restore(); } }
+  ctx.save(); ctx.strokeStyle = OL; ctx.lineWidth = lw * 1.1; ctx.lineCap = 'round'; ctx.beginPath(); const my = r * .45, mx = ox * .8;
+  if (o.mouth === 'o') { ctx.fillStyle = '#5a2430'; ctx.ellipse(mx, my, r * .07, r * .1, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+  else if (o.mouth === 'smile') { ctx.moveTo(mx - r * .16, my - r * .02); ctx.quadraticCurveTo(mx + r * .02, my + r * .1, mx + r * .17, my - r * .06); ctx.stroke(); }
+  else if (o.mouth === 'tense') { ctx.moveTo(mx - r * .14, my + r * .02); ctx.quadraticCurveTo(mx, my - r * .05, mx + r * .14, my + r * .02); ctx.stroke(); }
+  else { ctx.moveTo(mx - r * .1, my); ctx.lineTo(mx + r * .1, my); ctx.stroke(); }
+  ctx.restore();
+  if (o.shadow) { ctx.save(); ctx.beginPath(); ctx.arc(lk * r * .08, 0, r + lw, 0, Math.PI * 2); ctx.clip(); ctx.fillStyle = `rgba(8,8,18,${o.shadow * .9})`; ctx.fillRect(-r * 1.3, -r * 1.3, r * 2.6, r * 2.6);
+    if (o.shadow > .5) for (const s of [-1, 1]) { ctx.fillStyle = `rgba(255,255,255,${(o.shadow - .5) * 1.6})`; circle(ox + s * ex, ey, r * .045); ctx.fill(); } ctx.restore(); }
   ctx.restore(); }
-function vignette(k = .65) { const g = ctx.createRadialGradient(540, 900, 400, 540, 960, 1200); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${k})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
-// дождь на стекле: детерминированные капли
-const DROPS = (() => { let s = 7; const r = () => (s = (s * 16807) % 2147483647) / 2147483647; return Array.from({ length: 90 }, () => [r() * W, r() * H, 2 + r() * 5, .3 + r() * .7, r()]); })();
+// человек целиком: ноги в (x, y), рост ≈ 420·s
+function person(x, y, s, o = {}) { const jk = o.jacket || HOOD, ph = o.walk ?? null, sw = ph === null ? 0 : Math.sin(ph) * .45, lw = 5;
+  ctx.save(); ctx.translate(x, y); ctx.scale(s * (o.flip ? -1 : 1), s); const bob = ph === null ? 0 : Math.abs(Math.cos(ph)) * -6; ctx.translate(0, bob);
+  if (!o.seated) for (const [k, side] of [[sw, -1], [-sw, 1]]) { ctx.save(); ctx.translate(side * 18, -112); ctx.rotate(k); rr(-17, 0, 34, 112, 16); fillOL(JEANS, lw); ctx.beginPath(); ctx.ellipse(8, 112, 26, 13, 0, 0, Math.PI * 2); fillOL('#e9e6f2', lw); ctx.restore(); }
+  for (const [k, side] of [[-sw * .8, -1], [sw * .8, 1]]) { ctx.save(); ctx.translate(side * 52, -250); ctx.rotate(k + side * .12 + (o.armUp && side > 0 ? -1.2 : 0)); rr(-17, 0, 34, 122, 16); fillOL(jk, lw); circle(0, 128, 15); fillOL(SKIN, lw);
+    if (jk === YEL) { ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fillRect(-15, 70, 30, 7); } ctx.restore(); }
+  rr(-64, -272, 128, 168, 40); fillOL(jk, lw); ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(0, -262); ctx.lineTo(0, -112); ctx.stroke();
+  if (jk === YEL) { ctx.strokeStyle = YEL2; ctx.lineWidth = 3; for (const yy of [-225, -185, -145]) { ctx.beginPath(); ctx.moveTo(-60, yy); ctx.quadraticCurveTo(0, yy + 8, 60, yy); ctx.stroke(); } }
+  head(0, -342, 74, o); ctx.restore(); }
+// машина-такси сбоку (своя, без марки)
+function taxiCar(x, y, s, lights = 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  if (lights) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createLinearGradient(-200, 0, -900, 0); g.addColorStop(0, `rgba(255,236,170,${.45 * lights})`); g.addColorStop(1, 'rgba(255,236,170,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-200, -70); ctx.lineTo(-900, -200); ctx.lineTo(-900, 60); ctx.lineTo(-200, -30); ctx.fill(); ctx.restore(); }
+  ctx.beginPath(); ctx.moveTo(-210, -30); ctx.lineTo(-200, -95); ctx.lineTo(-120, -110); ctx.lineTo(-60, -170); ctx.lineTo(110, -170); ctx.lineTo(170, -110); ctx.lineTo(220, -100); ctx.lineTo(225, -30); ctx.closePath(); fillOL('#c9cedb', 5);
+  ctx.beginPath(); ctx.moveTo(-100, -112); ctx.lineTo(-52, -158); ctx.lineTo(20, -158); ctx.lineTo(20, -112); ctx.closePath(); fillOL('#1e2540', 4);
+  ctx.beginPath(); ctx.moveTo(32, -112); ctx.lineTo(32, -158); ctx.lineTo(104, -158); ctx.lineTo(150, -112); ctx.closePath(); fillOL('#1e2540', 4);
+  rr(-20, -198, 70, 28, 8); fillOL(C.yel, 4);
+  for (const wx of [-125, 140]) { circle(wx, -28, 38); fillOL('#1b1b24', 5); circle(wx, -28, 16); fillOL('#8a8fa3', 3); }
+  ctx.fillStyle = '#fff4c8'; rr(-212, -88, 22, 18, 6); ctx.fill(); ctx.fillStyle = C.red; rr(208, -92, 14, 18, 5); ctx.fill(); ctx.restore(); }
+function bokeh(t, seed, n, y0, y1, a = .5) { const r = seeded(seed); ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < n; i++) { const x = r() * W, y = y0 + r() * (y1 - y0), rad = 14 + r() * 40, c = r() < .5 ? '255,190,90' : r() < .5 ? '120,160,255' : '255,90,90', fl = .6 + .4 * Math.sin(t * (1 + r()) + i);
+    ctx.fillStyle = `rgba(${c},${a * .35 * fl})`; circle((x + t * 12 * (r() - .5)) % W, y, rad); ctx.fill(); } ctx.restore(); }
+function vignette(k = .65) { const g = ctx.createRadialGradient(540, 900, 380, 540, 960, 1200); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${k})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+const DROPS = (() => { const r = seeded(7); return Array.from({ length: 90 }, () => [r() * W, r() * H, 2 + r() * 5, .3 + r() * .7]); })();
 function rain(t, a = .5) { ctx.save(); ctx.globalAlpha = a;
-  for (const [x, y0, r, sp, ph] of DROPS) { const y = (y0 + t * 140 * sp) % (H + 60) - 30; ctx.fillStyle = 'rgba(190,210,255,.35)'; ctx.beginPath(); ctx.ellipse(x, y, r * .7, r * 1.4, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = 'rgba(190,210,255,.12)'; ctx.lineWidth = r * .6; ctx.beginPath(); ctx.moveTo(x, y - r * 8 * sp); ctx.lineTo(x, y); ctx.stroke(); }
-  ctx.restore(); }
+  for (const [x, y0, r, sp] of DROPS) { const y = (y0 + t * 140 * sp) % (H + 60) - 30; ctx.fillStyle = 'rgba(190,210,255,.35)'; ctx.beginPath(); ctx.ellipse(x, y, r * .7, r * 1.4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(190,210,255,.12)'; ctx.lineWidth = r * .6; ctx.beginPath(); ctx.moveTo(x, y - r * 8 * sp); ctx.lineTo(x, y); ctx.stroke(); } ctx.restore(); }
+function streaks(t, a = .35) { const r = seeded(11); ctx.save(); ctx.strokeStyle = `rgba(170,190,235,${a})`; ctx.lineWidth = 2;
+  for (let i = 0; i < 120; i++) { const x = r() * (W + 200), sp = 900 + r() * 600, y = ((r() * H + t * sp) % (H + 100)) - 50; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 10, y + 34); ctx.stroke(); } ctx.restore(); }
+const cam = (z, fx, fy, draw) => { ctx.save(); ctx.translate(fx, fy); ctx.scale(z, z); ctx.translate(-fx, -fy); draw(); ctx.restore(); };
+
+// ───── сцены ─────
+function carDark(t) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0a0f22'); g.addColorStop(1, '#05060d'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-40, 160); ctx.lineTo(1120, 160); ctx.lineTo(1120, 1050); ctx.lineTo(-40, 1050); ctx.closePath(); ctx.clip(); // лобовое стекло
+  const gg = ctx.createLinearGradient(0, 160, 0, 1050); gg.addColorStop(0, '#101a3a'); gg.addColorStop(1, '#1a1430'); ctx.fillStyle = gg; ctx.fillRect(0, 0, W, H); bokeh(t, 5, 26, 500, 1000, .9); rain(t, .6); ctx.restore();
+  ctx.fillStyle = '#07080f'; ctx.beginPath(); ctx.moveTo(-40, 1000); ctx.quadraticCurveTo(540, 900, 1120, 1000); ctx.lineTo(1120, H); ctx.lineTo(-40, H); ctx.fill(); // торпеда
+  ctx.fillStyle = '#04050a'; ctx.fillRect(0, 0, W, 170); }
+function hand(back) { // рука держит телефон снизу (как в референсе)
+  if (back) { ctx.fillStyle = '#2b2f3d'; ctx.beginPath(); ctx.moveTo(CX - 150, H); ctx.lineTo(CX - 110, PH.y + PH.h + 120); ctx.lineTo(CX + 130, PH.y + PH.h + 120); ctx.lineTo(CX + 190, H); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(CX, PH.y + PH.h - 40, 250, 190, 0, 0, Math.PI * 2); fillOL(SKIN, 6); rr(PH.x - 42, PH.y + PH.h - 330, 70, 260, 34); fillOL(SKIN, 6); return; }
+  for (let i = 0; i < 4; i++) { rr(PH.x + PH.w - 18, PH.y + 330 + i * 120, 74, 92, 34); fillOL(SKIN, 6); } }
+function room(t) { // утро, спальня: постель, шкаф с антресолью
+  let g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#2c3658'); g.addColorStop(.7, '#222a47'); g.addColorStop(1, '#161b30'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#1b2139'; ctx.fillRect(0, 1240, W, H); // пол
+  rr(90, 330, 330, 470, 10); fillOL('#a9bde3', 6); ctx.strokeStyle = OL; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(255, 330); ctx.lineTo(255, 800); ctx.moveTo(90, 560); ctx.lineTo(420, 560); ctx.stroke();
+  ctx.fillStyle = '#5d6b9c'; ctx.beginPath(); ctx.moveTo(70, 310); ctx.quadraticCurveTo(140, 560, 100, 830); ctx.lineTo(60, 830); ctx.lineTo(50, 310); ctx.fill(); ctx.beginPath(); ctx.moveTo(440, 310); ctx.quadraticCurveTo(380, 560, 420, 830); ctx.lineTo(460, 830); ctx.lineTo(470, 310); ctx.fill();
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(150,180,240,.10)'; ctx.beginPath(); ctx.moveTo(90, 800); ctx.lineTo(420, 800); ctx.lineTo(760, 1400); ctx.lineTo(160, 1400); ctx.fill(); ctx.restore();
+  rr(720, 380, 300, 880, 10); fillOL('#4a3a3a', 6); rr(720, 380, 300, 170, 10); fillOL('#55433f', 6); // шкаф, антресоль
+  ctx.fillStyle = '#05050a'; ctx.fillRect(870, 392, 140, 146); rr(870, 392, 26, 146, 3); fillOL('#55433f', 4); ctx.save(); ctx.translate(880, 392); ctx.transform(1, 0.04, -0.25, 1, 0, 0); rr(-150, 0, 150, 146, 6); fillOL('#5f4c47', 5); ctx.restore(); // приоткрытая дверца
+  ctx.strokeStyle = OL; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(870, 560); ctx.lineTo(870, 1260); ctx.stroke(); circle(850, 900, 8); ctx.fillStyle = '#c9a36a'; ctx.fill(); circle(890, 900, 8); ctx.fill();
+  rr(140, 1020, 640, 260, 20); fillOL('#3b2c2c', 6); rr(150, 960, 620, 120, 30); fillOL('#d8dbe8', 6); // кровать
+  ctx.beginPath(); ctx.moveTo(300, 975); ctx.quadraticCurveTo(420, 930, 520, 990); ctx.quadraticCurveTo(640, 950, 780, 990); ctx.lineTo(790, 1150); ctx.quadraticCurveTo(500, 1190, 280, 1140); ctx.closePath(); fillOL('#7f8db3', 6);
+  ctx.strokeStyle = 'rgba(21,18,37,.5)'; ctx.lineWidth = 5; for (const [a1, b1, c1, d1] of [[360, 1010, 450, 1120], [560, 1000, 520, 1110], [680, 1010, 720, 1130]]) { ctx.beginPath(); ctx.moveTo(a1, b1); ctx.quadraticCurveTo((a1 + c1) / 2 + 30, (b1 + d1) / 2, c1, d1); ctx.stroke(); }
+  ctx.beginPath(); ctx.ellipse(215, 990, 85, 46, -.1, 0, Math.PI * 2); fillOL('#eef0f7', 6); ctx.fillStyle = 'rgba(120,130,170,.45)'; ctx.beginPath(); ctx.ellipse(220, 995, 40, 18, -.1, 0, Math.PI * 2); ctx.fill(); // подушка с вмятиной
+  const hot = .5 + .5 * Math.sin(t * 3); glow(470, 1040, 160, `rgba(255,120,80,${.18 + .08 * hot})`); // «тёплая»
+}
+function kitchen(t) { ctx.fillStyle = '#121830'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#0c1022'; ctx.fillRect(0, 1250, W, H);
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(200,225,255,.16)'; ctx.beginPath(); ctx.moveTo(470, 1250); ctx.lineTo(800, 1250); ctx.lineTo(1080, 1700); ctx.lineTo(200, 1700); ctx.fill(); ctx.restore();
+  rr(470, 380, 330, 870, 26); fillOL('#d6dcea', 6); rr(492, 400, 286, 830, 16); fillOL('#eef4ff', 5); glow(635, 800, 520, 'rgba(210,230,255,.35)');
+  ctx.strokeStyle = '#aab6cf'; ctx.lineWidth = 6; for (const yy of [610, 820, 1030]) { ctx.beginPath(); ctx.moveTo(498, yy); ctx.lineTo(772, yy); ctx.stroke(); }
+  ctx.beginPath(); ctx.ellipse(580, 588, 22, 28, 0, 0, Math.PI * 2); fillOL('#fffaf0', 4); // яйцо
+  ctx.beginPath(); ctx.moveTo(620, 818); ctx.lineTo(620, 770); ctx.quadraticCurveTo(660, 740, 700, 770); ctx.lineTo(700, 818); ctx.closePath(); fillOL('#c98a4a', 4); // хлеб
+  ctx.save(); ctx.translate(600, 1028); ctx.rotate(-1.3); rr(0, -40, 110, 50, 6); fillOL('#ffffff', 4); ctx.restore(); // пустой пакет
+  ctx.save(); ctx.translate(470, 380); ctx.transform(1, -0.08, 0, 1, 0, 0); rr(-230, 0, 230, 870, 20); fillOL('#c4cbdd', 6); rr(-200, 40, 170, 130, 10); fillOL('#e3e8f3', 4); ctx.restore(); // дверца
+  person(250, 1310, 1.25, { face: 'dauren', look: .9, brows: 'worried', mouth: 'tense', eyes: 1.1 });
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(200,225,255,.12)'; ctx.fillRect(160, 700, 180, 620); ctx.restore(); }
+function hallway(t) { ctx.fillStyle = '#242b48'; ctx.fillRect(0, 0, W, H); ctx.fillStyle = '#1a2036'; ctx.fillRect(0, 1260, W, H);
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(255,220,150,.12)'; ctx.beginPath(); ctx.moveTo(430, 300); ctx.lineTo(550, 300); ctx.lineTo(680, 1260); ctx.lineTo(300, 1260); ctx.fill(); ctx.restore();
+  rr(120, 560, 760, 30, 8); fillOL('#5a4436', 5);
+  for (const hx of [230, 490, 750]) { ctx.strokeStyle = OL; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(hx, 588); ctx.quadraticCurveTo(hx, 640, hx + 24, 630); ctx.stroke(); }
+  for (const [hx, col] of [[230, '#2f3a52'], [750, '#45333b']]) { ctx.beginPath(); ctx.moveTo(hx - 20, 620); ctx.lineTo(hx + 20, 620); ctx.lineTo(hx + 95, 980); ctx.lineTo(hx - 95, 980); ctx.closePath(); fillOL(col, 6); }
+  glow(490, 640, 140, 'rgba(255,210,140,.35)');
+  ctx.save(); ctx.translate(490, 870); ctx.rotate(-.03); rr(-120, -110, 240, 220, 8); fillOL('#6b5234', 6); rr(-100, -90, 200, 180, 4); fillOL('#9cc3e8', 4); // фото в рамке
+  ctx.fillStyle = '#7fae6a'; ctx.fillRect(-100, 50, 200, 40); ctx.save(); ctx.beginPath(); ctx.rect(-100, -90, 200, 180); ctx.clip(); taxiCar(40, 84, .3, 0); person(-45, 86, .33, { face: 'dauren', jacket: YEL, mouth: 'smile', armUp: true }); ctx.restore(); ctx.restore(); }
+function building(t, litK = 1) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#070a18'); g.addColorStop(1, '#111733'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  rr(20, 250, 1040, 1060, 4); fillOL('#1f2747', 6);
+  for (let f = 0; f < 5; f++) for (let c = 0; c < 5; c++) { const x = 70 + c * 196, y = 300 + f * 196, lit = f === 1 && c === 1;
+    rr(x, y, 120, 140, 6); fillOL(lit ? '#ffcf6b' : '#121833', 5); if (lit) { glow(x + 60, y + 70, 220, `rgba(255,190,90,${.55 * litK})`); ctx.fillStyle = 'rgba(120,70,30,.5)'; ctx.fillRect(x + 8, y + 90, 104, 40); } ctx.strokeStyle = OL; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x + 60, y); ctx.lineTo(x + 60, y + 140); ctx.stroke(); }
+  ctx.fillStyle = '#0b0f20'; ctx.fillRect(0, 1300, W, H); ctx.save(); ctx.globalAlpha = .25; ctx.scale(1, -.35); ctx.translate(0, -1300 / .35 * 2 + 0); ctx.restore();
+  glow(130 + 60, 300 + 196 + 70 + 1550 - 2 * (300 + 196 + 70) + 400, 120, 'rgba(255,190,90,.12)');
+  for (const tx of [-40, 1000]) { ctx.strokeStyle = '#05060c'; ctx.lineWidth = 22; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(tx, 1320); ctx.lineTo(tx + 30, 700); ctx.stroke(); ctx.lineWidth = 9;
+    for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(tx + 26, 760 + i * 80); ctx.lineTo(tx + 26 + (i % 2 ? 140 : -140), 700 + i * 70); ctx.stroke(); } }
+  taxiCar(800, 1420, 1.15); }
+function doorScene(t, open = 0) { ctx.fillStyle = '#1b2240'; ctx.fillRect(0, 0, W, H); ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.lineWidth = 3;
+  for (let y = 300; y < 1300; y += 90) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  ctx.fillStyle = '#0d1022'; ctx.fillRect(0, 1300, W, H);
+  rr(230, 500, 520, 820, 8); fillOL('#14182c', 6);
+  if (open > 0) { ctx.fillStyle = '#ffd98a'; ctx.fillRect(250, 520, 480 * open, 790); glow(490, 900, 500 * open, 'rgba(255,200,110,.5)'); }
+  ctx.save(); ctx.translate(250, 520); ctx.scale(1 - open * .85, 1); rr(0, 0, 480, 790, 6); fillOL('#2e3d42', 6);
+  ctx.fillStyle = '#3c4d52'; for (const [x, y] of [[30, 30], [450, 30], [30, 760], [450, 760]]) { circle(x, y, 8); ctx.fill(); }
+  rr(400, 380, 30, 90, 10); fillOL('#99a3a8', 4);
+  if (open < .5) { ctx.save(); ctx.translate(110, 120); ctx.rotate(-.04); rr(0, 0, 270, 360, 4); fillOL('#d9cf9e', 4); // плакат
+    txt('ВНИМАНИЕ!', 135, 42, 38, '#c4262e', { weight: 900, align: 'center' }); rr(70, 74, 130, 150, 4); fillOL('#8f8a78', 3);
+    ctx.save(); ctx.filter = 'blur(6px)'; circle(135, 130, 34); ctx.fillStyle = '#3d3a33'; ctx.fill(); ctx.fillRect(85, 168, 100, 60); ctx.restore();
+    txt('ПРОПАЛ', 135, 256, 34, '#222', { weight: 900, align: 'center' }); txt('ЧЕЛОВЕК', 135, 292, 34, '#222', { weight: 900, align: 'center' });
+    ctx.fillStyle = 'rgba(40,40,40,.35)'; for (let i = 0; i < 2; i++) ctx.fillRect(40, 318 + i * 16, 190, 7); ctx.restore(); }
+  ctx.restore();
+  rr(790, 760, 130, 220, 12); fillOL('#596169', 5); for (let i = 0; i < 9; i++) { rr(808 + (i % 3) * 34, 840 + Math.floor(i / 3) * 40, 26, 28, 4); fillOL('#2b3035', 3); }
+  rr(440, 430, 100, 40, 10); fillOL('#e9e3c8', 4); glow(490, 470, 380, 'rgba(255,230,160,.4)'); }
+function backSeat(t, drop) { ctx.fillStyle = '#080a14'; ctx.fillRect(0, 0, W, H);
+  rr(80, 300, 920, 520, 40); fillOL('#141a33', 6); ctx.save(); rr(80, 300, 920, 520, 40); ctx.clip(); bokeh(t * 3, 9, 20, 320, 800, 1); streaks(t, .3); ctx.restore(); // заднее окно
+  rr(40, 780, 1000, 700, 80); fillOL('#22283d', 6); ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(540, 800); ctx.lineTo(540, 1460); ctx.stroke(); // сиденье
+  const breath = 1 + .025 * Math.sin(t * 7), y = 1330 - 160 * (1 - E.back(drop));
+  ctx.save(); ctx.translate(560, y); ctx.scale(1, breath); ctx.translate(-560, -y); person(560, y, 1.45, { seated: true, jacket: YEL, hood: 1, face: 'marat', shadow: .95, eyes: .8 }); ctx.restore();
+  ctx.fillStyle = '#05060b'; rr(-60, 1450, 420, 600, 80); ctx.fill(); rr(700, 1450, 440, 600, 80); ctx.fill(); }
+function mirrorScene(t) { carDark(t); ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = '#0d0e15'; ctx.lineWidth = 30; ctx.beginPath(); ctx.moveTo(CX, 0); ctx.lineTo(CX, 620); ctx.stroke();
+  rr(CX - 400, 600, 800, 330, 60); fillOL('#0f1220', 10); ctx.save(); rr(CX - 380, 618, 760, 294, 46); ctx.clip(); ctx.fillStyle = '#0a0d1a'; ctx.fillRect(0, 0, W, H);
+  const wide = E.out(win(t, 43.6, 44.2)); ctx.beginPath(); ctx.arc(CX, 900, 430, Math.PI * 1.08, Math.PI * 1.92); ctx.lineTo(CX + 300, 1100); ctx.lineTo(CX - 300, 1100); ctx.closePath(); fillOL(YEL2, 8);
+  ctx.fillStyle = '#05060c'; ctx.beginPath(); ctx.ellipse(CX, 900, 300, 260, 0, 0, Math.PI * 2); ctx.fill();
+  for (const s of [-1, 1]) { ctx.save(); ctx.translate(CX + s * 110, 770); ctx.fillStyle = '#e9e9f2'; ctx.beginPath(); ctx.ellipse(0, 0, 58, lerp(22, 40, wide), 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = OL; circle(s * -8, 2, lerp(20, 16, wide)); ctx.fill(); ctx.fillStyle = '#fff'; circle(s * -8 + 6, -5, 5); ctx.fill(); ctx.restore(); }
+  const sw = win(t, 44.6, 45.6); if (sw > 0 && sw < 1) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(200,220,255,.25)'; ctx.translate(lerp(-300, 1300, sw), 0); ctx.rotate(.3); ctx.fillRect(-60, 0, 120, 2000); ctx.restore(); }
+  ctx.restore(); ctx.strokeStyle = 'rgba(180,200,255,.35)'; ctx.lineWidth = 4; rr(CX - 380, 618, 760, 294, 46); ctx.stroke(); }
+function reveal(t) { ctx.fillStyle = '#080a14'; ctx.fillRect(0, 0, W, H); ctx.save(); rr(-20, 200, 1120, 700, 0); ctx.clip(); bokeh(t * 3, 9, 20, 220, 880, .8); streaks(t, .25); ctx.restore();
+  rr(-40, 900, 1160, 1100, 80); fillOL('#22283d', 6);
+  const hk = 1 - E.io(win(t, 46.3, 47.3)), r = 250; ctx.save(); ctx.translate(CX, 1220); rr(-300, -110, 600, 900, 140); fillOL(YEL, 8); ctx.restore();
+  ctx.beginPath(); ctx.ellipse(CX, 1130, r * 1.05, r * .42, 0, 0, Math.PI * 2); fillOL(YEL2, 8); // капюшон, сброшенный за спину
+  head(CX, 860, r, { face: 'marat', eyes: .9, brows: 'worried', mouth: t > 48.0 ? 'smile' : 'flat', look: 0 });
+  if (hk > 0) { ctx.save(); ctx.globalAlpha = hk; head(CX, 860, r, { face: 'marat', jacket: YEL, hood: 1, shadow: .95, eyes: .9 }); ctx.restore(); }
+  const sw = win(t, 48.3, 49.4); if (sw > 0 && sw < 1) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(255,220,170,.22)'; ctx.translate(lerp(-300, 1300, sw), 0); ctx.rotate(.3); ctx.fillRect(-90, -200, 180, 2400); ctx.restore(); } }
 
 // ───── плашка времени (как в референсах) ─────
 function stamp(s, col = C.red) { ctx.save(); ctx.font = '800 30px Inter'; const w = ctx.measureText(s).width + 44;
@@ -62,11 +190,11 @@ function stamp(s, col = C.red) { ctx.save(); ctx.font = '800 30px Inter'; const 
 
 // ───── телефон и приложение «Жол» ─────
 const PH = { x: CX - 290, y: 300, w: 580, h: 960 };
-function phone(t, inner, k = 1) { ctx.save(); ctx.globalAlpha *= k; const s = lerp(.92, 1, E.out(k)); ctx.translate(CX, PH.y + PH.h / 2); ctx.scale(s, s); ctx.translate(-CX, -(PH.y + PH.h / 2));
+function phone(t, inner, k = 1) { ctx.save(); ctx.globalAlpha *= k; const s = lerp(.92, 1, E.out(k)); ctx.translate(CX, PH.y + PH.h / 2 + (1 - E.out(k)) * 300); ctx.scale(s, s); ctx.translate(-CX, -(PH.y + PH.h / 2)); hand(true);
   ctx.shadowColor = 'rgba(80,120,255,.35)'; ctx.shadowBlur = 80; ctx.fillStyle = '#0a0c14'; rr(PH.x - 18, PH.y - 18, PH.w + 36, PH.h + 36, 70); ctx.fill(); ctx.shadowBlur = 0;
   ctx.fillStyle = '#0d1120'; rr(PH.x, PH.y, PH.w, PH.h, 54); ctx.fill(); ctx.save(); rr(PH.x, PH.y, PH.w, PH.h, 54); ctx.clip();
   txt('03:12', PH.x + 50, PH.y + 44, 26, C.white, { weight: 800 }); ctx.fillStyle = '#fff'; rr(PH.x + PH.w - 86, PH.y + 34, 40, 20, 5); ctx.fill(); ctx.fillStyle = '#0a0c14'; ctx.fillRect(PH.x + PH.w - 60, PH.y + 38, 10, 12);
-  inner(t); ctx.restore(); ctx.restore(); }
+  inner(t); ctx.restore(); hand(false); ctx.restore(); }
 function hl(x, y, w, h, k, col = C.yel) { if (k <= 0) return; ctx.save(); ctx.globalAlpha = .28; ctx.fillStyle = col; rr(x, y, w * E.out(k), h, 10); ctx.fill(); ctx.restore(); }
 function orderCard(t, t0) { const X = PH.x + 40, w = PH.w - 80;
   txt('ЖОЛ', X, PH.y + 110, 30, C.yel, { weight: 900 }); txt('водитель · на линии', X + 90, PH.y + 111, 24, C.soft, { weight: 600 });
@@ -114,28 +242,35 @@ const CAPS = [
 function caption(t) { const c = CAPS.find(([a, b]) => t >= a && t < b); if (!c) return; const [a, , spans] = c;
   const sc = lerp(.85, 1, E.back(win(t, a, a + .22))), size = 60; ctx.save(); ctx.font = `900 ${size}px Inter`; ctx.textBaseline = 'middle';
   // перенос по словам в 2 строки при ширине > 820
-  const words = []; for (const [s, col] of spans) for (const w of s.split(/(?<= )/)) if (w) words.push([w, col]);
+  const words = []; for (const [s, col] of spans) for (const w of s.split(/(?<= )/)) if (w) words.push([w, col]); const [, b] = c, tot = words.reduce((s, [w]) => s + w.length, 0); let acc = 0; for (const wd of words) { wd.push(a + (b - a) * .9 * acc / tot); acc += wd[0].length; }
   const lines = [[]]; let lw = 0; for (const wd of words) { const w = ctx.measureText(wd[0]).width; if (lw + w > 860 && lines[lines.length - 1].length) { lines.push([]); lw = 0; } lines[lines.length - 1].push(wd); lw += w; }
   ctx.translate(CX, 1400); ctx.scale(sc, sc);
   lines.forEach((ln, i) => { const tw = ln.reduce((s, [w]) => s + ctx.measureText(w).width, 0); let x = -tw / 2, y = (i - (lines.length - 1) / 2) * size * 1.15;
-    for (const [w, col] of ln) { ctx.lineWidth = 14; ctx.strokeStyle = 'rgba(0,0,0,.85)'; ctx.lineJoin = 'round'; ctx.strokeText(w, x, y); ctx.fillStyle = col; ctx.fillText(w, x, y); x += ctx.measureText(w).width; } });
+    for (const [w, col, wt] of ln) { const said = t >= wt; ctx.lineWidth = 14; ctx.strokeStyle = 'rgba(0,0,0,.85)'; ctx.lineJoin = 'round'; ctx.strokeText(w, x, y); ctx.fillStyle = said ? col : '#6b7290'; ctx.fillText(w, x, y); x += ctx.measureText(w).width; } });
   ctx.restore(); }
 
 // ───── планы: [начало, конец, функция] ─────
 const kb = (t, a, b, z0, z1, dx = 0, dy = 0) => { const k = E.io(win(t, a, b)); return [lerp(z0, z1, k), dx * k, dy * k]; };
 const SHOTS = [
-  [0, 4.6, t => { plate('01', t, ...kb(t, 0, 4.6, 1.04, 1.1)); rain(t, .55); vignette(); phone(t, tt => orderCard(tt, .35), E.out(win(t, 0, .3))); stamp('НОЧЬ · 03:12'); }],
-  [4.6, 6.6, t => { plate('02', t, ...kb(t, 4.6, 6.6, 1.0, 1.12)); vignette(.8); }],
-  [6.6, 12.6, t => { plate('01', t, 1.1); rain(t, .55); vignette(); phone(t, tt => { orderCard(tt, -5); callScreen(tt, 6.8); }); stamp('НОЧЬ · 03:12'); }],
-  [12.6, 16.8, t => { plate('03', t, ...kb(t, 12.6, 16.8, 1.0, 1.1, 0, -40)); vignette(.5); stamp('УТРО · 06:10', C.soft); }],
-  [16.8, 18.1, t => { plate('04', t, ...kb(t, 16.8, 18.1, 1.06, 1.0)); vignette(.5); stamp('УТРО · 06:12', C.soft); }],
-  [18.1, 20.4, t => { plate('05', t, ...kb(t, 18.1, 20.4, 1.0, 1.08, 40, 0)); vignette(.5); stamp('УТРО · 06:13', C.soft); }],
-  [20.4, 25.5, t => { plate('06', t, ...kb(t, 20.4, 25.5, 1.0, 1.25, 0, 180)); rain(t, .35); vignette(); stamp('НОЧЬ · 03:16'); }],
-  [25.5, 29.0, t => { plate('07', t, ...kb(t, 25.5, 29.0, 1.0, 1.12, 0, 60)); rain(t, .3); vignette(); toast(t, 26.3, 'Пассажир выходит'); stamp('НОЧЬ · 03:17'); }],
-  [29.0, 36.0, t => { plate('08', t, ...kb(t, 29.0, 36.0, 1.08, 1.0)); rain(t, .45); vignette(); stamp('НОЧЬ · 03:17'); }],
-  [36.0, 41.0, t => { plate('09', t, ...kb(t, 36.0, 41.0, 1.0, 1.05)); vignette(.7); stamp('НОЧЬ · 03:18'); }],
-  [41.0, 46.0, t => { plate('10', t, ...kb(t, 41.0, 46.0, 1.0, 1.18)); vignette(.85); }],
-  [46.0, 50.0, t => { plate('11', t, ...kb(t, 46.0, 50.0, 1.05, 1.15)); vignette(.85); }],
+  [0, 4.6, t => { carDark(t); vignette(); phone(t, tt => orderCard(tt, .35), E.out(win(t, 0, .35))); stamp('НОЧЬ · 03:12'); }],
+  [4.6, 6.6, t => { const z = lerp(1, 1.1, E.io(win(t, 4.6, 6.6))); cam(z, CX, 820, () => { ctx.fillStyle = '#070912'; ctx.fillRect(0, 0, W, H); bokeh(t, 21, 14, 200, 900, .6); rain(t, .4);
+      rr(CX - 330, 620, 660, 1200, 160); fillOL('#141826', 8);
+      ctx.fillStyle = '#2b2f3d'; rr(CX - 330, 1060, 660, 700, 200); fillOL('#2b2f3d', 8);
+      head(CX, 820, 250, { face: 'dauren', brows: 'worried', eyes: t > 5.0 ? 1.25 : 1, mouth: 'tense', tired: true });
+      ctx.save(); ctx.globalCompositeOperation = 'source-atop'; ctx.restore(); glow(CX, 1180, 520, 'rgba(80,130,255,.32)'); }); vignette(.8); }],
+  [6.6, 12.6, t => { carDark(t); vignette(); phone(t, tt => { orderCard(tt, -5); callScreen(tt, 6.8); }); stamp('НОЧЬ · 03:12'); }],
+  [12.6, 16.8, t => { const z = lerp(1, 1.08, E.io(win(t, 12.6, 16.8))); cam(z, 470, 1040, () => { room(t); person(300, 1290, 1.2, { face: 'dauren', look: .7, brows: 'worried', mouth: 'flat', tired: true, armUp: false }); }); vignette(.5); stamp('УТРО · 06:10', C.soft); }],
+  [16.8, 18.1, t => { const z = lerp(1.06, 1, E.io(win(t, 16.8, 18.1))); cam(z, 600, 800, () => kitchen(t)); vignette(.55); stamp('УТРО · 06:12', C.soft); }],
+  [18.1, 20.4, t => { const z = lerp(1, 1.12, E.io(win(t, 18.1, 20.4))); cam(z, 490, 700, () => hallway(t)); vignette(.55); stamp('УТРО · 06:13', C.soft); }],
+  [20.4, 25.5, t => { const k = E.io(win(t, 20.8, 25.5)); cam(lerp(1, 2.1, k), 326, 566, () => building(t)); streaks(t, .3); vignette(); stamp('НОЧЬ · 03:16'); }],
+  [25.5, 29.0, t => { const z = lerp(1, 1.15, E.io(win(t, 25.5, 29.0))); cam(z, 490, 700, () => doorScene(t)); streaks(t, .25); vignette(); toast(t, 26.3, 'Пассажир выходит'); stamp('НОЧЬ · 03:17'); }],
+  [29.0, 36.0, t => { const op = E.out(win(t, 29.25, 29.6)); cam(.62, 490, 1100, () => { doorScene(t, op); ctx.fillStyle = '#0d1022'; ctx.fillRect(-400, 1300, 2000, 1200); taxiCar(1380, 1640, 1.3); });
+      const wk = win(t, 29.5, 35.6), x = lerp(490, 900, wk), s = lerp(.85, 1.25, wk), look = (t > 31.0 && t < 33.4) ? -1 : 0;
+      if (t > 29.45) person(x, lerp(1300, 1420, wk) * .62 + 1100 * .38, s, { jacket: YEL, hood: 1, face: 'marat', shadow: .95, walk: (t - 29.5) * 9, look, flip: look < 0 });
+      streaks(t, .35); vignette(); stamp('НОЧЬ · 03:17'); }],
+  [36.0, 41.0, t => { backSeat(t, win(t, 36.0, 36.45)); vignette(.7); stamp('НОЧЬ · 03:18'); }],
+  [41.0, 46.0, t => { const z = lerp(1, 1.12, E.io(win(t, 41, 46))); cam(z, CX, 765, () => mirrorScene(t)); vignette(.85); }],
+  [46.0, 50.0, t => { const z = lerp(1.0, 1.1, E.io(win(t, 46, 50))); cam(z, CX, 860, () => reveal(t)); vignette(.85); }],
   [50.0, 53.01, t => { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); const k = E.out(win(t, 50.3, 50.9));
     txt('ЗАКАЗ ИЗ ДОМА', CX, 860, 76, C.white, { weight: 900, align: 'center', alpha: k }); txt('— ЧАСТЬ 2 —', CX, 950, 40, C.red, { weight: 900, align: 'center', alpha: win(t, 50.9, 51.3) }); }],
 ];
@@ -153,10 +288,10 @@ const VO = { n1: .3, n2: 4.9, n3: 7.9, n4: 12.8, n5: 21.4, n6: 31.6, m1: 37.0, m
 const run = (a, b, step) => { const r = []; for (let x = a; x < b; x += step) r.push(+x.toFixed(2)); return r; };
 window.SFX_CUES = [
   ...Object.entries(VO).map(([id, t]) => ({ t, type: 'file', path: `projects/zakaz-iz-doma/assets/vo/${id}.wav`, gain: 1.0 })),
-  { t: 0, type: 'lib', id: 'oc-RAINInt_ForestCabinRain_LOOP_01', gain: .32, align: 'start', dur: 12.6 },
-  { t: 20.4, type: 'lib', id: 'oc-RAINInt_ForestCabinRain_LOOP_01', gain: .32, align: 'start', dur: 29.6 },
-  { t: 0, type: 'lib', id: 'oc-DSGNDron_DroneCreepy_OS_02', gain: .28, align: 'start', dur: 50 },
-  ...[0, 4, 8].map(t => ({ t, type: 'lib', id: 'oc-VEHCar_CarEngineSlow_LOOP_01', gain: .12, align: 'start', dur: 4.1 })),
+  { t: 0, type: 'lib', id: 'oc-RAINInt_ForestCabinRain_LOOP_01', gain: .13, align: 'start', dur: 12.6 },
+  { t: 20.4, type: 'lib', id: 'oc-RAINInt_ForestCabinRain_LOOP_01', gain: .13, align: 'start', dur: 29.6 },
+  { t: 0, type: 'lib', id: 'oc-DSGNDron_DroneCreepy_OS_02', gain: .13, align: 'start', dur: 50 },
+  ...[0, 4, 8].map(t => ({ t, type: 'lib', id: 'oc-VEHCar_CarEngineSlow_LOOP_01', gain: .06, align: 'start', dur: 4.1 })),
   { t: .35, type: 'lib', id: 'notification-alert-clear', gain: .6 },
   { t: 6.8, type: 'lib', id: 'phone-keypad', gain: .35, align: 'start', dur: .5 }, { t: 7.0, type: 'lib', id: 'phone-ring-modern', gain: .25, align: 'start', dur: .9 },
   { t: 8.0, type: 'lib', id: 'notification-failure-wobble', gain: .6 },
@@ -164,15 +299,17 @@ window.SFX_CUES = [
   { t: 21.4, type: 'lib', id: 'bass-rumble-medium', gain: .5 },
   { t: 26.3, type: 'lib', id: 'notification-alert-clear', gain: .5, rate: .85 },
   { t: 29.3, type: 'lib', id: 'mechanical-latch-heavy', gain: .8 }, { t: 29.4, type: 'lib', id: 'impact-deep-firm', gain: .45 },
-  ...run(29.9, 35.6, .34).map((t, i) => ({ t, type: 'lib', id: 'oc-FEETHmn_ShoeConcreteRun_OS_0' + (i % 3 + 1), gain: .45 + i * .02 })),
+  ...run(29.9, 35.6, .34).map((t, i) => ({ t, type: 'lib', id: 'oc-FEETHmn_ShoeConcreteRun_OS_0' + (i % 3 + 1), gain: .28 + i * .015 })),
   { t: 36.1, type: 'lib', id: 'oc-VEHDoor_CarDoorClose_OS_01', gain: .8 },
-  { t: 36.4, type: 'lib', id: 'oc-HMNBrth_MaleBreathing_OS_01', gain: .5, align: 'start', dur: 4.6 },
-  { t: 41.2, type: 'lib', id: 'bass-rumble-long', gain: .55, align: 'start' },
+  { t: 36.4, type: 'lib', id: 'oc-HMNBrth_MaleBreathing_OS_01', gain: .3, align: 'start', dur: 4.6 },
+  { t: 41.2, type: 'lib', id: 'bass-rumble-long', gain: .35, align: 'start' },
   { t: 47.3, type: 'lib', id: 'whoosh-slow-soft', gain: .4 },
-  { t: 49.8, type: 'lib', id: 'cinematic-drum-massive', gain: .8 },
+  { t: 49.8, type: 'lib', id: 'cinematic-drum-massive', gain: .55 },
 ];
+// фон и эффекты тише голоса примерно на 11 дБ
+window.SFX_CUES = window.SFX_CUES.map(c => c.type === 'lib' ? { ...c, gain: +(c.gain * .55).toFixed(3) } : c);
 window.renderFrame = t => drawFrame(Math.min(t, DUR - .001));
-window.READY = Promise.all([...Object.keys(ASSETS).map(loadImg), ...['900 60px Inter', '800 40px Inter', '600 24px Inter'].map(f => document.fonts.load(f))]).then(() => drawFrame(0));
+window.READY = Promise.all([...['900 60px Inter', '800 40px Inter', '600 24px Inter'].map(f => document.fonts.load(f))]).then(() => drawFrame(0));
 </script>
 </body>
 </html>
