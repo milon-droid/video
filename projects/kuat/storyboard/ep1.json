@@ -1,0 +1,814 @@
+{
+  "episode": 1,
+  "title": "Молния",
+  "duration": 58,
+  "hud": {
+    "place": "АСТАНА",
+    "temp": "−31°",
+    "battery": {
+      "start": null,
+      "show": 23,
+      "end": 0
+    }
+  },
+  "scenes": [
+    {
+      "id": "e1s01",
+      "start": 0,
+      "end": 3,
+      "vo": {
+        "speaker": "beka",
+        "text": "МЕНЯ УДАРИЛО МОЛНИЕЙ. ЗИМОЙ. В ОБЩАГЕ",
+        "accent": [
+          "МОЛНИЕЙ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "wind",
+          "at": 0
+        },
+        {
+          "id": "cinematic-thunder-big",
+          "at": 0.85
+        },
+        {
+          "id": "zap",
+          "at": 0.85
+        },
+        {
+          "id": "cinematic-thunder-massive",
+          "at": 2.05
+        },
+        {
+          "id": "zap",
+          "at": 2.05
+        }
+      ],
+      "hud": {
+        "time": "23:40",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": [
+        "PartSticker:1"
+      ]
+    },
+    {
+      "id": "e1s02a",
+      "start": 3,
+      "end": 5.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "Я ВТОРОКУРСНИК- ЭНЕРГЕТИК. И Я ЗАВАЛИВАЮ ТОЭ",
+        "accent": [
+          "ЗАВАЛИВАЮ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "tick",
+          "at": 3.05
+        },
+        {
+          "id": "tick",
+          "at": 4.05
+        },
+        {
+          "id": "tick",
+          "at": 5.05
+        },
+        {
+          "id": "hum",
+          "at": 3
+        }
+      ],
+      "hud": {
+        "time": "22:40",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s02b",
+      "start": 5.6,
+      "end": 8,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "tick",
+          "at": 6.05
+        },
+        {
+          "id": "tick",
+          "at": 7.05
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 6
+        }
+      ],
+      "hud": {
+        "time": "22:40",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s03a",
+      "start": 8,
+      "end": 10.6,
+      "vo": {
+        "speaker": "erzhan",
+        "text": "БЕКА, ЗАРЯДКА ЕСТЬ? У МЕНЯ ОДИН ПРОЦЕНТ!",
+        "accent": [
+          "ОДИН",
+          "ПРОЦЕНТ!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "lowbat",
+          "at": 8.05
+        }
+      ],
+      "hud": {
+        "time": "22:41",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s03b",
+      "start": 10.6,
+      "end": 13,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "lowbat",
+          "at": 11.2
+        }
+      ],
+      "hud": {
+        "time": "22:41",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s04a",
+      "start": 13,
+      "end": 15.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "ОДНА РОЗЕТКА НА ЭТАЖ. СОРОК ЧЕЛОВЕК. КЛАССИКА",
+        "accent": [
+          "КЛАССИКА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "murmur",
+          "at": 13
+        },
+        {
+          "id": "murmur",
+          "at": 13
+        }
+      ],
+      "hud": {
+        "time": "22:55",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s04b",
+      "start": 15.6,
+      "end": 18,
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "22:55",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s05a",
+      "start": 18,
+      "end": 20.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "Я ПОДРАБАТЫВАЮ РЕМОНТОМ. 200 ТЕНГЕ И ТВОЙ ТЕЛЕФОН ЖИВОЙ",
+        "accent": [
+          "ЖИВОЙ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click",
+          "at": 18.3
+        },
+        {
+          "id": "click",
+          "at": 18.68
+        },
+        {
+          "id": "click",
+          "at": 19.06
+        },
+        {
+          "id": "click",
+          "at": 19.44
+        },
+        {
+          "id": "click",
+          "at": 19.82
+        },
+        {
+          "id": "click",
+          "at": 20.2
+        }
+      ],
+      "hud": {
+        "time": "23:10",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s05b",
+      "start": 20.6,
+      "end": 23,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "bass-rumble-medium",
+          "at": 21.8
+        },
+        {
+          "id": "money-coin-drop",
+          "at": 22.05
+        }
+      ],
+      "hud": {
+        "time": "23:10",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s06a",
+      "start": 23,
+      "end": 25,
+      "vo": {
+        "speaker": "beka",
+        "text": "АНТЕННА СНОВА ОТВАЛИЛАСЬ. Я ПОЛЕЗ НА КРЫШУ",
+        "accent": [
+          "НА",
+          "КРЫШУ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "bsb-wind-strong-outside",
+          "at": 23
+        },
+        {
+          "id": "bsb-metal-gate-creak",
+          "at": 23.1
+        }
+      ],
+      "hud": {
+        "time": "23:36",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s06b",
+      "start": 25,
+      "end": 27,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "bsb-metal-gate-creak",
+          "at": 25.5
+        }
+      ],
+      "hud": {
+        "time": "23:36",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s07a",
+      "start": 27,
+      "end": 28.3,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "zap",
+          "at": 27.2
+        },
+        {
+          "id": "bass-rumble-medium",
+          "at": 27.6
+        }
+      ],
+      "hud": {
+        "time": "23:40",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s07b",
+      "start": 28.3,
+      "end": 29.6,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "cinematic-thunder-massive",
+          "at": 28.3
+        },
+        {
+          "id": "zap",
+          "at": 28.3
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 28.3
+        },
+        {
+          "id": "impact-heavy-firm",
+          "at": 29.35
+        },
+        {
+          "id": "snowstep",
+          "at": 29.4
+        },
+        {
+          "id": "tone",
+          "at": 29.5
+        }
+      ],
+      "hud": {
+        "time": "23:40",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s07c",
+      "start": 29.6,
+      "end": 31,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "wind",
+          "at": 29.6
+        }
+      ],
+      "hud": {
+        "time": "23:40",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s08a",
+      "start": 31,
+      "end": 33,
+      "vo": {
+        "speaker": "beka",
+        "text": "Я ДОЛЖЕН БЫЛ УМЕРЕТЬ",
+        "accent": [
+          "УМЕРЕТЬ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "heartbeat",
+          "at": 31.15
+        },
+        {
+          "id": "heartbeat",
+          "at": 31.9
+        },
+        {
+          "id": "heartbeat",
+          "at": 32.6
+        }
+      ],
+      "hud": {
+        "time": "23:44",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s08b",
+      "start": 33,
+      "end": 35,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "heartbeat",
+          "at": 33.3
+        },
+        {
+          "id": "heartbeat",
+          "at": 34
+        },
+        {
+          "id": "heartbeat",
+          "at": 34.7
+        },
+        {
+          "id": "hum50",
+          "at": 33.2
+        },
+        {
+          "id": "charge",
+          "at": 33.2
+        }
+      ],
+      "hud": {
+        "time": "23:44",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e1s09",
+      "start": 35,
+      "end": 41,
+      "vo": {
+        "speaker": "erzhan",
+        "text": "БЕКА, ЧТО ТЫ СДЕЛАЛ?!",
+        "accent": [
+          "СДЕЛАЛ?!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "murmur",
+          "at": 35
+        },
+        {
+          "id": "step",
+          "at": 35.1
+        },
+        {
+          "id": "step",
+          "at": 35.47
+        },
+        {
+          "id": "step",
+          "at": 35.84
+        },
+        {
+          "id": "step",
+          "at": 36.21
+        },
+        {
+          "id": "step",
+          "at": 36.58
+        },
+        {
+          "id": "step",
+          "at": 36.95
+        },
+        {
+          "id": "step",
+          "at": 37.32
+        },
+        {
+          "id": "step",
+          "at": 37.69
+        },
+        {
+          "id": "step",
+          "at": 38.06
+        },
+        {
+          "id": "step",
+          "at": 38.43
+        },
+        {
+          "id": "step",
+          "at": 38.8
+        },
+        {
+          "id": "step",
+          "at": 39.17
+        },
+        {
+          "id": "step",
+          "at": 39.54
+        },
+        {
+          "id": "step",
+          "at": 39.91
+        },
+        {
+          "id": "step",
+          "at": 40.28
+        },
+        {
+          "id": "step",
+          "at": 40.65
+        },
+        {
+          "id": "charge",
+          "at": 36.2
+        },
+        {
+          "id": "hum50",
+          "at": 36.2
+        },
+        {
+          "id": "charge",
+          "at": 37.3
+        },
+        {
+          "id": "hum50",
+          "at": 37.3
+        },
+        {
+          "id": "charge",
+          "at": 38.4
+        },
+        {
+          "id": "hum50",
+          "at": 38.4
+        },
+        {
+          "id": "charge",
+          "at": 39.5
+        },
+        {
+          "id": "hum50",
+          "at": 39.5
+        }
+      ],
+      "hud": {
+        "time": "23:58",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e1s10a",
+      "start": 41,
+      "end": 43.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "А ПОТОМ Я УВИДЕЛ СВОЙ ЗАРЯД",
+        "accent": [
+          "СВОЙ",
+          "ЗАРЯД"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "zap",
+          "at": 41.2
+        },
+        {
+          "id": "hum50",
+          "at": 41.2
+        },
+        {
+          "id": "charge",
+          "at": 41.7
+        },
+        {
+          "id": "beep",
+          "at": 41.75
+        },
+        {
+          "id": "charge",
+          "at": 42.2
+        },
+        {
+          "id": "beep",
+          "at": 42.25
+        },
+        {
+          "id": "charge",
+          "at": 42.65
+        },
+        {
+          "id": "beep",
+          "at": 42.7
+        },
+        {
+          "id": "charge",
+          "at": 43.05
+        },
+        {
+          "id": "beep",
+          "at": 43.1
+        },
+        {
+          "id": "charge",
+          "at": 43.45
+        },
+        {
+          "id": "beep",
+          "at": 43.5
+        }
+      ],
+      "hud": {
+        "time": "00:02",
+        "battery": null,
+        "batteryEnd": 13
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e1s10b",
+      "start": 43.6,
+      "end": 46,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "charge",
+          "at": 43.8
+        },
+        {
+          "id": "beep",
+          "at": 43.85
+        },
+        {
+          "id": "charge",
+          "at": 44.15
+        },
+        {
+          "id": "beep",
+          "at": 44.2
+        },
+        {
+          "id": "charge",
+          "at": 44.5
+        },
+        {
+          "id": "beep",
+          "at": 44.55
+        },
+        {
+          "id": "charge",
+          "at": 44.85
+        },
+        {
+          "id": "beep",
+          "at": 44.9
+        },
+        {
+          "id": "charge",
+          "at": 45.2
+        },
+        {
+          "id": "beep",
+          "at": 45.25
+        },
+        {
+          "id": "lowbat",
+          "at": 44.25
+        }
+      ],
+      "hud": {
+        "time": "00:02",
+        "battery": 13,
+        "batteryEnd": 3
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e1s11",
+      "start": 46,
+      "end": 49.6,
+      "vo": {
+        "speaker": "beka",
+        "text": "ТРИ ПРОЦЕНТА",
+        "accent": [
+          "ПРОЦЕНТА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "lowbat",
+          "at": 47.5
+        },
+        {
+          "id": "step",
+          "at": 48.4
+        },
+        {
+          "id": "step",
+          "at": 49
+        }
+      ],
+      "hud": {
+        "time": "00:09",
+        "battery": 3,
+        "batteryEnd": 3
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s12",
+      "start": 49.6,
+      "end": 51.3,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "charge",
+          "at": 51
+        },
+        {
+          "id": "hum50",
+          "at": 51
+        }
+      ],
+      "hud": {
+        "time": "00:09",
+        "battery": 3,
+        "batteryEnd": 0
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e1s13",
+      "start": 51.3,
+      "end": 55.5,
+      "vo": {
+        "speaker": "beka",
+        "text": "НОЛЬ. ВЫКЛЮЧЕНИЕ",
+        "accent": [
+          "ВЫКЛЮЧЕНИЕ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "powerdown",
+          "at": 51.4
+        }
+      ],
+      "hud": {
+        "time": "00:15",
+        "battery": 0,
+        "batteryEnd": 0
+      },
+      "overlays": [
+        "PowerDown"
+      ]
+    },
+    {
+      "id": "e1s14",
+      "start": 55.5,
+      "end": 58,
+      "vo": null,
+      "sfx": [
+        {
+          "id": "zap",
+          "at": 55.5
+        }
+      ],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}

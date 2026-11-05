@@ -6,6 +6,7 @@
 synthwave — неоновые 80-е / Майами: бочка-снейр, басовые восьмые, широкий пэд, арпеджио.
 trap      — медленный хип-хоп бит: 808-бас, хэты с триолями, мягкий пэд.
 tynys     — тема героя: 4-тактовый рифф, электронный бит + домбра (струна Карплус–Стронг), --bpm 100.
+kuat      — тема «ҚУАТ»: 4 такта, синт-бит, «зарядная» арпеджио, --bpm 112 (--seed 2 — полная версия с лидом).
 dark      — тёмный эмбиент для хоррора: низкий гул, медленно дышащий минорный кластер, холодный шелест; без мелодии и ритма.
 Громкость на выходе умеренная; в ролике ставить тихо (gain 0.25–0.4) под эффекты.
 """
@@ -94,6 +95,32 @@ if a.style == "tynys":
                 m = mel[(b % 4) * 4 + q]
                 if m: add(pluck(note(m), .4, .993, .2), t + q * s16, .8, 1)
         if b % 4 == 0: add(np.tanh(np.sin(2 * np.pi * note(lo - 24) * np.arange(int(bar * 0 + 4 * beat * SR)) / SR) * 1.5) * np.exp(-np.arange(int(4 * beat * SR)) / SR * 1.2) * .3, t)
+    total_beats = 0
+if a.style == "kuat":  # тема «ҚУАТ»: 4 такта, бочка «четыре в пол», пульсирующий бас-синт, «зарядная» арпеджио вверх, --bpm 112
+    s16 = beat / 4; prog = [(45, [57, 60, 64]), (41, [57, 60, 65]), (48, [55, 60, 64]), (43, [55, 59, 62])]  # Am F C G
+    full = a.seed >= 2  # --seed 2: полная версия (с.5) с лидом
+    lead = [76, 0, 79, 0, 81, 79, 76, 0, 74, 0, 76, 0, 72, 0, 0, 0]
+    for b in range(total_beats):
+        t = b * beat; bar = (b // 4) % 4; root, ch = prog[bar]
+        kick(t, big=(b % 4 == 0))
+        if b % 4 in (1, 3): snare(t)
+        for q in range(4): hat(t + q * s16, open_=(q == 2), g=.07 if q != 2 else .1)
+        for q in range(4):  # бас шестнадцатыми с «сайдчейном» от бочки
+            ln = s16 * .9; x = smooth(saw(note(root - 12), ln, .003) + saw(note(root - 12), ln, -.003), 14) * env(ln, .003, .09)
+            add(x * (0.12 if q == 0 else 0.26), t + q * s16)
+        for q in range(4):  # арпеджио растёт по октаве к концу такта — как шкала заряда
+            m = ch[(b * 4 + q) % 3] + 12 + 12 * ((b % 4) >= 2)
+            ln = s16; x = np.sin(2 * np.pi * note(m) * np.arange(int(ln * SR)) / SR) * env(ln, .002, .06)
+            add(x * 0.11, t + q * s16, .7 if q % 2 else 1, 1 if q % 2 else .7)
+        if full and b % 8 >= 4:
+            for q in range(4):
+                m = lead[(b % 4) * 4 + q]
+                if m: ln = s16 * 1.8; add(smooth(saw(note(m), ln, .005), 6) * env(ln, .005, .18) * .12, t + q * s16)
+        if b % 4 == 0:  # пэд на такт
+            ln = 4 * beat; pad = np.zeros(int(ln * SR))
+            for m in ch: pad += smooth(saw(note(m), ln, -.006) + saw(note(m), ln, .006), 40)
+            tt = np.arange(len(pad)) / SR; e = np.minimum(1, tt / .3) * np.minimum(1, (ln - tt) / .3) * (0.5 + 0.5 * np.minimum(1, (tt % beat) / (beat * .6)))
+            add(pad * e * 0.035, t, 1, .85); add(pad * e * 0.035, t + .012, .85, 1)
     total_beats = 0
 for b in range(total_beats):
     t = b * beat; bi = b % 4; chord = PROG[(b // 8) % 4]
