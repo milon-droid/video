@@ -15,6 +15,8 @@
 //   AK.overshoot(k)              → 0..1 → с перелётом и возвратом (появления, остановки)
 //   AK.cut(t, a, kind)           → переход в начале плана: 'dip' (затемнение), 'flash' (белая вспышка 2 кадра), 'whip' (смаз-панорама), 'none'
 //   AK.handheld(t, amp, seed)    → [dx, dy, rot] — лёгкая «ручная камера» для тревожных планов
+//   AK.limb(x, y, a1, a2, l1, l2, w, col, ol) → рука/нога из двух частей с локтем/коленом (a1 — плечо от вертикали вниз, a2 — сгиб); вместо прямых палок
+//   AK.reach(x, y, tx, ty, l1, l2, flip) → [a1, a2] — углы, чтобы кисть дотянулась до точки (обратная кинематика на 2 звена)
 'use strict';
 const AK = (() => {
   const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), hash = n => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
@@ -47,5 +49,10 @@ const AK = (() => {
     if (kind === 'whip') { const k = 1 - cl((t - a) / .2); if (k > 0) { const img = ctx.getImageData(0, 0, W, H); for (let i = 1; i <= 6; i++) { ctx.globalAlpha = .18 * k; ctx.putImageData(img, 0, 0); ctx.drawImage(ctx.canvas, -i * 40 * k, 0); } } }
     ctx.restore(); }
   const handheld = (t, amp = 6, seed = 1) => [(noise1(t * 1.3 + seed) - .5) * 2 * amp, (noise1(t * 1.1 + seed + 50) - .5) * 2 * amp, (noise1(t * .7 + seed + 90) - .5) * .006 * amp];
-  return { blink, breathe, mouth, puff, smoke, dust, wheel, impact, drop, anticip, overshoot, cut, handheld, noise1 };
+  function limb(x, y, a1, a2, l1, l2, w = 34, col = '#2a3142', ol = '#0B1A2A', hand = null) { const ex = x + Math.sin(-a1) * l1, ey = y + Math.cos(a1) * l1, hx = ex + Math.sin(-(a1 + a2)) * l2, hy = ey + Math.cos(a1 + a2) * l2;
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(ex, ey); ctx.lineTo(hx, hy); ctx.strokeStyle = ol; ctx.lineWidth = w + 10; ctx.stroke(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.stroke();
+    if (hand) { ctx.beginPath(); ctx.arc(hx, hy, w * .55, 0, Math.PI * 2); ctx.fillStyle = hand; ctx.fill(); ctx.lineWidth = 5; ctx.strokeStyle = ol; ctx.stroke(); } ctx.restore(); return [hx, hy]; }
+  function reach(x, y, tx, ty, l1, l2, flip = 1) { const dx = tx - x, dy = ty - y, d = Math.min(Math.hypot(dx, dy), l1 + l2 - .01), c2 = cl((d * d - l1 * l1 - l2 * l2) / (2 * l1 * l2), -1, 1), a2 = Math.acos(c2) * flip;
+    const base = Math.atan2(-dx, dy), k = Math.atan2(l2 * Math.sin(a2), l1 + l2 * Math.cos(a2)); return [base - k, a2]; }
+  return { limb, reach, blink, breathe, mouth, puff, smoke, dust, wheel, impact, drop, anticip, overshoot, cut, handheld, noise1 };
 })();
