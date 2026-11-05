@@ -37,7 +37,7 @@ const FPS = +(opt('--fps') || 5);
     const long = r.scenes.filter(s => s.b - s.a > 5.01 && !/EndCard/.test(s.overlays.join())); if (long.length) W.push(`планы длиннее 5 с: ${long.map(s => `${s.id} ${fmt(s.b - s.a)} с`).join(', ')}`);
     if (end && /EndCard/.test(end.overlays.join()) && end.b - end.a > 2.55) W.push(`финальная карточка ${fmt(end.b - end.a)} с (норма ≤ 2,5)`);
     if (r.hook) { if (r.hook.a > .05) W.push(`первый субтитр появляется на ${fmt(r.hook.a)} с — в первом кадре его нет`); if (r.hook.last > 1.55) W.push(`хук дочитан только к ${fmt(r.hook.last)} с (норма 1,5)`); }
-    const gaps = r.hasCaps ? runs(S, s => !s.cap && s.t < endA - 3).filter(([a, b2]) => b2 - a > 4) : []; // без window.CAPTION_PHRASES паузы не проверяем if (gaps.length) W.push(`долго без субтитров/голоса: ${gaps.map(([a, b2]) => fmt(a) + '–' + fmt(b2)).join(', ')}`);
+    const gaps = r.hasCaps ? runs(S, s => !s.cap && s.t < endA - 3).filter(([a, b2]) => b2 - a > 4) : []; /* без window.CAPTION_PHRASES паузы не проверяем */ if (gaps.length) W.push(`долго без субтитров/голоса: ${gaps.map(([a, b2]) => fmt(a) + '–' + fmt(b2)).join(', ')}`);
     const meanL = S.reduce((s, x) => s + x.luma, 0) / S.length;
     for (const sc of r.scenes) { if (/EndCard/.test(sc.overlays.join())) continue; const mid = S.reduce((best, s) => Math.abs(s.t - (sc.a + sc.b) / 2) < Math.abs(best.t - (sc.a + sc.b) / 2) ? s : best, S[0]); thumbs.push({ ep: name, id: sc.id, a: sc.a, g: mid.g }); }
     report.push({ name, D: r.D, phone: Math.round(ph * 100), phoneMax: +phMax.toFixed(1), meanLuma: +meanL.toFixed(3), warnings: W });

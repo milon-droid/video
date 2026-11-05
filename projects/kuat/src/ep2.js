@@ -27,20 +27,20 @@ const sFace = (q, o = {}) => ({ hair: q.hair, skin: q.skin, seed: q.top.length +
 
 // ───── 0:00–0:03 хук: три телефона в ладонях заряжаются на глазах ─────
 function hookPhones(t) { roomWall(t, { winX: 700, winY: 240, winW: 300, winH: 380 }); dim(.1); glow(540, 900, 600, 'rgba(61,255,143,.12)');
-  const pts = beka(520, 1640, 2.25, t, { hideLegs: true, armL: [-.9, 2.75], armR: [.9, -2.75], face: { streak: 1, mouth: 'smirk', look: 0, lookY: 1, brow: 'up' } });
+  const wow = t > HOOK_T[2], pts = beka(520, 1640, 2.25, t, { hideLegs: true, lean: wow ? -.03 * AK.overshoot(win(t, HOOK_T[2], HOOK_T[2] + .4)) : 0, armL: [-.9, 2.75], armR: [.9, -2.75], face: { streak: 1, mouth: wow ? 'grin' : 'smirk', look: 0, lookY: wow ? 0 : 1, brow: 'up' } });
   const ph = [[pts.handL[0] + 10, pts.handL[1] - 90, -.18], [pts.handR[0] - 30, pts.handR[1] - 100, .1], [pts.handR[0] + 70, pts.handR[1] - 80, .3]];
   ph.forEach(([x, y, r2], i) => { phone(x, y, 1.7, [3, 1, 5][i], { rot: r2, full: t >= HOOK_T[i] ? 1 : 0 }); });
-  ph.forEach(([x, y], i) => ChargeFlow(t, { t0: HOOK_T[i] - .55, dur: .55, path: [[x, y + 40], i ? pts.handR : pts.handL, i ? pts.elbowR : pts.elbowL, pts.heart], dir: 'give', popup: t >= HOOK_T[i] ? { x, y: y - 140, text: '100%', size: 46 } : null, size: 1.2 })); }
+  ph.forEach(([x, y], i) => ChargeFlow(t, { t0: HOOK_T[i] - .55, dur: .55, path: [[x, y + 40], i ? pts.handR : pts.handL, i ? pts.elbowR : pts.elbowL, pts.heart], dir: 'give', popup: t >= HOOK_T[i] ? { x: x + [-30, 0, 40][i], y: y - [150, 250, 150][i], text: '100%', size: 46 } : null, size: 1.2 })); }
 // ───── 0:03–0:08 утро: проснулся на 98% ─────
 function wakeBed(t) { roomWall(t, { winX: 620, winY: 260, winW: 360, winH: 420, light: 1 }); dayWindow(620, 260, 360, 420, t); ctx.strokeStyle = '#e9e4d8'; ctx.lineWidth = 12; ctx.strokeRect(620, 260, 360, 420);
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(255,230,170,.18)'; ctx.beginPath(); ctx.moveTo(620, 680); ctx.lineTo(980, 680); ctx.lineTo(700, 1600); ctx.lineTo(80, 1600); ctx.closePath(); ctx.fill(); ctx.restore(); // утренний луч
   bed(-40, 1180, 1160, { blanket: '#3d6b8a', back: 0 }); rr(40, 860, 360, 170, 70); fillOL('#eae6dc', 6); ctx.fillStyle = '#5a3d2c'; ctx.fillRect(-100, 1320, W + 200, H);
-  const open = E.out(win(t, 3.9, 4.3)); bekaHead(240, 850, 190, { rot: -.25, lid: 1 - open, streak: 1, mouth: open > .5 ? 'o' : 'flat', look: .6, noBlink: open < 1 });
+  const open = E.out(win(t, 3.9, 4.3)), turn = AK.overshoot(win(t, 4.2, 4.6)); bekaHead(240 + turn * 20, 850 - turn * 30, 190, { rot: lerp(-.25, -.08, turn), lid: 1 - open, look: lerp(.2, 1, turn), streak: 1, mouth: open > .5 ? 'o' : 'flat', noBlink: open < 1 });
   ctx.fillStyle = '#3d6b8a'; rr(330, 900, 760, 260, 90); fillOL('#3d6b8a', 6); // одеяло
   rr(860, 1060, 160, 260, 10); fillOL('#8a5a3a', 5); const ring = t < 4.4; phone(940, 1000, 1.1, 64, { rot: ring ? Math.sin(t * 60) * .08 : 0 }); // будильник на табурете
   if (ring) { ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 6; for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(940, 1000, 90 + i * 30 + ((t * 120) % 30), -.9, -.2); ctx.stroke(); } } }
 function wakeSit(t) { roomWall(t, { winX: 620, winY: 260, winW: 360, winH: 420 }); dayWindow(620, 260, 360, 420, t); ctx.strokeStyle = '#e9e4d8'; ctx.lineWidth = 12; ctx.strokeRect(620, 260, 360, 420);
-  const st = E.io(win(t, 5.5, 6.4)), yawn = t > 5.6 && t < 6.9;
+  const st = clamp(AK.anticip(win(t, 5.45, 6.4), .25), -.3, 1.1), yawn = t > 5.6 && t < 6.9;
   beka(480, 1720, 2.2, t, { hideLegs: true, armL: [lerp(-.3, -2.8, st), lerp(.3, -.2, st)], armR: [lerp(.3, 2.8, st), lerp(-.3, .2, st)], face: { streak: 1, mouth: yawn ? 'o' : 'smile', lid: yawn ? .6 : 0, brow: yawn ? null : 'up' } });
   bed(-60, 1720, 1200, { blanket: '#3d6b8a', back: 0 }); ctx.fillStyle = '#3d6b8a'; rr(40, 1420, 1000, 300, 80); fillOL('#3d6b8a', 6);
   const k = E.back(win(t, 6.1, 6.5)); if (k > 0) { ctx.save(); ctx.translate(780, 360 + 0); ctx.scale(k, k); ctx.fillStyle = 'rgba(10,15,30,.92)'; rr(-200, -40, 400, 80, 16); ctx.fill(); ctx.strokeStyle = T.charge; ctx.lineWidth = 3; ctx.stroke(); txt('СОН  +10% / ЧАС', 0, 2, 34, T.charge, { align: 'center', font: 'Mont' }); ctx.restore(); } } // правило 6
@@ -58,14 +58,14 @@ function queueDoor(t) { const sc = 620 * 6 - 80; corridorSide(t, sc);
   ctx.save(); rr(530, 560, 260, 990, 6); ctx.clip(); ctx.fillStyle = '#e6c695'; ctx.fillRect(530, 560, 260, 990); ctx.restore(); // открытая дверь 412, свет комнаты
   // клиенты подходят по одному: телефон к ладони Беки
   const sh = QUEUE_T.reduce((acc, tc) => acc + E.io(win(t, tc + .15, tc + .45)), 0); // очередь сдвигается после каждого касания
-  for (let i = 6; i >= 0; i--) { const q = STUDS[i + 2], slot = i - sh, x = 440 - 150 * slot, a = clamp(1 + slot * 2.5); if (a <= 0 || x < -200) continue; const front = Math.abs(slot) < .5;
-    ctx.save(); ctx.globalAlpha = a; student(x, 1540, 1.4, t, { topCol: q.top, skin: q.skin, armR: front ? [2.0, -.1] : [.3, .4], face: sFace(q, { look: front ? 1 : .5, mouth: slot < 0 ? 'smile' : 'flat' }), holdR: (hx, hy) => phone(hx + 6, hy - 20, .95, q.lvl, { full: i < QUEUE_T.length && t >= QUEUE_T[i] ? 1 : 0 }) }); ctx.restore(); }
+  for (let i = 5; i >= 0; i--) { const q = STUDS[i + 2], slot = i - sh, x = 440 - 150 * slot, moving = sh % 1 > .02 && sh % 1 < .98, a = clamp(1 + slot * 2.5); if (a <= 0 || x < -200) continue; const front = Math.abs(slot) < .5;
+    ctx.save(); ctx.globalAlpha = a; student(x, 1540, 1.4, t, { walk: moving ? sh * Math.PI * 2 : null, topCol: q.top, skin: q.skin, armR: front ? [2.0, -.1] : [.3, .4], face: sFace(q, { look: front ? 1 : .5, mouth: slot < 0 ? 'smile' : 'flat' }), holdR: (hx, hy) => phone(hx + 6, hy - 20, .95, q.lvl, { full: i < QUEUE_T.length && t >= QUEUE_T[i] ? 1 : 0 }) }); ctx.restore(); }
   const pts = beka(680, 1560, 1.45, t, { straps: false, armL: [-1.95, .1], armR: [.2, .2], face: { streak: 1, mouth: 'smirk', look: -1 } });
   QUEUE_T.forEach((tc, i) => { const [hx, hy] = handOf(440, 1540, 1.4, 1, [2.0, -.1]); ChargeFlow(t, { t0: tc - .3, dur: .3, path: [[hx + 6, hy - 20], pts.handL, pts.elbowL, pts.shoulderL, pts.heart], dir: 'give', popup: t >= tc ? { x: hx, y: hy - 140, text: '100%', size: 44 } : null }); });
-  erzhan(950, 1560, 1.4, t, { armL: [-.9, 2.2], armR: [.5, -1.6], face: { mouth: speaking(t, TALK.erzhan) ? 'open' : 'grin', look: -.6 },
+  erzhan(950, 1560, 1.4, t, { armL: [-.9, 2.2], armR: [.5, -1.6], face: { mouth: talking(t, TALK.erzhan) ? 'open' : 'grin', look: -.6 },
     holdL: (x, y) => notebook(x + 10, y - 40, .55, '412 · ₸', -.2, '#a34a8a'), holdR: (x, y) => { for (let i = 0; i < Math.min(5, 1 + Math.floor((t - 13) * 1.5)); i++) { circle(x, y - 10 - i * 14, 20); fillOL('#d9c27a', 3); } } }); }
 function erzhanMoney(t) { roomWall(t, { winX: -200, light: .8 }); dim(.1); const flip = (t * 3) % 1;
-  erzhan(520, 1900, 2.3, t, { sit: true, armL: [-.6, 2.2], armR: [.7, -2.0], face: { mouth: speaking(t, TALK.erzhan) ? 'open' : 'grin', look: 0, brow: 'up' },
+  erzhan(520, 1900, 2.3, t, { sit: true, armL: [-.6, 2.2], armR: [.7, -2.0], face: { mouth: talking(t, TALK.erzhan) ? 'open' : 'grin', look: 0, brow: 'up' },
     holdR: (x, y) => { for (let i = 0; i < 4; i++) { circle(x + 10, y - 20 - i * 16, 30); fillOL('#d9c27a', 4); } },
     holdL: (x, y) => { for (let i = 0; i < 5; i++) { circle(x - 10, y - 20 - i * 16, 30); fillOL('#d9c27a', 4); } } });
   if (t > 16.2) { const k = win(t, 16.2, 16.9); circle(lerp(200, 300, k), lerp(900, 1230, E.in2(k)) - Math.sin(k * Math.PI) * 200, 26); fillOL('#d9c27a', 4); }
@@ -76,7 +76,7 @@ function montage(t) { let i = MONTAGE.findIndex(([tc]) => tc > t); if (i < 0) i 
   ctx.fillStyle = BG_BEAT[ev % BG_BEAT.length]; ctx.fillRect(-300, -300, W + 600, H + 600); const pulse = lightK(t, tc, 8); glow(540, 820, 700, `rgba(61,255,143,${.25 * pulse})`);
   ctx.save(); ctx.translate(540, 820); ctx.rotate((ev % 2 ? 1 : -1) * .05); ctx.scale(1 + .04 * pulse, 1 + .04 * pulse); ctx.translate(-540, -820);
   const laptop = kind === 'laptop', near = win(t, tc - .12, tc), dev = MONTAGE[Math.min(MONTAGE.length - 1, i)] || MONTAGE[ev], incoming = t < tc;
-  armTo(260, 1900, 400, 1000, { pose: 'flat', w: 150, bend: .1 }); armTo(820, 1900, 680, 1000, { pose: 'flat', w: 150, bend: -.1 }); // ладони Беки снизу
+  const rc = AK.impact(t, tc, { amp: 0, squash: .1, dur: .16 }), ry = (1 - rc.sy) * 260; armTo(260, 1900, 400, 1000 + ry, { pose: 'flat', w: 150, bend: .1 }); armTo(820, 1900, 680, 1000 + ry, { pose: 'flat', w: 150, bend: -.1 }); // ладони Беки снизу, отдача на касании
   const side = ev % 2 ? 1 : -1, cx = 540, cy = 760, sleeve = STUDS[ev % 16].top;
   if (laptop) { rr(cx - 300, cy - 260, 600, 360, 20); fillOL('#2a2f3e', 7); ctx.fillStyle = t >= tc ? '#0e2a22' : '#05060b'; rr(cx - 270, cy - 230, 540, 300, 8); ctx.fill(); txt(t >= tc ? '100%' : '6%', cx, cy - 80, 90, t >= tc ? T.charge : T.empty, { align: 'center', font: 'JBM', weight: 800 }); rr(cx - 330, cy + 100, 660, 60, 14); fillOL('#3a4052', 6); }
   else { armTo(cx + side * 700, 300, cx + side * 60, cy - 120, { pose: 'grip', w: 110, col: sleeve, skin: STUDS[ev % 16].skin, bend: side * .1 }); phone(cx, cy, 2.4, STUDS[ev % 16].lvl, { full: t >= tc ? 1 : 0 }); }
@@ -93,7 +93,7 @@ function lecture(t) { auditorium(t); const nod = Math.max(0, Math.sin(t * 2.2)) 
 function faceDesk(t) { ctx.fillStyle = '#7d5236'; ctx.fillRect(-300, -300, W + 600, H + 600); glow(540, 700, 800, 'rgba(255,250,230,.2)');
   ctx.save(); ctx.translate(520, 900); ctx.rotate(-.05); rr(-420, -300, 840, 560, 10); fillOL('#f4f1ea', 6); ctx.strokeStyle = 'rgba(40,60,120,.3)'; ctx.lineWidth = 3; for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(-400, -240 + i * 56); ctx.lineTo(400, -240 + i * 56); ctx.stroke(); }
   txt('Z = R + jX', -330, -200, 50, '#2a4a8a', { font: 'JBM', weight: 700 }); txt('I = U/Z ...', -330, -130, 50, '#2a4a8a', { font: 'JBM', weight: 700 }); ctx.restore();
-  const drop = E.in2(win(t, 24.8, 25.3)), y = lerp(560, 780, drop); bekaHead(560, y, 280, { rot: lerp(-.1, -.5, drop), lid: drop > .9 ? 1 : lerp(.85, 1, drop), streak: 1, mouth: drop > .9 ? 'o' : 'flat', noBlink: 1 });
+  const drop = AK.drop(win(t, 24.8, 25.45), 1), y = lerp(560, 780, drop); bekaHead(560, y, 280, { rot: lerp(-.1, -.5, drop), lid: drop > .9 ? 1 : lerp(.85, 1, drop), streak: 1, mouth: drop > .9 ? 'o' : 'flat', noBlink: 1 });
   if (t > 25.4) for (let i = 0; i < 3; i++) { const ph = ((t - 25.4) * .6 + i / 3) % 1; txt('Z', 820 + ph * 120, 560 - ph * 260, 60 + ph * 40, T.cyan, { stroke: 8, alpha: 1 - ph }); } }
 // ───── 0:27–0:32 вахта: апай светит фонариком ─────
 function vahtaPass(t) { vahtaBg(t, { light: .55 }); turnstile(560, 1640, 1.5, t * .4); const beam = E.out(win(t, 27.2, 27.6)), onHands = win(t, 28.6, 29.0);
@@ -102,8 +102,8 @@ function vahtaPass(t) { vahtaBg(t, { light: .55 }); turnstile(560, 1640, 1.5, t 
   ph.forEach(([x, y], i) => ChargeFlow(t, { t0: VAHTA_T[i] - .8, dur: .8, path: [[x, y + 40], i ? pts.handR : pts.handL, i ? pts.elbowR : pts.elbowL, pts.heart], dir: 'give', popup: t >= VAHTA_T[i] ? { x, y: y - 130, text: '100%', size: 44 } : null }));
   const tx = lerp(pts.head[0], (ph[0][0] + ph[1][0]) / 2, onHands), ty = lerp(pts.head[1], ph[0][1], onHands); flashlight(-60, 760, 1.6, Math.atan2(ty - 760, tx + 60), beam, { len: 1200, spread: .16 }); }
 function apaiBooth(t, { glassesOff = 0, photo = 0 } = {}) { vahtaBg(t, { light: .7, clock: [900, 260, 21, 12] }); keyBoard(60, 420);
-  booth(160, 560, 760, 700, () => { photoTEC(700, 760, .8, t, { hi: photo }); apai(470, 1500, 1.7, t, { armR: glassesOff ? [lerp(.4, 2.7, glassesOff), lerp(0, .5, glassesOff)] : [1.6, .3], armL: [-.3, .3], face: { mouth: speaking(t, TALK.apai) ? 'open' : 'flat', look: .6, brow: 'up' },
-    holdR: glassesOff ? null : (x, y) => flashlight(x, y, 1.1, -.1, 1, { len: 700, spread: .14 }) }); thermos(880, 1240); });
+  booth(160, 560, 760, 700, () => { photoTEC(700, 760, .8, t, { hi: photo }); apai(470, 1500, 1.7, t, { armR: glassesOff ? [lerp(.4, 2.7, glassesOff), lerp(0, .5, glassesOff)] : [1.6, .3], armL: [-.3, .3], face: { mouth: talking(t, TALK.apai) ? 'open' : 'flat', look: .6, brow: 'up', glasses: glassesOff < .55 },
+    holdR: glassesOff ? (glassesOff >= .55 ? (x, y) => glassesInHand(x, y, .9) : null) : (x, y) => flashlight(x, y, 1.1, -.1, 1, { len: 700, spread: .14 }) }); thermos(880, 1240); });
   rr(240, 1340, 380, 140, 10); fillOL('#f4f1ea', 4); txt('ЖУРНАЛ', 430, 1410, 34, T.ink, { align: 'center' }); }
 function photoClose(t) { vahtaBg(t, { light: .8 }); ctx.save(); rr(0, 0, W, H, 0); ctx.fillStyle = '#e8c890'; ctx.fillRect(-300, -300, W + 600, H + 600); glow(540, 700, 700, 'rgba(255,220,150,.5)'); ctx.restore();
   photoTEC(540, 780, 2.1, t, { hi: win(t, 35.6, 36.2) }); }
@@ -115,7 +115,7 @@ function wristStop(t) { vahtaBg(t, { light: .65 }); dim(.15); const reach = E.ou
   const path = [[hx + 30, hy - 30], [hx - 200, hy + 40], [-40, 1150]]; ChargeFlow(t, { t0: LAPTOP_TRY, dur: 4, path, dir: 'give', size: 1.3, freezeAt: APAI_GRAB });
   if (grab > 0) { const ax = lerp(560, 330, grab), ay = lerp(300, 940, grab); armTo(380, -200, ax, ay, { pose: 'grip', w: 130, col: '#5b4a6e', skin: '#d7a07a', bend: .12 }); ctx.strokeStyle = '#d4b04a'; ctx.lineWidth = 6; circle(ax - 20, ay - 60, 14); ctx.stroke(); } }
 function bekaLooks(t) { vahtaBg(t, { light: .6 }); dim(.1); const pull = E.io(win(t, 39.8, 40.6));
-  booth(560, 420, 520, 700, () => { apai(800, 1380, 1.45, t, { armL: [-1.4, .4], face: { mouth: speaking(t, TALK.apai) ? 'open' : 'flat', look: -1, lookY: .3, brow: 'angry' } }); });
+  booth(560, 420, 520, 700, () => { apai(800, 1380, 1.45, t, { armL: [-1.4, .4], face: { mouth: talking(t, TALK.apai) ? 'open' : 'flat', look: -1, lookY: .3, brow: 'angry' } }); });
   beka(330, 1840, 2.15, t, { armR: [lerp(1.6, .5, pull), lerp(.2, 1.4, pull)], armL: [-.2, .2], straps: true, face: { streak: 1, look: lerp(.3, 1, pull), lookY: lerp(1, 0, pull), mouth: 'flat', brow: 'sad' } }); }
 // ───── 0:42–0:47 у окна вахты, город за стеклом, 18% ─────
 function windowNight(t) { ctx.fillStyle = '#0a1226'; ctx.fillRect(-300, -300, W + 600, H + 600); ctx.save(); rr(80, 260, 920, 1100, 10); ctx.clip(); nightSky(t); cityFar(t, 1250, { k: t > 46.3 ? .6 : 1 }); snow(t, .6, 120, .8);
@@ -137,7 +137,8 @@ const VO_AT = { e2s01: .05, e2s02: 3.3, e2s03: 8.15, e2s04: 13.3, e2s05: 18.1, e
 const VO_GAIN = { e2s01: 4.4, e2s02: 4.2, e2s03: 4.2, e2s04: 3.4, e2s05: 4.3, e2s06: 4.3, e2s07: 3.2, e2s08: 4.2, e2s09: 3.2, e2s10: 4.2, e2s11: 4.4 };
 const VT = id => window.VO_WORDS && window.VO_WORDS[id] ? window.VO_WORDS[id].map(x => x + VO_AT[id]) : null;
 const VEND = id => VO_AT[id] + (window.VO_WORDS && window.VO_WORDS[id] ? window.VO_WORDS[id].slice(-1)[0] + .5 : 2);
-const TALK = { erzhan: [[VO_AT.e2s04, VEND('e2s04')]], apai: [[VO_AT.e2s07, VEND('e2s07')], [VO_AT.e2s09, VEND('e2s09')]] };
+const TALK = { erzhan: ['e2s04'], apai: ['e2s07', 'e2s09'] }; // рот по огибающей голоса
+const talking = (t, ids) => !!window.VO_MOUTH && ids.some(id => AK.mouth(t, window.VO_MOUTH[id], VO_AT[id]) > .3);
 const CAPS = buildCaptions([
   [0, 3, '200 тенге — за то, что я **подержу** ваш телефон', { times: VT('e2s01'), whole: true, size: 62, maxW: 880 }],
   [3.2, 8, 'Проспал десять часов. Зарядился до **девяноста восьми**', { times: VT('e2s02') }],
@@ -207,6 +208,10 @@ window.SFX_CUES = [
   ...ringIn(47.4, 9, .48).map((t, i) => ({ t, type: 'click', gain: .14, pitch: .5 - i * .02 })), { t: 47, type: 'hum50', dur: 4.7, gain: .06, release: 1.5 }, { t: BLACKOUT, type: 'lib', id: 'impact-deep-hard', gain: .35, dur: .3 }, { t: BLACKOUT, type: 'powerdown', dur: .3, gain: .1, pitch: .5 },
   // 52,0–53,0 — тишина перед финальной фразой
   { t: 53.3, type: 'click', gain: .12 }, { t: 53.6, type: 'hum50', dur: 1.9, gain: .07 }, { t: 53.6, type: 'charge', gain: .15, pitch: .8 },
+  ...MONTAGE.filter((_, i) => i % 2 === 0).map(([t]) => ({ t: t - .08, type: 'lib', id: 'whoosh-fast-soft', gain: .05 })),
+  ...QUEUE_T.map(t => ({ t: t + .2, type: 'step', gain: .12, pitch: .9 })), ...ringIn(27.1, 4, .18).map(t => ({ t, type: 'tick', gain: .18, pitch: .5 })),
+  { t: 5.5, type: 'breath_in', dur: .6, gain: .15 }, { t: 4.25, type: 'lib', id: 'swipe-fast-soft', gain: .15 }, { t: 25.45, type: 'thud', gain: .12, pitch: 1.3 },
+  { t: 27, type: 'file', path: BED, gain: .045, from: 12, dur: 10 },
   { t: 55.5, type: 'file', path: THEME, gain: .36, dur: 2.5 },
 ];
 // ───── раскадровка storyboard/ep2.json ─────

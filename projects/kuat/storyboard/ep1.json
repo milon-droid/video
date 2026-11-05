@@ -300,6 +300,10 @@
         {
           "id": "bsb-metal-gate-creak",
           "at": 23.1
+        },
+        {
+          "id": "drone",
+          "at": 23
         }
       ],
       "hud": {
@@ -378,6 +382,18 @@
         {
           "id": "tone",
           "at": 29.5
+        },
+        {
+          "id": "whoosh-medium-hard",
+          "at": 28.35
+        },
+        {
+          "id": "thud",
+          "at": 28.92
+        },
+        {
+          "id": "snowstep",
+          "at": 29.15
         }
       ],
       "hud": {
@@ -474,16 +490,10 @@
       ]
     },
     {
-      "id": "e1s09",
+      "id": "e1s09a",
       "start": 35,
-      "end": 41,
-      "vo": {
-        "speaker": "erzhan",
-        "text": "БЕКА, ЧТО ТЫ СДЕЛАЛ?!",
-        "accent": [
-          "СДЕЛАЛ?!"
-        ]
-      },
+      "end": 38,
+      "vo": null,
       "sfx": [
         {
           "id": "murmur",
@@ -522,6 +532,52 @@
           "at": 37.69
         },
         {
+          "id": "charge",
+          "at": 36.2
+        },
+        {
+          "id": "hum50",
+          "at": 36.2
+        },
+        {
+          "id": "charge",
+          "at": 37.3
+        },
+        {
+          "id": "hum50",
+          "at": 37.3
+        },
+        {
+          "id": "pop-large-in",
+          "at": 36.25
+        },
+        {
+          "id": "pop-large-in",
+          "at": 37.35
+        }
+      ],
+      "hud": {
+        "time": "23:58",
+        "battery": null,
+        "batteryEnd": null
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e1s09b",
+      "start": 38,
+      "end": 41,
+      "vo": {
+        "speaker": "erzhan",
+        "text": "БЕКА, ЧТО ТЫ СДЕЛАЛ?!",
+        "accent": [
+          "СДЕЛАЛ?!"
+        ]
+      },
+      "sfx": [
+        {
           "id": "step",
           "at": 38.06
         },
@@ -555,22 +611,6 @@
         },
         {
           "id": "charge",
-          "at": 36.2
-        },
-        {
-          "id": "hum50",
-          "at": 36.2
-        },
-        {
-          "id": "charge",
-          "at": 37.3
-        },
-        {
-          "id": "hum50",
-          "at": 37.3
-        },
-        {
-          "id": "charge",
           "at": 38.4
         },
         {
@@ -584,6 +624,14 @@
         {
           "id": "hum50",
           "at": 39.5
+        },
+        {
+          "id": "pop-large-in",
+          "at": 38.45
+        },
+        {
+          "id": "pop-large-in",
+          "at": 39.55
         }
       ],
       "hud": {

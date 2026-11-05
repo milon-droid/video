@@ -137,8 +137,8 @@ function KineticCaption(t, phrases, y = 1275) {
   const lines = [[]]; let lw = 0; for (const u of units) { const uw = u.reduce((s2, w) => s2 + ctx.measureText(w.text).width, 0) + sp * (u.length - 1); if (lw + uw > maxW && lines[lines.length - 1].length) { lines.push([]); lw = 0; } for (const w of u) lines[lines.length - 1].push([w, ctx.measureText(w.text).width]); lw += uw + sp; }
   const lh = size * 1.12, blockH = lines.length * lh, widest = Math.max(...lines.map(ln => ln.reduce((s2, [, ww]) => s2 + ww, 0) + sp * (ln.length - 1)));
   const bx = Math.max(0, CXC - widest / 2 - 40), by = y - blockH / 2 - 26, bw2 = Math.min(W - bx, widest + 80), bh2 = blockH + 52;
-  try { const im = ctx.getImageData(bx, by, bw2, bh2).data; let sum = 0, cnt = 0; for (let i = 0; i < im.length; i += 4 * 23) { sum += (.2126 * im[i] + .7152 * im[i + 1] + .0722 * im[i + 2]) / 255; cnt++; }
-    if (sum / cnt > .30) { ctx.fillStyle = "rgba(10,15,30,.80)"; rr(bx, by, bw2, bh2, 28); ctx.fill(); } } catch (e) { }
+  try { const im = ctx.getImageData(bx, by, bw2, bh2).data; let sum = 0, cnt = 0, hi = 0; for (let i = 0; i < im.length; i += 4 * 23) { const l = (.2126 * im[i] + .7152 * im[i + 1] + .0722 * im[i + 2]) / 255; sum += l; if (l > .5) hi++; cnt++; }
+    if (sum / cnt > .30 || hi / cnt > .18) { /* светлый фон или светлые пятна под словами (худи, окно) */ ctx.fillStyle = "rgba(10,15,30,.80)"; rr(bx, by, bw2, bh2, 28); ctx.fill(); } } catch (e) { }
   lines.forEach((ln, i) => { const tw = ln.reduce((s2, [, ww]) => s2 + ww, 0) + sp * (ln.length - 1); let x = CXC - tw / 2; const yy = y + (i - (lines.length - 1) / 2) * lh;
     for (const [w, ww] of ln) { const on = t >= w.t, k = E.out(win(t, w.t, w.t + .12)), sc = w.accent && on ? lerp(1, 1.07, k) : 1;
       ctx.save(); ctx.translate(x + ww / 2, yy); ctx.scale(sc, sc);
