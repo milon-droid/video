@@ -9,7 +9,7 @@ cues.json — список событий:
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
 wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack), pluck (струна/домбра: freq), breath_in, hiss (шипение: lo, hi, pulse),
-roar (рёв ракеты), jet (пролёт самолёта), rattle (дрожь стекла), tinkle (хрусталь люстры), crackle (огонь), debris (обломки), brush (смахнуть снег),
+roar (рёв ракеты), jet (пролёт самолёта), rattle (дрожь стекла), tinkle (хрусталь люстры), knock (стук в дверь), siren (сирена), horn (гудок машины), crackle (огонь), debris (обломки), brush (смахнуть снег),
 hum50 (гул сети 50 Гц), charge (подключение зарядки), lowbat (тройной писк), powerdown (выключение), zap (треск тока).
 Всем библиотечным и синтезированным звукам автоматически добавляется «верхний слой» для динамика телефона (phone_bright).
 duck — приглушение всего, кроме cue с "keep": true (звук суперсилы).
@@ -278,6 +278,23 @@ def gen(c):
             i = int(k * SR); m = min(n - i, int(1.2 * SR)); tt = np.arange(m) / SR; f = rng.uniform(2400, 5200) * p
             x[i:i + m] += (np.sin(2 * np.pi * f * tt) + .4 * np.sin(2 * np.pi * f * 2.76 * tt)) * np.exp(-tt * rng.uniform(5, 9)) * rng.uniform(.3, 1)
         return x / (np.abs(x).max() or 1) * 0.8
+    if ty == "siren":  # европейская сирена «та-ту» вдалеке: {"type": "siren", "dur": 3, "dist": 0.6}
+        d = d or 3.0
+        n = int(d * SR); t = np.arange(n) / SR; dist = c.get("dist", 0.6)
+        f = np.where((t * 1.3) % 1 < 0.5, 440.0, 585.0) * p; f = np.convolve(f, np.ones(400) / 400, "same")
+        ph = 2 * np.pi * np.cumsum(f) / SR; x = np.sin(ph) + 0.4 * np.sin(2 * ph) + 0.2 * np.sin(3 * ph)
+        x = band(x, 300, 4000 * (1 - dist * 0.6)) + 0.15 * dist * band(noise(n), 200, 1200)
+        return x / (np.abs(x).max() or 1) * np.minimum(1, t / 0.4) * np.minimum(1, (d - t) / 0.4) * (1 - 0.5 * dist)
+    if ty == "horn":  # автомобильный гудок: {"type": "horn", "dur": 0.5}
+        d = d or 0.5
+        n = int(d * SR); t = np.arange(n) / SR
+        x = sum(np.sign(np.sin(2 * np.pi * fq * p * t)) for fq in (415, 495)) * 0.5
+        return band(x, 200, 3500) * np.minimum(1, t / 0.02) * np.minimum(1, (d - t) / 0.05) * 0.6
+    if ty == "knock":  # стук костяшками в деревянную дверь: глухой удар + резонанс полотна: {"type": "knock"}
+        n = int(0.35 * SR); t = np.arange(n) / SR
+        body = sum(a * np.sin(2 * np.pi * fq * p * t) * np.exp(-t * dk) for fq, a, dk in ((110, 1.0, 22), (190, .7, 30), (340, .4, 45), (620, .25, 70)))
+        click = band(noise(n), 800, 5000) * np.exp(-t * 260) * 0.8
+        return np.tanh((body + click) * 1.4)
     if ty == "crackle":  # треск огня: редкие сухие щелчки разной силы + шипящая подложка
         d = d or 3.0
         n = int(d * SR); t = np.arange(n) / SR; imp = (rng.uniform(0, 1, n) > 0.9985) * rng.uniform(.2, 1, n)

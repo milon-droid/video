@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."; P=projects/blackout; SCALE=${SCALE:-0.6667}; CRF=${CRF:-20}
 EXP=$P/tools-export.cjs
-[ -f $P/assets/drone.wav ] || { python3 tools/music.py -o $P/assets/drone.wav --duration 58 --style dark --seed 3; ffmpeg -v error -y -i $P/assets/drone.wav -af "lowpass=f=320,volume=0.8" $P/assets/drone-muffled.wav; }
+[ -f $P/assets/drone.wav ] || { python3 tools/music.py -o $P/assets/drone.wav --duration 84 --style dark --seed 3; ffmpeg -v error -y -i $P/assets/drone.wav -af "lowpass=f=320,volume=0.8" $P/assets/drone-muffled.wav; }
 for n in "$@"; do
   node $EXP $P/src/ep$n.html $P $n
   D=$(python3 -c "import json;print(json.load(open('$P/storyboard/ep$n.json'))['duration'])")

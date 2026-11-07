@@ -2,7 +2,7 @@
 // Имена — как в разделе 5 ТЗ: KineticCaption, Hud, PartSticker, EndCard, Glitch, ScreenShake. Графика мест и персонажей — art.js.
 'use strict';
 const W = 1080, H = 1920, CXC = 510;
-const T = { night: '#0B1020', night2: '#1A2340', window: '#F2B33D', danger: '#E5383B', storm: '#B9C6FF', glow: '#7FB3FF', text: '#F4F1EA', ink: '#0B1020', ol: '#0B1020', gold: '#F2B33D', dimTxt: '#7d8194' };
+const T = { night: '#0B1020', night2: '#1A2340', window: '#F2B33D', danger: '#E5383B', storm: '#B9C6FF', glow: '#7FB3FF', text: '#F4F1EA', ink: '#0B1020', ol: '#0B1020', gold: '#F2B33D', dimTxt: '#9DA3B4' };
 let ctx;
 const initLib = c => { ctx = c.getContext('2d'); };
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), lerp = (a, b, k) => a + (b - a) * k, win = (t, a, b) => clamp((t - a) / (b - a));
@@ -42,7 +42,7 @@ function buildCaptions(list, { lead = .05, tail = .35 } = {}) {
     const n = words.length, t0 = a + lead, t1 = b - tail; let k = 0, j = 0, prev = t0;
     // opt.times — времена слов по голосу (tools/words.py, без тире); иначе — равномерно внутри сцены
     for (const p of ph) { for (const w of p) { if (opt.times) { w.t = w.text === '—' ? prev : +(opt.times[j++] ?? prev).toFixed(3); prev = w.t; } else w.t = +(t0 + (t1 - t0) * k / n).toFixed(3); k++; }
-      const { times, ...rest } = opt; if (rest.speaker === 'anchor') rest.color = '#CFE3FF'; if (rest.whisper) rest.italic = true; out.push({ a: p[0].t, b, words: p, ...rest }); }
+      const { times, ...rest } = opt; if (rest.speaker === 'anchor') rest.color = '#CFE3FF'; out.push({ a: p[0].t, b, words: p, ...rest }); }
   }
   out.forEach((p, i) => { const nx = out[i + 1]; if (nx && nx.a < p.b) p.b = nx.a; p.words = p.words.filter(w => w.text !== '—'); }); /* тире в субтитрах не показываем (урок ҚУАТ) */
   return out;
@@ -56,8 +56,8 @@ function KineticCaption(t, phrases, y = 1275) {
   const lh = size * 1.12, blockH = lines.length * lh, widest = Math.max(...lines.map(ln => ln.reduce((s2, [, ww]) => s2 + ww, 0) + sp * (ln.length - 1)));
   // подложка, если фон под блоком светлый (средняя яркость > 0,40)
   const bx = Math.max(0, CXC - widest / 2 - 40), by = y - blockH / 2 - 26, bw2 = Math.min(W - bx, widest + 80), bh2 = blockH + 52;
-  try { const im = ctx.getImageData(bx, by, bw2, bh2).data; let sum = 0, cnt = 0, hi = 0; for (let i = 0; i < im.length; i += 4 * 23) { const l = (.2126 * im[i] + .7152 * im[i + 1] + .0722 * im[i + 2]) / 255; sum += l; if (l > .5) hi++; cnt++; }
-    if (sum / cnt > .40 || hi / cnt > .18) { ctx.fillStyle = 'rgba(14,22,48,.78)'; rr(bx, by, bw2, bh2, 28); ctx.fill(); } } catch (e) { }
+  try { if (0) { const im = 0; }
+    } catch (e) { } const fa = E.out(win(t, p.a - .02, p.a + .13)); ctx.globalAlpha = fa; ctx.translate(0, (1 - fa) * 14); ctx.fillStyle = 'rgba(11,16,32,.8)'; rr(bx, by, bw2, bh2, 28); ctx.fill(); /* одна подложка на весь ролик (правки с.1) */
   lines.forEach((ln, i) => { const tw = ln.reduce((s2, [, ww]) => s2 + ww, 0) + sp * (ln.length - 1); let x = CXC - tw / 2; const yy = y + (i - (lines.length - 1) / 2) * lh;
     for (const [w, ww] of ln) { const on = t >= w.t, k = E.out(win(t, w.t, w.t + .12)), sc = w.accent && on ? lerp(1, 1.06, k) : 1;
       ctx.save(); ctx.translate(x + ww / 2, yy); ctx.scale(sc, sc); if (p.italic) ctx.transform(1, 0, -.2, 1, 0, 0);
@@ -81,16 +81,16 @@ function cutShade(path, dx, dy, col = 'rgba(20,14,40,.28)') { ctx.save(); ctx.be
 
 // ───── сюжетное время и связь (раздел 8 ТЗ) — одна функция на все серии ─────
 const STORY = {
-  1: { clock: [[0, '20:03'], [3.5, '20:00'], [13, '20:01'], [28.2, '20:02'], [42.75, '20:03']], signal: [[0, 'lost'], [3.5, 'full'], [22.6, 'lost']], rewind: [3, 3.5] },
+  1: { clock: [[0, '20:03'], [1.9, '19:58'], [14.0, '19:59'], [19.0, '20:00'], [25.0, '20:01'], [44.0, '20:02'], [62.6, '20:03']], signal: [[0, 'lost'], [1.9, 'full'], [33.6, 'lost']], rewind: [1.2, 1.9] },
 };
 function storyAt(ep, t) { const S = STORY[ep]; const pick = arr => { let i = arr.length - 1; while (i > 0 && arr[i][0] > t) i--; return arr[i][1]; };
   let time = pick(S.clock), rw = 0;
-  if (S.rewind && t >= S.rewind[0] && t < S.rewind[1]) { rw = win(t, S.rewind[0], S.rewind[1]); const m = Math.round(lerp(3, 0, E.io(rw))); time = '20:0' + m; }
+  if (S.rewind && t >= S.rewind[0] && t < S.rewind[1]) { rw = win(t, S.rewind[0], S.rewind[1]); const m = Math.round(lerp(3, -2, E.io(rw))); time = m >= 0 ? '20:0' + m : '19:5' + (10 + m); }
   return { time, signal: pick(S.signal), rewind: rw }; }
 
 // ───── табло: слева «• АЛМАТЫ · +6°» и время, справа связь (y = 240 по ТЗ) ─────
 function Hud(t, { time, city = 'АЛМАТЫ', temp = '+6°', signal = 'full', rewind = 0, sigFlash = -9 }) {
-  const y0 = 236; ctx.save();
+  const y0 = 290; ctx.save(); /* ниже интерфейса Reels/TikTok (правки с.1) */
   ctx.fillStyle = 'rgba(11,16,32,.74)'; rr(64, y0, 300, 128, 18); ctx.fill(); ctx.fillStyle = T.window; ctx.fillRect(64 + 18, y0, 300 - 36, 4);
   ctx.fillStyle = signal === 'full' ? T.window : T.danger; circle(92, y0 + 34, 8); ctx.fill();
   txt(`${city} · ${temp}`, 110, y0 + 35, 30, 'rgba(244,241,234,.85)', { font: 'JBM', weight: 800 });
@@ -111,7 +111,7 @@ function Hud(t, { time, city = 'АЛМАТЫ', temp = '+6°', signal = 'full', r
 const ScreenShake = (t, t0, amp = 8, dur = .6) => { if (t < t0 || t > t0 + dur) return [0, 0]; const k = 1 - (t - t0) / dur; return [Math.sin((t - t0) * 87) * amp * k, Math.cos((t - t0) * 61) * amp * k]; };
 
 // ───── жёлтый стикер «ЧАСТЬ N» (первые 3 с) ─────
-function PartSticker(n, t, final = false) { const k = AK.overshoot(win(t, 0, .25)); ctx.save(); ctx.translate(96, 420); ctx.rotate(-.07); ctx.scale(k, k);
+function PartSticker(n, t, final = false) { const k = AK.overshoot(win(t, 0, .25)); ctx.save(); ctx.translate(96, 490); ctx.rotate(-.07); ctx.scale(k, k);
   const s = final ? `ЧАСТЬ ${n} · ФИНАЛ` : `ЧАСТЬ ${n}`; ctx.font = '900 46px Mont'; const w = ctx.measureText(s).width + 56;
   ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 6; ctx.fillStyle = '#FFD23F'; ctx.beginPath(); ctx.moveTo(0, -40);
   for (let i = 0; i <= 10; i++) ctx.lineTo(w * i / 10, -40 + (i % 2 ? 4 : 0)); ctx.lineTo(w, 40); for (let i = 10; i >= 0; i--) ctx.lineTo(w * i / 10, 40 - (i % 2 ? 4 : 0)); ctx.closePath(); ctx.fill(); ctx.shadowColor = 'transparent';
@@ -122,4 +122,4 @@ function PartSticker(n, t, final = false) { const k = AK.overshoot(win(t, 0, .25
 function EndCard(t, t0, text, next) { ENDCARD_AT = t; ctx.fillStyle = '#05060c'; ctx.fillRect(0, 0, W, H); const k = E.out(win(t, t0, t0 + .35)), jit = t - t0 < .5 ? (Math.random() - .5) * 0 : 0;
   ctx.save(); ctx.translate(CXC, 900); const sc = lerp(1.25, 1, k); ctx.scale(sc, sc); ctx.shadowColor = 'rgba(229,56,59,.7)'; ctx.shadowBlur = 40;
   const rows = text.split('|'); rows.forEach((r, i) => txt(r, 0, (i - (rows.length - 1) / 2) * 104, 96, T.danger, { weight: 900, align: 'center', alpha: k })); ctx.restore();
-  if (next) txt(next, CXC, 1110, 48, T.text, { weight: 900, align: 'center', alpha: win(t, t0 + .45, t0 + .8) }); }
+  if (next) txt(next, CXC, 1120, 68, T.text, { weight: 900, align: 'center', alpha: win(t, t0 + .45, t0 + .8) }); }
