@@ -49,6 +49,7 @@
 | heygen-com/hyperframes: figma, slideshow, style-sampling, reverse-any-video, remotion-to-hyperframes | не про наши задачи или дублируют video-by-reference |
 | heygen-com/hyperframes@product-launch-video, @motion-graphics | в текущей версии репозитория таких нет — влиты в `hyperframes` (motion-graphics взят из OpenMontage) |
 | остальные ~95 скиллов OpenMontage | платные сервисы (Kling, Seedance, HeyGen, ElevenLabs, BFL…), старые копии hyperframes/remotion (перезаписали бы официальные), не про наши задачи |
+| emilkowalski/skills@animate (MIT, прочитан 2026-11-07) | про анимацию интерфейсов сайтов и приложений (кнопки, меню, окна; длительность до 300 мс, CSS transition, библиотека Motion); у нас покадровый рендер, transition не перематываются. Полезное — кривые ease-out/ease-in-out, старт с scale 0.95 вместо 0, ступенька 30–80 мс, «уходит тем же путём, что пришёл» — можно перенести в html-animation |
 | zhuyansen/awesome-claude-video-skills (★1.5K, CC0) | это каталог-список, а не скилл — использовать для поиска новых |
 | mattpocock/skills@writing-beats, writing-shape (513K) | про статьи и тексты, не про видео |
 | coreyhaines31/marketingskills@video, marketing-psychology | обзор платных генераторов видео / психология продаж — не наши задачи |
