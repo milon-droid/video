@@ -1,0 +1,10 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Тыныс · обложка 2</title>
+<style>html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#0B1A2A}canvas{display:block}
+@font-face{font-family:'Mont';font-weight:100 900;src:url('../../../fonts/Montserrat-VF.ttf')}@font-face{font-family:'JBM';font-weight:100 800;src:url('../../../fonts/JetBrainsMono-VF.ttf')}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas><script src="lib.js"></script><script src="../../../templates/components/anim-kit.js"></script><script src="../../../templates/components/fx-kit.js"></script><script src="art.js"></script><script src="ep2-words.js"></script><script src="ep2-mouth.js"></script><script src="ep2.js"></script><script>
+window.SCENE = { duration: 1, fps: 30 };
+window.renderFrame = () => { ctx.setTransform(1,0,0,1,0,0); push(28.3, ON, 29.2, () => powerWide(28.3), 400, 1000, 1, 1.08); post(1);
+  const g = ctx.createLinearGradient(0, 0, 0, 760); g.addColorStop(0, 'rgba(11,26,42,.88)'); g.addColorStop(1, 'rgba(11,26,42,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, 760);
+  ctx.save(); ctx.shadowColor = T.sky; ctx.shadowBlur = 40; txt('ТЫНЫС', 510, 330, 150, T.gold, { align: 'center', stroke: 14 }); ctx.restore(); txt('2/5 · 1988', 510, 480, 58, T.text, { align: 'center', stroke: 10 });
+  txt('ПОКА НЕ ВЫДОХНЕШЬ —', 510, 1275, 62, T.text, { align: 'center', stroke: 12 }); txt('ТЫ КОСМОС', 510, 1350, 70, T.vacuum, { align: 'center', stroke: 12 }); };
+</script></body></html>

@@ -64,21 +64,25 @@ function erasyl(x, y, s, t, o = {}) { ctx.save(); ctx.translate(x, y); ctx.scale
   if (!kn) for (const sx of [-1, 1]) { rr(sx * 26 - 18, -120, 36, 120, 16); fillOL('#2b3550', 5); ctx.beginPath(); ctx.ellipse(sx * 26, 0, 30, 14, 0, 0, Math.PI * 2); fillOL('#1a1a20', 5); }
   else { rr(-80, -60, 160, 60, 26); fillOL('#2b3550', 5); }
   const by = kn ? -60 : -120; rr(-72, by - 190, 144, 200, 44); fillOL(HOOD, 6); ctx.strokeStyle = 'rgba(0,0,0,.3)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-30, by - 60); ctx.lineTo(30, by - 60); ctx.stroke(); // худи
-  for (const sx of [-1, 1]) { ctx.save(); ctx.translate(sx * 60, by - 170); ctx.rotate(sx * (o.armUp ? -2.4 : .18) + (o.handsKnees ? sx * -.5 : 0)); rr(-18, 0, 36, 140, 16); fillOL(HOOD, 5); circle(0, 146, 17); fillOL(SKIN, 5); ctx.restore(); }
+  for (const sx of [-1, 1]) { const arm = sx < 0 ? o.armL : o.armR; if (arm) { const hp = AK.limb(sx * 60, by - 170, arm[0], arm[1], 74, 70, 36, HOOD, T.ol, SKIN); if (o.hold && sx > 0) o.hold(hp[0], hp[1]); continue; } /* руки с локтем (AK.limb) */
+    ctx.save(); ctx.translate(sx * 60, by - 170); ctx.rotate(sx * (o.armUp ? -2.4 : .18) + (o.handsKnees ? sx * -.5 : 0)); rr(-18, 0, 36, 140, 16); fillOL(HOOD, 5); circle(0, 146, 17); fillOL(SKIN, 5); ctx.restore(); }
   const br = o.still ? 0 : AK.breathe(t, 3, 3); scarf(0, by - 190 + br * .5, 150, t); erasylHead(0, by - 270 + br, 80, { blink: AK.blink(t, 3), ...o }); ctx.restore(); }
 // Ата: тюбетейка, ватная жилетка, седые усы. o: { kneel, look }
 function ata(x, y, s, t, o = {}) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); const kn = o.kneel || 0, by = kn ? -60 : -120;
   if (!kn) for (const sx of [-1, 1]) { rr(sx * 26 - 18, -120, 36, 120, 16); fillOL('#3b3a40', 5); } else { rr(-90, -60, 180, 60, 26); fillOL('#3b3a40', 5); }
-  rr(-78, by - 200, 156, 210, 40); fillOL('#e8e2d6', 6); rr(-82, by - 200, 66, 210, 24); fillOL('#7a5a3a', 5); rr(16, by - 200, 66, 210, 24); fillOL('#7a5a3a', 5); // рубаха + ватная жилетка
-  ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.lineWidth = 3; for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(-80, by - 180 + i * 34); ctx.lineTo(-18, by - 180 + i * 34); ctx.moveTo(18, by - 180 + i * 34); ctx.lineTo(80, by - 180 + i * 34); ctx.stroke(); } // стёжка
-  for (const sx of [-1, 1]) { ctx.save(); ctx.translate(sx * 66, by - 180); ctx.rotate(sx * .25 + (o.reach ? sx * -.9 : 0)); rr(-18, 0, 36, 140, 16); fillOL('#e8e2d6', 5); circle(0, 146, 17); fillOL('#d7a07a', 5); ctx.restore(); }
+  if (o.young) { ctx.beginPath(); ctx.moveTo(-80, by - 200); ctx.lineTo(80, by - 200); ctx.lineTo(96, by + 90); ctx.lineTo(-96, by + 90); ctx.closePath(); fillOL('#f2efe6', 6); ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(0, by - 200); ctx.lineTo(0, by + 90); ctx.moveTo(-34, by - 200); ctx.lineTo(0, by - 120); ctx.lineTo(34, by - 200); ctx.stroke(); rr(30, by - 150, 36, 44, 4); ctx.stroke(); } // 1988: лабораторный халат
+  else { rr(-78, by - 200, 156, 210, 40); fillOL('#e8e2d6', 6); rr(-82, by - 200, 66, 210, 24); fillOL('#7a5a3a', 5); rr(16, by - 200, 66, 210, 24); fillOL('#7a5a3a', 5); // рубаха + ватная жилетка
+  ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.lineWidth = 3; for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(-80, by - 180 + i * 34); ctx.lineTo(-18, by - 180 + i * 34); ctx.moveTo(18, by - 180 + i * 34); ctx.lineTo(80, by - 180 + i * 34); ctx.stroke(); } } // стёжка
+  for (const sx of [-1, 1]) { const arm = sx < 0 ? o.armL : o.armR, sl = o.young ? '#f2efe6' : '#e8e2d6'; if (arm) { const hp = AK.limb(sx * 66, by - 180, arm[0], arm[1], 74, 70, 36, sl, T.ol, o.gloves ? '#3a4a5a' : '#d7a07a'); if (o.hold && sx > 0) o.hold(hp[0], hp[1]); continue; }
+    ctx.save(); ctx.translate(sx * 66, by - 180); ctx.rotate(sx * .25 + (o.reach ? sx * -.9 : 0)); rr(-18, 0, 36, 140, 16); fillOL(sl, 5); circle(0, 146, 17); fillOL('#d7a07a', 5); ctx.restore(); }
   ataHead(0, by - 280 + (o.still ? 0 : AK.breathe(t, 5, 2.5)), 82, t, { blink: AK.blink(t, 5), ...o }); ctx.restore(); }
 function ataHead(x, y, r, t, o = {}) { ctx.save(); ctx.translate(x, y); const lw = Math.max(4, r * .05); circle(0, 0, r); fillOL('#d7a07a', lw); circle(-r * .97, r * .1, r * .2); fillOL('#d7a07a', lw * .8);
-  ctx.strokeStyle = 'rgba(120,70,50,.45)'; ctx.lineWidth = lw * .7; for (const yy of [-.42, -.34]) { ctx.beginPath(); ctx.moveTo(-r * .4, r * yy); ctx.lineTo(r * .4, r * yy); ctx.stroke(); } // морщины
-  const lk = (o.look || 0) * r * .1; for (const s2 of [-1, 1]) { const bl = Math.max(.08, o.blink ?? 1); ctx.fillStyle = T.ol; ctx.beginPath(); ctx.ellipse(s2 * r * .32 + lk, r * .02, r * .07, r * .07 * bl, 0, 0, Math.PI * 2); ctx.fill(); if (o.reflect && bl > .5) { ctx.fillStyle = `rgba(155,231,255,${o.reflect})`; circle(s2 * r * .32 + lk, r * .02, r * .045); ctx.fill(); } ctx.strokeStyle = '#e9e6e0'; ctx.lineWidth = lw * 1.3; ctx.beginPath(); ctx.moveTo(s2 * r * .2, -r * .18); ctx.lineTo(s2 * r * .46, -r * .14); ctx.stroke(); } // седые брови
-  ctx.fillStyle = '#ecebe6'; ctx.beginPath(); ctx.moveTo(-r * .38, r * .42); ctx.quadraticCurveTo(0, r * .22, r * .38, r * .42); ctx.quadraticCurveTo(r * .2, r * .52, 0, r * .4); ctx.quadraticCurveTo(-r * .2, r * .52, -r * .38, r * .42); ctx.fill(); // седые усы
+  if (!o.young) { ctx.strokeStyle = 'rgba(120,70,50,.45)'; ctx.lineWidth = lw * .7; } else ctx.strokeStyle = 'rgba(0,0,0,0)'; for (const yy of [-.42, -.34]) { ctx.beginPath(); ctx.moveTo(-r * .4, r * yy); ctx.lineTo(r * .4, r * yy); ctx.stroke(); } // морщины
+  const lk = (o.look || 0) * r * .1; for (const s2 of [-1, 1]) { const bl = Math.max(.08, o.blink ?? 1); ctx.fillStyle = T.ol; ctx.beginPath(); ctx.ellipse(s2 * r * .32 + lk, r * .02, r * .07, r * .07 * bl, 0, 0, Math.PI * 2); ctx.fill(); if (o.reflect && bl > .5) { ctx.fillStyle = `rgba(155,231,255,${o.reflect})`; circle(s2 * r * .32 + lk, r * .02, r * .045); ctx.fill(); } ctx.strokeStyle = o.young ? '#2a2020' : '#e9e6e0'; ctx.lineWidth = lw * 1.3; ctx.beginPath(); ctx.moveTo(s2 * r * .2, -r * .18); ctx.lineTo(s2 * r * .46, -r * .14); ctx.stroke(); } // седые брови
+  ctx.fillStyle = o.young ? '#2a2020' : '#ecebe6'; ctx.beginPath(); ctx.moveTo(-r * .38, r * .42); ctx.quadraticCurveTo(0, r * .22, r * .38, r * .42); ctx.quadraticCurveTo(r * .2, r * .52, 0, r * .4); ctx.quadraticCurveTo(-r * .2, r * .52, -r * .38, r * .42); ctx.fill(); // седые усы
   if (o.mouth > 0) { ctx.fillStyle = '#4a1e24'; ctx.beginPath(); ctx.ellipse(0, r * .55, r * .13, r * .03 + r * .11 * o.mouth, 0, 0, Math.PI * 2); ctx.fill(); } // рот по огибающей голоса (tools/mouth.py)
-  if (o.hat !== false) tubeteika(0, -r * .62, r * 1.1); ctx.restore(); }
+  if (o.young) { ctx.beginPath(); ctx.arc(0, 0, r * 1.02, Math.PI * 1.05, Math.PI * 1.95); ctx.quadraticCurveTo(0, -r * .5, -r * .98, -r * .2); ctx.closePath(); fillOL('#1a1416', lw); } else if (o.hat !== false) tubeteika(0, -r * .62, r * 1.1);
+  if (o.mouth === 'open') { ctx.fillStyle = '#4a1e24'; ctx.beginPath(); ctx.ellipse(0, r * .55, r * .13, r * .1, 0, 0, Math.PI * 2); ctx.fill(); } else if (o.mouth === 'laugh') { ctx.fillStyle = '#4a1e24'; ctx.beginPath(); ctx.arc(0, r * .5, r * .18, 0, Math.PI); ctx.fill(); } ctx.restore(); } // рот по голосу
 function tubeteika(x, y, w, rot = 0) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.beginPath(); ctx.moveTo(-w * .62, w * .16); ctx.quadraticCurveTo(-w * .6, -w * .36, 0, -w * .4); ctx.quadraticCurveTo(w * .6, -w * .36, w * .62, w * .16); ctx.closePath(); fillOL('#1d2a22', 5);
   ctx.strokeStyle = '#e8d9a8'; ctx.lineWidth = 3; for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(i * w * .2, w * .14); ctx.quadraticCurveTo(i * w * .1, -w * .1, i * w * .06, -w * .34); ctx.stroke(); } ctx.restore(); } // вышивка
 // Гептил: силуэт, респиратор с оранжевыми фильтрами, баллон за спиной, дым из клапанов; лицо не видно до с.5
@@ -108,3 +112,66 @@ function FloatObjects(t, items, lift, drop = 0) { for (const [x, y, kind, s2, ph
     else if (kind === 'plate') { rr(-s2, -s2 * .4, s2 * 2, s2 * .8, 4); fillOL('#b9bec6', 3); }
     ctx.restore(); } }
 E.in2 = k => k * k;
+
+// ════════ серия 2 «1988» ════════
+// архив 1988: сепия с голубым в тенях, зерно ~12%, скруглённая рамка с датой (ArchiveFrame из ТЗ)
+function ArchiveFrame(t, date = '15.11.1988', k = 1) { if (k <= 0) return; ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = k;
+  ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = 'rgb(128,128,128)'; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = '#e8cfa0'; ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = 'rgba(40,80,110,.25)'; ctx.fillRect(0, 0, W, H); ctx.globalCompositeOperation = 'overlay'; ctx.globalAlpha = .12 * k; ctx.drawImage(GRAIN[Math.floor(t * 12) % GRAIN.length], 0, 0, W, H);
+  ctx.globalAlpha = k; ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = '#efe2c4'; ctx.lineWidth = 22; rr(30, 160, W - 60, 1680, 40); ctx.stroke(); ctx.strokeStyle = 'rgba(60,40,20,.6)'; ctx.lineWidth = 4; rr(44, 174, W - 88, 1652, 32); ctx.stroke();
+  if (Math.floor(t * 8) % 7 === 0) { ctx.fillStyle = 'rgba(255,240,210,.08)'; ctx.fillRect(0, 0, W, H); } // мерцание плёнки
+  ctx.restore(); }
+// шаттл «Буран» силуэтом без надписей: delta-крыло, чёрный низ и нос из плиток, белый верх
+function shuttle(x, y, s, rot = 0, { tiles = 1 } = {}) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.beginPath(); ctx.moveTo(-40, -260); ctx.lineTo(-40, 120); ctx.lineTo(-210, 230); ctx.lineTo(-200, 270); ctx.lineTo(200, 270); ctx.lineTo(210, 230); ctx.lineTo(40, 120); ctx.lineTo(40, -260); ctx.quadraticCurveTo(0, -330, -40, -260); ctx.closePath(); fillOL('#ececea', 6); // корпус и крылья
+  ctx.fillStyle = T.tile; ctx.beginPath(); ctx.moveTo(-40, -250); ctx.quadraticCurveTo(0, -330, 40, -250); ctx.lineTo(30, -220); ctx.lineTo(-30, -220); ctx.closePath(); ctx.fill(); // чёрный нос
+  ctx.beginPath(); ctx.moveTo(-200, 270); ctx.lineTo(-180, 240); ctx.lineTo(180, 240); ctx.lineTo(200, 270); ctx.closePath(); ctx.fill(); // кромка крыла
+  if (tiles) { ctx.strokeStyle = 'rgba(0,0,0,.18)'; ctx.lineWidth = 2; for (let i = -6; i <= 6; i++) { ctx.beginPath(); ctx.moveTo(i * 30, 140); ctx.lineTo(i * 30, 240); ctx.stroke(); } }
+  ctx.beginPath(); ctx.moveTo(-14, 150); ctx.lineTo(0, 40); ctx.lineTo(14, 150); ctx.closePath(); fillOL('#ececea', 4); // киль
+  for (const sx of [-1, 1]) { ctx.fillStyle = '#2a3a4a'; rr(sx * 10 - 8, -220, 16, 22, 4); ctx.fill(); } ctx.restore(); } // окна кабины
+function launchPad(t, { steam = 1 } = {}) { steppeSky(t, 0); hills(1250, '#9a8a7a', 4, 60); steppeGround(1300, t);
+  ctx.fillStyle = '#5a5a60'; ctx.fillRect(140, 300, 60, 1000); for (let i = 0; i < 12; i++) { ctx.strokeStyle = '#3a3a40'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(140, 320 + i * 80); ctx.lineTo(200, 380 + i * 80); ctx.stroke(); } // башня обслуживания
+  for (const [bx, w2] of [[440, 90], [560, 110], [680, 90]]) { rr(bx - w2 / 2, 380, w2, 900, 40); fillOL(bx === 560 ? '#e8e2d0' : '#d8d0b8', 6); } // ракета-носитель: центральный блок и боковые
+  shuttle(740, 760, 1.05, 0); if (steam) for (let i = 0; i < 4; i++) AK.smoke(380 + i * 140, 1320, t + i, { k: steam, rgb: '235,235,230', h: 500, n: 10, wind: -20, size: 1.2, seed: 5 + i }); }
+// небо над облаками и шаттл без экипажа
+function skyFlight(t, prog = 0) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0b1f3a'); g.addColorStop(.55, '#3d8fd1'); g.addColorStop(1, '#e8f4f8'); ctx.fillStyle = g; ctx.fillRect(-300, -300, W + 600, H + 600);
+  for (let i = 0; i < 9; i++) { const x = ((i * 260 - prog * 900) % 1600 + 1600) % 1600 - 300; AK.puff(x, 1450 + (i % 3) * 120, 260, '255,255,255', .9); } // облака уносятся назад
+  shuttle(540, 820, .95, -1.4 + Math.sin(t * .8) * .03); glow(300, 820, 260, 'rgba(255,240,210,.25)'); }
+// RadarScreen: отметка уходит влево и пропадает
+function RadarScreen(t, t0, lostAt) { ctx.fillStyle = '#081410'; ctx.fillRect(-300, -300, W + 600, H + 600); const cx = 540, cy = 860, R = 430;
+  circle(cx, cy, R + 30); fillOL('#1a2a22', 10); circle(cx, cy, R); ctx.fillStyle = '#04150c'; ctx.fill(); ctx.strokeStyle = 'rgba(61,220,132,.35)'; ctx.lineWidth = 3; for (const k of [.33, .66, 1]) { circle(cx, cy, R * k); ctx.stroke(); } ctx.beginPath(); ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy); ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R); ctx.stroke();
+  const sw = (t * 2.2) % (Math.PI * 2); ctx.save(); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, sw - .6, sw); ctx.closePath(); const gg = ctx.createRadialGradient(cx, cy, 0, cx, cy, R); gg.addColorStop(0, 'rgba(61,220,132,.05)'); gg.addColorStop(1, 'rgba(61,220,132,.35)'); ctx.fillStyle = gg; ctx.fill(); ctx.restore();
+  const path = u => [cx + 260 - u * 120 - Math.max(0, u - .55) * 520, cy - 300 + u * 380]; // курс на полосу, потом резкий уход влево
+  const u = clamp((t - t0) / (lostAt - t0)); for (let i = 0; i < 14; i++) { const uu = u - i * .02; if (uu < 0) break; const [px, py] = path(uu); ctx.fillStyle = `rgba(61,220,132,${.9 - i * .06})`; circle(px, py, 12 - i * .6); ctx.fill(); }
+  if (t < lostAt || Math.floor(t * 6) % 2) { const [px, py] = path(u); if (t < lostAt) { glow(px, py, 60, 'rgba(61,220,132,.9)'); txt('БУРАН', px + 26, py - 26, 30, '#3ddc84', { font: 'Mont', weight: 900 }); } }
+  rr(cx - 60, cy + 300, 120, 18, 6); ctx.fillStyle = 'rgba(61,220,132,.5)'; ctx.fill(); txt('ПОЛОСА', cx, cy + 345, 26, '#3ddc84', { font: 'Mont', weight: 800, align: 'center' }); } // посадочная полоса
+// кухня вечером: лампа над столом, кесе, чайник
+function kitchen(t, { lampSwing = 0 } = {}) { const g = ctx.createRadialGradient(540, 500, 80, 540, 700, 1300); g.addColorStop(0, '#e6c695'); g.addColorStop(.6, '#9a7350'); g.addColorStop(1, '#3a2a20'); ctx.fillStyle = g; ctx.fillRect(-300, -300, W + 600, H + 600);
+  rr(720, 320, 280, 380, 8); fillOL('#e9e4d8', 6); ctx.fillStyle = '#16244a'; ctx.fillRect(736, 336, 248, 348); snow(t, .4, 20, .4); // окно, вечер
+  const a = Math.sin(t * 1.3) * .05 + lampSwing; ctx.save(); ctx.translate(500, 0); ctx.rotate(a); ctx.strokeStyle = T.ol; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, 400); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-120, 480); ctx.lineTo(120, 480); ctx.lineTo(60, 400); ctx.lineTo(-60, 400); ctx.closePath(); fillOL('#c0392b', 6); glow(0, 500, 600, 'rgba(255,220,150,.45)'); ctx.restore();
+  ctx.fillStyle = '#7a4e32'; ctx.fillRect(-300, 1080, W + 600, 70); ctx.fillStyle = '#5a3a24'; ctx.fillRect(-300, 1150, W + 600, H); // стол
+  ctx.fillStyle = '#f4f1ea'; ctx.fillRect(-300, 1060, W + 600, 30); for (let i = 0; i < 18; i++) { ctx.fillStyle = i % 2 ? '#c0392b' : '#f4f1ea'; ctx.fillRect(-300 + i * 90, 1060, 45, 30); } } // скатерть
+function kese(x, y, s = 1, tea = 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.beginPath(); ctx.moveTo(-60, -50); ctx.quadraticCurveTo(-56, 30, 0, 34); ctx.quadraticCurveTo(56, 30, 60, -50); ctx.closePath(); fillOL('#f4f1ea', 5); ctx.strokeStyle = '#2a6fb0'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(-54, -24); ctx.quadraticCurveTo(0, -10, 54, -24); ctx.stroke(); // пиала с узором
+  if (tea) { ctx.fillStyle = '#b5652a'; ctx.beginPath(); ctx.ellipse(0, -48, 56, 10, 0, 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
+function steamRise(x, y, t, k = 1) { for (let i = 0; i < 3; i++) { const ph = (t * .45 + i / 3) % 1; ctx.strokeStyle = `rgba(255,255,255,${.45 * (1 - ph) * k})`; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(x - 20 + i * 20, y - ph * 120); ctx.quadraticCurveTo(x - 32 + i * 20 + Math.sin(t * 3 + i) * 14, y - 40 - ph * 120, x - 20 + i * 20, y - 80 - ph * 120); ctx.stroke(); } }
+// грузовой отсек шаттла: рёбра, иней
+function cargoBay(t) { ctx.fillStyle = '#1c2430'; ctx.fillRect(-300, -300, W + 600, H + 600); for (let i = 0; i < 7; i++) { const k = i / 6; ctx.strokeStyle = `rgba(200,220,240,${.15 + .25 * k})`; ctx.lineWidth = 10 + 20 * k; ctx.beginPath(); ctx.ellipse(540, 900, 300 + k * 520, 220 + k * 700, 0, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke(); } // рёбра отсека
+  glow(540, 260, 700, 'rgba(255,250,230,.35)'); FrostOverlay(.6, { x: 0, y: 0, w: W, h: H }, 'edges', 23); }
+// двор днём: белёная стена, синие рамы, дверь мастерской, ведро
+function yard(t) { steppeSky(t, 0); ctx.fillStyle = '#efe8d8'; ctx.fillRect(-300, 300, W + 600, 950); ctx.strokeStyle = 'rgba(0,0,0,.08)'; ctx.lineWidth = 3; for (let y = 340; y < 1250; y += 60) { ctx.beginPath(); ctx.moveTo(-300, y); ctx.lineTo(W + 300, y); ctx.stroke(); }
+  rr(80, 470, 260, 300, 8); fillOL('#2a6fb0', 8); ctx.fillStyle = '#9fd8f0'; ctx.fillRect(100, 490, 220, 260); // окно
+  rr(700, 520, 260, 730, 6); fillOL('#5a4030', 6); rr(730, 560, 200, 60, 6); fillOL('#e9e4d8', 3); txt('УСТАХАНА', 830, 591, 28, T.ink, { font: 'Mont', weight: 900, align: 'center' }); // мастерская
+  ctx.fillStyle = '#c9a26a'; ctx.fillRect(-300, 1250, W + 600, H); ctx.fillStyle = 'rgba(242,245,247,.85)'; for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.ellipse(120 + i * 190, 1330 + (i % 2) * 140, 150, 20, 0, 0, Math.PI * 2); ctx.fill(); } }
+function bucket(x, y, s = 1, level = 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.beginPath(); ctx.moveTo(-80, -150); ctx.lineTo(80, -150); ctx.lineTo(62, 0); ctx.lineTo(-62, 0); ctx.closePath(); fillOL('#9aa3b5', 6); ctx.strokeStyle = 'rgba(0,0,0,.2)'; ctx.lineWidth = 4; for (const yy of [-110, -60]) { ctx.beginPath(); ctx.moveTo(-74, yy); ctx.lineTo(74, yy); ctx.stroke(); }
+  ctx.fillStyle = '#5aa8d8'; ctx.beginPath(); ctx.ellipse(0, -150 + (1 - level) * 60, 78, 16, 0, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = T.ol; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(0, -150, 84, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke(); ctx.restore(); }
+// водяной шар: дрожит и переливается
+function waterBall(x, y, r, t, ph = 0) { const wob = 1 + .07 * Math.sin(t * 7 + ph), g = ctx.createRadialGradient(x - r * .35, y - r * .35, r * .1, x, y, r); g.addColorStop(0, 'rgba(230,248,255,.95)'); g.addColorStop(.5, 'rgba(90,168,216,.75)'); g.addColorStop(1, 'rgba(30,100,160,.85)');
+  ctx.save(); ctx.translate(x, y); ctx.scale(wob, 2 - wob); ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(11,26,42,.6)'; ctx.stroke(); ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.ellipse(-r * .35, -r * .4, r * .18, r * .1, -.6, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+// мастерская ночью: выбитая дверь, пустая полка «1988»
+function workshop(t, { beam = 1 } = {}) { ctx.fillStyle = '#121620'; ctx.fillRect(-300, -300, W + 600, H + 600); ctx.fillStyle = '#1a1f2c'; for (let i = 0; i < 9; i++) ctx.fillRect(i * 130, 300, 120, 1000);
+  rr(560, 560, 420, 60, 6); fillOL('#6b4a32', 6); rr(560, 820, 420, 60, 6); fillOL('#6b4a32', 6); for (const [x, y, w2, h2, c] of [[600, 470, 60, 90, '#7a3b2b'], [680, 490, 40, 70, '#3b5a7a'], [880, 450, 70, 110, '#5a5a40']]) { rr(x, y, w2, h2, 4); fillOL(c, 4); } // полка, банки
+  ctx.fillStyle = 'rgba(200,190,170,.25)'; ctx.fillRect(760, 760, 120, 60); rr(720, 900, 170, 52, 6); fillOL('#e9e4d8', 3); txt('1988', 805, 927, 36, T.ink, { font: 'JBM', weight: 800, align: 'center' }); // пыльный след от тетради
+  ctx.save(); ctx.translate(120, 520); ctx.rotate(-.35); rr(0, 0, 300, 800, 6); fillOL('#4a3628', 6); ctx.restore(); // выбитая дверь висит
+  glow(300, 700, 500, 'rgba(160,190,255,.12)'); }
+function heptylStain(x, y, t, k = 1) { ctx.save(); ctx.translate(x, y); ctx.fillStyle = `rgba(255,107,26,${.75 * k})`; ctx.beginPath(); for (let i = 0; i <= 24; i++) { const a = i / 24 * Math.PI * 2, r = 150 + 40 * Math.sin(a * 5 + 1) + 20 * Math.sin(a * 11); i ? ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r * .55) : ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r * .55); } ctx.closePath(); ctx.fill();
+  ctx.fillStyle = `rgba(255,200,120,${.5 * k})`; ctx.beginPath(); ctx.ellipse(-30, -10, 60, 20, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); AK.smoke(x, y, t, { k: .8 * k, rgb: '255,107,26', h: 520, n: 14, wind: 15, size: .8, seed: 9 }); }

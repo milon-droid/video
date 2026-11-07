@@ -1,0 +1,790 @@
+{
+  "episode": 2,
+  "title": "1988",
+  "duration": 58,
+  "hud": {
+    "place": "ҰЛЫТАУ / архив 1988",
+    "record": "00:12"
+  },
+  "scenes": [
+    {
+      "id": "e2s01",
+      "start": 0,
+      "end": 3,
+      "cut": "none",
+      "vo": {
+        "speaker": "erasyl",
+        "text": "МОЙ ДЕД СТРОИЛ «БУРАН»",
+        "accent": [
+          "«БУРАН»"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click",
+          "at": 0
+        },
+        {
+          "id": "tick",
+          "at": 0
+        },
+        {
+          "id": "tick",
+          "at": 0.5
+        },
+        {
+          "id": "tick",
+          "at": 1
+        },
+        {
+          "id": "tick",
+          "at": 1.5
+        },
+        {
+          "id": "tick",
+          "at": 2
+        },
+        {
+          "id": "tick",
+          "at": 2.5
+        },
+        {
+          "id": "hiss",
+          "at": 0
+        },
+        {
+          "id": "bass-rumble-long",
+          "at": 0.2
+        }
+      ],
+      "hud": {
+        "time": "06:00",
+        "archive": "15.11.1988 · БАЙҚОҢЫР",
+        "dem": null,
+        "record": null
+      },
+      "overlays": [
+        "PartSticker:2",
+        "ArchiveFrame"
+      ]
+    },
+    {
+      "id": "e2s02",
+      "start": 3,
+      "end": 7.2,
+      "cut": "none",
+      "vo": {
+        "speaker": "erasyl",
+        "text": "В 1988-М ОН СЛЕТАЛ В КОСМОС ОДИН РАЗ. БЕЗ ЛЮДЕЙ",
+        "accent": [
+          "ОДИН",
+          "РАЗ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "tick",
+          "at": 3
+        },
+        {
+          "id": "tick",
+          "at": 3.5
+        },
+        {
+          "id": "tick",
+          "at": 4
+        },
+        {
+          "id": "tick",
+          "at": 4.5
+        },
+        {
+          "id": "tick",
+          "at": 5
+        },
+        {
+          "id": "tick",
+          "at": 5.5
+        },
+        {
+          "id": "tick",
+          "at": 6
+        },
+        {
+          "id": "tick",
+          "at": 6.5
+        },
+        {
+          "id": "tick",
+          "at": 7
+        },
+        {
+          "id": "wind",
+          "at": 3
+        },
+        {
+          "id": "digital-radio",
+          "at": 3.2
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 5
+        }
+      ],
+      "hud": {
+        "time": "06:00",
+        "archive": "15.11.1988 · БАЙҚОҢЫР",
+        "dem": null,
+        "record": null
+      },
+      "overlays": [
+        "ArchiveFrame"
+      ]
+    },
+    {
+      "id": "e2s03",
+      "start": 7.2,
+      "end": 11.2,
+      "cut": "none",
+      "vo": {
+        "speaker": "erasyl",
+        "text": "ПЕРЕД ПОСАДКОЙ ОН ВДРУГ СВЕРНУЛ И ПРОПАЛ С РАДАРОВ",
+        "accent": [
+          "СВЕРНУЛ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "tick",
+          "at": 7.5
+        },
+        {
+          "id": "tick",
+          "at": 8
+        },
+        {
+          "id": "tick",
+          "at": 8.5
+        },
+        {
+          "id": "tick",
+          "at": 9
+        },
+        {
+          "id": "tick",
+          "at": 9.5
+        },
+        {
+          "id": "tick",
+          "at": 10
+        },
+        {
+          "id": "tick",
+          "at": 10.5
+        },
+        {
+          "id": "tone",
+          "at": 7.3
+        },
+        {
+          "id": "tone",
+          "at": 7.9
+        },
+        {
+          "id": "tone",
+          "at": 8.5
+        },
+        {
+          "id": "tone",
+          "at": 9.1
+        },
+        {
+          "id": "tone",
+          "at": 9.8
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 9.95
+        },
+        {
+          "id": "digital-corrupt",
+          "at": 10.2
+        }
+      ],
+      "hud": {
+        "time": "09:20",
+        "archive": "15.11.1988 · ЦУП",
+        "dem": null,
+        "record": null
+      },
+      "overlays": [
+        "ArchiveFrame",
+        "RadarScreen"
+      ]
+    },
+    {
+      "id": "e2s04a",
+      "start": 11.2,
+      "end": 13.2,
+      "cut": "flash",
+      "vo": {
+        "speaker": "ata",
+        "text": "ОН БЫЛ НЕ ПУСТОЙ",
+        "accent": [
+          "НЕ",
+          "ПУСТОЙ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "hiss",
+          "at": 11.3
+        }
+      ],
+      "hud": {
+        "time": "22:00",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s04b",
+      "start": 13.2,
+      "end": 15.2,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "pop",
+          "at": 13.9
+        }
+      ],
+      "hud": {
+        "time": "22:00",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s05a",
+      "start": 15.2,
+      "end": 17.2,
+      "cut": "flash",
+      "vo": {
+        "speaker": "erasyl",
+        "text": "В ОТСЕКЕ ЛЕТЕЛ «ОБЪЕКТ НОЛЬ». КУСОК ОРБИТЫ",
+        "accent": [
+          "КУСОК",
+          "ОРБИТЫ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "whoosh-slow-hard",
+          "at": 15.2
+        },
+        {
+          "id": "hiss",
+          "at": 15.4
+        },
+        {
+          "id": "heartbeat",
+          "at": 15.5
+        }
+      ],
+      "hud": {
+        "time": "11:40",
+        "archive": "15.11.1988 · ЮБИЛЕЙНЫЙ",
+        "dem": null,
+        "record": null
+      },
+      "overlays": [
+        "ArchiveFrame"
+      ]
+    },
+    {
+      "id": "e2s05b",
+      "start": 17.2,
+      "end": 19.2,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "bsb-ice-crack-1",
+          "at": 17.3
+        }
+      ],
+      "hud": {
+        "time": "11:40",
+        "archive": "15.11.1988 · ЮБИЛЕЙНЫЙ",
+        "dem": null,
+        "record": null
+      },
+      "overlays": [
+        "ArchiveFrame"
+      ]
+    },
+    {
+      "id": "e2s06",
+      "start": 19.2,
+      "end": 22.6,
+      "cut": "whip",
+      "vo": {
+        "speaker": "erasyl",
+        "text": "ДЕД СПРЯТАЛ ЕГО, ЧТОБЫ ИЗ НЕГО НЕ СДЕЛАЛИ ОРУЖИЕ",
+        "accent": [
+          "НЕ",
+          "СДЕЛАЛИ",
+          "ОРУЖИЕ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "whoosh-fast-hard",
+          "at": 19.2
+        },
+        {
+          "id": "wind",
+          "at": 19.2
+        },
+        {
+          "id": "snowstep",
+          "at": 19.6
+        },
+        {
+          "id": "snowstep",
+          "at": 20.37
+        },
+        {
+          "id": "snowstep",
+          "at": 21.14
+        },
+        {
+          "id": "snowstep",
+          "at": 21.91
+        },
+        {
+          "id": "thud",
+          "at": 19.75
+        },
+        {
+          "id": "thud",
+          "at": 20.52
+        },
+        {
+          "id": "thud",
+          "at": 21.29
+        },
+        {
+          "id": "thud",
+          "at": 22.06
+        }
+      ],
+      "hud": {
+        "time": "23:40",
+        "archive": "16.11.1988 · ҰЛЫТАУ",
+        "dem": null,
+        "record": null
+      },
+      "overlays": [
+        "ArchiveFrame"
+      ]
+    },
+    {
+      "id": "e2s07",
+      "start": 22.6,
+      "end": 25.8,
+      "cut": "flash",
+      "vo": {
+        "speaker": "ata",
+        "text": "ПОКА НЕ ВЫДОХНЕШЬ ТЫ КОСМОС",
+        "accent": [
+          "КОСМОС"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "breath_in",
+          "at": 25.15
+        }
+      ],
+      "hud": {
+        "time": "13:00",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s08a",
+      "start": 25.8,
+      "end": 29.2,
+      "cut": "none",
+      "vo": {
+        "speaker": "title",
+        "text": "ВОДА ЛЕТАЕТ",
+        "accent": [
+          "ЛЕТАЕТ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "duck",
+          "at": 25.8
+        },
+        {
+          "id": "heartbeat",
+          "at": 26
+        },
+        {
+          "id": "heartbeat",
+          "at": 26.94
+        },
+        {
+          "id": "heartbeat",
+          "at": 27.83
+        },
+        {
+          "id": "heartbeat",
+          "at": 28.68
+        },
+        {
+          "id": "tone",
+          "at": 25.8
+        }
+      ],
+      "hud": {
+        "time": "13:00",
+        "archive": null,
+        "dem": "00:00",
+        "record": null
+      },
+      "overlays": [
+        "VacuumBubble"
+      ]
+    },
+    {
+      "id": "e2s08b",
+      "start": 29.2,
+      "end": 32.4,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "heartbeat",
+          "at": 29.49
+        },
+        {
+          "id": "heartbeat",
+          "at": 30.26
+        },
+        {
+          "id": "heartbeat",
+          "at": 30.99
+        },
+        {
+          "id": "heartbeat",
+          "at": 31.69
+        },
+        {
+          "id": "heartbeat",
+          "at": 32.35
+        }
+      ],
+      "hud": {
+        "time": "13:00",
+        "archive": null,
+        "dem": "00:03",
+        "record": null
+      },
+      "overlays": [
+        "VacuumBubble"
+      ]
+    },
+    {
+      "id": "e2s08c",
+      "start": 32.4,
+      "end": 35.2,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "heartbeat",
+          "at": 32.98
+        },
+        {
+          "id": "heartbeat",
+          "at": 33.57
+        },
+        {
+          "id": "heartbeat",
+          "at": 34.14
+        },
+        {
+          "id": "heartbeat",
+          "at": 34.68
+        },
+        {
+          "id": "heartbeat",
+          "at": 35.19
+        },
+        {
+          "id": "bloop",
+          "at": 33.5
+        }
+      ],
+      "hud": {
+        "time": "13:00",
+        "archive": null,
+        "dem": "00:06",
+        "record": null
+      },
+      "overlays": [
+        "VacuumBubble"
+      ]
+    },
+    {
+      "id": "e2s08d",
+      "start": 35.2,
+      "end": 37.8,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "heartbeat",
+          "at": 35.68
+        },
+        {
+          "id": "heartbeat",
+          "at": 36.15
+        },
+        {
+          "id": "heartbeat",
+          "at": 36.59
+        },
+        {
+          "id": "heartbeat",
+          "at": 37.01
+        },
+        {
+          "id": "heartbeat",
+          "at": 37.41
+        }
+      ],
+      "hud": {
+        "time": "13:00",
+        "archive": null,
+        "dem": "00:09",
+        "record": null
+      },
+      "overlays": [
+        "VacuumBubble"
+      ]
+    },
+    {
+      "id": "e2s09",
+      "start": 37.8,
+      "end": 40.4,
+      "cut": "none",
+      "vo": {
+        "speaker": "erasyl",
+        "text": "ДВЕНАДЦАТЬ СЕКУНД. РЕКОРД",
+        "accent": [
+          "РЕКОРД"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "impact-deep-hard",
+          "at": 37.8
+        },
+        {
+          "id": "props-splash",
+          "at": 38.25
+        },
+        {
+          "id": "props-splash",
+          "at": 38.35
+        },
+        {
+          "id": "bsb-breathless-man",
+          "at": 37.9
+        }
+      ],
+      "hud": {
+        "time": "13:00",
+        "archive": null,
+        "dem": null,
+        "record": "00:12"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s10a",
+      "start": 40.4,
+      "end": 42.6,
+      "cut": "dip",
+      "vo": {
+        "speaker": "erasyl",
+        "text": "НОЧЬЮ ПРОПАЛА ДЕДОВА ТЕТРАДЬ",
+        "accent": [
+          "ТЕТРАДЬ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "bsb-door-creak-open",
+          "at": 40.4
+        },
+        {
+          "id": "wind",
+          "at": 40.4
+        },
+        {
+          "id": "click-button-firm",
+          "at": 40.7
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s10b",
+      "start": 42.6,
+      "end": 44.8,
+      "cut": "none",
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "02:10",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s11a",
+      "start": 44.8,
+      "end": 47.2,
+      "cut": "none",
+      "vo": {
+        "speaker": "erasyl",
+        "text": "НА ЕЁ МЕСТЕ ПЯТНО. ПАХНЕТ РАКЕТНЫМ ТОПЛИВОМ",
+        "accent": [
+          "РАКЕТНЫМ",
+          "ТОПЛИВОМ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "hiss",
+          "at": 44.8
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s11b",
+      "start": 47.2,
+      "end": 49.8,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "bsb-cough-man",
+          "at": 47.4
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s12",
+      "start": 49.8,
+      "end": 50.8,
+      "cut": "none",
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "02:10",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s13",
+      "start": 50.8,
+      "end": 55.5,
+      "cut": "none",
+      "vo": {
+        "speaker": "heptyl",
+        "text": "ГЕПТИЛ",
+        "accent": [
+          "ГЕПТИЛ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click",
+          "at": 50.8
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 51.2
+        },
+        {
+          "id": "hiss",
+          "at": 53.2
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "archive": null,
+        "dem": null,
+        "record": null
+      },
+      "overlays": []
+    },
+    {
+      "id": "e2s14",
+      "start": 55.5,
+      "end": 58,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 55.5
+        }
+      ],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}

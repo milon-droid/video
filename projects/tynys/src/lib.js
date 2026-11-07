@@ -41,16 +41,18 @@ function post(t) { ctx.save(); ctx.globalAlpha = .06; ctx.globalCompositeOperati
 
 // ───── HUD: «• НОЧЬ 1 · 03:31 · −31°» слева, баланс справа ─────
 const hms = s => { s = Math.max(0, Math.floor(s)); return [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map(v => String(v).padStart(2, '0')).join(':'); };
-function Hud(t, { place, time, temp, dem = null, record = null, alert = 0 }) {
-  const left = `${place} · ${time} · ${temp}`; ctx.save(); ctx.font = '800 32px Mont'; const w = ctx.measureText(left).width + 64; // Mont: в JetBrains Mono нет «Ұ»
-  ctx.fillStyle = 'rgba(11,26,42,.72)'; rr(70, 212, w, 58, 12); ctx.fill(); ctx.strokeStyle = 'rgba(254,197,12,.6)'; ctx.lineWidth = 2; ctx.stroke();
-  ctx.fillStyle = T.gold; circle(96, 241, 7); ctx.fill(); txt(left, 116, 242, 32, T.text, { font: 'Mont', weight: 800 }); ctx.restore();
-  const box = (label, val, col, k) => { ctx.save(); ctx.globalAlpha = k; ctx.font = '800 44px JBM'; const bw = ctx.measureText(val).width + 52, x1 = 1010;
-    if (alert > 0) { ctx.shadowColor = T.heptyl; ctx.shadowBlur = 40 * alert; }
-    ctx.fillStyle = `rgba(${lerp(11, 140, alert)},${lerp(26, 40, alert)},${lerp(42, 20, alert)},.85)`; rr(x1 - bw, 212, bw, 104, 14); ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.stroke();
-    txt(label, x1 - bw + 26, 236, 22, 'rgba(255,255,255,.7)', { font: 'JBM', weight: 800 }); txt(val, x1 - bw + 26, 282, 44, alert > .5 ? '#ffd0a8' : col, { font: 'JBM', weight: 800 }); ctx.restore(); };
-  if (dem !== null) box('ДЕМ', typeof dem === 'string' ? dem : '00:' + String(Math.floor(dem)).padStart(2, '0'), T.vacuum, 1);
-  else if (record !== null) box('РЕКОРД', record, T.gold, 1); }
+// Табло крупно (visual-style п.6): слева место · мороз и большое время, справа «ДЕМ» / «РЕКОРД» цифрами 72 px. archive — «• 15.11.1988 · БАЙҚОҢЫР» в сепии
+function Hud(t, { place, time, temp, dem = null, record = null, alert = 0, archive = null }) {
+  const y0 = 200; ctx.save(); ctx.font = '800 26px Mont'; const top = archive ? archive : `${place} · ${temp}`, lw = Math.max(ctx.measureText(top).width + 70, 250);
+  ctx.fillStyle = archive ? 'rgba(60,40,20,.82)' : 'rgba(11,26,42,.8)'; rr(64, y0, lw, 118, 16); ctx.fill(); ctx.strokeStyle = archive ? 'rgba(230,200,140,.7)' : 'rgba(254,197,12,.6)'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = archive ? '#e6c88c' : T.gold; circle(92, y0 + 30, 8); ctx.fill(); txt(top, 112, y0 + 31, 26, 'rgba(255,255,255,.85)', { font: 'Mont', weight: 800 });
+  txt(time, 86, y0 + 80, 56, archive ? '#f0dcb0' : T.text, { font: 'JBM', weight: 800 }); ctx.restore();
+  const box = (label, val, col) => { ctx.save(); ctx.font = '800 72px JBM'; const bw = Math.max(300, ctx.measureText(val).width + 60), x1 = 1010;
+    if (alert > 0) { ctx.shadowColor = T.heptyl; ctx.shadowBlur = 50 * alert; }
+    ctx.fillStyle = `rgba(${lerp(11, 150, alert)},${lerp(26, 40, alert)},${lerp(42, 20, alert)},.88)`; rr(x1 - bw, y0, bw, 118, 18); ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.stroke();
+    txt(label, x1 - bw + 28, y0 + 26, 24, 'rgba(255,255,255,.75)', { font: 'Mont', weight: 900 }); txt(val, x1 - bw + 26, y0 + 76, 72, alert > .5 ? '#ffd0a8' : col, { font: 'JBM', weight: 800 }); ctx.restore(); };
+  if (dem !== null) box('ДЕМ', typeof dem === 'string' ? dem : '00:' + String(Math.floor(dem)).padStart(2, '0'), T.vacuum);
+  else if (record !== null) box('РЕКОРД', record, T.gold); }
 // ───── единое сюжетное время «Тыныса» (раздел 8 ТЗ): опорные точки [сек серии, 'ЧЧ:ММ'], между ними часы идут в реальном времени ─────
 const STORY_CLOCK = { 1: [[0, '16:40'], [7, '16:52'], [16, '16:55'], [21, '16:56'], [39, '16:58'], [44, '16:59'], [49, '17:06']] };
 function storyClock(ep, t) { const ks = STORY_CLOCK[ep]; let i = ks.length - 1; while (i > 0 && ks[i][0] > t) i--; const [h, m] = ks[i][1].split(':').map(Number);
@@ -90,7 +92,7 @@ function buildCaptions(list, { lead = .05, tail = .35 } = {}) {
     for (const p of ph) { for (const w of p) { if (opt.times) { w.t = w.text === '—' ? prev : +(opt.times[j++] ?? prev).toFixed(3); prev = w.t; } else w.t = +(t0 + (t1 - t0) * k / n).toFixed(3); k++; }
       const { times, ...rest } = opt; if (rest.dead) { rest.color = T.frost; rest.italic = true; } if (rest.speaker === 'ata') rest.color = T.gold; if (rest.speaker === 'heptyl') { rest.color = T.heptyl; rest.accent = '#ffd0a8'; } if (rest.speaker === 'boy') rest.color = T.sky; if (rest.title) rest.accent = T.sky; out.push({ a: p[0].t, b, words: p, ...rest }); }
   }
-  out.forEach((p, i) => { const nx = out[i + 1]; if (nx && nx.a < p.b) p.b = nx.a; });
+  out.forEach((p, i) => { const nx = out[i + 1]; if (nx && nx.a < p.b) p.b = nx.a; p.words = p.words.filter(w => w.text !== '—'); }); /* тире в субтитрах не показываем (урок ҚУАТ) */
   return out;
 }
 let ENDCARD_AT = -1; // EndCard скрывает обычные субтитры (остаются только центральные фразы с y)
@@ -102,8 +104,8 @@ function KineticCaption(t, phrases, y = 1275) {
   const lh = size * 1.12, blockH = lines.length * lh, widest = Math.max(...lines.map(ln => ln.reduce((s2, [, ww]) => s2 + ww, 0) + sp * (ln.length - 1)));
   // подложка, если фон под блоком светлый (средняя яркость > 0,40)
   const bx = Math.max(0, CXC - widest / 2 - 40), by = y - blockH / 2 - 26, bw2 = Math.min(W - bx, widest + 80), bh2 = blockH + 52;
-  try { const im = ctx.getImageData(bx, by, bw2, bh2).data; let sum = 0, cnt = 0; for (let i = 0; i < im.length; i += 4 * 23) { sum += (.2126 * im[i] + .7152 * im[i + 1] + .0722 * im[i + 2]) / 255; cnt++; }
-    if (sum / cnt > .40) { ctx.fillStyle = 'rgba(14,22,48,.78)'; rr(bx, by, bw2, bh2, 28); ctx.fill(); } } catch (e) { }
+  try { const im = ctx.getImageData(bx, by, bw2, bh2).data; let sum = 0, cnt = 0, hi = 0; for (let i = 0; i < im.length; i += 4 * 23) { const l = (.2126 * im[i] + .7152 * im[i + 1] + .0722 * im[i + 2]) / 255; sum += l; if (l > .5) hi++; cnt++; }
+    if (sum / cnt > .40 || hi / cnt > .18) { ctx.fillStyle = 'rgba(14,22,48,.78)'; rr(bx, by, bw2, bh2, 28); ctx.fill(); } } catch (e) { }
   lines.forEach((ln, i) => { const tw = ln.reduce((s2, [, ww]) => s2 + ww, 0) + sp * (ln.length - 1); let x = CXC - tw / 2; const yy = y + (i - (lines.length - 1) / 2) * lh;
     for (const [w, ww] of ln) { const on = t >= w.t, k = E.out(win(t, w.t, w.t + .12)), sc = w.accent && on ? lerp(1, 1.06, k) : 1;
       ctx.save(); ctx.translate(x + ww / 2, yy); ctx.scale(sc, sc); if (p.italic) ctx.transform(1, 0, -.2, 1, 0, 0);
@@ -181,7 +183,7 @@ function FrostOverlay(progress, region, origin = 'edges', seed = 3) { if (progre
   ctx.restore(); }
 
 // ───── карточки и титры ─────
-function PartSticker(n, t, final = false) { ctx.save(); ctx.translate(140, 360); ctx.rotate(-.06); const s = final ? 'ЧАСТЬ 5 · ФИНАЛ' : `ЧАСТЬ ${n}`; ctx.font = '900 44px Mont'; const w = ctx.measureText(s).width + 48;
+function PartSticker(n, t, final = false) { ctx.save(); ctx.translate(120, 420); ctx.rotate(-.06); const s = final ? 'ЧАСТЬ 5 · ФИНАЛ' : `ЧАСТЬ ${n}`; ctx.font = '900 44px Mont'; const w = ctx.measureText(s).width + 48;
   ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 16; ctx.fillStyle = T.gold; rr(-24, -38, w, 76, 8); ctx.fill(); ctx.shadowBlur = 0; ctx.fillStyle = T.sky; ctx.fillRect(-24, 30, w, 8); txt(s, 0, 0, 44, T.ink, { weight: 900 }); ctx.restore(); }
 function RuleCard(t, t0, n, text, y = 700) { const k = E.out(win(t, t0, t0 + .35)); if (k <= 0) return; ctx.save(); ctx.translate(0, (1 - k) * -40); ctx.globalAlpha = k;
   ctx.fillStyle = 'rgba(14,22,48,.95)'; rr(110, y, 820, 170, 30); ctx.fill(); ctx.strokeStyle = T.frost; ctx.lineWidth = 3; ctx.stroke();

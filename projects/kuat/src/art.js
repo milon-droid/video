@@ -226,10 +226,15 @@ function hand(x, y, s, rot, { pose = 'open', skin = SKIN, cuff = HOODIE } = {}) 
   if (pose === 'fist' || pose === 'grip') { ctx.strokeStyle = 'rgba(10,15,30,.35)'; ctx.lineWidth = 4; for (const fx of [-34, -6, 22]) { ctx.beginPath(); ctx.moveTo(fx + 12, -120); ctx.lineTo(fx + 12, -96); ctx.stroke(); } }
   ctx.restore(); }
 // рука в рукаве из-за кадра (x0, y0) к запястью (x1, y1); изгиб bend (−1..1); рисует кисть по направлению руки
+// ARM_K — пропорция руки к кадру: ҚУАТ с.1–3 рисовал рукав 140–150 px (≈ полголовы крупного плана) → «огромные руки». Теперь рукав ×0,6
+// и сужается к запястью (плечо шире, кисть уже), кисть — по ширине запястья. Ширина w задаётся «как раньше», уменьшение — здесь.
+const ARM_K = .6;
 function armTo(x0, y0, x1, y1, { w = 120, col = HOODIE, bend = .15, pose = 'open', s = 1, skin = SKIN, wristRot = 0 } = {}) { const mx = (x0 + x1) / 2 - (y1 - y0) * bend, my = (y0 + y1) / 2 + (x1 - x0) * bend;
-  ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo(mx, my, x1, y1); ctx.strokeStyle = T.ol; ctx.lineWidth = w + 12; ctx.stroke(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.stroke();
-  ctx.strokeStyle = 'rgba(0,0,0,.12)'; ctx.lineWidth = w * .3; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo(mx, my, x1, y1); ctx.stroke(); // складка рукава
-  const a = Math.atan2(x1 - mx, -(y1 - my)); hand(x1, y1, s * w / 105, a + wristRot, { pose, skin, cuff: col });
+  const wr = w * ARM_K, w0 = wr * 1.35, n = 14, pt = u => [(1 - u) ** 2 * x0 + 2 * (1 - u) * u * mx + u * u * x1, (1 - u) ** 2 * y0 + 2 * (1 - u) * u * my + u * u * y1];
+  const L = [], R = []; for (let i = 0; i <= n; i++) { const u = i / n, [px, py] = pt(u), [qx, qy] = pt(Math.min(1, u + .01)), [ox, oy] = pt(Math.max(0, u - .01)), dx = qx - ox, dy = qy - oy, d = Math.hypot(dx, dy) || 1, hw = lerp(w0, wr, u) / 2; L.push([px - dy / d * hw, py + dx / d * hw]); R.push([px + dy / d * hw, py - dx / d * hw]); }
+  ctx.beginPath(); L.forEach(([px, py], i) => i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)); R.reverse().forEach(([px, py]) => ctx.lineTo(px, py)); ctx.closePath(); fillOL(col, 6); // рукав-трапеция по кривой
+  ctx.strokeStyle = 'rgba(0,0,0,.12)'; ctx.lineWidth = wr * .25; ctx.lineCap = 'round'; ctx.beginPath(); const [ex, ey] = pt(.45); ctx.moveTo(...pt(.38)); ctx.quadraticCurveTo(ex + wr * .2, ey, ...pt(.52)); ctx.stroke(); // складка на локте
+  const a = Math.atan2(x1 - mx, -(y1 - my)); hand(x1, y1, s * wr / 95, a + wristRot, { pose, skin, cuff: col });
   return { mid: [mx, my], dir: a }; }
 // снег сверху: мягкая белая поверхность с голубыми тенями и искрами
 function snowField(t, seed = 19) { const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#dfe7f2'); g.addColorStop(1, '#b9c7dd'); ctx.fillStyle = g; ctx.fillRect(-300, -300, W + 600, H + 600);
