@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Сборка серий «Блэкаута»: выгрузка раскадровки/субтитров/звука → микс → рендер → мастер → проверка.
-#   bash projects/blackout/build.sh 1 2 3   [SCALE=0.6667 — 720p черновик; SCALE=1 CRF=18 — финал 1080×1920]
+#   bash projects/blackout/build.sh 1 2 3   [SCALE=0.6667 — 720p черновик; SCALE=1 CRF=18 — финал 1080×1920; RENDER=remotion — через Remotion (в 2,5 раза быстрее)]
 set -euo pipefail
 cd "$(dirname "$0")/../.."; P=projects/blackout; SCALE=${SCALE:-0.6667}; CRF=${CRF:-20}
 EXP=$P/tools-export.cjs
@@ -9,8 +9,9 @@ for n in "$@"; do
   node $EXP $P/src/ep$n.html $P $n
   D=$(python3 -c "import json;print(json.load(open('$P/storyboard/ep$n.json'))['duration'])")
   python3 tools/sfx.py $P/sfx-ep$n.json -o $P/out/ep$n-mix.wav --duration $D >/dev/null
-  node tools/render.mjs $P/src/ep$n.html --scale $SCALE --crf $CRF -o $P/out/raw$n.mp4 2>&1 | tr '\r' '\n' | grep -E "Готово|rror" | head -2
+  [ "${RENDER:-own}" = remotion ] || node tools/render.mjs $P/src/ep$n.html --scale $SCALE --crf $CRF -o $P/out/raw$n.mp4 2>&1 | tr '\r' '\n' | grep -E "Готово|rror" | head -2
   tag=$([ "$SCALE" = "1" ] && echo "1080" || echo "draft-720"); out=$P/out/ep$n-$tag.mp4; [ "$SCALE" = "1" ] && out=$P/out/ep$n.mp4
+  if [ "${RENDER:-own}" = remotion ]; then (cd $P/remotion && bash scripts/sync-engine.sh && REMOTION_TELEMETRY=0 npx remotion render Ep$n$([ "$SCALE" = "1" ] || echo -720) ../out/raw$n.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --crf=$CRF --concurrency=4 | tail -1); fi
   python3 tools/master.py $P/out/raw$n.mp4 $out --duration $D --audio $P/out/ep$n-mix.wav
   python3 tools/qa.py $out --frames 12 --step 2 --caption-zone 1150-1400 | grep -E "Длит|Аудио|ВНИМАНИЕ|ОШИБКА" | grep -v разрешение || true
 done

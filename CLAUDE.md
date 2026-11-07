@@ -79,18 +79,17 @@
 - Пользователь назвал скилл — взять его. Не назвал — выбрать сам по таблице.
 - Из больших скиллов читать только нужный раздел/справочник, а не все файлы.
 
-### HyperFrames и Remotion: пока запасные варианты
-Основной движок — свой `tools/render.mjs`. Скиллы HyperFrames и Remotion
-установлены, но сами движки (`npx hyperframes`, пакет `remotion`) ещё **не запускались**: система безопасности требует
-разрешения пользователя на запуск внешней программы. Пока он не разрешён и не
-проверен — не строить на нём проекты, а брать из его скиллов и каталога блоков
-идеи и приёмы (переносить в свои сцены). При запуске всегда
-`HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1`; облачный рендер,
-вход в аккаунт HeyGen и платные функции не использовать.
-Remotion бесплатен для частных лиц и команд до 3 человек; для компании
-больше — нужна платная лицензия (скилл `remotion-license` не ставили, см. remotion.dev/docs/license).
-Если пользователь разрешит запуск — сначала тестовый ролик и сравнение с `tools/render.mjs`,
-результат записать в `knowledge/toolbox.md`.
+### Remotion — подключён (2026-11-07, разрешил пользователь); HyperFrames — пока запасной
+**Remotion 4** проверен на «Блэкауте» с.1: рендер в 2,5 раза быстрее `tools/render.mjs` (84 с серии: 1:46 против 4:32),
+картинка та же. Схема: canvas-движок серии (`projects/<проект>/src/*.js`) остаётся одним кодом, Remotion-проект
+(`projects/<проект>/remotion/`) рисует его по `useCurrentFrame()` — см. `projects/blackout/remotion/src/engine/CanvasEpisode.tsx`.
+Рендер: `bash projects/<проект>/remotion/scripts/sync-engine.sh`, затем
+`npx remotion render <id> out.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --concurrency=4`
+(720p — отдельная композиция 720×1280; `--scale 0.6667` не работает: нецелая высота). Звук — по-прежнему `tools/sfx.py` + `tools/master.py`.
+Всегда `REMOTION_TELEMETRY=0`. Лицензия: бесплатно для частных лиц и команд до 3 человек; для компании больше — платная (remotion.dev/docs/license).
+`tools/render.mjs` остаётся для превью-кадров, `patch.py` и прозрачных `.mov`.
+**HyperFrames** ещё не запускался — нужен отдельный «да» пользователя; при запуске `HYPERFRAMES_NO_TELEMETRY=1 HYPERFRAMES_NO_UPDATE_CHECK=1`,
+без облачного рендера, входа в HeyGen и платных функций.
 
 ## Система учится
 
