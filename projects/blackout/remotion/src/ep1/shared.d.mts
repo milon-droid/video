@@ -1,0 +1,14 @@
+export const FPS: number, DUR: number, OUT: number, KNOCK_AT: number;
+export const VO_AT: Record<'n01'|'n02'|'n03'|'a01'|'n04'|'n05'|'n06'|'n07'|'d01'|'b01'|'n08'|'d02'|'an1'|'an2'|'an3'|'an4'|'n09'|'n10'|'n11', number>;
+export const VO_GAIN: Record<string, number>, VO_CUT: Record<string, number>, SPEAKER: Record<string, string>;
+export const VT: (id: string) => number[] | null;
+export const KNOCKS: number[], KNOCKS_END: number[], HOOK_K: number[], REWIND: [number, number];
+export const CITY: { zhk: number; people: number; nt: number; cat: number; kt: number };
+export const MAP_OFF: { europe: number; russia: number; japan: number; wkz: number };
+export const SHOTS: [string, number, number, string][];
+export type Word = { text: string; accent: boolean; t: number };
+export type Phrase = { a: number; b: number; words: Word[]; speaker: string };
+export const CAPS: Phrase[];
+export const glued: (w: Word) => boolean;
+export function storyAt(t: number): { time: string; signal: 'full' | 'lost' | 'dead'; rewind: number };
+export const CUES: Record<string, unknown>[];
