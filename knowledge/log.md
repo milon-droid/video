@@ -8,3 +8,4 @@
 | 2026-11-05 | tynys | «Тыныс» ep1 «Ступень» v1→v2 | 58 с | TikTok/Reels | звук силы (duck+keep), music tynys, scene-audit, anim-kit, mouth.py |
 | 2026-11-05 | kuat | «ҚУАТ» с.1 «Молния» (черновик) | 58.0 с | TikTok/Reels | звуки силы в sfx.py (hum50, charge, lowbat, powerdown, zap), тема `music.py --style kuat`, компоненты Hud с батареей / ChargeFlow / PowerDown, лист персонажей |
 | 2026-11-05 | kuat | «ҚУАТ» с.2 «200 тенге» (черновик) + правки с.1 по самоосмотру | 58.0 с | TikTok/Reels | GroupChat, CityGrid, hand/armTo, моргание и губы по голосу, перемотка времени в HUD |
+| 2026-11-07 | kuat | «ҚУАТ» с.3 «Народ» (черновик) | 58.0 с | TikTok/Reels | fx-kit (Stamp, Emote, Onomato, BackGlow, Xray), крупное табло со строками по сюжету, StreamFrame, дефибриллятор с ЭКГ, поза «на коленях», жёсткие склейки |

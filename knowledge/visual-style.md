@@ -262,7 +262,7 @@ mood:
 10. Фигура шагает по шкале времени — kashan 7,6.
 
 ### Что сделать первым в библиотеку (для ҚУАТ, Тыныс, Счётчик и следующих)
-`Stamp`, `Emote` (знаки эмоций), `Onomato` (звуковые слова), `BackGlow`, `Thermal`/`Xray` (режимы мира),
+**Готово в `templates/components/fx-kit.js` (ҚУАТ с.3):** `FX.stamp`, `FX.emote`, `FX.onomato`, `FX.backGlow`, `FX.xray`. Осталось: `Thermal`,
 `StatCard`, `Inventory`, шторки «опасность» и «растр», каскад огней, `Timeline`, `IconGrid`, `Leaderboard`.
 Класть в `templates/components/` (общие для всех проектов), подключать вместе с anim-kit.
 

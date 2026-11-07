@@ -1,0 +1,15 @@
+[
+ {"id": "e3s01", "text": "У апай остановилось сердце.", "speed": 1.2},
+ {"id": "e3d01", "text": "Раз, два, три, четыре!", "voice": "ru_RU-irina-medium", "speed": 1.35, "pitch": 1.04},
+ {"id": "e3s02", "text": "А дефибриллятор разряжен.", "speed": 1.1},
+ {"id": "e3s03", "text": "Один разряд — двадцать процентов. У меня было двадцать два.", "speed": 1.18, "caption": "Один разряд — 20%. У меня было 22"},
+ {"id": "e3d02", "text": "Отойти!", "voice": "ru_RU-irina-medium", "speed": 1.05, "pitch": 1.02},
+ {"id": "e3d03", "text": "Нет ритма. Ещё раз!", "voice": "ru_RU-irina-medium", "speed": 1.1, "pitch": 1.02},
+ {"id": "e3s05", "text": "Ещё один разряд — и я отключусь.", "speed": 1.1},
+ {"id": "e3s06", "text": "Пацаны! Все пауэрбанки — на вахту!", "voice": "ru_RU-ruslan-medium", "speed": 1.2, "pitch": 1.05},
+ {"id": "e3s07", "text": "И общага побежала.", "speed": 1.0},
+ {"id": "e3s08", "text": "Плюс пять. Плюс пять. Плюс пять.", "speed": 1.0},
+ {"id": "e3d04", "text": "Есть пульс!", "voice": "ru_RU-irina-medium", "speed": 1.05, "pitch": 1.04},
+ {"id": "e3s10", "text": "К утру меня видели триста тысяч.", "speed": 1.1},
+ {"id": "e3s11", "text": "Сен жалғыз емессің.", "voice": "kk_KZ-issai-high", "speaker": 3, "speed": 0.82, "pitch": 0.9, "caption": "Ты не один"}
+]

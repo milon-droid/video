@@ -63,23 +63,28 @@ function storyClock(ep, t) { const ks = STORY_CLOCK[ep]; let i = ks.length - 1; 
 
 // ───── Hud: слева «• АСТАНА · 23:40 · −31°», справа батарея «БЕКА 23%» ─────
 // battery: число или null (скрыта); rate: −1/0/+1 — стрелки; appear: 0..1 — анимация появления; stamp — плашка «ЧАС НАЗАД»
-function Hud(t, { place = 'АСТАНА', time, temp, battery = null, rate = 0, appear = 1, stamp = null }) {
-  const left = `${place} · ${time} · ${temp}`; ctx.save(); ctx.font = '800 32px Mont'; const w = ctx.measureText(left).width + 64;
-  ctx.fillStyle = 'rgba(10,15,30,.74)'; rr(70, 212, w, 58, 12); ctx.fill(); ctx.strokeStyle = 'rgba(79,216,255,.55)'; ctx.lineWidth = 2; ctx.stroke();
-  ctx.fillStyle = Math.floor(t * 1.5) % 2 ? T.cyan : T.empty; circle(96, 241, 7); ctx.fill(); txt(left, 116, 242, 32, T.text, { weight: 800 }); ctx.restore();
-  if (stamp) { ctx.save(); ctx.font = '900 30px Mont'; const sw = ctx.measureText(stamp).width + 40; ctx.fillStyle = T.cyan; rr(70, 284, sw, 50, 10); ctx.fill(); txt(stamp, 90, 310, 30, T.ink, { weight: 900 }); ctx.restore(); }
+// Табло крупно (visual-style п.6: плашка 90–140 px, цифры ≥ 54 px). Слева: город · мороз и большое время; справа: «БЕКА» и большой заряд.
+// rows: [{ label, value, col, at }] — строки, которые появляются по сюжету под батареей (табло растёт, E1)
+function Hud(t, { place = 'АСТАНА', time, temp, battery = null, rate = 0, appear = 1, stamp = null, rows = [] }) {
+  ctx.save(); ctx.font = '800 26px Mont'; const top = `${place} · ${temp}`, lw = Math.max(ctx.measureText(top).width + 70, 250), y0 = 200;
+  ctx.fillStyle = 'rgba(20,22,28,.8)'; rr(64, y0, lw, 118, 16); ctx.fill(); ctx.strokeStyle = 'rgba(79,216,255,.55)'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = Math.floor(t * 1.5) % 2 ? T.cyan : T.empty; circle(92, y0 + 30, 8); ctx.fill(); txt(top, 112, y0 + 31, 26, 'rgba(255,255,255,.85)', { weight: 800 });
+  txt(time, 86, y0 + 80, 56, T.text, { font: 'JBM', weight: 800 }); ctx.restore();
+  if (stamp) { ctx.save(); ctx.font = '900 30px Mont'; const sw = ctx.measureText(stamp).width + 40; ctx.fillStyle = T.cyan; rr(64, y0 + 130, sw, 50, 10); ctx.fill(); txt(stamp, 84, y0 + 156, 30, T.ink, { weight: 900 }); ctx.restore(); }
   if (battery === null) return;
   const v = Math.max(0, Math.round(battery)), col = battCol(v), crit = v <= 5, blink = crit && Math.floor(t * 4) % 2;
-  ctx.save(); const ak = E.back(clamp(appear)); const label = `БЕКА ${v}%`; ctx.font = '800 46px JBM'; const tw = ctx.measureText(label).width, bw = tw + 150, x1 = 1010, y0 = 212, bh = 84;
+  ctx.save(); const ak = E.back(clamp(appear)), x1 = 1010, bh = 118; ctx.font = '800 72px JBM'; const num = `${v}%`, nw = ctx.measureText(num).width, bw = Math.max(330, nw + 190);
   ctx.translate(x1 - bw / 2, y0 + bh / 2); ctx.scale(ak, ak); ctx.translate(-(x1 - bw / 2), -(y0 + bh / 2)); ctx.globalAlpha = clamp(appear * 2);
-  if (rate) { ctx.shadowColor = rate > 0 ? T.charge : col; ctx.shadowBlur = 34; }
-  ctx.fillStyle = crit ? `rgba(${blink ? 120 : 70},16,22,.9)` : 'rgba(10,15,30,.82)'; rr(x1 - bw, y0, bw, bh, 14); ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.stroke();
-  const ix = x1 - bw + 24, iy = y0 + 25; ctx.strokeStyle = col; ctx.lineWidth = 4; rr(ix, iy, 70, 34, 6); ctx.stroke(); ctx.fillStyle = col; rr(ix + 72, iy + 10, 7, 14, 2); ctx.fill(); // иконка батареи
-  const fw = 62 * clamp(battery / 100); if (fw > 0) { rr(ix + 4, iy + 4, Math.max(4, fw), 26, 3); ctx.fill(); }
-  if (rate > 0) { ctx.fillStyle = T.ink; ctx.beginPath(); ctx.moveTo(ix + 40, iy + 3); ctx.lineTo(ix + 30, iy + 19); ctx.lineTo(ix + 37, iy + 19); ctx.lineTo(ix + 32, iy + 31); ctx.lineTo(ix + 46, iy + 14); ctx.lineTo(ix + 38, iy + 14); ctx.closePath(); ctx.fill(); } // молния «заряжается»
-  txt(label, ix + 100, y0 + bh / 2 + 2, 46, blink ? '#ffffff' : col, { font: 'JBM', weight: 800 });
-  if (rate < 0) { ctx.fillStyle = col; const ax = x1 - 26, ay = y0 + bh + 18 + ((t * 60) % 14); ctx.beginPath(); ctx.moveTo(ax - 12, ay - 8); ctx.lineTo(ax + 12, ay - 8); ctx.lineTo(ax, ay + 8); ctx.closePath(); ctx.fill(); } // стрелка вниз — отдаёт
-  ctx.restore(); }
+  if (rate) { ctx.shadowColor = rate > 0 ? T.charge : col; ctx.shadowBlur = 40; }
+  ctx.fillStyle = crit ? `rgba(${blink ? 120 : 70},16,22,.92)` : 'rgba(20,22,28,.85)'; rr(x1 - bw, y0, bw, bh, 18); ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.stroke();
+  const ix = x1 - bw + 26, iy = y0 + 30; ctx.strokeStyle = col; ctx.lineWidth = 6; rr(ix, iy, 104, 58, 10); ctx.stroke(); ctx.fillStyle = col; rr(ix + 106, iy + 17, 10, 24, 3); ctx.fill(); // иконка батареи
+  const fw = 92 * clamp(battery / 100); if (fw > 0) { rr(ix + 6, iy + 6, Math.max(6, fw), 46, 5); ctx.fill(); }
+  if (rate > 0) { ctx.fillStyle = T.ink; ctx.save(); ctx.translate(ix + 52, iy + 29); ctx.scale(1.6, 1.6); ctx.beginPath(); ctx.moveTo(6, -15); ctx.lineTo(-6, 2); ctx.lineTo(1, 2); ctx.lineTo(-4, 15); ctx.lineTo(8, -3); ctx.lineTo(1, -3); ctx.closePath(); ctx.fill(); ctx.restore(); } // молния «заряжается»
+  txt('БЕКА', ix + 136, y0 + 26, 24, 'rgba(255,255,255,.7)', { weight: 900 }); txt(num, ix + 134, y0 + 74, 72, blink ? '#ffffff' : col, { font: 'JBM', weight: 800 });
+  if (rate < 0) { ctx.fillStyle = col; const ax = x1 - 30, ay = y0 + bh + 20 + ((t * 60) % 14); ctx.beginPath(); ctx.moveTo(ax - 14, ay - 9); ctx.lineTo(ax + 14, ay - 9); ctx.lineTo(ax, ay + 9); ctx.closePath(); ctx.fill(); } // стрелка вниз — отдаёт
+  ctx.restore();
+  rows.forEach((r, i) => { if (t < r.at) return; const k = E.back(win(t, r.at, r.at + .3)), y = y0 + bh + 16 + i * 80; ctx.save(); ctx.translate(x1, y + 34); ctx.scale(k, k); ctx.translate(-x1, -(y + 34)); ctx.font = '800 44px JBM'; const s2 = `${r.label} ${r.value}`, w2 = ctx.measureText(s2).width + 50;
+    const fl = r.flash != null ? Math.exp(-(t - r.flash) * 5) * (t >= r.flash) : 0; ctx.fillStyle = `rgba(${lerp(20, 61, fl)},${lerp(22, 140, fl)},${lerp(28, 80, fl)},.85)`; rr(x1 - w2, y, w2, 68, 14); ctx.fill(); ctx.strokeStyle = r.col || T.charge; ctx.lineWidth = 3; ctx.stroke(); txt(s2, x1 - w2 + 25, y + 36, 44, r.col || T.charge, { font: 'JBM', weight: 800 }); ctx.restore(); }); }
 
 // ───── ChargeFlow: зелёные точки по руке, вспышка 2 кадра на касании, всплывающий процент устройства ─────
 // path — точки от устройства (path[0]) к сердцу; dir: 'give' — от сердца к устройству, 'take' — к сердцу;
@@ -147,7 +152,7 @@ function KineticCaption(t, phrases, y = 1275) {
   ctx.restore(); }
 
 // ───── карточки ─────
-function PartSticker(n, t, final = false) { ctx.save(); ctx.translate(140, 400); ctx.rotate(-.06); const s = final ? 'ЧАСТЬ 5 · ФИНАЛ' : `ЧАСТЬ ${n}`; ctx.font = '900 44px Mont'; const w = ctx.measureText(s).width + 48;
+function PartSticker(n, t, final = false) { ctx.save(); ctx.translate(120, 420); ctx.rotate(-.06); const s = final ? 'ЧАСТЬ 5 · ФИНАЛ' : `ЧАСТЬ ${n}`; ctx.font = '900 44px Mont'; const w = ctx.measureText(s).width + 48;
   ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 16; ctx.fillStyle = T.charge; rr(-24, -38, w, 76, 8); ctx.fill(); ctx.shadowBlur = 0; ctx.fillStyle = T.cyan; ctx.fillRect(-24, 30, w, 8); txt(s, 0, 0, 44, T.ink, { weight: 900 }); ctx.restore(); }
 function bolt(x0, y0, x1, y1, seed, { w = 10, branches = 3, col = '255,255,255', glowCol = '160,200,255', a = 1 } = {}) { const r = seeded(seed); const pts = [[x0, y0]]; const n = 14;
   for (let i = 1; i < n; i++) { const k = i / n; pts.push([lerp(x0, x1, k) + (r() - .5) * 120 * (1 - k * .5), lerp(y0, y1, k) + (r() - .5) * 30]); } pts.push([x1, y1]);

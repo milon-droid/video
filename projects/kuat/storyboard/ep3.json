@@ -1,0 +1,1005 @@
+{
+  "episode": 3,
+  "title": "Народ",
+  "duration": 58,
+  "hud": {
+    "place": "АСТАНА",
+    "temp": "−34°",
+    "battery": {
+      "start": 22,
+      "low": 2,
+      "peak": 27,
+      "end": 7
+    }
+  },
+  "scenes": [
+    {
+      "id": "e3s01",
+      "start": 0,
+      "end": 3,
+      "cut": "none",
+      "vo": {
+        "speaker": "beka",
+        "text": "У АПАЙ ОСТАНОВИЛОСЬ СЕРДЦЕ",
+        "accent": [
+          "ОСТАНОВИЛОСЬ",
+          "СЕРДЦЕ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "thud",
+          "at": 0.02
+        },
+        {
+          "id": "thud",
+          "at": 0.55
+        },
+        {
+          "id": "thud",
+          "at": 1.07
+        },
+        {
+          "id": "thud",
+          "at": 1.6
+        },
+        {
+          "id": "thud",
+          "at": 2.13
+        },
+        {
+          "id": "heartbeat",
+          "at": 0
+        },
+        {
+          "id": "heartbeat",
+          "at": 1
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 22,
+        "batteryEnd": 22
+      },
+      "overlays": [
+        "PartSticker:3"
+      ]
+    },
+    {
+      "id": "e3s02a",
+      "start": 3,
+      "end": 5.4,
+      "cut": "none",
+      "vo": {
+        "speaker": "beka",
+        "text": "А ДЕФИБРИЛЛЯТОР РАЗРЯЖЕН",
+        "accent": [
+          "РАЗРЯЖЕН"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "beep",
+          "at": 3.3
+        },
+        {
+          "id": "beep",
+          "at": 3.85
+        },
+        {
+          "id": "beep",
+          "at": 4.4
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 22,
+        "batteryEnd": 22
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s02b",
+      "start": 5.4,
+      "end": 7.4,
+      "cut": "none",
+      "vo": {
+        "speaker": "beka",
+        "text": "ОДИН РАЗРЯД 20%.",
+        "accent": [
+          "20%."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "pop",
+          "at": 6.3
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 22,
+        "batteryEnd": 22
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s03a",
+      "start": 7.4,
+      "end": 10,
+      "cut": "none",
+      "vo": {
+        "speaker": "beka",
+        "text": "У МЕНЯ БЫЛО 22",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "click-clap-firm",
+          "at": 7.55
+        },
+        {
+          "id": "hum50",
+          "at": 7.6
+        },
+        {
+          "id": "ff",
+          "at": 7.6
+        },
+        {
+          "id": "charge",
+          "at": 7.6
+        },
+        {
+          "id": "tone",
+          "at": 9.4
+        },
+        {
+          "id": "tone",
+          "at": 9.58
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 22,
+        "batteryEnd": 2
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e3s03b",
+      "start": 10,
+      "end": 12,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "whoosh-fast-soft",
+          "at": 10.45
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s04a",
+      "start": 12,
+      "end": 14.3,
+      "cut": "none",
+      "vo": {
+        "speaker": "dana",
+        "text": "ОТОЙТИ!",
+        "accent": [
+          "ОТОЙТИ!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "zap",
+          "at": 12.8
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 12.8
+        },
+        {
+          "id": "thud",
+          "at": 12.83
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s04b",
+      "start": 14.3,
+      "end": 16.25,
+      "cut": "none",
+      "vo": {
+        "speaker": "dana",
+        "text": "НЕТ РИТМА. ЕЩЁ РАЗ!",
+        "accent": [
+          "ЕЩЁ",
+          "РАЗ!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "beep",
+          "at": 14.3
+        },
+        {
+          "id": "beep",
+          "at": 14.8
+        },
+        {
+          "id": "beep",
+          "at": 15.3
+        },
+        {
+          "id": "beep",
+          "at": 15.8
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 14.5
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": [
+        "Stamp"
+      ]
+    },
+    {
+      "id": "e3s05a",
+      "start": 16.25,
+      "end": 18.6,
+      "cut": "none",
+      "vo": {
+        "speaker": "beka",
+        "text": "ЕЩЁ ОДИН РАЗРЯД И Я ОТКЛЮЧУСЬ",
+        "accent": [
+          "ОТКЛЮЧУСЬ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "lowbat",
+          "at": 16.8
+        },
+        {
+          "id": "heartbeat",
+          "at": 16.3
+        },
+        {
+          "id": "heartbeat",
+          "at": 16.85
+        },
+        {
+          "id": "heartbeat",
+          "at": 17.4
+        },
+        {
+          "id": "heartbeat",
+          "at": 17.95
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s05b",
+      "start": 18.6,
+      "end": 20.2,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "thud",
+          "at": 18.62
+        },
+        {
+          "id": "thud",
+          "at": 19.15
+        },
+        {
+          "id": "thud",
+          "at": 19.67
+        }
+      ],
+      "hud": {
+        "time": "02:10",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s06a",
+      "start": 20.2,
+      "end": 22.6,
+      "cut": "none",
+      "vo": {
+        "speaker": "erzhan",
+        "text": "ПАЦАНЫ! ВСЕ ПАУЭРБАНКИ НА ВАХТУ!",
+        "accent": [
+          "ПАУЭРБАНКИ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "pop",
+          "at": 20.25
+        },
+        {
+          "id": "bloop",
+          "at": 20.5
+        }
+      ],
+      "hud": {
+        "time": "02:12",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s06b",
+      "start": 22.6,
+      "end": 24.6,
+      "cut": "whip",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "click-latch-medium",
+          "at": 22.75
+        },
+        {
+          "id": "click-latch-firm",
+          "at": 22.95
+        },
+        {
+          "id": "click-latch-medium",
+          "at": 23.15
+        },
+        {
+          "id": "click-latch-firm",
+          "at": 23.35
+        },
+        {
+          "id": "click-latch-medium",
+          "at": 23.55
+        },
+        {
+          "id": "click-latch-firm",
+          "at": 23.75
+        },
+        {
+          "id": "murmur",
+          "at": 22.6
+        }
+      ],
+      "hud": {
+        "time": "02:12",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s07a",
+      "start": 24.6,
+      "end": 27.4,
+      "cut": "whip",
+      "vo": {
+        "speaker": "beka",
+        "text": "И ОБЩАГА ПОБЕЖАЛА",
+        "accent": [
+          "ПОБЕЖАЛА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "step",
+          "at": 24.65
+        },
+        {
+          "id": "step",
+          "at": 24.8
+        },
+        {
+          "id": "step",
+          "at": 24.95
+        },
+        {
+          "id": "step",
+          "at": 25.1
+        },
+        {
+          "id": "step",
+          "at": 25.25
+        },
+        {
+          "id": "step",
+          "at": 25.4
+        },
+        {
+          "id": "step",
+          "at": 25.55
+        },
+        {
+          "id": "step",
+          "at": 25.7
+        },
+        {
+          "id": "step",
+          "at": 25.85
+        },
+        {
+          "id": "step",
+          "at": 26
+        },
+        {
+          "id": "step",
+          "at": 26.15
+        },
+        {
+          "id": "step",
+          "at": 26.3
+        },
+        {
+          "id": "step",
+          "at": 26.45
+        },
+        {
+          "id": "step",
+          "at": 26.6
+        },
+        {
+          "id": "step",
+          "at": 26.75
+        },
+        {
+          "id": "step",
+          "at": 26.9
+        },
+        {
+          "id": "step",
+          "at": 27.05
+        },
+        {
+          "id": "step",
+          "at": 27.2
+        },
+        {
+          "id": "step",
+          "at": 27.35
+        },
+        {
+          "id": "whoosh-medium-hard",
+          "at": 24.6
+        }
+      ],
+      "hud": {
+        "time": "02:13",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s07b",
+      "start": 27.4,
+      "end": 30.2,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "step",
+          "at": 27.5
+        },
+        {
+          "id": "step",
+          "at": 27.65
+        },
+        {
+          "id": "step",
+          "at": 27.8
+        },
+        {
+          "id": "step",
+          "at": 27.95
+        },
+        {
+          "id": "step",
+          "at": 28.1
+        },
+        {
+          "id": "step",
+          "at": 28.25
+        },
+        {
+          "id": "step",
+          "at": 28.4
+        },
+        {
+          "id": "step",
+          "at": 28.55
+        },
+        {
+          "id": "step",
+          "at": 28.7
+        },
+        {
+          "id": "step",
+          "at": 28.85
+        },
+        {
+          "id": "step",
+          "at": 29
+        },
+        {
+          "id": "step",
+          "at": 29.15
+        },
+        {
+          "id": "step",
+          "at": 29.3
+        },
+        {
+          "id": "step",
+          "at": 29.45
+        },
+        {
+          "id": "step",
+          "at": 29.6
+        },
+        {
+          "id": "step",
+          "at": 29.75
+        },
+        {
+          "id": "step",
+          "at": 29.9
+        },
+        {
+          "id": "murmur",
+          "at": 27.4
+        },
+        {
+          "id": "pop",
+          "at": 28
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 30.15
+        }
+      ],
+      "hud": {
+        "time": "02:13",
+        "battery": 2,
+        "batteryEnd": 2
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s08a",
+      "start": 30.2,
+      "end": 32.85,
+      "cut": "whip",
+      "vo": {
+        "speaker": "beka",
+        "text": "ПЛЮС ПЯТЬ. ПЛЮС ПЯТЬ. ПЛЮС ПЯТЬ",
+        "accent": [
+          "ПЛЮС",
+          "ПЯТЬ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "charge",
+          "at": 30.45
+        },
+        {
+          "id": "hum50",
+          "at": 30.45
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 31.05
+        },
+        {
+          "id": "charge",
+          "at": 31.35
+        },
+        {
+          "id": "hum50",
+          "at": 31.35
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 32.2
+        },
+        {
+          "id": "charge",
+          "at": 32.5
+        },
+        {
+          "id": "hum50",
+          "at": 32.5
+        }
+      ],
+      "hud": {
+        "time": "02:15",
+        "battery": 2,
+        "batteryEnd": 17
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e3s08b",
+      "start": 32.85,
+      "end": 35.2,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "whoosh-fast-soft",
+          "at": 33.1
+        },
+        {
+          "id": "charge",
+          "at": 33.4
+        },
+        {
+          "id": "hum50",
+          "at": 33.4
+        },
+        {
+          "id": "whoosh-fast-soft",
+          "at": 33.9
+        },
+        {
+          "id": "charge",
+          "at": 34.2
+        },
+        {
+          "id": "hum50",
+          "at": 34.2
+        }
+      ],
+      "hud": {
+        "time": "02:15",
+        "battery": 17,
+        "batteryEnd": 27
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e3s09a",
+      "start": 35.2,
+      "end": 36.5,
+      "cut": "none",
+      "vo": {
+        "speaker": "dana",
+        "text": "ОТОЙТИ!",
+        "accent": [
+          "ОТОЙТИ!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click-clap-firm",
+          "at": 35.4
+        },
+        {
+          "id": "ff",
+          "at": 35.45
+        },
+        {
+          "id": "tone",
+          "at": 36.2
+        }
+      ],
+      "hud": {
+        "time": "02:17",
+        "battery": 27,
+        "batteryEnd": 7
+      },
+      "overlays": [
+        "ChargeFlow"
+      ]
+    },
+    {
+      "id": "e3s09b",
+      "start": 36.5,
+      "end": 37.4,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "zap",
+          "at": 36.9
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 36.9
+        }
+      ],
+      "hud": {
+        "time": "02:17",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s09c",
+      "start": 37.4,
+      "end": 39,
+      "cut": "none",
+      "vo": {
+        "speaker": "dana",
+        "text": "ЕСТЬ ПУЛЬС!",
+        "accent": [
+          "ЕСТЬ",
+          "ПУЛЬС!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "tone",
+          "at": 37.6
+        },
+        {
+          "id": "tone",
+          "at": 38.4
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 38.2
+        }
+      ],
+      "hud": {
+        "time": "02:17",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": [
+        "Stamp"
+      ]
+    },
+    {
+      "id": "e3s09d",
+      "start": 39,
+      "end": 40,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "tone",
+          "at": 39.2
+        },
+        {
+          "id": "breath_in",
+          "at": 39.05
+        }
+      ],
+      "hud": {
+        "time": "02:17",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s10a",
+      "start": 40,
+      "end": 42.6,
+      "cut": "none",
+      "vo": {
+        "speaker": "beka",
+        "text": "К УТРУ МЕНЯ ВИДЕЛИ ТРИСТА ТЫСЯЧ",
+        "accent": [
+          "ТРИСТА",
+          "ТЫСЯЧ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "tone",
+          "at": 40
+        },
+        {
+          "id": "celebration-applause-big",
+          "at": 40
+        },
+        {
+          "id": "bloop",
+          "at": 40.3
+        },
+        {
+          "id": "bloop",
+          "at": 40.9
+        },
+        {
+          "id": "bloop",
+          "at": 41.5
+        },
+        {
+          "id": "bloop",
+          "at": 42.1
+        }
+      ],
+      "hud": {
+        "time": "02:19",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": [
+        "StreamFrame"
+      ]
+    },
+    {
+      "id": "e3s10b",
+      "start": 42.6,
+      "end": 45,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "celebration-applause-small",
+          "at": 42.7
+        },
+        {
+          "id": "pop",
+          "at": 43.2
+        }
+      ],
+      "hud": {
+        "time": "02:19",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s11a",
+      "start": 45,
+      "end": 47.6,
+      "cut": "none",
+      "vo": {
+        "speaker": "apai",
+        "text": "ТЫ НЕ ОДИН",
+        "accent": [
+          "НЕ",
+          "ОДИН"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "chord",
+          "at": 45
+        }
+      ],
+      "hud": {
+        "time": "02:24",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s11b",
+      "start": 47.6,
+      "end": 50,
+      "cut": "none",
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "02:24",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s12",
+      "start": 50,
+      "end": 51,
+      "cut": "none",
+      "vo": null,
+      "sfx": [],
+      "hud": {
+        "time": "02:24",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s13a",
+      "start": 51,
+      "end": 53.4,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "phone-vibrate-table",
+          "at": 51.1
+        },
+        {
+          "id": "bloop",
+          "at": 51.4
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 52.5
+        },
+        {
+          "id": "drone",
+          "at": 51
+        }
+      ],
+      "hud": {
+        "time": "02:30",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s13b",
+      "start": 53.4,
+      "end": 55.5,
+      "cut": "none",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "pop",
+          "at": 54.3
+        }
+      ],
+      "hud": {
+        "time": "02:30",
+        "battery": 7,
+        "batteryEnd": 7
+      },
+      "overlays": []
+    },
+    {
+      "id": "e3s14",
+      "start": 55.5,
+      "end": 58,
+      "cut": "none",
+      "vo": null,
+      "sfx": [],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}

@@ -69,9 +69,10 @@ function person(x, y, s, t, o = {}) { const M0 = ctx.getTransform(), toCaller = 
   if (o.straps) { rr(-92 * wide, -300, 184 * wide, 150, 40); fillOL('#2b3a6e', 5); } // рюкзак за спиной
   if (!o.hideLegs) { const ph = o.walk; for (const sx of [-1, 1]) { const a1 = ph == null ? sx * .05 : .38 * Math.sin(ph + (sx > 0 ? Math.PI : 0)), a2 = ph == null ? 0 : -.35 * Math.max(0, Math.sin(ph + (sx > 0 ? 0 : Math.PI)));
       const hip = [sx * 30, -130], kn = [hip[0] + 66 * Math.sin(a1), hip[1] + 66 * Math.cos(a1)], ft = [kn[0] + 62 * Math.sin(a1 + a2), kn[1] + 62 * Math.cos(a1 + a2)];
-      if (o.sit) { const k2 = [sx * 38, -60]; limb([hip, [sx * 34, -96], k2], 40, o.legsCol || JEANS); }
+      if (o.kneel) { limb([[sx * 30, -70], [sx * 46, -8]], 40, o.legsCol || JEANS); ctx.beginPath(); ctx.ellipse(sx * 46, -4, 30, 12, 0, 0, Math.PI * 2); fillOL(o.legsCol || JEANS, 5); } /* на коленях: бёдра вперёд, колени на полу */
+      else if (o.sit) { const k2 = [sx * 38, -60]; limb([hip, [sx * 34, -96], k2], 40, o.legsCol || JEANS); }
       else { limb([hip, kn, ft], 40, o.legsCol || JEANS); ctx.beginPath(); ctx.ellipse(ft[0] + sx * 6, ft[1] + 4, 32, 15, 0, 0, Math.PI * 2); fillOL(o.shoeCol || '#e9edf2', 5); } } }
-  ctx.translate(0, bob); // корпус и голова над бёдрами
+  ctx.translate(0, bob + (o.kneel ? 60 : 0)); // корпус и голова над бёдрами (на коленях — ниже на 60)
   // торс
   if (o.top === 'coat') { ctx.beginPath(); ctx.moveTo(-78, -318); ctx.lineTo(78, -318); ctx.lineTo(92, -30); ctx.lineTo(-92, -30); ctx.closePath(); fillOL(topCol, 6); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(-40, -318); ctx.lineTo(0, -210); ctx.lineTo(40, -318); ctx.moveTo(0, -210); ctx.lineTo(0, -30); ctx.stroke(); ctx.fillStyle = '#ece8f2'; ctx.beginPath(); ctx.moveTo(-26, -318); ctx.lineTo(0, -236); ctx.lineTo(26, -318); ctx.closePath(); ctx.fill(); }
   else rr(-76 * wide, -318, 152 * wide, 206, 48), fillOL(topCol, 6);
@@ -296,3 +297,54 @@ function CityGrid(t, { dark = () => 0, mark = null, river = true } = {}) { ctx.f
   if (mark) { const b = CITY.find(q => q.i === mark.i && q.j === mark.j), cx = b.x + b.w / 2, cy = b.y + b.h / 2, on = 1 - clamp(dark(b.i, b.j, b)); ctx.strokeStyle = T.charge; ctx.lineWidth = 6; rr(b.x - 10, b.y - 10, b.w + 20, b.h + 20, 12); ctx.stroke();
     ctx.fillStyle = 'rgba(10,15,30,.9)'; rr(cx - 120, b.y - 90, 240, 62, 14); ctx.fill(); ctx.strokeStyle = T.charge; ctx.lineWidth = 3; ctx.stroke(); txt(mark.label || 'ОБЩАГА', cx, b.y - 58, 32, on > .5 ? T.charge : T.empty, { align: 'center' }); } }
 function glassesInHand(x, y, s = 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.strokeStyle = '#b8902f'; ctx.lineWidth = 6; for (const s2 of [-1, 1]) { circle(s2 * 26, -30, 22); ctx.stroke(); } ctx.beginPath(); ctx.moveTo(-6, -30); ctx.lineTo(6, -30); ctx.stroke(); ctx.strokeStyle = '#d4b04a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-48, -30); ctx.quadraticCurveTo(0, 40, 48, -30); ctx.stroke(); ctx.restore(); }
+
+// ════════ серия 3 ════════
+// ── кардиограмма: mode(tt) → 'vf' (фибрилляция, «разрядный» ритм) | 'flat' | 'sinus' (ритм есть) ──
+function ecgSignal(tt, mode) { if (mode === 'flat') return Math.sin(tt * 31) * .02;
+  if (mode === 'vf') return .45 * Math.sin(tt * 26 + Math.sin(tt * 3.1) * 2) + .25 * Math.sin(tt * 41 + 1.3) + .15 * Math.sin(tt * 9.7);
+  const ph = (tt * 1.25) % 1; return ph < .04 ? -.15 : ph < .07 ? 1 : ph < .1 ? -.35 : ph > .3 && ph < .42 ? .18 * Math.sin((ph - .3) / .12 * Math.PI) : 0; } // P-QRS-T
+function ecg(t, x, y, w, h, modeAt, col = T.charge, speed = 260) { ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.strokeStyle = 'rgba(61,255,143,.12)'; ctx.lineWidth = 2; for (let gx = x; gx < x + w; gx += 40) { ctx.beginPath(); ctx.moveTo(gx, y); ctx.lineTo(gx, y + h); ctx.stroke(); }
+  ctx.strokeStyle = col; ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.shadowColor = col; ctx.shadowBlur = 16; ctx.beginPath();
+  for (let i = 0; i <= w; i += 3) { const tt = t - (w - i) / speed, v = ecgSignal(tt, modeAt(tt)); i ? ctx.lineTo(x + i, y + h / 2 - v * h * .42) : ctx.moveTo(x + i, y + h / 2 - v * h * .42); } ctx.stroke();
+  ctx.fillStyle = '#fff'; const tv = ecgSignal(t, modeAt(t)); circle(x + w, y + h / 2 - tv * h * .42, 7); ctx.fill(); ctx.restore(); }
+// ── дефибриллятор (вымышленный, без марки): screen — 'battery' | 'charging' | 'ready' | 'ecg' ──
+function aed(x, y, s, t, { screen = 'battery', level = 0, modeAt = () => 'vf', btnGlow = 0 } = {}) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  rr(-200, -150, 400, 300, 40); fillOL('#f2f2ee', 7); rr(-200, -150, 400, 60, 30); ctx.fillStyle = '#2ecc71'; ctx.fill(); ctx.strokeStyle = T.ol; ctx.lineWidth = 5; rr(-200, -150, 400, 300, 40); ctx.stroke(); // корпус, зелёная полоса
+  ctx.save(); ctx.translate(-150, -120); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(0, 14); ctx.bezierCurveTo(-26, -6, -12, -28, 0, -12); ctx.bezierCurveTo(12, -28, 26, -6, 0, 14); ctx.fill(); ctx.restore(); txt('ДЕФИБРИЛЛЯТОР', 10, -120, 24, '#fff', { align: 'center' });
+  rr(-170, -76, 250, 150, 14); ctx.fillStyle = '#071a14'; ctx.fill(); // экран
+  if (screen === 'battery') { const bl = Math.floor(t * 3) % 2; ctx.strokeStyle = T.empty; ctx.lineWidth = 6; rr(-140, -50, 120, 56, 8); ctx.stroke(); ctx.fillStyle = T.empty; rr(-18, -32, 10, 20, 3); ctx.fill(); txt('0%', 40, -22, 46, bl ? T.empty : '#7a2020', { font: 'JBM', weight: 800 }); txt('АККУМУЛЯТОР', -45, 40, 22, T.empty, { align: 'center', weight: 900 }); }
+  else if (screen === 'charging' || screen === 'ready') { const k = clamp(level); ctx.strokeStyle = T.charge; ctx.lineWidth = 4; rr(-150, -40, 210, 34, 8); ctx.stroke(); ctx.fillStyle = T.charge; rr(-146, -36, 202 * k, 26, 6); ctx.fill(); txt(screen === 'ready' ? 'ГОТОВ' : Math.round(k * 100) + '%', -45, 34, 40, screen === 'ready' ? T.low : T.charge, { align: 'center', font: screen === 'ready' ? 'Mont' : 'JBM', weight: 900 }); }
+  else ecg(t, -166, -72, 242, 142, modeAt, T.charge, 220);
+  circle(140, 0, 46); fillOL(btnGlow > 0 ? '#ffb347' : '#ff8a2a', 6); if (btnGlow > 0) glow(140, 0, 120 * btnGlow, 'rgba(255,200,80,.8)'); ctx.save(); ctx.translate(140, 0); ctx.scale(1.4, 1.4); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(6, -15); ctx.lineTo(-6, 2); ctx.lineTo(1, 2); ctx.lineTo(-4, 15); ctx.lineTo(8, -3); ctx.lineTo(1, -3); ctx.closePath(); ctx.fill(); ctx.restore(); // кнопка разряда
+  ctx.restore(); }
+function pads(ax, ay, s = 1) { for (const [dx, dy, r] of [[-40, -30, -.4], [60, 40, .3]]) { ctx.save(); ctx.translate(ax + dx * s, ay + dy * s); ctx.rotate(r); rr(-34 * s, -22 * s, 68 * s, 44 * s, 10 * s); fillOL('#f4f1ea', 4); ctx.restore(); } } // электроды на груди
+function powerbank(x, y, s = 1, { col = '#4a5a7a', rot = 0, leds = 4, glowK = 0 } = {}) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); rr(-38, -70, 76, 140, 16); fillOL(col, 5); for (let i = 0; i < 4; i++) { ctx.fillStyle = i < leds ? T.charge : 'rgba(255,255,255,.2)'; circle(-18 + i * 12, -50, 4); ctx.fill(); }
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-20, 0); ctx.lineTo(20, 0); ctx.stroke(); if (glowK > 0) glow(0, 0, 120 * glowK, 'rgba(61,255,143,.6)'); ctx.restore(); }
+function oxyMask(x, y, r, fog = 0) { ctx.save(); ctx.translate(x, y); ctx.strokeStyle = '#7fd6ef'; ctx.lineWidth = r * .04; ctx.beginPath(); ctx.moveTo(-r * .9, -r * .1); ctx.lineTo(-r * .3, r * .1); ctx.moveTo(r * .9, -r * .1); ctx.lineTo(r * .3, r * .1); ctx.stroke(); // ремешок
+  ctx.beginPath(); ctx.ellipse(0, r * .3, r * .34, r * .3, 0, 0, Math.PI * 2); ctx.fillStyle = `rgba(200,240,255,${.35 + .4 * fog})`; ctx.fill(); ctx.lineWidth = r * .03; ctx.strokeStyle = '#2a8fb0'; ctx.stroke();
+  ctx.strokeStyle = '#7fd6ef'; ctx.lineWidth = r * .07; ctx.beginPath(); ctx.moveTo(0, r * .6); ctx.quadraticCurveTo(r * .2, r * 1.2, r * .9, r * 1.4); ctx.stroke(); ctx.restore(); }
+// ── лестница общаги: пролёт по диагонали, перила, аварийный зелёный свет ──
+function stairs(t, { light = .5 } = {}) { ctx.fillStyle = '#1c2236'; ctx.fillRect(-300, -300, W + 600, H + 600); glow(860, 260, 520, 'rgba(46,204,113,.35)'); rr(760, 200, 200, 80, 10); fillOL('#1f7a4a', 4); txt('ВЫХОД', 860, 242, 38, '#d8ffe8', { align: 'center' }); // аварийная табличка
+  for (let i = 0; i < 14; i++) { const x0 = -60 + i * 90, y0 = 380 + i * 110; ctx.fillStyle = i % 2 ? '#3a4560' : '#343f58'; ctx.fillRect(x0, y0, 1200, 110); ctx.fillStyle = '#4b5878'; ctx.fillRect(x0, y0, 1200, 14); } // ступени
+  ctx.strokeStyle = T.ol; ctx.lineWidth = 16; ctx.beginPath(); ctx.moveTo(-100, 300); ctx.lineTo(1200, 1760); ctx.stroke(); ctx.strokeStyle = '#a34a3a'; ctx.lineWidth = 9; ctx.stroke(); // перила
+  for (let i = 0; i < 12; i++) { const x = -40 + i * 110, y = 340 + i * 122; ctx.strokeStyle = 'rgba(10,15,30,.8)'; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 260); ctx.stroke(); }
+  if (light < 1) dim(1 - light); }
+// ── StreamFrame: стрим Ержана (вымышленный интерфейс): drawVideo — картинка эфира; viewers(t) — число; chat: [{ at, name, text, col }] ──
+const fmtK = n => n >= 1000 ? (n >= 100000 ? Math.round(n / 1000) : (n / 1000).toFixed(1).replace('.0', '')) + 'K' : String(Math.round(n));
+function StreamFrame(t, { drawVideo, viewers, title, chat = [], hearts = 0 }) { const x = 120, y = 300, w = 840, h = 1140;
+  ctx.save(); ctx.fillStyle = '#05060c'; rr(x - 20, y - 20, w + 40, h + 40, 60); ctx.fill(); rr(x, y, w, h, 46); ctx.clip(); drawVideo(); ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = T.empty; rr(x + 30, y + 40, 150, 56, 12); ctx.fill(); txt('ЭФИР', x + 105, y + 69, 34, '#fff', { align: 'center' }); // красная плашка эфира
+  ctx.fillStyle = 'rgba(0,0,0,.55)'; rr(x + 196, y + 40, 260, 56, 12); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(x + 232, y + 68, 18, 11, 0, 0, Math.PI * 2); ctx.stroke(); circle(x + 232, y + 68, 5); ctx.fillStyle = '#fff'; ctx.fill(); // глаз
+  txt(fmtK(viewers(t)), x + 262, y + 70, 40, '#fff', { font: 'JBM', weight: 800 });
+  ctx.fillStyle = 'rgba(10,15,30,.85)'; rr(x + 30, y + 120, w - 60, 92, 16); ctx.fill(); txt(title, x + w / 2, y + 167, 40, T.low, { align: 'center' });
+  let yy = Math.min(y + h - 40, 1120); chat.filter(c => t >= c.at).slice(-4).reverse().forEach(c => { const k = E.out(win(t, c.at, c.at + .25)); yy -= 96; ctx.save(); ctx.globalAlpha = k; ctx.translate(0, (1 - k) * 60); ctx.fillStyle = 'rgba(10,15,30,.75)'; rr(x + 30, yy, w - 160, 84, 18); ctx.fill(); circle(x + 72, yy + 42, 24); ctx.fillStyle = c.col || T.cyan; ctx.fill();
+    txt(c.name, x + 110, yy + 26, 24, c.col || T.cyan, { weight: 900 }); txt(c.text, x + 110, yy + 60, 32, '#fff', { weight: 800 }); ctx.restore(); });
+  for (let i = 0; i < hearts; i++) { const ph = ((t * .7 + i * .37) % 1), hx = x + w - 70 + Math.sin(t * 3 + i) * 24, hy = y + h - 120 - ph * 520; FX.emote(1, 0, 'heart', hx, hy, .45 * (1 - ph * .4), 9); }
+  ctx.restore(); }
+// ── уведомление на экране телефона (вымышленный мессенджер) ──
+function notifyPhone(t, x, y, s, { at = 0, name, lines = [], col = T.miner }) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.shadowColor = col; ctx.shadowBlur = 80 * clamp((t - at) * 3); rr(-230, -420, 460, 840, 60); fillOL('#0c0f1c', 8); ctx.shadowBlur = 0;
+  rr(-205, -395, 410, 790, 44); ctx.fillStyle = '#121833'; ctx.fill(); txt('02:30', 0, -330, 64, 'rgba(255,255,255,.8)', { font: 'JBM', weight: 800, align: 'center' });
+  const k = E.out(win(t, at, at + .3)); if (k > 0) { ctx.save(); ctx.globalAlpha = k; ctx.translate(0, (1 - k) * -80); rr(-190, -230, 380, 300, 30); ctx.fillStyle = 'rgba(40,30,70,.95)'; ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.stroke();
+    circle(-140, -180, 30); ctx.fillStyle = col; ctx.fill(); txt('R', -140, -178, 34, '#fff', { align: 'center' }); txt(name, -96, -180, 30, '#d8c8ff', { weight: 900 });
+    lines.forEach(([s2, at2, big], i) => { const k2 = E.out(win(t, at2, at2 + .3)); if (k2 <= 0) return; ctx.save(); ctx.globalAlpha = k2; txt(s2, -168, -110 + i * 62 + (big ? 20 : 0), big ? 46 : 32, big ? '#c9b3ff' : '#fff', { weight: 900 }); ctx.restore(); }); ctx.restore(); }
+  ctx.restore(); }
