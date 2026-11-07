@@ -7,6 +7,7 @@ synthwave — неоновые 80-е / Майами: бочка-снейр, ба
 trap      — медленный хип-хоп бит: 808-бас, хэты с триолями, мягкий пэд.
 tynys     — тема героя: 4-тактовый рифф, электронный бит + домбра (струна Карплус–Стронг), --bpm 100.
 kuat      — тема «ҚУАТ»: 4 такта, синт-бит, «зарядная» арпеджио, --bpm 112 (--seed 2 — полная версия с лидом).
+isekai    — фэнтези-аниме «ПОПАЛ»: арфа, струнный пэд, колокольчик, лёгкий бит, --bpm 104 (--seed 2 — без бита).
 dark      — тёмный эмбиент для хоррора: низкий гул, медленно дышащий минорный кластер, холодный шелест; без мелодии и ритма.
 Громкость на выходе умеренная; в ролике ставить тихо (gain 0.25–0.4) под эффекты.
 """
@@ -121,6 +122,30 @@ if a.style == "kuat":  # тема «ҚУАТ»: 4 такта, бочка «че�
             for m in ch: pad += smooth(saw(note(m), ln, -.006) + saw(note(m), ln, .006), 40)
             tt = np.arange(len(pad)) / SR; e = np.minimum(1, tt / .3) * np.minimum(1, (ln - tt) / .3) * (0.5 + 0.5 * np.minimum(1, (tt % beat) / (beat * .6)))
             add(pad * e * 0.035, t, 1, .85); add(pad * e * 0.035, t + .012, .85, 1)
+    total_beats = 0
+if a.style == "isekai":  # фэнтези-аниме: арфа-арпеджио, струнный пэд, колокольчик-мелодия, лёгкий бит; --seed 2 — без бита (спокойно)
+    s16 = beat / 4; prog = [(50, [62, 66, 69]), (47, [62, 66, 71]), (43, [62, 67, 71]), (45, [61, 64, 69])]  # D Bm G A
+    drums = a.seed != 2
+    bell = [74, 0, 78, 0, 81, 0, 78, 76, 74, 0, 73, 0, 71, 0, 69, 0]
+    for b in range(total_beats):
+        t = b * beat; bar = (b // 4) % 4; root, ch = prog[bar]
+        if drums:
+            if b % 4 in (0, 2) or b % 8 == 7: kick(t, big=(b % 4 == 0))
+            if b % 4 in (1, 3): snare(t)
+            for q in range(2): hat(t + q * beat / 2, g=.06)
+        for q in range(4):  # арфа: аккорд вверх-вниз шестнадцатыми
+            seq = ch + [ch[0] + 12]; m = seq[[0, 1, 2, 3][q] if (b % 2 == 0) else [3, 2, 1, 0][q]] + 12
+            add(pluck(note(m), .6, .997, .16), t + q * s16, .7 if q % 2 else 1, 1 if q % 2 else .7)
+        if b % 2 == 0: add(pluck(note(root - 12), 1.2, .998, .3), t)
+        if b % 8 >= 4:
+            m = bell[(b % 4) * 4]; m2 = bell[(b % 4) * 4 + 2]
+            for mm, dt in ((m, 0), (m2, 2 * s16)):
+                if mm: ln = .9; tt = np.arange(int(ln * SR)) / SR; add((np.sin(2 * np.pi * note(mm) * tt) + .3 * np.sin(2 * np.pi * note(mm) * 3.01 * tt)) * np.exp(-tt * 3.5) * .09, t + dt, .9, 1)
+        if b % 4 == 0:  # струнный пэд на такт
+            ln = 4 * beat; pad = np.zeros(int(ln * SR))
+            for m in ch + [root]: pad += smooth(saw(note(m), ln, -.004) + saw(note(m), ln, .004), 60)
+            tt = np.arange(len(pad)) / SR; e = np.minimum(1, tt / .5) * np.minimum(1, (ln - tt) / .5)
+            add(pad * e * 0.03, t, 1, .85); add(pad * e * 0.03, t + .015, .85, 1)
     total_beats = 0
 for b in range(total_beats):
     t = b * beat; bi = b % 4; chord = PROG[(b // 8) % 4]

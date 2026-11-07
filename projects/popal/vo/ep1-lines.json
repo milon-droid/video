@@ -1,0 +1,236 @@
+[
+{
+"id": "s01",
+"text": "В аниме попаданцев сбивает грузовик.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.08
+},
+{
+"id": "s02",
+"text": "Меня сбил курьер. С моим же заказом.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.08
+},
+{
+"id": "s04",
+"text": "Ваш заказ. Пять звёзд поставите?",
+"voice": "ru_RU-denis-medium",
+"speed": 1.05
+},
+{
+"id": "s05a",
+"text": "Избранный номер четыре тысячи девяносто шесть. Доставлен.",
+"voice": "ru_RU-denis-medium",
+"speed": 1.0,
+"pitch": 0.9,
+"fx": "radio"
+},
+{
+"id": "s05b",
+"text": "Чего?",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.0
+},
+{
+"id": "s06",
+"text": "Двадцать семь лет. Ипотека осталась. Девственность — тоже.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s07",
+"text": "Рай? Нет. Электронная очередь.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s08",
+"text": "О, быстро!",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.1
+},
+{
+"id": "s09",
+"text": "Оказалось, таких, как я, — тысячи. Нас отправляют спасать чужие миры.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.1
+},
+{
+"id": "s10",
+"text": "Перерождение по квоте. Мир — Эльдория. Не ной.",
+"voice": "ru_RU-irina-medium",
+"speed": 1.22,
+"pitch": 0.93
+},
+{
+"id": "s11a",
+"text": "А можно мир, где девушки-кошки?",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.1
+},
+{
+"id": "s11b",
+"text": "Кошки — по подписке.",
+"voice": "ru_RU-irina-medium",
+"speed": 1.15,
+"pitch": 0.93
+},
+{
+"id": "s12",
+"text": "Сила — один. Здоровье — один. Аура — ноль.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s13",
+"text": "Как я в понедельник.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.0
+},
+{
+"id": "s14",
+"text": "Сила и здоровье качаются. Аура — только от побед и эпичных моментов. Опозорился — минус.",
+"voice": "ru_RU-irina-medium",
+"speed": 1.32,
+"pitch": 0.93
+},
+{
+"id": "s15a",
+"text": "Дар. Крути.",
+"voice": "ru_RU-irina-medium",
+"speed": 1.1,
+"pitch": 0.93
+},
+{
+"id": "s15b",
+"text": "Сковорода Судьбы. Не промахивается.",
+"voice": "ru_RU-irina-medium",
+"speed": 1.15,
+"pitch": 0.93
+},
+{
+"id": "s16",
+"text": "Вы, блять, издеваетесь?",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s17",
+"text": "Следующий!",
+"voice": "ru_RU-irina-medium",
+"speed": 1.1,
+"pitch": 0.93
+},
+{
+"id": "s18",
+"text": "Эльдория. Две луны, летающие острова...",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s19",
+"text": "...и лужа.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.0
+},
+{
+"id": "s20a",
+"text": "Мужик, ты на мне сидел.",
+"voice": "ru_RU-irina-medium",
+"speed": 1.3,
+"pitch": 1.3
+},
+{
+"id": "s20b",
+"text": "Желе говорит. Кукуха всё.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.08
+},
+{
+"id": "s21",
+"text": "Гусь. Размером с холодильник.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s22",
+"text": "Адский гусь! Разведчик Короля демонов. Они чуют новеньких!",
+"voice": "ru_RU-irina-medium",
+"speed": 1.38,
+"pitch": 1.3
+},
+{
+"id": "s23",
+"text": "Со сковородкой. Против гуся. С силой один.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.1
+},
+{
+"id": "s24",
+"text": "Ну, сковородочка... выручай.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.0
+},
+{
+"id": "s26",
+"text": "Первая победа. Плюс аура.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s27a",
+"text": "Ма-а-ам...",
+"voice": "ru_RU-dmitri-medium",
+"speed": 0.9,
+"pitch": 1.25
+},
+{
+"id": "s27b",
+"text": "Минус аура.",
+"voice": "ru_RU-irina-medium",
+"speed": 1.2,
+"pitch": 1.3
+},
+{
+"id": "s28",
+"text": "Кажется, я кого-то разбудил.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s29",
+"text": "Сковородкой. Моего гуся.",
+"voice": "ru_RU-ruslan-medium",
+"speed": 0.88,
+"pitch": 0.8,
+"fx": "dead"
+},
+{
+"id": "s30",
+"text": "Мне им заняться, повелитель?",
+"voice": "ru_RU-irina-medium",
+"speed": 1.05,
+"pitch": 0.97,
+"fx": "whisper"
+},
+{
+"id": "s31",
+"text": "Найти. Привести. Живым — необязательно.",
+"voice": "ru_RU-ruslan-medium",
+"speed": 0.88,
+"pitch": 0.8,
+"fx": "dead"
+},
+{
+"id": "s32",
+"text": "Домой — на ремонте. Ну конечно.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.05
+},
+{
+"id": "s33",
+"text": "Куда идти — решаете вы. Пишите в комментах: эльфийки или дракон.",
+"voice": "ru_RU-dmitri-medium",
+"speed": 1.1
+}
+]

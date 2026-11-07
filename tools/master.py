@@ -20,10 +20,13 @@ def build(margin):
     return (f"{pre},loudnorm=I={a.i}:TP={a.tp}:LRA={a.lra}:measured_I={j['input_i']}:measured_TP={j['input_tp']}:measured_LRA={j['input_lra']}"
             f":measured_thresh={j['input_thresh']}:offset={j['target_offset']}:linear=true,aresample=192000,alimiter=limit={10 ** ((a.tp - margin) / 20):.4f}:attack=1:release=40:level=false,aresample=48000")
 # страховка пика: лимитер на 4× частоте ≈ true peak; сжатие AAC иногда поднимает пик ещё на 1–2 дБ, поэтому результат меряем и при превышении повторяем с запасом
+# Remotion с кадрами JPEG пишет yuvj420p — на части телефонов не играет: тогда перекодируем видео в yuv420p (один раз, CRF 18)
+pf = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=pix_fmt", "-of", "csv=p=0", a.src], capture_output=True, text=True).stdout.strip().strip(",")
+vcodec = ["-c:v", "copy"] if pf == "yuv420p" else ["-c:v", "libx264", "-crf", "18", "-preset", "medium", "-pix_fmt", "yuv420p", "-color_range", "tv"]
 margin = 1.0
 for attempt in range(4):
     cmd = ["ffmpeg", "-v", "error", "-y", "-i", a.src] + (["-i", a.audio, "-map", "0:v", "-map", "1:a"] if a.audio else []) + (["-t", str(a.duration)] if a.duration else []) + \
-          ["-c:v", "copy", "-af", build(margin), "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", a.out]
+          vcodec + ["-af", build(margin), "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", a.out]
     subprocess.run(cmd, check=True)
     r = subprocess.run(["ffmpeg", "-hide_banner", "-i", a.out, "-af", "ebur128=peak=true", "-f", "null", "-"], capture_output=True, text=True).stderr
     I = re.findall(r"I:\s+(-?[\d.]+) LUFS", r)[-1]; P = re.findall(r"Peak:\s+(-?[\d.]+) dBFS", r)[-1]

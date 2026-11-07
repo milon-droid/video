@@ -31,3 +31,6 @@ projects/blackout/assets/drone*.wav
 projects/blackout/out/*.mp4
 projects/blackout/out/*.wav
 projects/blackout/out/qa/
+projects/popal/assets/music/
+projects/*/remotion/public/*.wav
+projects/*/out/raw*.mp4
