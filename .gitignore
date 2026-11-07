@@ -27,3 +27,7 @@ projects/*/out/*.mp4
 projects/*/out/*.wav
 projects/*/out/qa/
 projects/*/assets/music-*.wav
+projects/blackout/assets/drone*.wav
+projects/blackout/out/*.mp4
+projects/blackout/out/*.wav
+projects/blackout/out/qa/

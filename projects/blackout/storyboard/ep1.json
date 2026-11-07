@@ -1,0 +1,935 @@
+{
+  "episode": 1,
+  "title": "Тень над городом",
+  "duration": 58,
+  "hud": {
+    "city": "АЛМАТЫ",
+    "temp": "+6°",
+    "timeStart": "20:00",
+    "signal": "full"
+  },
+  "scenes": [
+    {
+      "id": "e1s01",
+      "start": 0,
+      "end": 3,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "В ТОТ ВЕЧЕР В АЛМАТЫ ПОГАС ВЕСЬ СВЕТ",
+        "accent": [
+          "ВЕСЬ",
+          "СВЕТ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "drone.wav",
+          "at": 0
+        },
+        {
+          "id": "hum",
+          "at": 0
+        },
+        {
+          "id": "zap",
+          "at": 0.3
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 0.65
+        },
+        {
+          "id": "powerdown",
+          "at": 0.65
+        },
+        {
+          "id": "rattle",
+          "at": 0.66
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:03",
+        "signal": "lost"
+      },
+      "overlays": [
+        "PartSticker:1"
+      ]
+    },
+    {
+      "id": "e1s02",
+      "start": 3,
+      "end": 5.4,
+      "camera": {
+        "type": "pan",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "ВОСЕМЬ ВЕЧЕРА. ПОЗДНЯЯ ОСЕНЬ.",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "rewind",
+          "at": 3
+        },
+        {
+          "id": "oc-AMBUrbn_CityEuroDaytime_LOOP_01",
+          "at": 3.5
+        },
+        {
+          "id": "wind",
+          "at": 3.5
+        },
+        {
+          "id": "foley-paper-touch",
+          "at": 4.4
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:03",
+        "signal": "lost"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s03",
+      "start": 5.4,
+      "end": 8,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "СТАРАЯ СТАЛИНКА В ЦЕНТРЕ",
+        "accent": [
+          "СТАЛИНКА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "foley-paper-touch",
+          "at": 6.2
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:00",
+        "signal": "full"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s04",
+      "start": 8,
+      "end": 10.8,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "ЧЕТВЕРО СТУДЕНТОВ УЖИНАЛИ.",
+        "accent": []
+      },
+      "sfx": [
+        {
+          "id": "murmur",
+          "at": 8
+        },
+        {
+          "id": "tick",
+          "at": 8.3
+        },
+        {
+          "id": "tick",
+          "at": 8.9
+        },
+        {
+          "id": "tick",
+          "at": 9.6
+        },
+        {
+          "id": "tick",
+          "at": 10.3
+        },
+        {
+          "id": "pop",
+          "at": 8.3
+        },
+        {
+          "id": "pop",
+          "at": 8.45
+        },
+        {
+          "id": "pop",
+          "at": 8.6
+        },
+        {
+          "id": "pop",
+          "at": 8.75
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:00",
+        "signal": "full"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s05",
+      "start": 10.8,
+      "end": 13,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "ОБЫЧНЫЙ УЮТНЫЙ ВЕЧЕР.",
+        "accent": [
+          "УЮТНЫЙ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "tick",
+          "at": 10.8
+        },
+        {
+          "id": "tick",
+          "at": 11.8
+        },
+        {
+          "id": "tick",
+          "at": 12.8
+        },
+        {
+          "id": "foley-fabric-touch",
+          "at": 11
+        },
+        {
+          "id": "jet",
+          "at": 12.95
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:00",
+        "signal": "full"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s06",
+      "start": 13,
+      "end": 15.4,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "НАД КРЫШЕЙ С РЁВОМ ПРОНЁССЯ ИСТРЕБИТЕЛЬ.",
+        "accent": [
+          "ИСТРЕБИТЕЛЬ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 14
+        },
+        {
+          "id": "rattle",
+          "at": 14.05
+        }
+      ],
+      "effects": [
+        {
+          "id": "ScreenShake",
+          "amp": 9,
+          "at": 14,
+          "duration": 0.6
+        }
+      ],
+      "hud": {
+        "time": "20:01",
+        "signal": "full"
+      },
+      "overlays": [
+        "JetFlyover:low"
+      ]
+    },
+    {
+      "id": "e1s07",
+      "start": 15.4,
+      "end": 18,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "tinkle",
+          "at": 15.4
+        },
+        {
+          "id": "rattle",
+          "at": 15.4
+        }
+      ],
+      "effects": [
+        {
+          "id": "ScreenShake",
+          "amp": 8,
+          "at": 15.4,
+          "duration": 0.6
+        }
+      ],
+      "hud": {
+        "time": "20:01",
+        "signal": "full"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s08",
+      "start": 18,
+      "end": 20.6,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "ПАРНИ СХВАТИЛИСЬ ЗА ТЕЛЕФОНЫ.",
+        "accent": [
+          "ТЕЛЕФОНЫ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "foley-fabric-slide",
+          "at": 18.4
+        },
+        {
+          "id": "foley-fabric-slide",
+          "at": 18.75
+        },
+        {
+          "id": "foley-fabric-slide",
+          "at": 19.1
+        },
+        {
+          "id": "foley-fabric-slide",
+          "at": 19.45
+        },
+        {
+          "id": "click-tap-soft",
+          "at": 18.5
+        },
+        {
+          "id": "click-tap-soft",
+          "at": 18.85
+        },
+        {
+          "id": "click-tap-soft",
+          "at": 19.2
+        },
+        {
+          "id": "click-tap-soft",
+          "at": 19.55
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:01",
+        "signal": "full"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s09",
+      "start": 20.6,
+      "end": 23.4,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "МЕССЕНДЖЕР ЗАВИС. СВЯЗЬ ПРОПАЛА ПОЛНОСТЬЮ.",
+        "accent": [
+          "ПОЛНОСТЬЮ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click-tap-firm",
+          "at": 21.2
+        },
+        {
+          "id": "click-tap-firm",
+          "at": 21.9
+        },
+        {
+          "id": "notification-failure-low",
+          "at": 22.6
+        },
+        {
+          "id": "glitch",
+          "at": 22.62
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:01",
+        "signal": "full"
+      },
+      "overlays": [
+        "PhoneScreen:messenger"
+      ]
+    },
+    {
+      "id": "e1s10",
+      "start": 23.4,
+      "end": 26,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "foley-fabric-slide",
+          "at": 23.6
+        },
+        {
+          "id": "pop",
+          "at": 24.5
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:01",
+        "signal": "lost"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s11",
+      "start": 26,
+      "end": 28.2,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "ОСТАВАЛСЯ ТОЛЬКО ТЕЛЕВИЗОР.",
+        "accent": [
+          "ТЕЛЕВИЗОР."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "click-button-firm",
+          "at": 26.4
+        },
+        {
+          "id": "digital-static",
+          "at": 26.48
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:01",
+        "signal": "lost"
+      },
+      "overlays": [
+        "TvScreen:news"
+      ]
+    },
+    {
+      "id": "e1s12",
+      "start": 28.2,
+      "end": 31.6,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "anchor",
+        "text": "ВНИМАНИЕ. ЭКСТРЕННОЕ СООБЩЕНИЕ.",
+        "accent": [
+          "ЭКСТРЕННОЕ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 28.22
+        },
+        {
+          "id": "chord",
+          "at": 28.25
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:02",
+        "signal": "lost"
+      },
+      "overlays": [
+        "TvScreen:news"
+      ]
+    },
+    {
+      "id": "e1s13",
+      "start": 31.6,
+      "end": 35.4,
+      "camera": {
+        "type": "pan",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "anchor",
+        "text": "ЮГ РОССИИ, ВОСТОЧНАЯ ЕВРОПА И КАВКАЗ БЕЗ СВЕТА",
+        "accent": [
+          "БЕЗ",
+          "СВЕТА"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "bass-sub-drop-short",
+          "at": 33.35
+        },
+        {
+          "id": "bass-sub-drop-short",
+          "at": 31.85
+        },
+        {
+          "id": "bass-sub-drop-short",
+          "at": 34.55
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:02",
+        "signal": "lost"
+      },
+      "overlays": [
+        "TvScreen:news",
+        "BlackoutMap"
+      ]
+    },
+    {
+      "id": "e1s14",
+      "start": 35.4,
+      "end": 37,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "anchor",
+        "text": "ОБЕСТОЧЕН ВЕСЬ ЗАПАДНЫЙ КАЗАХСТАН.",
+        "accent": [
+          "ЗАПАДНЫЙ",
+          "КАЗАХСТАН."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "foley-fabric-slide",
+          "at": 35.4
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:02",
+        "signal": "lost"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s15",
+      "start": 37,
+      "end": 40.9,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "anchor",
+        "text": "НАД ВОЛГОГРАДОМ АНОМАЛЬНЫЕ…",
+        "accent": [
+          "АНОМАЛЬНЫЕ…"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "bass-sub-drop-short",
+          "at": 37.25
+        },
+        {
+          "id": "bass-rumble-medium",
+          "at": 39.4
+        },
+        {
+          "id": "cinematic-thunder-big",
+          "at": 40.35
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:02",
+        "signal": "lost"
+      },
+      "overlays": [
+        "BlackoutMap"
+      ]
+    },
+    {
+      "id": "e1s16",
+      "start": 40.9,
+      "end": 42.4,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "digital-corrupt",
+          "at": 40.9
+        },
+        {
+          "id": "glitch",
+          "at": 40.95
+        },
+        {
+          "id": "zap",
+          "at": 41.25
+        },
+        {
+          "id": "zap",
+          "at": 41.6
+        },
+        {
+          "id": "zap",
+          "at": 42.05
+        },
+        {
+          "id": "bsb-crt-off",
+          "at": 41.65
+        }
+      ],
+      "effects": [
+        {
+          "id": "Glitch",
+          "at": 40.9
+        }
+      ],
+      "hud": {
+        "time": "20:02",
+        "signal": "lost"
+      },
+      "overlays": [
+        "TvScreen:news"
+      ]
+    },
+    {
+      "id": "e1s17",
+      "start": 42.4,
+      "end": 45.4,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "drone-muffled.wav",
+          "at": 42.75
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 42.75
+        },
+        {
+          "id": "powerdown",
+          "at": 42.75
+        },
+        {
+          "id": "rattle",
+          "at": 42.77
+        },
+        {
+          "id": "cinematic-drum-big",
+          "at": 43.05
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:02",
+        "signal": "lost"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s18",
+      "start": 45.4,
+      "end": 49.6,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator",
+        "text": "ЧЕРЕЗ СЕКУНДУ ВО ТЬМУ ПОГРУЗИЛСЯ ВЕСЬ АЛМАТЫ.",
+        "accent": [
+          "АЛМАТЫ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "wind",
+          "at": 45.4
+        },
+        {
+          "id": "bass-rumble-long",
+          "at": 45.8
+        },
+        {
+          "id": "click",
+          "at": 46.1
+        },
+        {
+          "id": "click",
+          "at": 46.5
+        },
+        {
+          "id": "click",
+          "at": 46.9
+        },
+        {
+          "id": "click",
+          "at": 47.3
+        },
+        {
+          "id": "bass-rumble-medium",
+          "at": 47.9
+        },
+        {
+          "id": "cinematic-thunder-big",
+          "at": 49.05
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:03",
+        "signal": "lost"
+      },
+      "overlays": [
+        "LightsOutWave"
+      ]
+    },
+    {
+      "id": "e1s19",
+      "start": 49.6,
+      "end": 53,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "click-button-medium",
+          "at": 49.95
+        },
+        {
+          "id": "click-button-medium",
+          "at": 50.3
+        },
+        {
+          "id": "click-button-medium",
+          "at": 50.6
+        },
+        {
+          "id": "click-button-medium",
+          "at": 50.9
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:03",
+        "signal": "lost"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s21",
+      "start": 53,
+      "end": 56.7,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": {
+        "speaker": "narrator-whisper",
+        "text": "И В ЭТОЙ ТИШИНЕ КТО-ТО ПОСТУЧАЛ В ДВЕРЬ.",
+        "accent": [
+          "ПОСТУЧАЛ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "drone-muffled.wav",
+          "at": 53
+        },
+        {
+          "id": "DOORKnck_OfficeDoorKnock_OS_01.ogg",
+          "at": 53
+        },
+        {
+          "id": "thud",
+          "at": 53
+        },
+        {
+          "id": "impact-deep-soft",
+          "at": 53.01
+        },
+        {
+          "id": "DOORKnck_OfficeDoorKnock_OS_01.ogg",
+          "at": 53.33
+        },
+        {
+          "id": "thud",
+          "at": 53.33
+        },
+        {
+          "id": "impact-deep-soft",
+          "at": 53.34
+        },
+        {
+          "id": "DOORKnck_OfficeDoorKnock_OS_01.ogg",
+          "at": 53.66
+        },
+        {
+          "id": "thud",
+          "at": 53.66
+        },
+        {
+          "id": "impact-deep-soft",
+          "at": 53.67
+        },
+        {
+          "id": "step",
+          "at": 54.6
+        },
+        {
+          "id": "step",
+          "at": 55.2
+        },
+        {
+          "id": "step",
+          "at": 55.8
+        }
+      ],
+      "effects": [],
+      "hud": {
+        "time": "20:03",
+        "signal": "lost"
+      },
+      "overlays": []
+    },
+    {
+      "id": "e1s22",
+      "start": 56.7,
+      "end": 58,
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "cut": "cut",
+      "vo": null,
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 56.7
+        },
+        {
+          "id": "DOORKnck_OfficeDoorKnock_OS_01.ogg",
+          "at": 57.2
+        },
+        {
+          "id": "thud",
+          "at": 57.2
+        },
+        {
+          "id": "impact-deep-soft",
+          "at": 57.21
+        }
+      ],
+      "effects": [],
+      "hud": null,
+      "overlays": [
+        "EndCard"
+      ]
+    }
+  ]
+}

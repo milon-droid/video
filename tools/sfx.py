@@ -9,7 +9,7 @@ cues.json — список событий:
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
 boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
 wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack), pluck (струна/домбра: freq), breath_in, hiss (шипение: lo, hi, pulse),
-roar (рёв ракеты), crackle (огонь), debris (обломки), brush (смахнуть снег),
+roar (рёв ракеты), jet (пролёт самолёта), rattle (дрожь стекла), tinkle (хрусталь люстры), crackle (огонь), debris (обломки), brush (смахнуть снег),
 hum50 (гул сети 50 Гц), charge (подключение зарядки), lowbat (тройной писк), powerdown (выключение), zap (треск тока).
 Всем библиотечным и синтезированным звукам автоматически добавляется «верхний слой» для динамика телефона (phone_bright).
 duck — приглушение всего, кроме cue с "keep": true (звук суперсилы).
@@ -249,6 +249,35 @@ def gen(c):
         cr = (rng.uniform(0, 1, n) > 0.9993).astype(float); x = x + (1 - dist) * 0.8 * band(np.convolve(cr, np.exp(-np.arange(200) / 30), "same"), 400, 6000)
         e = np.minimum(1, t / c.get("attack", 0.8)) * np.minimum(1, (d - t) / 0.3)
         return x / (np.abs(x).max() or 1) * e
+    if ty == "jet":  # пролёт реактивного самолёта низко над головой (Блэкаут): нарастание, «доплер» вниз, рокот, хвост: {"type": "jet", "dur": 4.5, "peak": 0.45}
+        d = d or 4.5
+        n = int(d * SR); t = np.arange(n) / SR; pk = c.get("peak", 0.45) * d; nz = noise(n)
+        near = 1 / (1 + ((t - pk) / (0.18 * d)) ** 2)  # близость к слушателю
+        dop = np.where(t < pk, 1.18, 0.82) * p  # до пролёта выше, после — ниже
+        dop = np.convolve(dop, np.ones(int(0.25 * SR)) / int(0.25 * SR), "same")
+        hiss = band(nz, 1200 * dop.mean(), 7000) * near ** 1.5
+        body = band(nz, 70, 700) * near ** 0.8 * (0.8 + 0.2 * slow(n, 6, 11))
+        whine = np.sin(2 * np.pi * np.cumsum(2600 * dop) / SR) * 0.06 * near ** 3
+        rumble = np.sin(2 * np.pi * np.cumsum(38 * dop) / SR) * 0.5 * near
+        x = 1.1 * body + 0.7 * hiss + whine + rumble
+        cr = (rng.uniform(0, 1, n) > 0.9992).astype(float); x += 0.5 * near * band(np.convolve(cr, np.exp(-np.arange(300) / 40), "same"), 300, 4000)  # треск струи
+        return np.tanh(x / (np.abs(x).max() or 1) * 1.6) * np.minimum(1, t / 0.4) * np.minimum(1, (d - t) / 0.6)
+    if ty == "rattle":  # дрожь оконного стекла и посуды: частые мелкие стуки с дребезгом: {"type": "rattle", "dur": 1.2}
+        d = d or 1.2
+        n = int(d * SR); t = np.arange(n) / SR; x = np.zeros(n)
+        for k in np.cumsum(rng.uniform(0.012, 0.045, int(d / 0.012))):
+            i = int(k * SR)
+            if i >= n - 2000: break
+            m = 1800; tt = np.arange(m) / SR; f = rng.uniform(1800, 4200) * p
+            x[i:i + m] += np.sin(2 * np.pi * f * tt) * np.exp(-tt * 90) * rng.uniform(.3, 1) + band(noise(m), 2000, 8000) * np.exp(-tt * 300) * .4
+        return x / (np.abs(x).max() or 1) * np.exp(-t / d * 1.2) * np.minimum(1, t / .05)
+    if ty == "tinkle":  # хрусталь люстры: случайные высокие колокольчики: {"type": "tinkle", "dur": 2.0}
+        d = d or 2.0
+        n = int(d * SR); x = np.zeros(n)
+        for k in np.sort(rng.uniform(0, d * 0.8, 14)):
+            i = int(k * SR); m = min(n - i, int(1.2 * SR)); tt = np.arange(m) / SR; f = rng.uniform(2400, 5200) * p
+            x[i:i + m] += (np.sin(2 * np.pi * f * tt) + .4 * np.sin(2 * np.pi * f * 2.76 * tt)) * np.exp(-tt * rng.uniform(5, 9)) * rng.uniform(.3, 1)
+        return x / (np.abs(x).max() or 1) * 0.8
     if ty == "crackle":  # треск огня: редкие сухие щелчки разной силы + шипящая подложка
         d = d or 3.0
         n = int(d * SR); t = np.arange(n) / SR; imp = (rng.uniform(0, 1, n) > 0.9985) * rng.uniform(.2, 1, n)
