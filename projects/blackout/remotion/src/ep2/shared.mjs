@@ -93,7 +93,7 @@ export const T = {
 };
 
 // ───── звук (только CC0-библиотеки и синтез), дрон без дыр; в конце — хвост ветра до последнего кадра ─────
-const VOP = id => `projects/blackout/assets/vo/ep2/${id}.wav`, BED = 'projects/blackout/assets/drone.wav', BEDM = 'projects/blackout/assets/drone-muffled.wav';
+const VOP = id => `projects/blackout/assets/vo/ep2v2/${id}.wav`, BED = 'projects/blackout/assets/drone.wav', BEDM = 'projects/blackout/assets/drone-muffled.wav';
 export const VO_GAIN = {};
 const range = (a, n, d) => Array.from({ length: n }, (_, i) => +(a + i * d).toFixed(3));
 const s = id => SH[id][0];

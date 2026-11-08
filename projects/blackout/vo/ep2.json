@@ -19,12 +19,16 @@
   "bk_alikhan": {
    "instruct": "Young Russian man, about 20, dry grumpy rational voice, nerdy and matter-of-fact, flat intonation, medium pace.",
    "ref": "Если посчитать, выходит ровно двадцать минут. Это простая арифметика."
+  },
+  "narrator": {
+   "instruct": "Deep, warm, velvety adult male voice. Professional Russian audiobook narrator, calm confident storytelling with a light ironic smile, clear diction, lively medium-fast pace.",
+   "ref": "Это история о парне, которому очень не повезло. Но, как оказалось, это было только начало."
   }
  },
  "lines": [
   {
    "id": "n01",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Стучал Алиш+ер, наш друг. Он пришёл пешком из метро.",
    "speed": 1.05
   },
@@ -36,25 +40,25 @@
   },
   {
    "id": "n02",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Вагон дёрнулся, люди поп+адали, и свет погас.",
    "speed": 1.05
   },
   {
    "id": "n03",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Люди шли по шпалам до «Байкон+ура» с фонариками.",
    "speed": 1.05
   },
   {
    "id": "n04",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Алиш+ер живёт в Калкам+ане. Домой ему теперь не добраться.",
    "speed": 1.05
   },
   {
    "id": "n05",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "А Диас думал только об Аружан.",
    "speed": 1.05
   },
@@ -72,31 +76,31 @@
   },
   {
    "id": "n06",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Вчетвером мы вышли в тёмный город.",
    "speed": 1.05
   },
   {
    "id": "n07",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "И тут снова этот гул.",
    "speed": 1.05
   },
   {
    "id": "n08",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Над проспектом пронёсся второй истребитель.",
    "speed": 1.05
   },
   {
    "id": "n09",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Светофоры погасли. Улицы заполнились людьми.",
    "speed": 1.05
   },
   {
    "id": "n10",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Люди бежали прямо перед б+амперами.",
    "speed": 1.05
   },
@@ -108,7 +112,7 @@
   },
   {
    "id": "n11",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Но в такси сидел незнакомый старик.",
    "speed": 1.05
   },
@@ -120,25 +124,25 @@
   },
   {
    "id": "n12",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "И вдруг сверху донеслись удары и скрежет.",
    "speed": 1.05
   },
   {
    "id": "n13",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Вниз по склону нёсся тяжёлый самосвал.",
    "speed": 1.05
   },
   {
    "id": "n14",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "Водитель жал на тормоз. Педаль проваливалась.",
    "speed": 1.05
   },
   {
    "id": "n15",
-   "role": "bk_narrator",
+   "role": "narrator",
    "text": "И он не тормозил.",
    "speed": 0.95,
    "fx": "whisper"
