@@ -34,3 +34,10 @@ projects/blackout/out/qa/
 projects/popal/assets/music/
 projects/*/remotion/public/*.wav
 projects/*/out/raw*.mp4
+# голоса персонажей (образцы для Qwen3-TTS) и принятая озвучка — храним, чтобы голоса не менялись между чатами
+!assets/voices/
+assets/voices/*
+!assets/voices/qwen-ref/
+!projects/popal/assets/vo/
+projects/popal/assets/vo/*
+!projects/popal/assets/vo/ep1v5/
