@@ -46,7 +46,7 @@ const SPEC = [
   ['backs', 3.2, [['l1', .3]], [[0, 'riser-2s-soft', .4], [.5, 'sting-bold-short', .45]]],
   ['fight', 3.6, [['l2', .2]], [[.4, 'swish-hard', .6], [.55, 'impact-light-firm', .5], [.9, 'bonk', .8], [1.25, 'swish-hard', .6], [1.6, 'bonk', .8], [2.0, 'impact-light-firm', .6], [2.3, 'bonk', .9], [2.9, 'swish-hard', .5], [3.0, 'bonk', .9]]],
   ['boss', 4.2, [['m1', .2], ['m2', AF('m1', .3)]], [[0, 'bass-rumble-long', .4], [.3, 'impact-heavy-hard', .7, { bright: 2 }], [1.0, 'impact-heavy-hard', .6, { bright: 2 }]]],
-  ['rico', 3.0, [['m3', .1]], [[.4, 'whoosh-slow-hard', .8], [.75, 'bonk', .7], [1.0, 'bonk', .7], [1.25, 'bonk', .7], [1.5, 'bonk', .7], [1.95, 'cinematic-metal-massive', .6], [1.97, 'bonk', 1], [1.98, 'impact-heavy-hard', .9], [2.5, 'impact-deep-soft', .7]]],
+  ['rico', 3.0, [['m3', .1]], [[.4, 'whoosh-slow-hard', .45], [.75, 'bonk', .7], [1.0, 'bonk', .7], [1.25, 'bonk', .7], [1.5, 'bonk', .7], [1.95, 'cinematic-metal-massive', .6], [1.97, 'bonk', 1], [1.98, 'impact-heavy-hard', .9], [2.5, 'impact-deep-soft', .7]]],
   ['levelup', 3.2, [['n1', .5]], [[0, 'oc-MUSCStngr_LevelUpOrchestral_OS_01', .7], [.3, 'data-countup-medium', .5], [.2, 'shimmer-long-bright', .5], [-1.0, 'notification-success-fanfare', .45]]],
   ['freed', 3.6, [['o1', .5], ['o2', AF('o1', .3)]], [[0, 'mechanical-latch-heavy', .6], [.2, 'bsb-heavy-chain', .3], [1.2, 'pop-small-bubble', .55], [1.6, 'pop-small-bubble', .55], [2.0, 'pop-small-bubble', .55]]],
   ['jealous', 2.4, [['o3', .35]], [[.1, 'foley-fabric-slide', .5], [.2, 'transform-stretch', .4]]],
@@ -85,7 +85,7 @@ for (let i = 0; i < CAPS.length - 1; i++) CAPS[i].b = Math.min(CAPS[i].b, CAPS[i
 export const CUES = [];
 const S = id => SHOT[id].a, E = id => SHOT[id].b;
 const GAIN = { n: 4.4, max: 4.4, lira: 4.6, slime: 4.6, imp: 4.6, elves: 4.6, king: 7.5, succ: 9 };
-VO.forEach(v => CUES.push({ t: v.t, type: 'file', path: v.id === 'p1' ? 'projects/popal/assets/vo/ep1v5/m1.wav' : `projects/popal/assets/vo/ep2/${v.id}.wav`, gain: GAIN[v.who] ?? 4.4 }));
+VO.forEach(v => CUES.push({ t: v.t, type: 'file', path: v.id === 'p1' ? 'projects/popal/assets/vo/ep1v5/m1.wav' : `projects/popal/assets/vo/ep2/${v.id}.wav`, gain: (v.id === 'm3' ? 6.5 : GAIN[v.who] ?? 4.4) }));
 const M = 'projects/popal/assets/music/';
 const music = (file, t0, t1, gain, from = 0) => CUES.push({ t: +t0.toFixed(2), type: 'file', path: M + file, gain, from, dur: +(t1 - t0).toFixed(2), voice: false });
 music('isekai.wav', 0, S('net'), .34);

@@ -18,7 +18,7 @@ const Overlay: React.FC = () => { const f = useCurrentFrame(), { fps } = useVide
   const cur = (SHOTS as any[]).find(s => T >= s.a && T < s.b) || SHOTS[SHOTS.length - 1];
   const hud = T >= HUD_FROM && !(HUD_HIDE as number[][]).some(([a, b]) => T >= a && T < b);
   return (<AbsoluteFill>{!NO_SHADE.includes(cur.id) && <BottomShade />}{hud && <Hud t={T} st={statsAt(T)} t0={HUD_FROM} />}
-    <Captions t={T} caps={CAPS as any} names={NAME} top={cur.id === 'lore4' ? 1500 : cur.id === 'card' ? 1640 : cur.id === 'motiv' ? 1680 : cur.id === 'ask' ? 1330 : 1290} /><Post t={T} /></AbsoluteFill>); };
+    <Captions t={T} caps={CAPS as any} names={NAME} top={cur.id === 'lore4' ? 1500 : cur.id === 'card' ? 1640 : cur.id === 'motiv' ? 1680 : cur.id === 'ask' ? 1580 : 1290} /><Post t={T} /></AbsoluteFill>); };
 export const Ep2: React.FC<{ audio?: boolean }> = ({ audio = true }) => { const { fps, width } = useVideoConfig();
   return (<AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}><div style={{ position: 'absolute', width: 1080, height: 1920, transform: `scale(${width / 1080})`, transformOrigin: '0 0', overflow: 'hidden' }}>
     {(SHOTS as any[]).map(s => <Sequence key={s.id} name={s.id} from={Math.round(s.a * fps)} durationInFrames={Math.max(1, Math.round((s.b - s.a) * fps))}><ShotAt id={s.id} a={Math.round(s.a * fps) / fps} /></Sequence>)}
