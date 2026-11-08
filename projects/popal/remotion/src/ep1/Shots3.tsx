@@ -55,7 +55,7 @@ export const Lore2Simple: React.FC<P> = ({ t }) => { const rows: [string, string
   return <InfoStand t={t} num="ЗАКОН №2" title="Система героя" art={art} col="#ffc94d" top={420} lines={[{ t: 3.2, icon: '✖', text: 'Позор — минус аура', col: '#ff5a5a', big: true }]} />; };
 
 // ───────────── Король демонов сидит на троне ─────────────
-const Silh: React.FC<{ x: number; y: number; s: number; kind: 'succ' | 'knight'; t: number }> = ({ x, y, s, kind, t }) => (<g transform={`translate(${x},${y}) scale(${s})`}>
+export const Silh: React.FC<{ x: number; y: number; s: number; kind: 'succ' | 'knight'; t: number }> = ({ x, y, s, kind, t }) => (<g transform={`translate(${x},${y}) scale(${s})`}>
   {kind === 'succ' ? <><path d="M-60,0 L-40,-300 Q0,-330 40,-300 L60,0 Z" fill="#12060e" /><circle cx={0} cy={-360} r={56} fill="#12060e" /><path d="M-30,-400 L-60,-470 L-10,-410 M30,-400 L60,-470 L10,-410" fill="#12060e" stroke="#12060e" strokeWidth={10} />
     <path d="M-40,-260 L-220,-420 L-170,-300 L-220,-260 Z M40,-260 L220,-420 L170,-300 L220,-260 Z" fill="#12060e" />{[-1, 1].map(sd => <ellipse key={sd} cx={sd * 20} cy={-362} rx={9} ry={5} fill="#ff3aa8" />)}</>
     : <><path d="M-90,0 L-80,-330 Q0,-360 80,-330 L90,0 Z" fill="#0c0a10" /><rect x={-50} y={-470} width={100} height={130} rx={30} fill="#0c0a10" /><rect x={-36} y={-420} width={72} height={10} fill="#5affd9" opacity={.8 + .2 * Math.sin(t * 5)} />
@@ -75,7 +75,7 @@ export const ThroneSeated: React.FC<P> = ({ t, T }) => { const bx = 540, by = 13
   </Cam></Frame>); };
 
 // ───────────── Прогулка: Макс и Желе идут по лесной тропе ─────────────
-const walkPose = (ph: number) => { const r = runPose(ph); return { armL: [r.armL[0] * .5, -.3] as [number, number], armR: [r.armR[0] * .5, .3] as [number, number], legL: [r.legL[0] * .7, r.legL[1] * .55] as [number, number], legR: [r.legR[0] * .7, r.legR[1] * .55] as [number, number], lean: .03 }; };
+export const walkPose = (ph: number) => { const r = runPose(ph); return { armL: [r.armL[0] * .5, -.3] as [number, number], armR: [r.armR[0] * .5, .3] as [number, number], legL: [r.legL[0] * .7, r.legL[1] * .55] as [number, number], legR: [r.legR[0] * .7, r.legR[1] * .55] as [number, number], lean: .03 }; };
 export const Walk: React.FC<P> = ({ t, T }) => { const sp = 160, off = (t * sp * 2.2) % 2160, ph = t * sp / 120 * Math.PI;
   return (<Frame bg="#9c7ad8"><Cam z={1.04}><Pond t={T} />
     {[0, 1].map(k => <g key={k} transform={`translate(${-off + k * 2160},0)`}>{Array.from({ length: 9 }, (_, i) => <g key={i} transform={`translate(${i * 240 + 60},1480)`}><rect x={-30} y={-460} width={60} height={460} fill="#6a4a3a" /><circle cx={0} cy={-480} r={150} fill={i % 2 ? '#3f8a5e' : '#2f7a52'} /></g>)}</g>)}

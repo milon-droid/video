@@ -1,0 +1,263 @@
+{
+ "roles": {
+  "narrator": {
+   "instruct": "Deep, warm, velvety adult male voice. Professional Russian audiobook narrator, calm confident storytelling with a light ironic smile, clear diction, lively medium-fast pace.",
+   "ref": "Это история о парне, которому очень не повезло. Но, как оказалось, это было только начало."
+  },
+  "max": {
+   "instruct": "Young Russian man, about 27, casual and ironic, a bit tired, expressive and emotional, natural everyday speech, medium-fast pace.",
+   "ref": "Слушай, ну я же просто хотел поесть. Почему всегда я?"
+  },
+  "slime": {
+   "instruct": "Cute high-pitched childlike voice, cheerful and curious, bouncy, cartoon mascot.",
+   "ref": "Привет-привет! Я тут живу. А ты кто такой?"
+  },
+  "king": {
+   "instruct": "Very deep, menacing, slow and gravelly male voice of a demon king, cold and powerful.",
+   "ref": "Вы смеете тревожить меня? Я правлю этой тьмой тысячу лет.",
+   "low": true
+  },
+  "succ": {
+   "instruct": "Seductive breathy female voice, soft and playful, half-whisper, sly.",
+   "ref": "Ну здравствуй, красавчик. Скучал по мне?"
+  },
+  "lira": {
+   "instruct": "Young woman, arrogant elf archer, cold, sharp and sarcastic, clear confident voice with a haughty tone, a little flirtatious softness when embarrassed, medium-fast pace.",
+   "ref": "Человек? Здесь? Какая жалость. Не подходи ближе, я стреляю без предупреждения."
+  },
+  "imp": {
+   "instruct": "Nasty raspy high-pitched goblin-like male voice, loud and cackling, greedy and aggressive cartoon villain, fast pace.",
+   "ref": "Хе-хе! Кто тут у нас? Свежий человечек! Сейчас мы тебя поджарим!"
+  },
+  "elves": {
+   "instruct": "Sweet melodic young female voice, excited, admiring and giggly, fairy-like, bright and bouncy.",
+   "ref": "Ой, девочки, смотрите! Какой он смелый! Спасибо тебе, спасибо!"
+  }
+ },
+ "lines": [
+  {
+   "id": "a1",
+   "role": "narrator",
+   "text": "Вы выбрали эльфиек. Макс — тоже.",
+   "speed": 1.1
+  },
+  {
+   "id": "a2",
+   "role": "max",
+   "text": "Эльф+ийки! Наконец-то нормальный исекай!",
+   "speed": 1.05
+  },
+  {
+   "id": "b1",
+   "role": "narrator",
+   "text": "Напомним: сила — два, аура — сто. Статус — девственник.",
+   "speed": 1.1
+  },
+  {
+   "id": "d1",
+   "role": "narrator",
+   "text": "И тут Макс нашёл эльф+ийку. Правда, вверх ногами.",
+   "speed": 1.1
+  },
+  {
+   "id": "d2",
+   "role": "lira",
+   "text": "Чего уставился? Снимай меня, бл+ять!",
+   "speed": 1.05
+  },
+  {
+   "id": "d3",
+   "role": "narrator",
+   "text": "Это Лира. Лучшая лучница леса.",
+   "speed": 1.1
+  },
+  {
+   "id": "e1",
+   "role": "max",
+   "text": "Сковорода, не подведи!",
+   "speed": 1.05
+  },
+  {
+   "id": "e2",
+   "role": "max",
+   "text": "Мягкая посадка...",
+   "speed": 1.05
+  },
+  {
+   "id": "e3",
+   "role": "narrator",
+   "text": "Минус десять ауры.",
+   "speed": 1.1
+  },
+  {
+   "id": "f1",
+   "role": "lira",
+   "text": "Человек. Ещё и с кухонной утварью.",
+   "speed": 1.05
+  },
+  {
+   "id": "g1",
+   "role": "max",
+   "text": "А уши настоящие?",
+   "speed": 1.05
+  },
+  {
+   "id": "g2",
+   "role": "lira",
+   "text": "Не трогай уши!",
+   "speed": 1.05
+  },
+  {
+   "id": "g3",
+   "role": "lira",
+   "text": "...Ладно. Ещё раз тронь.",
+   "speed": 1.05
+  },
+  {
+   "id": "h1",
+   "role": "narrator",
+   "text": "Уши эльфиек чувствительнее в сто раз. Трогать — только с согласия.",
+   "speed": 1.1
+  },
+  {
+   "id": "i1",
+   "role": "lira",
+   "text": "Бесы утащили моих сестёр. Всю деревню.",
+   "speed": 1.05
+  },
+  {
+   "id": "i2",
+   "role": "max",
+   "text": "Все эльф+ийки... в плену?",
+   "speed": 1.05
+  },
+  {
+   "id": "j1",
+   "role": "narrator",
+   "text": "Лагерь бесов. И очень плохая музыка.",
+   "speed": 1.1
+  },
+  {
+   "id": "k1",
+   "role": "lira",
+   "text": "План такой: я стреляю, ты отвлекаешь.",
+   "speed": 1.05
+  },
+  {
+   "id": "k2",
+   "role": "max",
+   "text": "А как отвлекать?",
+   "speed": 1.05
+  },
+  {
+   "id": "k3",
+   "role": "lira",
+   "text": "Ты человек. Просто будь собой.",
+   "speed": 1.05
+  },
+  {
+   "id": "k4",
+   "role": "narrator",
+   "text": "Макс был собой. Очень громко.",
+   "speed": 1.1
+  },
+  {
+   "id": "l1",
+   "role": "narrator",
+   "text": "Спиной к спине. Как в настоящем аниме.",
+   "speed": 1.1
+  },
+  {
+   "id": "l2",
+   "role": "lira",
+   "text": "Слева!",
+   "speed": 1.05
+  },
+  {
+   "id": "m1",
+   "role": "narrator",
+   "text": "Но тут вышел главный бес.",
+   "speed": 1.1
+  },
+  {
+   "id": "m2",
+   "role": "imp",
+   "text": "Человечишка! Я сожру твою сковородку!",
+   "speed": 1.05
+  },
+  {
+   "id": "m3",
+   "role": "max",
+   "text": "Подавись!",
+   "speed": 1.05
+  },
+  {
+   "id": "n1",
+   "role": "narrator",
+   "text": "Аура — тысяча! И новый союзник — Лира.",
+   "speed": 1.1
+  },
+  {
+   "id": "o1",
+   "role": "elves",
+   "text": "Герой! Наш герой!",
+   "speed": 1.05
+  },
+  {
+   "id": "o2",
+   "role": "max",
+   "text": "Мама, я в раю.",
+   "speed": 1.05
+  },
+  {
+   "id": "o3",
+   "role": "lira",
+   "text": "Руки убрал. Герой.",
+   "speed": 1.05
+  },
+  {
+   "id": "p2",
+   "role": "king",
+   "text": "Бесов. Тоже. Сковородкой. Лилиана — твой выход.",
+   "speed": 1.05,
+   "fx": "dead",
+   "pitch": 0.82
+  },
+  {
+   "id": "q2",
+   "role": "succ",
+   "text": "Привет, сладкий. Отведу тебя к Королю.",
+   "speed": 1.05
+  },
+  {
+   "id": "q3",
+   "role": "succ",
+   "text": "Цена — одна ночь.",
+   "speed": 1.05
+  },
+  {
+   "id": "q4",
+   "role": "max",
+   "text": "Это ловушка?",
+   "speed": 1.05
+  },
+  {
+   "id": "q5",
+   "role": "slime",
+   "text": "Сто процентов.",
+   "speed": 1.05
+  },
+  {
+   "id": "q6",
+   "role": "max",
+   "text": "...Но какая.",
+   "speed": 1.05
+  },
+  {
+   "id": "r1",
+   "role": "slime",
+   "text": "Согласиться или отказать? Пишите в комментах!",
+   "speed": 1.05
+  }
+ ]
+}

@@ -18,17 +18,17 @@ const dur = (id: string) => SHOT[id].b - SHOT[id].a;
 const html = (s: React.CSSProperties): React.CSSProperties => ({ position: 'absolute', fontFamily: FONT, ...s });
 const hash = (n: number) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
 // мягкие брызги / пыль: клубы с радиальным градиентом
-const Puffs: React.FC<{ t: number; t0: number; x: number; y: number; n?: number; col?: string; spread?: number; up?: number; size?: number; id: string }> = ({ t, t0, x, y, n = 8, col = '#ffffff', spread = 260, up = 160, size = 60, id }) => {
+export const Puffs: React.FC<{ t: number; t0: number; x: number; y: number; n?: number; col?: string; spread?: number; up?: number; size?: number; id: string }> = ({ t, t0, x, y, n = 8, col = '#ffffff', spread = 260, up = 160, size = 60, id }) => {
   const k = (t - t0) / 1.0; if (k < 0 || k > 1) return null;
   return (<g><defs><radialGradient id={id}><stop offset="0" stopColor={col} stopOpacity=".85" /><stop offset="1" stopColor={col} stopOpacity="0" /></radialGradient></defs>
     {Array.from({ length: n }, (_, i) => { const a = (i / n) * Math.PI - Math.PI + (hash(i) - .5) * .4, r = out(k) * spread * (.6 + hash(i * 3) * .6);
       return <circle key={i} cx={x + Math.cos(a) * r} cy={y + Math.sin(a) * r * .6 - out(k) * up * hash(i * 5) + k * k * 120} r={size * (.5 + hash(i * 7)) * (1 + k)} fill={`url(#${id})`} opacity={1 - k} />; })}</g>); };
-const Drops: React.FC<{ t: number; t0: number; x: number; y: number; n?: number }> = ({ t, t0, x, y, n = 16 }) => { const k = t - t0; if (k < 0 || k > 1.2) return null;
+export const Drops: React.FC<{ t: number; t0: number; x: number; y: number; n?: number }> = ({ t, t0, x, y, n = 16 }) => { const k = t - t0; if (k < 0 || k > 1.2) return null;
   return <g>{Array.from({ length: n }, (_, i) => { const vx = (hash(i) - .5) * 900, vy = -600 - hash(i * 3) * 700, px = x + vx * k, py = y + vy * k + 1400 * k * k; return <ellipse key={i} cx={px} cy={py} rx={10} ry={16} fill="#bff3ff" opacity={clamp(1.2 - k)} />; })}</g>; };
-const Speed: React.FC<{ t: number; col?: string; n?: number; o?: number }> = ({ t, col = '#ffffff', n = 18, o = .5 }) => <g>{Array.from({ length: n }, (_, i) => { const a = i / n * 6.283 + hash(i) * .3, r0 = 420 + hash(i * 3) * 200 + ((t * 900 + i * 90) % 300);
+export const Speed: React.FC<{ t: number; col?: string; n?: number; o?: number }> = ({ t, col = '#ffffff', n = 18, o = .5 }) => <g>{Array.from({ length: n }, (_, i) => { const a = i / n * 6.283 + hash(i) * .3, r0 = 420 + hash(i * 3) * 200 + ((t * 900 + i * 90) % 300);
   return <path key={i} d={`M${540 + Math.cos(a) * r0},${960 + Math.sin(a) * r0} L${540 + Math.cos(a) * (r0 + 500)},${960 + Math.sin(a) * (r0 + 500)}`} stroke={col} strokeWidth={6 + hash(i) * 10} opacity={o} />; })}</g>;
 // пламя ауры за героем
-const AuraFlame: React.FC<{ t: number; x: number; y: number; k: number; col?: string }> = ({ t, x, y, k, col = '#ffc94d' }) => k <= 0 ? null : (<g opacity={k}>
+export const AuraFlame: React.FC<{ t: number; x: number; y: number; k: number; col?: string }> = ({ t, x, y, k, col = '#ffc94d' }) => k <= 0 ? null : (<g opacity={k}>
   <Glow x={x} y={y - 350} r={520 * k} c={col} o={.8} id="auraG" />
   {Array.from({ length: 9 }, (_, i) => { const ph = t * 3 + i * .7, h = (380 + Math.sin(ph * 2) * 60) * k, w = 90 + (i % 3) * 30, ox = (i - 4) * 55;
     return <path key={i} d={`M${x + ox - w / 2},${y - 100} Q${x + ox + Math.sin(ph) * 40},${y - 100 - h} ${x + ox + w / 2},${y - 100} Z`} fill={i % 2 ? '#ffe27a' : '#ffb020'} opacity={.55} />; })}

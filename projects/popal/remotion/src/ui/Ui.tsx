@@ -80,13 +80,13 @@ export const Stamp: React.FC<{ t: number; t0: number; text: string; sub?: string
 export const Flash: React.FC<{ t: number; t0: number; dur?: number; col?: string }> = ({ t, t0, dur = .25, col = '#fff' }) => { const k = clamp(1 - (t - t0) / dur); if (t < t0 || k <= 0) return null; return <AbsoluteFill style={{ background: col, opacity: k }} />; };
 
 // ───── карточка выбора ─────
-export const Choice: React.FC<{ t: number; left: { title: string; sub: string; col: string; art: React.ReactNode }; right: { title: string; sub: string; col: string; art: React.ReactNode }; center?: React.ReactNode }> = ({ t, left, right, center }) => {
+export const Choice: React.FC<{ t: number; left: { title: string; sub: string; col: string; art: React.ReactNode; size?: number }; right: { title: string; sub: string; col: string; art: React.ReactNode; size?: number }; center?: React.ReactNode }> = ({ t, left, right, center }) => {
   const kl = spr(t, .15, { damping: 12 }), kr = spr(t, .4, { damping: 12 }), pulse = .5 + .5 * Math.sin(t * 6);
   const half = (side: 0 | 1, o: typeof left, k: number) => (<div style={{ position: 'absolute', top: 0, bottom: 0, left: side ? 540 : 0, width: 540, overflow: 'hidden', transform: `translateX(${(1 - k) * (side ? 560 : -560)}px)` }}>
     <svg viewBox="0 0 540 1920" width="540" height="1920" style={{ position: 'absolute', inset: 0 }}>{o.art}</svg>
     <div style={{ position: 'absolute', left: 30, right: 30, top: 1090, textAlign: 'center', fontFamily: FONT }}>
       <div style={{ display: 'inline-block', background: o.col, color: '#14121c', fontWeight: 900, fontSize: 30, padding: '6px 16px', borderRadius: 10 }}>{side ? 'ВАРИАНТ Б' : 'ВАРИАНТ А'}</div>
-      <div style={{ fontWeight: 900, fontSize: 64, lineHeight: 1.0, color: '#fff', WebkitTextStroke: stroke(12), paintOrder: 'stroke fill', marginTop: 10, whiteSpace: 'nowrap', transform: `scale(${1 + pulse * .03})` }}>{o.title}</div>
+      <div style={{ fontWeight: 900, fontSize: o.size ?? 64, lineHeight: 1.0, color: '#fff', WebkitTextStroke: stroke(12), paintOrder: 'stroke fill', marginTop: 10, whiteSpace: 'nowrap', transform: `scale(${1 + pulse * .03})` }}>{o.title}</div>
       <div style={{ fontWeight: 800, fontSize: 32, color: o.col, marginTop: 8, WebkitTextStroke: stroke(6), paintOrder: 'stroke fill' }}>{o.sub}</div></div></div>);
   return (<AbsoluteFill style={{ background: '#14121c' }}>{half(0, left, kl)}{half(1, right, kr)}
     <div style={{ position: 'absolute', left: 528, top: 0, width: 24, height: 1920, background: 'linear-gradient(180deg, #ffd23f, #fff, #ffd23f)', boxShadow: '0 0 30px #ffd23f', transform: `scaleY(${out(win(t, .5, .9))})` }} />
