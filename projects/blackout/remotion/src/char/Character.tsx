@@ -5,13 +5,17 @@ import React, { useId } from 'react';
 import { blink, clamp, lerp, mix, noise } from '../anim';
 import { Hand, HandPose } from './Hand';
 
-export type Who = 'dias' | 'diasT' | 'beka' | 'alik' | 'anchor';
-type Look = { skin: string; skinSh: string; hair: string; style: 'styled' | 'buzz' | 'curly' | 'bun'; outfit: 'shirt' | 'tee' | 'track' | 'flannel' | 'blazer'; top: string; topSh: string; sw: number; neck: number; head: number; glasses?: boolean; iris: string };
+export type Who = 'dias' | 'diasT' | 'diasJ' | 'beka' | 'alik' | 'anchor' | 'alisher' | 'oldman' | 'driver';
+type Look = { skin: string; skinSh: string; hair: string; style: 'styled' | 'buzz' | 'curly' | 'bun' | 'beanie'; outfit: 'shirt' | 'tee' | 'track' | 'flannel' | 'blazer' | 'puffer' | 'jacket'; top: string; topSh: string; sw: number; neck: number; head: number; glasses?: boolean; iris: string };
 export const LOOKS: Record<Who, Look> = {
   dias: { skin: '#E3AC84', skinSh: '#C68863', hair: '#1E1A20', style: 'styled', outfit: 'shirt', top: '#DDE8F3', topSh: '#AFC1D6', sw: 116, neck: 26, head: 1, glasses: true, iris: '#3A2618' },
   diasT: { skin: '#E3AC84', skinSh: '#C68863', hair: '#1E1A20', style: 'styled', outfit: 'tee', top: '#F2EFE8', topSh: '#CBC4B6', sw: 116, neck: 26, head: 1, glasses: true, iris: '#3A2618' },
   beka: { skin: '#C98C62', skinSh: '#A86E48', hair: '#231C18', style: 'buzz', outfit: 'track', top: '#25357E', topSh: '#18235A', sw: 138, neck: 16, head: 1.03, iris: '#2A1A10' },
   alik: { skin: '#E8B992', skinSh: '#CC9670', hair: '#3A2316', style: 'curly', outfit: 'flannel', top: '#A9402B', topSh: '#76291B', sw: 102, neck: 36, head: .96, iris: '#4A3020' },
+  diasJ: { skin: '#E3AC84', skinSh: '#C68863', hair: '#1E1A20', style: 'styled', outfit: 'jacket', top: '#2B3A55', topSh: '#1B2640', sw: 118, neck: 26, head: 1, glasses: true, iris: '#3A2414' },
+  alisher: { skin: '#D6A27C', skinSh: '#B5825E', hair: '#1B1716', style: 'beanie', outfit: 'puffer', top: '#6B7A3E', topSh: '#46522A', sw: 112, neck: 34, head: .97, iris: '#2A1A10' },
+  oldman: { skin: '#D9A882', skinSh: '#B4805E', hair: '#C9C6C0', style: 'buzz', outfit: 'blazer', top: '#5A4636', topSh: '#3E2F24', sw: 108, neck: 24, head: 1, iris: '#3A2A20' },
+  driver: { skin: '#C4906A', skinSh: '#A0704C', hair: '#2a2420', style: 'buzz', outfit: 'track', top: '#4A5060', topSh: '#30343F', sw: 132, neck: 18, head: 1.05, iris: '#2A1A10' },
   anchor: { skin: '#E9BA95', skinSh: '#CF9A74', hair: '#17121A', style: 'bun', outfit: 'blazer', top: '#1E2A4C', topSh: '#121A33', sw: 98, neck: 30, head: .94, iris: '#2A1A10' },
 };
 export type Expr = 'neutral' | 'smile' | 'bigsmile' | 'worry' | 'fear' | 'shock' | 'focus' | 'grumpy' | 'whisper' | 'tense';
@@ -71,6 +75,9 @@ export const Character: React.FC<CharProps> = (p) => {
         <path d="M-12,-46 a9,9 0 1 0 10,10" stroke={h} strokeWidth={9} fill="none" strokeLinecap="round" /><path d="M14,-48 a8,8 0 1 1 -2,14" stroke={h} strokeWidth={8} fill="none" strokeLinecap="round" /></g>; }
     if (L.style === 'bun') { if (!front) return <circle cx={34} cy={-74} r={26} fill={h} />; return <g><path d="M-58,-6 C-62,-56 -32,-80 2,-80 C36,-80 60,-56 58,-10 C52,-40 38,-56 10,-58 C-6,-48 -30,-46 -58,-6 Z" fill={h} /><path d="M-30,-68 C-10,-74 20,-74 40,-62" stroke="rgba(255,255,255,.15)" strokeWidth={4} fill="none" /></g>; }
     if (L.style === 'buzz') { if (!front) return null; return <g><path d="M-57,-12 C-58,-54 -34,-77 0,-77 C34,-77 58,-54 57,-12 C52,-34 38,-48 0,-50 C-38,-48 -52,-34 -57,-12 Z" fill={h} opacity={.93} /><path d="M-52,-20 C-40,-44 40,-44 52,-20" stroke={mix(h, '#ffffff', .12)} strokeWidth={2} fill="none" opacity={.5} /></g>; }
+    if (L.style === 'beanie') { if (!front) return null; return <g><path d="M-60,-6 C-60,-20 -56,-30 -52,-30 L52,-30 C56,-30 60,-20 60,-6 C54,-12 50,-14 46,-14 L-46,-14 C-50,-14 -54,-12 -60,-6 Z" fill={h} />
+      <path d="M-62,-24 C-66,-70 -36,-98 0,-98 C36,-98 66,-70 62,-24 Z" fill="#7A1F2B" />{[-44, -26, -9, 9, 26, 44].map(x => <path key={x} d={`M${x * .9},-92 Q${x * 1.15},-60 ${x * 1.25},-28`} stroke="#5A1520" strokeWidth={3} fill="none" opacity={.7} />)}
+      <rect x={-66} y={-42} width={132} height={26} rx={10} fill="#8E2734" />{[-50, -30, -10, 10, 30, 50].map(x => <line key={x} x1={x} y1={-40} x2={x} y2={-18} stroke="#6A1A24" strokeWidth={3} />)}<path d="M-50,-84 C-30,-96 20,-98 44,-84" stroke="rgba(255,255,255,.14)" strokeWidth={5} fill="none" strokeLinecap="round" /></g>; }
     if (!front) return null; // уложенные: кок набок
     return <g><path d="M-58,-10 C-63,-52 -40,-86 -6,-88 C22,-96 52,-86 60,-56 C63,-38 60,-22 57,-10 C54,-32 46,-46 32,-52 C14,-44 -14,-54 -36,-50 C-48,-46 -55,-30 -58,-10 Z" fill={h} />
       <path d="M-14,-84 C6,-110 52,-104 60,-72 C42,-86 18,-90 -14,-84 Z" fill={h} /><path d="M2,-92 C20,-100 44,-94 52,-80" stroke="rgba(255,255,255,.16)" strokeWidth={4} fill="none" strokeLinecap="round" /></g>; };
@@ -118,6 +125,11 @@ export const Character: React.FC<CharProps> = (p) => {
       <path d="M-4,40 L-4,460 M4,40 L4,460" stroke="rgba(20,10,30,.18)" strokeWidth={2} />{[100, 190, 280, 370].map(y => <circle key={y} cx={0} cy={y} r={4.5} fill={o === 'flannel' ? '#F2E8D2' : '#9FB2C8'} />)}
       {[-1, 1].map(side => <path key={side} d={`M${side * 4},${collarOpen ? 52 : 26} L${side * 46},-10 L${side * 60},26 Z`} fill={o === 'flannel' ? '#8E3624' : mix(L.top, '#ffffff', .4)} stroke="rgba(20,10,30,.15)" strokeWidth={2} />)}
       {o === 'flannel' && <g><rect x={-sw * .62} y={110} width={46} height={52} rx={4} fill="#8E3624" opacity={.6} /><rect x={-sw * .62} y={110} width={46} height={14} rx={3} fill="#6E2318" /></g>}</g>}
+    {o === 'puffer' && <g>{[70, 150, 230, 310, 390].map(y => <path key={y} d={`M${-sw * .99},${y} Q0,${y + 14} ${sw * .99},${y}`} stroke={L.topSh} strokeWidth={5} fill="none" opacity={.75} />)}
+      <path d="M-44,-20 C-46,10 -40,30 -30,40 L30,40 C40,30 46,10 44,-20 C30,-6 -30,-6 -44,-20 Z" fill={mix(L.top, '#000000', .12)} /><path d="M0,10 L0,460" stroke="#2A2F1A" strokeWidth={5} /><rect x={-5} y={30} width={10} height={22} rx={3} fill="#C9CDD6" />
+      <path d={`M${-sw * .62},-2 L${-sw * .48},460`} stroke="#2A2620" strokeWidth={22} /><path d={`M${-sw * .62},-2 L${-sw * .48},460`} stroke="#3C362E" strokeWidth={12} /></g>}
+    {o === 'jacket' && <g><path d="M-30,-2 L-16,460 L16,460 L30,-2 Z" fill="#DDE8F3" /><path d="M-4,40 L-4,460" stroke="rgba(20,10,30,.18)" strokeWidth={2} />{[-1, 1].map(side => <path key={side} d={`M${side * 4},${collarOpen ? 52 : 26} L${side * 40},-8 L${side * 52},24 Z`} fill="#F2F6FA" stroke="rgba(20,10,30,.15)" strokeWidth={2} />)}
+      {[-1, 1].map(side => <path key={'j' + side} d={`M${side * 30},-6 L${side * 20},460`} stroke={L.topSh} strokeWidth={8} />)}<path d="M-50,-14 C-30,6 30,6 50,-14" stroke={mix(L.top, '#000000', .3)} strokeWidth={12} fill="none" strokeLinecap="round" /><rect x={-sw * .97} y={430} width={sw * 1.94} height={30} fill={mix(L.top, '#000000', .3)} /></g>}
     {o === 'tee' && <path d="M-34,-4 C-24,22 24,22 34,-4" stroke={L.topSh} strokeWidth={9} fill="none" strokeLinecap="round" />}
     {o === 'track' && <g><rect x={-46} y={-14} width={92} height={26} rx={10} fill="#18235A" /><path d="M0,10 L0,460" stroke="#C9CDD6" strokeWidth={4} /><path d={`M${-sw * .98},60 L${-sw * .98},460 M${sw * .98},60 L${sw * .98},460`} stroke="#ECEFF5" strokeWidth={7} /></g>}
     {o === 'blazer' && <g><path d="M-30,-2 L0,120 L30,-2 Z" fill="#F2EEE6" />{[-1, 1].map(side => <path key={side} d={`M${side * 30},-2 L${side * 6},140 L${side * 62},80 L${side * 52},6 Z`} fill="#141B33" />)}</g>}
