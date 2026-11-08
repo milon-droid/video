@@ -163,7 +163,7 @@ export const GooseUp: React.FC<P> = ({ t, T }) => { const evil = out(win(t, 1.2,
 export const Mob: React.FC<P> = ({ t, T }) => (<InfoStand t={t} num="ВРАЖЕСКИЙ МОБ" title="Адский гусь" col="#e5383b" top={360}
   art={<g><rect x={0} y={0} width={860} height={380} rx={20} fill="#2a1a2e" /><g transform="translate(240,350) scale(.9)"><Goose x={0} y={0} s={1} t={T} state="attack" honk={Math.max(0, Math.sin(t * 4)) * .6} flip /></g>
     <text x={500} y={80} fontSize={32} fontWeight={800} fill="#ff8a8a" fontFamily="Mont">РАЗВЕДЧИК</text><text x={500} y={122} fontSize={32} fontWeight={800} fill="#ff8a8a" fontFamily="Mont">КОРОЛЯ ДЕМОНОВ</text>
-    <text x={500} y={200} fontSize={34} fontWeight={900} fill="#ffd23f" fontFamily="Mont">Угроза ★★☆</text><text x={500} y={262} fontSize={34} fontWeight={900} fill="#fff" fontFamily="Mont">Щипок: −1 ❤</text>
+    <text x={500} y={200} fontSize={34} fontWeight={900} fill="#ffd23f" fontFamily="Mont">Угроза ★☆☆</text><text x={500} y={262} fontSize={34} fontWeight={900} fill="#fff" fontFamily="Mont">Щипок: −1 ❤</text>
     <text x={500} y={324} fontSize={34} fontWeight={900} fill="#ff5a5a" fontFamily="Mont">У Макса: ❤ 1</text></g>}
   lines={[{ t: 1.2, icon: '👁', text: 'Шпионит для Короля демонов' }, { t: 3.4, icon: '☠', text: 'Один щипок — и Максу конец', col: '#ff8a8a', big: true }]} />);
 

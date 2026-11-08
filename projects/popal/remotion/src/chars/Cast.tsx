@@ -284,3 +284,32 @@ export const Dragon: React.FC<{ x: number; y: number; s?: number; t: number; roa
       <circle cx={260 + sm * 60} cy={-120 - sm * 80} r={18 + sm * 40} fill="#8a7a7a" opacity={.45 * (1 - sm)} />
     </g>
   </g>); };
+
+// ───── Дракон анфас (сплит-экран выбора): голова из пещеры, рога, светящиеся глаза, ноздри с дымом, клыки, лапа на камне ─────
+export const DragonFront: React.FC<{ x: number; y: number; s?: number; t: number; roar?: number }> = ({ x, y, s = 1, t, roar = 0 }) => {
+  const b = blink(t, 29), bob = Math.sin(t * 1.1) * 8, sm = (t * .7) % 1, j = roar * 40;
+  return (<g transform={`translate(${x},${y + bob}) scale(${s})`}>
+    <defs><radialGradient id="dfEye"><stop offset="0" stopColor="#fff6b0" /><stop offset=".45" stopColor="#ffb020" /><stop offset="1" stopColor="#ff5a00" stopOpacity="0" /></radialGradient>
+      <linearGradient id="dfSk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#d23a2a" /><stop offset="1" stopColor="#7a1612" /></linearGradient></defs>
+    {/* шея уходит в темноту */}
+    <path d="M-120,420 C-110,250 -90,150 -70,60 L70,60 C90,150 110,250 120,420 Z" fill="#6a1410" />
+    {[0, 1, 2].map(i => <path key={i} d={`M-24,${330 - i * 90} L0,${290 - i * 90} L24,${330 - i * 90} Z`} fill="#ffb020" opacity={.85} />)}
+    {/* рога */}
+    {[-1, 1].map(sd => <path key={sd} d={`M${sd * 70},-150 C${sd * 150},-200 ${sd * 200},-300 ${sd * 170},-400 C${sd * 230},-300 ${sd * 210},-180 ${sd * 110},-110 Z`} fill="#e8d8b8" stroke="#8a7050" strokeWidth={4} />)}
+    {/* гребни-уши */}
+    {[-1, 1].map(sd => <path key={'f' + sd} d={`M${sd * 110},-80 L${sd * 230},-120 L${sd * 190},-60 L${sd * 250},-30 L${sd * 120},-20 Z`} fill="#9a2018" />)}
+    {/* голова */}
+    <path d="M-130,-60 C-140,-170 -60,-210 0,-210 C60,-210 140,-170 130,-60 C125,10 90,60 60,90 L-60,90 C-90,60 -125,10 -130,-60 Z" fill="url(#dfSk)" />
+    <path d="M-100,-150 Q0,-190 100,-150" stroke="#ffb020" strokeWidth={6} fill="none" opacity={.6} />
+    {/* надбровья и глаза */}
+    {[-1, 1].map(sd => <g key={'e' + sd}><circle cx={sd * 58} cy={-90} r={42} fill="url(#dfEye)" /><ellipse cx={sd * 58} cy={-90} rx={26} ry={20 * b} fill="#ffd23f" /><ellipse cx={sd * 58} cy={-90} rx={7} ry={18 * b} fill="#1a0800" />
+      <path d={`M${sd * 20},-118 L${sd * 100},-104`} stroke="#3a0808" strokeWidth={14} strokeLinecap="round" /></g>)}
+    {/* морда и пасть */}
+    <path d={`M-75,30 C-80,${110 + j} -40,${150 + j} 0,${152 + j} C40,${150 + j} 80,${110 + j} 75,30 Z`} fill="#8a1c18" />
+    <path d="M-80,20 C-60,70 60,70 80,20 C60,-10 -60,-10 -80,20 Z" fill="#b8302a" />
+    {[-1, 1].map(sd => <ellipse key={'n' + sd} cx={sd * 26} cy={10} rx={9} ry={6} fill="#2a0606" />)}
+    {[-48, -24, 0, 24, 48].map(xx => <path key={xx} d={`M${xx - 7},48 l7,${18 + Math.abs(xx) * .1} l7,${-18 - Math.abs(xx) * .1} Z`} fill="#f2ead0" />)}
+    {roar > .1 && <path d={`M-50,60 C-30,${90 + j} 30,${90 + j} 50,60 Z`} fill="#3a0606" />}
+    {/* дым из ноздрей */}
+    {[-1, 1].map(sd => <circle key={'s' + sd} cx={sd * (26 + sm * 50)} cy={-10 - sm * 90} r={12 + sm * 34} fill="#8a7a7a" opacity={.45 * (1 - sm)} />)}
+  </g>); };

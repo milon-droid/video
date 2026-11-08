@@ -6,7 +6,7 @@ import { SHOT, VO_AT, WORD_AT } from './timeline.mjs';
 import { clamp, lerp, out, io, spr, win, shake, noise } from '../anim';
 import { C, FONT } from '../theme';
 import { Person, POSES, blendPose, runPose } from '../chars/Person';
-import { Slime, KingBull, ChibiSlime, Elf, Dragon, Goose } from '../chars/Cast';
+import { Slime, KingBull, ChibiSlime, Elf, DragonFront, Goose } from '../chars/Cast';
 import { Street, Hall, Pond, Throne, Glow, Fork, Motes } from '../bg/Bg';
 import { Frame, Cam, InfoStand, Choice } from '../ui/Ui';
 import { mouth } from './Shots';
@@ -99,7 +99,7 @@ const ElfSide: React.FC<{ t: number }> = ({ t }) => (<g><rect width={540} height
   <Motes n={26} t={t} c="#bfffd8" seed={61} area={[0, 300, 540, 1100]} vy={-30} size={8} /></g>);
 const DragonSide: React.FC<{ t: number }> = ({ t }) => (<g><rect width={540} height={1920} fill="#2a1010" /><Glow x={270} y={760} r={520} c="#ff6a2a" o={.4} id="drS" />
   <path d="M-60,1920 L-60,560 Q270,260 600,560 L600,1920 Z" fill="#140606" />
-  <Dragon x={200} y={980} s={.85} t={t} roar={Math.max(0, Math.sin(t * 2.2)) * .6} />
+  <DragonFront x={270} y={820} s={1.1} t={t} roar={Math.max(0, Math.sin(t * 2.2)) * .5} />
   <Motes n={20} t={t} c="#ffb04a" seed={63} area={[0, 500, 540, 900]} vy={-60} size={6} /></g>);
 export const Split: React.FC<P> = ({ t, T }) => (<Choice t={t} left={{ title: 'ЭЛЬФИЙКИ', sub: 'ЛЕС ЭЛЬФИЕК', col: '#7dffb0', art: <ElfSide t={T} /> }} right={{ title: 'ДРАКОН', sub: 'ЛОГОВО ДРАКОНА', col: '#ff9a5a', art: <DragonSide t={T} /> }}
   center={<div style={html({ left: 0, width: 1080, top: 1480, textAlign: 'center', opacity: out(win(t, 1.2, 1.5)) })}><span style={{ background: '#ffd23f', color: '#14121c', fontWeight: 900, fontSize: 38, padding: '8px 24px', borderRadius: 12 }}>СЕРИЯ 2 — ПО ВАШЕМУ ВЫБОРУ</span></div>} />);
