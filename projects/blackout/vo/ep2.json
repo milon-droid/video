@@ -1,0 +1,30 @@
+{
+ "roles": {
+  "bk_narrator": {"instruct": "Young Russian man, about 22, low calm voice, quiet restrained tension, intimate storytelling of a mystery thriller, clear diction, medium pace.", "ref": "В тот вечер мы ещё не знали, что это только начало. Город молчал, и от этой тишины становилось страшно."},
+  "bk_alisher": {"instruct": "Young Russian man, about 20, out of breath after running, shaky frightened voice, fast nervous speech, slightly higher pitch.", "ref": "Пацаны, вы не поверите. Я еле дошёл, там вообще ничего не видно."},
+  "bk_dias": {"instruct": "Young Russian man, about 21, soft gentle voice, anxious and worried, emotional, natural everyday speech.", "ref": "Она не отвечает. Я просто хочу знать, что с ней всё нормально."},
+  "bk_beka": {"instruct": "Young Russian man, about 21, firm energetic voice, a bit husky, confident loyal friend, fast pace.", "ref": "Слушай, не кипишуй. Сейчас разберёмся, всё будет нормально."},
+  "bk_alikhan": {"instruct": "Young Russian man, about 20, dry grumpy rational voice, nerdy and matter-of-fact, flat intonation, medium pace.", "ref": "Если посчитать, выходит ровно двадцать минут. Это простая арифметика."}
+ },
+ "lines": [
+  {"id": "s01", "role": "bk_narrator", "text": "Стучал Алишер. Он пришёл к нам из метро.", "speed": 1.08},
+  {"id": "s02", "role": "bk_alisher", "text": "Поезд встал прямо в тоннеле. Свет погас.", "speed": 1.08},
+  {"id": "s03", "role": "bk_alisher", "text": "Все повалились — и темнота.", "speed": 1.05},
+  {"id": "s04", "role": "bk_alisher", "text": "Мы шли по шпалам до «Байконура».", "speed": 1.05},
+  {"id": "s05", "role": "bk_alisher", "text": "Я живу в Калкамане. До дома не добраться.", "speed": 1.05},
+  {"id": "s06", "role": "bk_narrator", "text": "А Диас думал только об Аружан.", "speed": 1.05},
+  {"id": "s07", "role": "bk_dias", "text": "Она ждёт у кафе на Арбате. Я иду туда.", "speed": 1.05},
+  {"id": "s08", "role": "bk_beka", "text": "Одного не отпустим. Идём вместе.", "speed": 1.05},
+  {"id": "s09", "role": "bk_narrator", "text": "Вчетвером мы вышли в тёмный город.", "speed": 1.05},
+  {"id": "s10", "role": "bk_narrator", "text": "И тут снова этот гул.", "speed": 1.0},
+  {"id": "s11", "role": "bk_narrator", "text": "Над проспектом пронёсся второй истребитель.", "speed": 1.08},
+  {"id": "s12", "role": "bk_narrator", "text": "Светофоры погасли. Улицы заполнились людьми.", "speed": 1.08},
+  {"id": "s13", "role": "bk_narrator", "text": "Люди бежали прямо перед бамперами.", "speed": 1.08},
+  {"id": "s14", "role": "bk_dias", "text": "Аружан?!", "speed": 1.0},
+  {"id": "s15", "role": "bk_alikhan", "text": "До Арбата полтора километра. Минут двадцать.", "speed": 1.05},
+  {"id": "s16", "role": "bk_narrator", "text": "И вдруг сверху донеслись удары и скрежет.", "speed": 1.08},
+  {"id": "s17", "role": "bk_narrator", "text": "Вниз по склону нёсся тяжёлый самосвал.", "speed": 1.08},
+  {"id": "s18", "role": "bk_narrator", "text": "Водитель жал на тормоз. Педаль проваливалась.", "speed": 1.08},
+  {"id": "s19", "role": "bk_narrator", "text": "И он не тормозил.", "speed": 0.95, "fx": "whisper"}
+ ]
+}
