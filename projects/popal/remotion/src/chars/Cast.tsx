@@ -110,7 +110,7 @@ export const Succubus: React.FC<{ x: number; y: number; s?: number; t: number; m
   </g>); };
 
 // ───── Адский гусь: начало координат — между лапами ─────
-export const Goose: React.FC<{ x: number; y: number; s?: number; t: number; state?: 'stand' | 'attack' | 'ko' | 'fly'; flap?: number; neck?: number; honk?: number; flip?: boolean; rot?: number }> = ({ x, y, s = 1, t, state = 'stand', flap = 0, neck = 0, honk = 0, flip, rot = 0 }) => {
+export const Goose: React.FC<{ x: number; y: number; s?: number; t: number; state?: 'stand' | 'attack' | 'ko' | 'fly'; flap?: number; neck?: number; honk?: number; flip?: boolean; rot?: number; evil?: number }> = ({ x, y, s = 1, t, state = 'stand', flap = 0, neck = 0, honk = 0, flip, rot = 0, evil = 1 }) => {
   const ko = state === 'ko', b = blink(t, 3), wing = state === 'fly' ? Math.sin(t * 18) * .8 : flap;
   const nx = 60 + neck * 70, ny = -330 + neck * 90, smoke = (t * 2) % 1;
   return (<g transform={`translate(${x},${y}) rotate(${rot}) scale(${(flip ? -1 : 1) * s},${s})`}>
@@ -125,16 +125,16 @@ export const Goose: React.FC<{ x: number; y: number; s?: number; t: number; stat
     <path d={`M40,-220 C70,-270 ${nx - 30},${ny + 60} ${nx},${ny + 20}`} stroke="#fbfbfb" strokeWidth={70} fill="none" strokeLinecap="round" />
     <g transform={`translate(${nx},${ny})`}>
       <ellipse cx={0} cy={0} rx={62} ry={56} fill="#fbfbfb" />
-      {[-1, 1].map(sd => <path key={sd} d={`M${sd * 20},-44 Q${sd * 34},-90 ${sd * 10 + 30},-96 Q${sd * 22},-70 ${sd * 6 + 10},-48 Z`} fill="#c21d2a" />)}
+      {evil > 0 && <g transform={`translate(0,-44) scale(${evil}) translate(0,44)`}>{[-1, 1].map(sd => <path key={sd} d={`M${sd * 20},-44 Q${sd * 34},-90 ${sd * 10 + 30},-96 Q${sd * 22},-70 ${sd * 6 + 10},-48 Z`} fill="#c21d2a" />)}</g>}
       {/* клюв */}
       <path d={`M40,-10 L${120 + honk * 10},${-4 - honk * 18} L44,${12} Z`} fill="#ff8a1f" /><path d={`M42,12 L${116},${14 + honk * 34} L40,24 Z`} fill="#e66a10" />
       {honk > .1 && <path d={`M48,10 L108,${10 + honk * 20} L48,20 Z`} fill="#6a1010" />}
       <circle cx={46} cy={-2} r={5} fill="#7a3a10" />
       {/* глаз */}
       {ko ? <path d="M0,-30 L24,-6 M24,-30 L0,-6" stroke="#2a1a1a" strokeWidth={7} strokeLinecap="round" />
-        : <g><circle cx={14} cy={-18} r={17} fill="#ffeaea" /><circle cx={18} cy={-18} r={10 * b} fill="#e5383b" /><circle cx={20} cy={-20} r={3.5 * b} fill="#fff" />
-          <path d="M-8,-42 L36,-28" stroke="#2a1a1a" strokeWidth={9} strokeLinecap="round" /></g>}
-      {!ko && <g opacity={1 - smoke}><circle cx={128 + smoke * 40} cy={-30 - smoke * 50} r={10 + smoke * 18} fill="#9a9aa8" opacity={.5} /></g>}
+        : <g><circle cx={14} cy={-18} r={17} fill="#ffeaea" /><circle cx={18} cy={-18} r={10 * b} fill={evil > .5 ? "#e5383b" : "#1a1a1a"} /><circle cx={20} cy={-20} r={3.5 * b} fill="#fff" />
+          <path d="M-8,-42 L36,-28" stroke="#2a1a1a" strokeWidth={9} strokeLinecap="round" opacity={evil} /></g>}
+      {!ko && evil > .5 && <g opacity={1 - smoke}><circle cx={128 + smoke * 40} cy={-30 - smoke * 50} r={10 + smoke * 18} fill="#9a9aa8" opacity={.5} /></g>}
       {ko && [0, 1, 2].map(i => { const a = t * 4 + i * 2.1; return <path key={i} transform={`translate(${Math.cos(a) * 60},${-90 + Math.sin(a) * 16})`} d="M0,-14 L4,-4 L14,-4 L6,3 L9,13 L0,7 L-9,13 L-6,3 L-14,-4 L-4,-4 Z" fill="#ffd23f" />; })}
     </g>
     {/* ошейник-шип */}
@@ -150,4 +150,75 @@ export const Slime: React.FC<{ x: number; y: number; s?: number; t: number; mout
     <ellipse cx={-30} cy={-80} rx={22} ry={12} fill="#fff" opacity={.6} transform="rotate(-25 -30 -80)" />
     {[-1, 1].map(sd => <g key={sd}><ellipse cx={sd * 26 + lk[0] * 6} cy={-52} rx={10} ry={14 * b} fill="#10302a" /><circle cx={sd * 26 + lk[0] * 6 - 3} cy={-57} r={3.5 * b} fill="#fff" /></g>)}
     <g transform="translate(0,-26)">{mouth > .06 ? <ellipse cx={0} cy={4} rx={12} ry={4 + mouth * 12} fill="#0f4a3a" /> : <path d="M-10,0 Q0,8 10,0" stroke="#0f4a3a" strokeWidth={4} fill="none" strokeLinecap="round" />}</g>
+  </g>); };
+
+// ───── Король демонов v2 (правка пользователя): голова быка, гачи-наряд (кожаная портупея с кольцом, ошейник с шипами,
+// напульсники, кожаные штаны), огромный мускулистый торс. Начало координат — пояс по центру. ─────
+export const KingBull: React.FC<{ x: number; y: number; s?: number; t: number; mouth?: number; glow?: number; orb?: boolean; steam?: boolean }> = ({ x, y, s = 1, t, mouth = 0, glow = 1, orb = true, steam = true }) => {
+  const br = Math.sin(t * 1.3) * 5, hy = -560 + br, fl = .82 + .18 * Math.sin(t * 13) * Math.sin(t * 7), sk = '#8a2230', skSh = '#5e141f', skHi = '#a8343f';
+  const puff = (sd: number) => { const k = (t * .9 + (sd > 0 ? .5 : 0)) % 1; return <circle cx={sd * (40 + k * 70)} cy={60 + k * 60} r={14 + k * 40} fill="#d8c8d0" opacity={.45 * (1 - k)} />; };
+  return (<g transform={`translate(${x},${y}) scale(${s})`}>
+    <defs><radialGradient id="kbEye"><stop offset="0" stopColor="#fff3c0" /><stop offset=".35" stopColor="#ff7a1a" /><stop offset="1" stopColor="#ff2a00" stopOpacity="0" /></radialGradient>
+      <linearGradient id="kbCape" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#4a0812" /><stop offset="1" stopColor="#14030a" /></linearGradient>
+      <linearGradient id="kbLeather" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#0c0a0e" /><stop offset=".45" stopColor="#2c2630" /><stop offset="1" stopColor="#0c0a0e" /></linearGradient></defs>
+    <path d="M-380,80 L-300,-420 Q0,-500 300,-420 L380,80 Z" fill="url(#kbCape)" />
+    {/* руки: бицепсы, напульсники с шипами */}
+    {[-1, 1].map(sd => <g key={sd}>
+      <path d={`M${sd * 230},-400 C${sd * 330},-380 ${sd * 350},-250 ${sd * 320},-140 C${sd * 300},-60 ${sd * 250},-20 ${sd * 220},20 L${sd * 160},-10 C${sd * 200},-90 ${sd * 210},-200 ${sd * 190},-330 Z`} fill={sk} />
+      <path d={`M${sd * 300},-330 C${sd * 330},-280 ${sd * 330},-220 ${sd * 310},-180`} stroke={skHi} strokeWidth={14} fill="none" opacity={.6} strokeLinecap="round" />
+      <g transform={`translate(${sd * 220},0) rotate(${sd * 20})`}><rect x={-60} y={-40} width={120} height={56} rx={14} fill="#111015" />{[-36, -12, 12, 36].map(cx => <path key={cx} d={`M${cx - 9},-40 L${cx},-66 L${cx + 9},-40 Z`} fill="#c8c8d0" />)}</g></g>)}
+    {/* торс: грудь, пресс */}
+    <path d="M-240,40 L-250,-420 Q0,-470 250,-420 L240,40 Z" fill={sk} />
+    <path d="M-230,-420 Q-120,-300 -10,-330 L-10,-250 Q-130,-220 -230,-280 Z" fill={skSh} opacity={.55} /><path d="M230,-420 Q120,-300 10,-330 L10,-250 Q130,-220 230,-280 Z" fill={skSh} opacity={.55} />
+    <path d="M-200,-300 Q-110,-250 -14,-270 M200,-300 Q110,-250 14,-270" stroke={skSh} strokeWidth={10} fill="none" strokeLinecap="round" />
+    {[0, 1, 2].map(r => [-1, 1].map(sd => <rect key={`${r}${sd}`} x={sd > 0 ? 14 : -94} y={-210 + r * 70} width={80} height={58} rx={22} fill={skHi} opacity={.45} />))}
+    <path d="M0,-260 L0,20" stroke={skSh} strokeWidth={8} opacity={.6} />
+    {/* гачи-портупея: ремни крест-накрест к кольцу, ремень под грудью */}
+    <path d="M-200,-430 L-20,-250 M200,-430 L20,-250" stroke="#141118" strokeWidth={34} strokeLinecap="round" />
+    <path d="M-200,-430 L-20,-250 M200,-430 L20,-250" stroke="#3a3440" strokeWidth={8} opacity={.7} />
+    <path d="M-245,-230 Q0,-200 245,-230" stroke="#141118" strokeWidth={30} fill="none" />
+    <circle cx={0} cy={-240} r={40} fill="none" stroke="#d8d8e0" strokeWidth={14} /><circle cx={-8} cy={-252} r={8} fill="#fff" opacity={.8} />
+    {[-150, -75, 75, 150].map(cx => <circle key={cx} cx={cx} cy={-222} r={8} fill="#c8c8d0" />)}
+    {/* кожаные штаны и пряжка-череп */}
+    <path d="M-250,20 L250,20 L270,120 L-270,120 Z" fill="url(#kbLeather)" /><rect x={-260} y={0} width={520} height={44} rx={8} fill="#1a161c" />
+    <g transform="translate(0,22)"><rect x={-46} y={-30} width={92} height={60} rx={10} fill="#b8902a" /><circle cx={0} cy={-2} r={18} fill="#2a1a10" /><path d="M-8,10 L8,10" stroke="#2a1a10" strokeWidth={5} /></g>
+    {/* ошейник с шипами */}
+    <rect x={-120} y={-470} width={240} height={50} rx={18} fill="#141118" />{[-90, -45, 0, 45, 90].map(cx => <path key={cx} d={`M${cx - 12},-470 L${cx},-510 L${cx + 12},-470 Z`} fill="#d0d0d8" />)}
+    {/* голова быка */}
+    <g transform={`translate(0,${hy})`}>
+      {[-1, 1].map(sd => <g key={sd}><path d={`M${sd * 90},-90 C${sd * 200},-110 ${sd * 300},-170 ${sd * 320},-300 C${sd * 330},-230 ${sd * 260},-130 ${sd * 120},-40 Z`} fill="#e8dcc0" />
+        <path d={`M${sd * 290},-230 C${sd * 310},-260 ${sd * 320},-280 ${sd * 320},-300 C${sd * 300},-260 ${sd * 280},-240 ${sd * 260},-220 Z`} fill="#2a2420" />
+        <ellipse cx={sd * 150} cy={-40} rx={60} ry={26} fill={skSh} transform={`rotate(${sd * -25} ${sd * 150} -40)`} /></g>)}
+      <path d="M-120,-60 C-140,-170 -60,-200 0,-200 C60,-200 140,-170 120,-60 C110,0 90,40 80,80 L-80,80 C-90,40 -110,0 -120,-60 Z" fill="#3a1418" />
+      <path d="M-40,-200 L-24,-250 L-8,-205 L0,-262 L8,-205 L24,-250 L40,-200 Z" fill="#1a1418" stroke="#b8902a" strokeWidth={5} />
+      {/* надбровье и глаза */}
+      <path d="M-110,-80 Q-55,-110 -10,-70 M110,-80 Q55,-110 10,-70" stroke="#1a0608" strokeWidth={22} fill="none" strokeLinecap="round" />
+      {[-1, 1].map(sd => <g key={sd}><circle cx={sd * 55} cy={-60} r={50 * glow} fill="url(#kbEye)" opacity={fl} /><path d={`M${sd * 30},-64 L${sd * 82},-58 L${sd * 34},-50 Z`} fill="#fff0b0" /></g>)}
+      {/* морда, ноздри, кольцо */}
+      <path d="M-90,40 C-100,120 -60,170 0,172 C60,170 100,120 90,40 Z" fill="#5a2026" />
+      {[-1, 1].map(sd => <ellipse key={sd} cx={sd * 40} cy={110} rx={18} ry={24} fill="#1a0608" />)}
+      <circle cx={0} cy={150} r={32} fill="none" stroke="#e0b030" strokeWidth={10} />
+      <path d={`M-50,${150 + mouth * 10} Q0,${168 + mouth * 40} 50,${150 + mouth * 10}`} stroke="#1a0608" strokeWidth={7} fill={mouth > .1 ? '#2a0408' : 'none'} />
+      {steam && <g>{puff(-1)}{puff(1)}</g>}
+    </g>
+    {orb && <g transform="translate(250,-100)"><circle cx={0} cy={-60} r={95} fill="#ff3a3a" opacity={.2} /><circle cx={0} cy={-60} r={78} fill="#2a0a14" opacity={.9} /><circle cx={0} cy={-60} r={78} fill="none" stroke="#ff8a8a" strokeWidth={5} />
+      <ellipse cx={-26} cy={-92} rx={22} ry={12} fill="#fff" opacity={.3} transform="rotate(-30 -26 -92)" /></g>}
+  </g>); };
+
+// ───── Чиби-Желе: огромные глаза с бликами, румянец, ручки-отростки (финальный вопрос зрителям) ─────
+export const ChibiSlime: React.FC<{ x: number; y: number; s?: number; t: number; mouth?: number; point?: number; look?: number }> = ({ x, y, s = 1, t, mouth = 0, point = 0, look = 0 }) => {
+  const hop = Math.abs(Math.sin(t * 3.2)), sq = 1 - hop, b = blink(t, 17);
+  return (<g transform={`translate(${x},${y - hop * 60}) scale(${s * (1 + sq * .08)},${s * (1 - sq * .08)})`}>
+    <defs><radialGradient id="cslg" cx=".4" cy=".3"><stop offset="0" stopColor="#d8fff0" /><stop offset=".55" stopColor="#52e0b0" /><stop offset="1" stopColor="#1f9e7a" /></radialGradient></defs>
+    <ellipse cx={0} cy={hop * 60 + 4} rx={150 * (1 - hop * .3)} ry={22} fill="#000" opacity={.2} />
+    {/* ручки */}
+    <path d={`M-120,-90 Q-200,${-90 - point * 120 * (look < 0 ? 1 : .2)} -230,${-60 - point * 160 * (look < 0 ? 1 : .2)}`} stroke="#3ec99a" strokeWidth={34} fill="none" strokeLinecap="round" />
+    <path d={`M120,-90 Q200,${-90 - point * 120 * (look > 0 ? 1 : .2)} 230,${-60 - point * 160 * (look > 0 ? 1 : .2)}`} stroke="#3ec99a" strokeWidth={34} fill="none" strokeLinecap="round" />
+    <path d="M-170,0 C-190,-110 -120,-250 0,-252 C120,-250 190,-110 170,0 Q0,22 -170,0 Z" fill="url(#cslg)" />
+    <ellipse cx={-70} cy={-190} rx={44} ry={22} fill="#fff" opacity={.65} transform="rotate(-25 -70 -190)" />
+    {[-1, 1].map(sd => <g key={sd} transform={`translate(${sd * 62 + look * 14},-118)`}>
+      <ellipse cx={0} cy={0} rx={40} ry={52 * b} fill="#0f3a30" /><ellipse cx={0} cy={10 * b} rx={30} ry={30 * b} fill="#1f6a58" />
+      <circle cx={-12} cy={-20 * b} r={15 * b} fill="#fff" /><circle cx={14} cy={18 * b} r={7 * b} fill="#fff" /></g>)}
+    <ellipse cx={-110} cy={-70} rx={26} ry={13} fill="#ff8aa6" opacity={.6} /><ellipse cx={110} cy={-70} rx={26} ry={13} fill="#ff8aa6" opacity={.6} />
+    <g transform="translate(0,-62)">{mouth > .06 ? <path d={`M-22,0 Q0,${8 + mouth * 40} 22,0 Z`} fill="#0f4a3a" /> : <path d="M-16,0 Q0,12 16,0" stroke="#0f4a3a" strokeWidth={6} fill="none" strokeLinecap="round" />}</g>
   </g>); };

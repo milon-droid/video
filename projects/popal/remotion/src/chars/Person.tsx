@@ -9,7 +9,7 @@ export type Limb = [number, number];
 export type Pose = { armL: Limb; armR: Limb; legL: Limb; legR: Limb; lean?: number; hip?: number };
 export type Look = 'max' | 'courier';
 export type PersonProps = { x: number; y: number; s?: number; t: number; look?: Look; pose?: Partial<Pose>; expr?: Expr; mouth?: number; eye?: [number, number];
-  headTilt?: number; rot?: number; hold?: 'pan' | 'phone' | 'burger' | null; panGlow?: number; squash?: number; lid?: number; noBlink?: boolean; sweat?: number; blush?: number; flip?: boolean; shadow?: boolean };
+  headTilt?: number; rot?: number; hold?: 'pan' | 'phone' | 'burger' | 'cola' | 'doner' | null; panGlow?: number; squash?: number; lid?: number; noBlink?: boolean; sweat?: number; blush?: number; flip?: boolean; shadow?: boolean };
 
 const pt = (x: number, y: number, a: number, l: number): [number, number] => [x + Math.sin(a) * l, y + Math.cos(a) * l];
 // трапеция-звено с круглыми концами (рукав, штанина)
@@ -107,6 +107,13 @@ export const PhoneProp: React.FC<{ lit?: number }> = ({ lit = 1 }) => (<g><rect 
 export const Burger: React.FC = () => (<g><path d="M-50,0 Q-50,-44 0,-46 Q50,-44 50,0 Z" fill="#e0a050" /><rect x={-54} y={0} width={108} height={12} rx={6} fill="#5ab04a" /><rect x={-52} y={10} width={104} height={16} rx={8} fill="#6b3b22" /><path d="M-50,26 L50,26 Q48,44 0,46 Q-48,44 -50,26 Z" fill="#d99848" />
   {[-25, 0, 22].map(x => <ellipse key={x} cx={x} cy={-30} rx={4} ry={2.5} fill="#fff3c8" />)}</g>);
 
+export const Cola: React.FC = () => (<g><path d="M-26,70 L-26,-30 Q-26,-56 -12,-70 L-12,-92 L12,-92 L12,-70 Q26,-56 26,-30 L26,70 Q26,80 16,80 L-16,80 Q-26,80 -26,70 Z" fill="#5a1a14" opacity={.92} />
+  <rect x={-28} y={-6} width={56} height={46} fill="#e5383b" /><text x={0} y={24} fontSize={17} fontWeight={900} textAnchor="middle" fill="#fff" fontFamily="Mont">КОЛА</text>
+  <rect x={-14} y={-104} width={28} height={14} rx={4} fill="#e5383b" /><path d="M-16,-40 L-16,60" stroke="#fff" strokeWidth={5} opacity={.3} /></g>);
+export const Doner: React.FC = () => (<g><path d="M-46,-60 Q0,-100 46,-60 L30,80 Q0,96 -30,80 Z" fill="#e8c890" />
+  <path d="M-40,-62 Q-20,-84 0,-70 Q20,-88 40,-62 L36,-40 Q0,-56 -36,-40 Z" fill="#8a4a2a" />{[-24, 0, 22].map(x => <ellipse key={x} cx={x} cy={-70} rx={10} ry={6} fill="#5ab04a" />)}
+  <ellipse cx={-10} cy={-58} rx={8} ry={5} fill="#e5383b" />
+  <path d="M-38,0 L38,0 L30,80 Q0,96 -30,80 Z" fill="#ffffff" /><path d="M-36,18 L36,18 M-34,40 L34,40 M-32,62 L32,62" stroke="#e5383b" strokeWidth={8} /></g>);
 const Hand: React.FC<{ x: number; y: number; a: number; skin: string; sh: string; fist?: boolean }> = ({ x, y, a, skin, sh, fist }) => (
   <g transform={`translate(${x},${y}) rotate(${-a * 180 / Math.PI})`}>
     <ellipse cx={0} cy={12} rx={20} ry={22} fill={skin} />
@@ -130,7 +137,7 @@ export const Person: React.FC<PersonProps> = (p) => {
     return (<g key={'a' + side}>{seg(sp, el, 54, 46, L.top, 'u')}{seg(el, wr, 46, 40, L.top, 'f')}
       <path d={`M${el[0]},${el[1]} L${wr[0]},${wr[1]}`} stroke={L.topSh} strokeWidth={8} opacity={.35} />
       {holdIt && <g transform={`translate(${wr[0] + Math.sin(fa) * 26},${wr[1] + Math.cos(fa) * 26}) rotate(${-fa * 180 / Math.PI + 180})`}>
-        {p.hold === 'pan' ? <Pan glow={p.panGlow} t={t} /> : p.hold === 'phone' ? <g transform="translate(0,-40)"><PhoneProp /></g> : <g transform="translate(0,-40)"><Burger /></g>}</g>}
+        {p.hold === 'pan' ? <Pan glow={p.panGlow} t={t} /> : p.hold === 'phone' ? <g transform="translate(0,-40)"><PhoneProp /></g> : p.hold === 'cola' ? <g transform="translate(0,-50)"><Cola /></g> : p.hold === 'doner' ? <g transform="translate(0,-60)"><Doner /></g> : <g transform="translate(0,-40)"><Burger /></g>}</g>}
       <Hand x={wr[0]} y={wr[1]} a={fa} skin={L.skin} sh={L.skinSh} fist={!!holdIt} /></g>); };
   const headY = shY - 128, ht = (p.headTilt ?? 0) + noise('ht' + p.x, t, .3) * 2.5;
   const isCourier = p.look === 'courier';

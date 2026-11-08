@@ -159,3 +159,81 @@ export const Crossroads: React.FC<{ t: number }> = ({ t }) => (<g>
   <path d="M500,1260 Q300,1200 0,1250 L0,1320 Q300,1260 500,1320 Z" fill="#c9a77a" /><path d="M580,1260 Q780,1200 1080,1240 L1080,1310 Q780,1260 580,1320 Z" fill="#c9a77a" />
   {Array.from({ length: 12 }, (_, i) => { const x = i * 95, h = 60 + hash(i) * 40; return <path key={i} d={`M${x},1920 Q${x + 6 + Math.sin(t * 2 + i) * 6},${1920 - h} ${x + 14},${1920 - h * 1.6}`} stroke="#3f6a3a" strokeWidth={10} fill="none" />; })}
 </g>);
+
+// ───── Квартира Макса ночью: окно с городом, лампа, диван, свет экрана ─────
+export const Apartment: React.FC<{ t: number }> = ({ t }) => (<g>
+  <defs><linearGradient id="apW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2a2a48" /><stop offset="1" stopColor="#3c3456" /></linearGradient></defs>
+  <rect width={1080} height={1920} fill="url(#apW)" />
+  {/* окно с ночным городом */}
+  <rect x={120} y={300} width={560} height={640} rx={10} fill="#141a38" stroke="#4a4466" strokeWidth={20} />
+  {[[150, 620, 90], [250, 520, 110], [370, 660, 90], [470, 560, 120], [600, 640, 70]].map(([x, y, w], i) => <g key={i}><rect x={x} y={y} width={w} height={930 - y} fill="#1e2650" />
+    {Array.from({ length: 12 }, (_, j) => hash(i * 20 + j) > .5 ? <rect key={j} x={x + 10 + (j % 3) * (w - 20) / 3} y={y + 16 + Math.floor(j / 3) * 46} width={14} height={22} fill="#ffd27a" opacity={.7} /> : null)}</g>)}
+  <path d="M400,300 L400,940 M120,620 L680,620" stroke="#4a4466" strokeWidth={14} />
+  <circle cx={580} cy={390} r={34} fill="#fff6ee" opacity={.9} />
+  {/* постер и полка */}
+  <rect x={760} y={360} width={200} height={280} rx={8} fill="#e5383b" opacity={.8} /><circle cx={860} cy={470} r={60} fill="#ffd23f" opacity={.9} /><text x={860} y={600} fontSize={30} fontWeight={900} textAnchor="middle" fill="#fff" fontFamily="Mont">ANIME</text>
+  {/* лампа */}
+  <rect x={900} y={820} width={14} height={480} fill="#1a1a2a" /><path d="M850,820 L964,820 L930,740 L884,740 Z" fill="#ffd27a" />
+  <Glow x={907} y={860} r={420} c="#ffc070" o={.55} id="apL" />
+  {/* пол и диван */}
+  <rect x={0} y={1280} width={1080} height={640} fill="#2a2236" />
+  <path d="M60,1560 L60,1280 Q60,1210 140,1210 L940,1210 Q1020,1210 1020,1280 L1020,1560 Z" fill="#5a4a7a" />
+  <rect x={40} y={1360} width={1000} height={240} rx={40} fill="#6e5a92" /><rect x={40} y={1360} width={1000} height={40} rx={20} fill="#7e6aa2" />
+  <rect x={0} y={1600} width={1080} height={320} fill="#221c2e" />
+</g>);
+
+// ───── Кухня, открытый холодильник ─────
+export const Fridge: React.FC<{ t: number; open: number }> = ({ t, open }) => (<g>
+  <rect width={1080} height={1920} fill="#1c1a2c" />
+  <rect x={0} y={1500} width={1080} height={420} fill="#2a2638" />
+  <rect x={170} y={260} width={560} height={1300} rx={30} fill="#d8dce8" />
+  <rect x={190} y={290} width={520} height={1240} rx={20} fill={open > 0 ? '#f6fbff' : '#c8ccd8'} />
+  {open > 0 && <g opacity={open}>
+    <Glow x={450} y={800} r={900} c="#e6f4ff" o={.75} id="frG" />
+    {[560, 860, 1160].map(y => <rect key={y} x={200} y={y} width={500} height={12} fill="#b8c8d8" />)}
+    <g transform="translate(330,830)"><ellipse cx={0} cy={0} rx={40} ry={30} fill="#f2e04a" /><ellipse cx={-10} cy={-8} rx={12} ry={6} fill="#fff" opacity={.5} /></g>
+    <g transform="translate(560,1130)"><rect x={-22} y={-90} width={44} height={90} rx={10} fill="#e5383b" /><rect x={-10} y={-110} width={20} height={22} fill="#ffd23f" /></g>
+    <text x={450} y={1300} fontSize={30} fontWeight={800} textAnchor="middle" fill="#9aa8b8" fontFamily="Mont">…и всё</text>
+  </g>}
+  {/* дверца */}
+  <g transform={`translate(730,290) scale(${1 - open * .82},1)`}><rect x={-540} y={0} width={540} height={1240} rx={20} fill="#c8ccd8" /><rect x={-60} y={300} width={22} height={300} rx={11} fill="#8a90a0" /></g>
+</g>);
+
+// ───── Земли демонов: багровое небо, чёрные пики, реки лавы, замок с черепом быка ─────
+export const HellLand: React.FC<{ t: number; lightning?: number }> = ({ t, lightning = 0 }) => (<g>
+  <defs><linearGradient id="hlS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#1a0408" /><stop offset=".5" stopColor="#6a0e14" /><stop offset=".8" stopColor="#c8381a" /><stop offset="1" stopColor="#ff7a2a" /></linearGradient></defs>
+  <rect width={1080} height={1920} fill="url(#hlS)" />
+  <circle cx={760} cy={420} r={110} fill="#ff5a3a" opacity={.85} /><Glow x={760} y={420} r={320} c="#ff3a1a" o={.5} id="hmoon" />
+  <path d="M0,1100 L120,780 L220,980 L330,640 L460,960 L560,720 L700,1000 L820,700 L960,960 L1080,760 L1080,1300 L0,1300 Z" fill="#14060a" />
+  {/* замок с черепом быка */}
+  <g transform="translate(540,1080)"><Glow x={0} y={-200} r={420} c="#ff2a2a" o={.4 + lightning * .4} id="hcg" />
+    <path d="M-220,60 L-220,-260 L-170,-260 L-170,-380 L-140,-460 L-110,-380 L-110,-260 L-40,-260 L-40,-480 L0,-580 L40,-480 L40,-260 L110,-260 L110,-380 L140,-460 L170,-380 L170,-260 L220,-260 L220,60 Z" fill="#0a0306" />
+    <g transform="translate(0,-150)"><path d="M-60,-30 C-130,-50 -170,-110 -170,-160 C-140,-110 -100,-80 -50,-70 Z M60,-30 C130,-50 170,-110 170,-160 C140,-110 100,-80 50,-70 Z" fill="#e8dcc0" />
+      <path d="M-50,-80 Q0,-100 50,-80 L40,40 Q0,70 -40,40 Z" fill="#e8dcc0" /><ellipse cx={-20} cy={-30} rx={12} ry={16} fill="#ff3a1a" /><ellipse cx={20} cy={-30} rx={12} ry={16} fill="#ff3a1a" /></g>
+    {lightning > 0 && <path d="M0,-580 L-50,-760 L10,-740 L-40,-960" stroke="#ff8a8a" strokeWidth={10} fill="none" opacity={lightning} />}</g>
+  {/* реки лавы */}
+  <path d="M0,1300 L1080,1300 L1080,1920 L0,1920 Z" fill="#1a0a0c" />
+  <path d="M-40,1920 C200,1700 300,1560 520,1420 C700,1310 860,1330 1120,1280 L1120,1360 C880,1400 720,1400 560,1500 C380,1620 300,1760 140,1920 Z" fill="#ff5a1a" />
+  <path d="M60,1920 C240,1720 340,1590 540,1470 C700,1380 860,1370 1120,1330" stroke="#ffd26a" strokeWidth={14} fill="none" opacity={.6 + .3 * Math.sin(t * 3)} />
+  <Glow x={540} y={1500} r={700} c="#ff4a1a" o={.45} id="hlava" />
+  <Motes n={30} t={t} c="#ffb04a" seed={9} area={[0, 600, 1080, 1300]} vy={-70} size={7} />
+</g>);
+
+// ───── Развилка: только две дороги — к эльфийкам (лес) и к дракону (гора) ─────
+export const Fork: React.FC<{ t: number }> = ({ t }) => (<g>
+  <defs><linearGradient id="fkS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#5a3a8a" /><stop offset=".55" stopColor="#ff9a7a" /><stop offset="1" stopColor="#ffd59a" /></linearGradient></defs>
+  <rect width={1080} height={1920} fill="url(#fkS)" />
+  <circle cx={540} cy={980} r={120} fill="#fff1c0" /><Glow x={540} y={980} r={480} c="#fff0b0" o={.6} id="fkSun" />
+  {/* слева светящийся лес эльфиек */}
+  {Array.from({ length: 7 }, (_, i) => <path key={i} d={`M${-40 + i * 70},1180 L${-10 + i * 70},${700 + (i % 3) * 70} L${20 + i * 70 + 30},1180 Z`} fill={i % 2 ? '#2f7a52' : '#245e40'} />)}
+  <Glow x={200} y={980} r={300} c="#7dffb0" o={.5} id="fkElf" />
+  {/* справа гора дракона с дымом */}
+  <path d="M600,1180 L800,700 L880,780 L960,640 L1120,1180 Z" fill="#3a2430" /><ellipse cx={880} cy={960} rx={70} ry={50} fill="#140808" />
+  {[-1, 1].map(sd => <ellipse key={sd} cx={880 + sd * 26} cy={958} rx={12} ry={6} fill="#ffd23f" opacity={.6 + .4 * Math.sin(t * 2)} />)}
+  {Array.from({ length: 4 }, (_, i) => { const k = (t * .4 + i * .25) % 1; return <circle key={i} cx={960 + Math.sin(i + t) * 30} cy={620 - k * 300} r={30 + k * 70} fill="#7a6a6a" opacity={.35 * (1 - k)} />; })}
+  <path d="M0,1150 Q540,1100 1080,1150 L1080,1920 L0,1920 Z" fill="#6a8a5a" />
+  {/* две дороги из одной точки */}
+  <path d="M470,1920 L520,1400 L560,1400 L610,1920 Z" fill="#c9a77a" />
+  <path d="M520,1410 Q360,1300 120,1200 L180,1180 Q400,1260 540,1380 Z" fill="#c9a77a" /><path d="M560,1410 Q720,1300 940,1190 L880,1170 Q680,1260 540,1380 Z" fill="#c9a77a" />
+  {Array.from({ length: 12 }, (_, i) => { const x = i * 95, h = 60 + hash(i) * 40; return <path key={i} d={`M${x},1920 Q${x + 6 + Math.sin(t * 2 + i) * 6},${1920 - h} ${x + 14},${1920 - h * 1.6}`} stroke="#3f6a3a" strokeWidth={10} fill="none" />; })}
+</g>);

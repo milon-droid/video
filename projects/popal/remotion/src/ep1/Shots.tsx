@@ -65,7 +65,7 @@ export const Title: React.FC<P> = ({ t, T }) => { const s = shake(t, .05, 16, .3
 export const Courier: React.FC<P> = ({ t, T }) => { const m = mouth('courier', T), z = lerp(1, 1.06, io(win(t, 0, 3)));
   return (<Frame bg="#0b1430"><Cam z={z}><g transform="rotate(180 540 960)"><Street t={T} /></g><rect width={1080} height={1920} fill="#0b1430" opacity={.35} />
     <Glow x={540} y={500} r={600} c="#ffd27a" o={.35} id="cg1" />
-    <Person x={520} y={2330} s={2.0} t={T} look="courier" hold="burger" pose={{ armR: [2.2, .5], armL: [-.4, .3], lean: .08 }} headTilt={12} />
+    <Person x={520} y={2330} s={2.0} t={T} look="courier" hold="doner" pose={{ armR: [2.2, .5], armL: [-.4, .3], lean: .08 }} headTilt={12} />
     {/* огоньки голоса на шлеме */}
     {[0, 1, 2, 3, 4].map(i => <rect key={i} x={430 + i * 36} y={770 - m * 40 * (1 - Math.abs(i - 2) / 3)} width={22} height={10 + m * 80 * (1 - Math.abs(i - 2) / 3)} rx={6} fill="#9ee8ff" opacity={.9} transform="rotate(12 520 770)" />)}
   </Cam></Frame>); };
@@ -85,7 +85,7 @@ export const Visor: React.FC<P> = ({ t, T }) => { const m = mouth('courier', T),
     <path d="M40,620 Q540,420 1040,620" stroke="#7a55ff" strokeWidth={26} fill="none" />
     {/* браслет-дисплей */}
     <g transform={`translate(${lerp(1200, 560, out(win(t, .9, 1.3)))},1640) rotate(-6)`}><rect x={-330} y={-90} width={660} height={180} rx={30} fill="#26203d" /><rect x={-300} y={-66} width={600} height={132} rx={18} fill="#0a1a2a" />
-      <text x={0} y={-12} fontSize={40} fontWeight={900} textAnchor="middle" fill="#9ee8ff" fontFamily="Mont">ИЗБРАННЫЙ №4096</text>
+      <text x={0} y={-12} fontSize={40} fontWeight={900} textAnchor="middle" fill="#9ee8ff" fontFamily="Mont">★ ИЗБРАННЫЙ ★</text>
       <text x={0} y={42} fontSize={40} fontWeight={900} textAnchor="middle" fill={t > 2.0 ? '#2ecc71' : '#ffd23f'} fontFamily="Mont">{t > 2.0 ? '✓ ДОСТАВЛЕН' : 'ДОСТАВКА…'}</text></g>
   </Cam></Frame>);
   // общий план: курьер уезжает в портал на самокате
@@ -179,14 +179,14 @@ export const Monday: React.FC<P> = ({ t, T }) => (<Frame bg="#b9d4ef"><Cam z={le
 </Cam></Frame>);
 
 // ───────────────────────── 12. ИНФО-СТЕНД: ЗАКОН №2 (СИСТЕМА) ─────────────────────────
-export const Lore2: React.FC<P> = ({ t, T }) => { const ins = t > 5.55 && t < 6.75;
+export const Lore2: React.FC<P> = ({ t, T }) => { const ins = false;
   if (ins) return (<Frame bg="#d7ecff"><Cam z={lerp(1.15, 1.2, (t - 5.55) / 1.2)} fy={800}><Counter t={T} /><Lumina x={540} y={1400} s={1.7} t={T} mouth={mouth('lumina', T)} expr="point" /></Cam></Frame>);
   const bar = (x: number, k: number, col: string) => <g><rect x={x} y={0} width={500} height={34} rx={17} fill="rgba(255,255,255,.12)" /><rect x={x} y={0} width={500 * k} height={34} rx={17} fill={col} /></g>;
   const art = (<g>{[['⚔ СИЛА', '#ff8a5a', .2, .35], ['❤ ЗДОРОВЬЕ', '#ff4a6a', 1.05, .3], ['✦ АУРА', '#ffc94d', 2.4, .9]].map(([nm, col, t0, val], i) => { const k = out(win(t, t0 as number, (t0 as number) + .5));
     return (<g key={i} transform={`translate(0,${40 + i * 120})`} opacity={clamp(k * 2)}><text x={0} y={28} fontSize={40} fontWeight={900} fill={col as string} fontFamily="Mont">{nm}</text><g transform="translate(320,0)">{bar(0, k * (val as number), col as string)}</g>
       {i === 2 && <g opacity={out(win(t, 2.6, 3.2))}><text x={320} y={84} fontSize={28} fontWeight={800} fill="#ffe7a0" fontFamily="Mont">+ победы  + эпичные моменты</text></g>}</g>); })}</g>);
   return <InfoStand t={t} num="ЗАКОН №2" title="Система героя" art={art} col="#ffc94d" top={380}
-    lines={[{ t: .3, icon: '⬆', text: 'Сила и здоровье — растут с опытом' }, { t: 2.5, icon: '✦', text: 'Аура — только за победы и эпик', col: '#ffc94d', big: true }, { t: 6.75, icon: '✖', text: 'Опозорился — МИНУС АУРА', col: '#ff5a5a', big: true }]} />; };
+    lines={[{ t: .3, icon: '⬆', text: 'Сила и здоровье — растут с опытом' }, { t: 2.5, icon: '✦', text: 'Аура — только за победы и эпик', col: '#ffc94d', big: true }, { t: 4.6, icon: '✖', text: 'Опозорился — МИНУС АУРА', col: '#ff5a5a', big: true }]} />; };
 
 // ───────────────────────── 13. АВТОМАТ «ДАР» ─────────────────────────
 const SlotBody: React.FC<{ t: number; lever: number; lights: number }> = ({ t, lever, lights }) => (<g>
@@ -257,6 +257,7 @@ export const SlimeShot: React.FC<P> = ({ t, T }) => { const maxT = t > 2.2;
     <clipPath id="waist"><rect x={0} y={0} width={1080} height={1470} /></clipPath>
     <g clipPath="url(#waist)"><Person x={540} y={1800} s={1.35} t={T} pose={{ armL: [-.7, .6], armR: [.7, -.6] }} expr={maxT ? 'deadpan' : 'shock'} mouth={mouth('max', T)} eye={[0, -1]} sweat={.5} /></g>
     <ellipse cx={540} cy={1470} rx={330} ry={46} fill="#bff3ff" opacity={.5} />
+    <g transform={`translate(${880 + Math.sin(t * .6) * 30},1300)`}><clipPath id="gswim"><rect x={-200} y={-400} width={400} height={400} /></clipPath><g clipPath="url(#gswim)"><Goose x={0} y={60} s={.55} t={T} evil={0} flip /></g></g>
     <Slime x={540} y={1800 - 1.35 * 600 - 50} s={1.2} t={T} mouth={mouth('slime', T)} squish={t < .4 ? 1 - t / .4 : 0} look={[0, .8]} />
     {Array.from({ length: 4 }, (_, i) => <ellipse key={i} cx={430 + i * 70} cy={1000 + ((t * 300 + i * 90) % 400)} rx={7} ry={11} fill="#bff3ff" opacity={.8} />)}
   </Cam></Frame>); };
@@ -285,7 +286,7 @@ const Strip: React.FC<{ t: number; speed: number }> = ({ t, speed }) => { const 
   return (<g><Pond t={t} />
     {[0, 1].map(k => <g key={k} transform={`translate(${-off + k * 2160},0)`}>{Array.from({ length: 9 }, (_, i) => <g key={i} transform={`translate(${i * 240 + 60},1500)`}><rect x={-30} y={-500} width={60} height={500} fill="#6a4a3a" /><circle cx={0} cy={-520} r={150} fill={i % 2 ? '#3f8a5e' : '#2f7a52'} /></g>)}</g>)}
     <rect x={0} y={1480} width={1080} height={440} fill="#5aa86a" /></g>); };
-export const Chase: React.FC<P> = ({ t, T }) => { const dist = t * 900, ph = dist / 230 * Math.PI, hit1 = .9, hit2 = 2.1, hitK = Math.max(clamp(1 - Math.abs(t - hit1) / .2), clamp(1 - Math.abs(t - hit2) / .2));
+export const Chase: React.FC<P> = ({ t, T }) => { const dist = t * 900, ph = dist / 230 * Math.PI, hit1 = 1.5, hit2 = 3.0, hitK = Math.max(clamp(1 - Math.abs(t - hit1) / .2), clamp(1 - Math.abs(t - hit2) / .2));
   const fg = (t * 2600) % 2400;
   return (<><Frame bg="#9c7ad8"><Cam z={1.05} rot={-3}><Strip t={T} speed={700} />
     <Person x={640} y={1760 - Math.abs(Math.sin(ph)) * 30 - hitK * 90} s={1.05} t={T} pose={runPose(ph)} expr={hitK > .1 ? 'pain' : 'scared'} mouth={.5} sweat={1} rot={hitK * -10} />

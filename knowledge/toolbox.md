@@ -29,6 +29,7 @@
 
 | библиотека звуков sfx-kit | github.com/wyzowl/sfx-kit (320 звуков, метаданные с точкой синхронизации) | CC0 | только WAV + JSON | основа звука роликов, `tools/get-sfx.sh` |
 | библиотека звуков Oculus Audio Pack | github.com/facebookincubator/Meta-open-sound (corpora/oculus-audio-pack) | CC BY 4.0 — указывать автора | только OGG | шаги, удары, мультяшные, голоса |
+| Vosk TTS 0.10 multi (vosk-tts, pip) | alphacephei.com/vosk/models · huggingface alphacep | Apache 2.0 | ≈ 700 МБ, CPU ~0,35× реального времени | озвучка (`tools/vo-vosk.py`): нарратор 26, парень 7, женские 49/29/46, низкий 13 |
 | yt-dlp 2026.10.26 | pip, `--user` | Unlicense | стандартный загрузчик видео | скачивание референсов (кроме YouTube из облака — бот-проверка, не обходить) |
 
 ## Рекомендованы пользователю (ставит сам через карточку плагинов)
