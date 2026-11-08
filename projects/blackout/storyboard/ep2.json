@@ -1,0 +1,1119 @@
+{
+  "episode": 2,
+  "title": "Хаос на улицах",
+  "duration": 70.66,
+  "hud": {
+    "city": "АЛМАТЫ",
+    "temp": "+6°",
+    "timeStart": "20:04",
+    "signal": "lost"
+  },
+  "characters": [
+    "dias",
+    "beka",
+    "alikhan",
+    "alisher"
+  ],
+  "scenes": [
+    {
+      "id": "e2s01",
+      "start": 0,
+      "end": 4.13,
+      "what": "дверь распахивается: Алишер в пыли, пар изо рта, луч фонарика",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "СТУЧАЛ АЛИШЕР, НАШ ДРУГ. ОН ПРИШЁЛ ПЕШКОМ ИЗ МЕТРО.",
+        "accent": [
+          "ИЗ",
+          "МЕТРО."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "drone-muffled.wav",
+          "at": 0
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 0.05
+        },
+        {
+          "id": "click",
+          "at": 0.1
+        },
+        {
+          "id": "skid",
+          "at": 0.2
+        },
+        {
+          "id": "thud",
+          "at": 0.55
+        },
+        {
+          "id": "wind",
+          "at": 0.3
+        },
+        {
+          "id": "breath_in",
+          "at": 0.7
+        },
+        {
+          "id": "breath_in",
+          "at": 1.5
+        },
+        {
+          "id": "breath_in",
+          "at": 2.3
+        },
+        {
+          "id": "breath_in",
+          "at": 3
+        }
+      ],
+      "hud": {
+        "time": "20:04",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s02",
+      "start": 4.133,
+      "end": 6.93,
+      "what": "кухня в темноте: Алишер жадно пьёт из кружки, трое светят телефонами",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "alisher",
+        "text": "ПОЕЗД ВСТАЛ ПРЯМО В ТОННЕЛЕ!",
+        "accent": [
+          "ТОННЕЛЕ!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "bloop",
+          "at": 0.3
+        },
+        {
+          "id": "bloop",
+          "at": 0.75
+        },
+        {
+          "id": "bloop",
+          "at": 1.2
+        },
+        {
+          "id": "tick",
+          "at": 0
+        },
+        {
+          "id": "tick",
+          "at": 0.55
+        },
+        {
+          "id": "tick",
+          "at": 1.1
+        },
+        {
+          "id": "tick",
+          "at": 1.65
+        },
+        {
+          "id": "tick",
+          "at": 2.2
+        }
+      ],
+      "hud": {
+        "time": "20:04",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s03",
+      "start": 6.933,
+      "end": 10.42,
+      "what": "воспоминание: вагон тормозит, люди падают вперёд, лампы гаснут",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "ВАГОН ДЁРНУЛСЯ, ЛЮДИ ПОПАДАЛИ, И СВЕТ ПОГАС.",
+        "accent": [
+          "ПОГАС."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "rewind",
+          "at": 0
+        },
+        {
+          "id": "glitch",
+          "at": 0
+        },
+        {
+          "id": "engine",
+          "at": 0.3
+        },
+        {
+          "id": "skid",
+          "at": 0.65
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 1.1
+        },
+        {
+          "id": "murmur",
+          "at": 1.15
+        },
+        {
+          "id": "click",
+          "at": 1.6
+        },
+        {
+          "id": "click",
+          "at": 1.85
+        },
+        {
+          "id": "click",
+          "at": 2.1
+        },
+        {
+          "id": "powerdown",
+          "at": 2.1
+        }
+      ],
+      "hud": {
+        "time": "20:04",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s04",
+      "start": 10.42,
+      "end": 14.02,
+      "what": "тоннель в перспективу: цепочка людей с фонариками по шпалам, впереди огонёк станции",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "ЛЮДИ ШЛИ ПО ШПАЛАМ ДО «БАЙКОНУРА» С ФОНАРИКАМИ.",
+        "accent": [
+          "ФОНАРИКАМИ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "step",
+          "at": 0.1
+        },
+        {
+          "id": "step",
+          "at": 0.4
+        },
+        {
+          "id": "step",
+          "at": 0.7
+        },
+        {
+          "id": "step",
+          "at": 1
+        },
+        {
+          "id": "step",
+          "at": 1.3
+        },
+        {
+          "id": "step",
+          "at": 1.6
+        },
+        {
+          "id": "step",
+          "at": 1.9
+        },
+        {
+          "id": "step",
+          "at": 2.2
+        },
+        {
+          "id": "step",
+          "at": 2.5
+        },
+        {
+          "id": "step",
+          "at": 2.8
+        },
+        {
+          "id": "step",
+          "at": 3.1
+        },
+        {
+          "id": "step",
+          "at": 3.4
+        },
+        {
+          "id": "hum",
+          "at": 0
+        },
+        {
+          "id": "bloop",
+          "at": 0.6
+        },
+        {
+          "id": "bloop",
+          "at": 1.7
+        },
+        {
+          "id": "bloop",
+          "at": 2.9
+        }
+      ],
+      "hud": {
+        "time": "20:01",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s05",
+      "start": 14.02,
+      "end": 18.42,
+      "what": "кухня: Алишер садится, на телефоне «Нет сети», Бека кладёт руку на плечо",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "АЛИШЕР ЖИВЁТ В КАЛКАМАНЕ. ДОМОЙ ЕМУ ТЕПЕРЬ НЕ ДОБРАТЬСЯ.",
+        "accent": [
+          "НЕ",
+          "ДОБРАТЬСЯ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "foley-fabric-slide",
+          "at": 0.3
+        },
+        {
+          "id": "foley-fabric-touch",
+          "at": 1.6
+        }
+      ],
+      "hud": {
+        "time": "20:04",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s06",
+      "start": 18.417,
+      "end": 21.42,
+      "what": "Диас у окна натягивает куртку, хватает ключи, в очках — фары внизу",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "А ДИАС ДУМАЛ ТОЛЬКО ОБ АРУЖАН.",
+        "accent": [
+          "АРУЖАН."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "foley-fabric-slide",
+          "at": 0.2
+        },
+        {
+          "id": "foley-fabric-touch",
+          "at": 0.7
+        },
+        {
+          "id": "tinkle",
+          "at": 1.9
+        }
+      ],
+      "hud": {
+        "time": "20:05",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s07a",
+      "start": 21.417,
+      "end": 23.12,
+      "what": "телефон Диаса: «Ты где? Ответь» — «Не доставлено», батарея 31%",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": null,
+      "sfx": [
+        {
+          "id": "click-tap-soft",
+          "at": 0.15
+        },
+        {
+          "id": "notification-failure-thud",
+          "at": 0.55
+        }
+      ],
+      "hud": {
+        "time": "20:05",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s07b",
+      "start": 23.117,
+      "end": 25.72,
+      "what": "лицо Диаса: решился",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "dias",
+        "text": "ОНА ЖДЁТ У КАФЕ. Я ИДУ ТУДА.",
+        "accent": [
+          "ИДУ"
+        ]
+      },
+      "sfx": [],
+      "hud": {
+        "time": "20:05",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s08",
+      "start": 25.717,
+      "end": 28.52,
+      "what": "механические часы Алихана 20:05 крупно; Бека в олимпийке",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "beka",
+        "text": "ОДНОГО НЕ ОТПУСТИМ.",
+        "accent": [
+          "НЕ",
+          "ОТПУСТИМ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "tick",
+          "at": 0
+        },
+        {
+          "id": "tick",
+          "at": 0.5
+        },
+        {
+          "id": "tick",
+          "at": 1
+        },
+        {
+          "id": "tick",
+          "at": 1.5
+        },
+        {
+          "id": "tick",
+          "at": 2
+        },
+        {
+          "id": "tick",
+          "at": 2.5
+        },
+        {
+          "id": "foley-fabric-slide",
+          "at": 0.2
+        }
+      ],
+      "hud": {
+        "time": "20:05",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s09",
+      "start": 28.517,
+      "end": 31.72,
+      "what": "лестница сверху вниз: перила спиралью, четверо бегут вниз с фонариками",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "ВЧЕТВЕРОМ МЫ ВЫШЛИ В ТЁМНЫЙ ГОРОД.",
+        "accent": [
+          "ГОРОД."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "step",
+          "at": 0.1
+        },
+        {
+          "id": "step",
+          "at": 0.3
+        },
+        {
+          "id": "step",
+          "at": 0.5
+        },
+        {
+          "id": "step",
+          "at": 0.7
+        },
+        {
+          "id": "step",
+          "at": 0.9
+        },
+        {
+          "id": "step",
+          "at": 1.1
+        },
+        {
+          "id": "step",
+          "at": 1.3
+        },
+        {
+          "id": "step",
+          "at": 1.5
+        },
+        {
+          "id": "step",
+          "at": 1.7
+        },
+        {
+          "id": "step",
+          "at": 1.9
+        },
+        {
+          "id": "step",
+          "at": 2.1
+        },
+        {
+          "id": "step",
+          "at": 2.3
+        },
+        {
+          "id": "step",
+          "at": 2.5
+        },
+        {
+          "id": "step",
+          "at": 2.7
+        },
+        {
+          "id": "hum",
+          "at": 0
+        }
+      ],
+      "hud": {
+        "time": "20:05",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s10",
+      "start": 31.717,
+      "end": 34.92,
+      "what": "двор: выходят из подъезда, листья; нарастает гул, все поднимают головы",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "И ТУТ СНОВА ЭТОТ ГУЛ.",
+        "accent": [
+          "ГУЛ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "thud",
+          "at": 0.1
+        },
+        {
+          "id": "knock",
+          "at": 0.12
+        },
+        {
+          "id": "wind",
+          "at": 0
+        },
+        {
+          "id": "roar",
+          "at": 0.5
+        },
+        {
+          "id": "rattle",
+          "at": 1.3
+        },
+        {
+          "id": "jet",
+          "at": 2.5
+        }
+      ],
+      "hud": {
+        "time": "20:06",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s11",
+      "start": 34.917,
+      "end": 38.12,
+      "what": "истребитель низко над проспектом, тень по толпе, люди пригибаются",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "НАД ПРОСПЕКТОМ ПРОНЁССЯ ВТОРОЙ ИСТРЕБИТЕЛЬ.",
+        "accent": [
+          "ВТОРОЙ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 0.85
+        },
+        {
+          "id": "rattle",
+          "at": 0.9
+        },
+        {
+          "id": "murmur",
+          "at": 1
+        }
+      ],
+      "hud": {
+        "time": "20:06",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s12",
+      "start": 38.117,
+      "end": 41.92,
+      "what": "проспект: толпа с фонариками, мёртвые светофоры, поток фар",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "СВЕТОФОРЫ ПОГАСЛИ. УЛИЦЫ ЗАПОЛНИЛИСЬ ЛЮДЬМИ.",
+        "accent": [
+          "ЛЮДЬМИ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "murmur",
+          "at": 0
+        },
+        {
+          "id": "engine",
+          "at": 0
+        },
+        {
+          "id": "horn",
+          "at": 0.8
+        },
+        {
+          "id": "horn",
+          "at": 2.1
+        },
+        {
+          "id": "horn",
+          "at": 3
+        }
+      ],
+      "hud": {
+        "time": "20:07",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s13",
+      "start": 41.917,
+      "end": 45.12,
+      "what": "перекрёсток: люди перебегают перед бамперами, водитель сигналит",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "ЛЮДИ БЕЖАЛИ ПРЯМО ПЕРЕД БАМПЕРАМИ.",
+        "accent": [
+          "БАМПЕРАМИ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "murmur",
+          "at": 0
+        },
+        {
+          "id": "horn",
+          "at": 1.1
+        },
+        {
+          "id": "skid",
+          "at": 0.7
+        },
+        {
+          "id": "horn",
+          "at": 2.3
+        }
+      ],
+      "hud": {
+        "time": "20:07",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s14a",
+      "start": 45.117,
+      "end": 47.02,
+      "what": "Диас бросается к такси с шашечкой",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "dias",
+        "text": "АРУЖАН?!",
+        "accent": [
+          "АРУЖАН?!"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "step",
+          "at": 0.1
+        },
+        {
+          "id": "step",
+          "at": 0.24
+        },
+        {
+          "id": "step",
+          "at": 0.38
+        },
+        {
+          "id": "step",
+          "at": 0.52
+        },
+        {
+          "id": "knock",
+          "at": 0.5
+        },
+        {
+          "id": "knock",
+          "at": 0.68
+        },
+        {
+          "id": "engine",
+          "at": 0
+        }
+      ],
+      "hud": {
+        "time": "20:08",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s14b",
+      "start": 47.017,
+      "end": 49.92,
+      "what": "в окне такси — незнакомый старик; плечи Диаса опускаются",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "НО В ТАКСИ СИДЕЛ НЕЗНАКОМЫЙ СТАРИК.",
+        "accent": [
+          "НЕЗНАКОМЫЙ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "bass-rumble-medium",
+          "at": 1.6
+        }
+      ],
+      "hud": {
+        "time": "20:08",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s15",
+      "start": 49.917,
+      "end": 53.26,
+      "what": "Алихан догоняет; умные часы Беки: НЕТ СЕТИ, пульс 128",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "alikhan",
+        "text": "ДО АРБАТА МИНУТ ДВАДЦАТЬ. ПОШЛИ.",
+        "accent": [
+          "ДВАДЦАТЬ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "beep",
+          "at": 0.4
+        },
+        {
+          "id": "murmur",
+          "at": 0
+        }
+      ],
+      "hud": {
+        "time": "20:08",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s16",
+      "start": 53.263,
+      "end": 56.46,
+      "what": "сверху удары и скрежет: четверо резко оборачиваются, стоп-кадр",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "И ВДРУГ СВЕРХУ ДОНЕСЛИСЬ УДАРЫ И СКРЕЖЕТ.",
+        "accent": [
+          "УДАРЫ"
+        ]
+      },
+      "sfx": [
+        {
+          "id": "impact-deep-hard",
+          "at": 0.1
+        },
+        {
+          "id": "boom",
+          "at": 0.15
+        },
+        {
+          "id": "skid",
+          "at": 0.6
+        },
+        {
+          "id": "impact-deep-firm",
+          "at": 1.4
+        },
+        {
+          "id": "whoosh-slow-hard",
+          "at": 0.7
+        },
+        {
+          "id": "bass-sub-drop-short",
+          "at": 1.1
+        },
+        {
+          "id": "murmur",
+          "at": 1
+        }
+      ],
+      "hud": {
+        "time": "20:09",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s17",
+      "start": 56.463,
+      "end": 59.66,
+      "what": "вниз по склону несутся фары самосвала, искры о припаркованные машины",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "ВНИЗ ПО СКЛОНУ НЁССЯ ТЯЖЁЛЫЙ САМОСВАЛ.",
+        "accent": [
+          "САМОСВАЛ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "engine",
+          "at": 0
+        },
+        {
+          "id": "horn",
+          "at": 0.5
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 1.3
+        },
+        {
+          "id": "impact-deep-hard",
+          "at": 2
+        },
+        {
+          "id": "zap",
+          "at": 1.3
+        },
+        {
+          "id": "skid",
+          "at": 1.4
+        }
+      ],
+      "hud": {
+        "time": "20:09",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s18",
+      "start": 59.663,
+      "end": 63.06,
+      "what": "кабина: водитель жмёт тормоз, педаль в пол, приборка мигает",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "ВОДИТЕЛЬ ЖАЛ НА ТОРМОЗ. ПЕДАЛЬ ПРОВАЛИВАЛАСЬ.",
+        "accent": [
+          "ПРОВАЛИВАЛАСЬ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "engine",
+          "at": 0
+        },
+        {
+          "id": "heartbeat",
+          "at": 0.3
+        },
+        {
+          "id": "heartbeat",
+          "at": 0.8
+        },
+        {
+          "id": "heartbeat",
+          "at": 1.3
+        },
+        {
+          "id": "heartbeat",
+          "at": 1.8
+        },
+        {
+          "id": "heartbeat",
+          "at": 2.3
+        },
+        {
+          "id": "heartbeat",
+          "at": 2.8
+        },
+        {
+          "id": "beep",
+          "at": 1
+        },
+        {
+          "id": "beep",
+          "at": 1.32
+        },
+        {
+          "id": "beep",
+          "at": 1.64
+        },
+        {
+          "id": "beep",
+          "at": 1.96
+        },
+        {
+          "id": "beep",
+          "at": 2.28
+        },
+        {
+          "id": "thud",
+          "at": 1
+        }
+      ],
+      "hud": {
+        "time": "20:09",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s19",
+      "start": 63.063,
+      "end": 65.26,
+      "what": "четверо застыли, фары в лоб, лица заливает белым",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": null,
+      "sfx": [
+        {
+          "id": "horn",
+          "at": 0
+        },
+        {
+          "id": "engine",
+          "at": 0
+        },
+        {
+          "id": "heartbeat",
+          "at": 0.2
+        },
+        {
+          "id": "heartbeat",
+          "at": 0.62
+        },
+        {
+          "id": "heartbeat",
+          "at": 1.04
+        },
+        {
+          "id": "heartbeat",
+          "at": 1.46
+        }
+      ],
+      "hud": {
+        "time": "20:09",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s20",
+      "start": 65.263,
+      "end": 66.26,
+      "what": "фары на весь кадр, тишина",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": null,
+      "sfx": [
+        {
+          "id": "wind",
+          "at": 0
+        }
+      ],
+      "hud": {
+        "time": "20:09",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s21",
+      "start": 66.263,
+      "end": 68.06,
+      "what": "шёпот на белом",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": {
+        "speaker": "narrator",
+        "text": "И ОН НЕ ТОРМОЗИЛ.",
+        "accent": [
+          "НЕ",
+          "ТОРМОЗИЛ."
+        ]
+      },
+      "sfx": [
+        {
+          "id": "drone-muffled.wav",
+          "at": 0
+        }
+      ],
+      "hud": {
+        "time": "20:09",
+        "signal": "lost"
+      }
+    },
+    {
+      "id": "e2s22",
+      "start": 68.063,
+      "end": 70.66,
+      "what": "EndCard: ОН НЕ ТОРМОЗИТ · ЧАСТЬ 3 →",
+      "camera": {
+        "type": "pushIn",
+        "from": 1,
+        "to": 1.08
+      },
+      "vo": null,
+      "sfx": [
+        {
+          "id": "impact-deep-firm",
+          "at": 0
+        },
+        {
+          "id": "tick",
+          "at": 1.6
+        }
+      ],
+      "hud": null
+    }
+  ]
+}
