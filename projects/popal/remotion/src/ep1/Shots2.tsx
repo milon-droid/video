@@ -163,9 +163,9 @@ export const GooseUp: React.FC<P> = ({ t, T }) => { const evil = out(win(t, 1.2,
 export const Mob: React.FC<P> = ({ t, T }) => (<InfoStand t={t} num="ВРАЖЕСКИЙ МОБ" title="Адский гусь" col="#e5383b" top={360}
   art={<g><rect x={0} y={0} width={860} height={380} rx={20} fill="#2a1a2e" /><g transform="translate(240,350) scale(.9)"><Goose x={0} y={0} s={1} t={T} state="attack" honk={Math.max(0, Math.sin(t * 4)) * .6} flip /></g>
     <text x={500} y={80} fontSize={32} fontWeight={800} fill="#ff8a8a" fontFamily="Mont">РАЗВЕДЧИК</text><text x={500} y={122} fontSize={32} fontWeight={800} fill="#ff8a8a" fontFamily="Mont">КОРОЛЯ ДЕМОНОВ</text>
-    <text x={500} y={200} fontSize={34} fontWeight={900} fill="#ffd23f" fontFamily="Mont">Угроза ★☆☆</text><text x={500} y={262} fontSize={34} fontWeight={900} fill="#fff" fontFamily="Mont">Щипок: −1 ❤</text>
+    <text x={500} y={200} fontSize={34} fontWeight={900} fill="#ffd23f" fontFamily="Mont">Угроза</text><path transform="translate(660,188) scale(1.3)" d="M0,-14 L4,-4 L14,-4 L6,3 L9,13 L0,7 L-9,13 L-6,3 L-14,-4 L-4,-4 Z" fill="#ffd23f" stroke="#ffd23f" strokeWidth={2} /><path transform="translate(700,188) scale(1.3)" d="M0,-14 L4,-4 L14,-4 L6,3 L9,13 L0,7 L-9,13 L-6,3 L-14,-4 L-4,-4 Z" fill="none" stroke="#ffd23f" strokeWidth={2} /><path transform="translate(740,188) scale(1.3)" d="M0,-14 L4,-4 L14,-4 L6,3 L9,13 L0,7 L-9,13 L-6,3 L-14,-4 L-4,-4 Z" fill="none" stroke="#ffd23f" strokeWidth={2} /><text x={500} y={262} fontSize={34} fontWeight={900} fill="#fff" fontFamily="Mont">Щипок: −1 ❤</text>
     <text x={500} y={324} fontSize={34} fontWeight={900} fill="#ff5a5a" fontFamily="Mont">У Макса: ❤ 1</text></g>}
-  lines={[{ t: 1.2, icon: '👁', text: 'Шпионит для Короля демонов' }, { t: 3.4, icon: '☠', text: 'Один щипок — и Максу конец', col: '#ff8a8a', big: true }]} />);
+  lines={[{ t: 1.2, icon: '👁', text: 'Шпионит для Короля демонов' }, { t: 3.4, icon: '☠', text: 'Один щипок — и конец', col: '#ff8a8a', big: true }]} />);
 
 // ───────────────────────── 24. ЗЕМЛИ ДЕМОНОВ ─────────────────────────
 export const Hell: React.FC<P> = ({ t, T }) => (<Frame bg="#1a0408"><Cam z={lerp(1.0, 1.12, io(win(t, 0, dur('hell'))))} fy={1000}><HellLand t={T} lightning={t > 1.6 && t < 1.95 ? 1 : 0} /></Cam><Flash t={t} t0={1.6} dur={.2} col="#ff5a5a" /></Frame>);
