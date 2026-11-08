@@ -26,13 +26,13 @@ const PhoneUI: React.FC<{ t: number; t0: number; x: number; y: number; lines: [s
     </div></div>); };
 
 // ───────────────────────── 1. КВАРТИРА: голодный Макс заказывает донер ─────────────────────────
-export const Room: React.FC<P> = ({ t, T }) => { const growl = t > 3.9 && t < 4.8, s = growl ? [Math.sin(t * 60) * 4, 0] : [0, 0], order = t > 5.0;
+export const Room: React.FC<P> = ({ t, T }) => { const growl = t > 1.6 && t < 2.5, s = growl ? [Math.sin(t * 60) * 4, 0] : [0, 0], order = t > 2.8;
   return (<><Frame bg="#2a2a48"><Cam z={lerp(1.0, 1.1, io(win(t, 0, dur('room'))))} fy={1200} dx={s[0]}><Apartment t={T} />
     <Person x={540} y={1610} s={1.15} t={T} hold="phone" pose={{ armR: [.3, -2.0], armL: [-.2, 1.9], legL: [-1.4, 1.5], legR: [-1.3, 1.4], hip: 40 }} expr={growl ? 'pain' : order ? 'happy' : 'deadpan'} eye={[-.2, .6]} headTilt={-4} />
     <Glow x={600} y={1080} r={260} c="#4ad0ff" o={.35} id="phG" />
   </Cam></Frame>
-    {growl && <Onomato t={t} t0={3.9} x={760} y={1080} text="УРРР…" col="#ffb04a" size={110} rot={8} dur={1.0} />}
-    <PhoneUI t={t} t0={5.0} x={600} y={330} lines={[['ДОНЕР XXL', '✓'], ['ЗАКАЗ', 'ПРИНЯТ'], ['КУРЬЕР', '15 МИН']]} /></>); };
+    {growl && <Onomato t={t} t0={1.6} x={800} y={800} text="УРРР…" col="#ffb04a" size={110} rot={8} dur={1.0} />}
+    <PhoneUI t={t} t0={2.8} x={600} y={330} lines={[['ДОНЕР XXL', '✓'], ['ЗАКАЗ', 'ПРИНЯТ'], ['КУРЬЕР', '15 МИН']]} /></>); };
 
 // ───────────────────────── 2. ХОЛОДИЛЬНИК: колы нет ─────────────────────────
 export const FridgeShot: React.FC<P> = ({ t, T }) => { const open = t < 3.2 ? out(win(t, .1, .5)) : 1 - out(win(t, 3.2, 3.6));

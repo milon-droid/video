@@ -35,7 +35,7 @@ export const Soul: React.FC<P> = ({ t, T }) => { const d = dur('soul'), up = io(
 const Soulie: React.FC<{ x: number; y: number; s: number; t: number; look: number }> = ({ x, y, s, t, look }) => (<g transform={`translate(${x},${y + Math.sin(t * 2 + x) * 8}) scale(${s})`} opacity={.8}>
   <path d="M-80,0 C-90,-160 -60,-240 0,-240 C60,-240 90,-160 80,0 L50,-20 L20,0 L-10,-20 L-40,0 Z" fill="#fff" stroke="#d6dcf0" strokeWidth={4} />
   <ellipse cx={-26 + look * 12} cy={-170} rx={10} ry={16} fill="#3a3a5a" /><ellipse cx={26 + look * 12} cy={-170} rx={10} ry={16} fill="#3a3a5a" /></g>);
-export const HallGold: React.FC<P> = ({ t, T }) => { const g0 = WORD_AT('e1', 7) - SHOT.hall.a - .1, b0 = WORD_AT('e1', 8) - SHOT.hall.a + .6, tk = spr(t, g0, { damping: 11 }), board = out(win(t, b0, b0 + .3)), cheer = t > SHOT.hall.b - SHOT.hall.a - 1.2, fadeIn = clamp(1 - t / .5);
+export const HallGold: React.FC<P> = ({ t, T }) => { const g0 = WORD_AT('e1', 6) - SHOT.hall.a - .1, b0 = WORD_AT('e1', 7) - SHOT.hall.a + .6, tk = spr(t, g0, { damping: 11 }), board = out(win(t, b0, b0 + .3)), cheer = t > SHOT.hall.b - SHOT.hall.a - 1.2, fadeIn = clamp(1 - t / .5);
   return (<><Frame bg="#eef7ff"><Cam z={lerp(1.0, 1.08, io(win(t, 0, dur('hall'))))}><Hall t={T} />
     {Array.from({ length: 11 }, (_, i) => <Soulie key={i} x={100 + i * 50} y={1230 + i * 3} s={.36 - i * .012} t={T + i} look={t > g0 ? 1 : 0} />)}
     <Soulie x={170} y={1520} s={.85} t={T} look={t > g0 ? 1 : 0} /><Soulie x={330} y={1545} s={.9} t={T + 1} look={t > g0 ? 1 : 0} />
