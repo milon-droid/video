@@ -8,8 +8,9 @@ description: Полный цикл производства короткого �
 Инструменты лежат в `tools/`, шаблон — в `templates/short/`. Все команды — из корня репозитория.
 
 ## 0. Перед началом
-Прочитать `knowledge/preferences.md`, `knowledge/lessons.md` и список
-`templates/components/README.md` — учесть вкусы пользователя и готовые куски.
+Прочитать `knowledge/digest.md` (выжимка вкусов и уроков) и список `templates/components/README.md`.
+Полные `preferences.md` / `lessons.md` — только нужный раздел через `grep -n "^## "` (экономия токенов).
+У сериала — `projects/<проект>/MAP.md` (карта кода) и только файл нужной серии `epN.md`.
 Если пользователь прислал референс-видео «сделай так же» — подключить скилл
 `video-by-reference` для разбора стиля и ритма.
 
