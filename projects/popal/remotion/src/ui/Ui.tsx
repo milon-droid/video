@@ -86,11 +86,11 @@ export const Choice: React.FC<{ t: number; left: { title: string; sub: string; c
     <svg viewBox="0 0 540 1920" width="540" height="1920" style={{ position: 'absolute', inset: 0 }}>{o.art}</svg>
     <div style={{ position: 'absolute', left: 30, right: 30, top: 1090, textAlign: 'center', fontFamily: FONT }}>
       <div style={{ display: 'inline-block', background: o.col, color: '#14121c', fontWeight: 900, fontSize: 30, padding: '6px 16px', borderRadius: 10 }}>{side ? 'ВАРИАНТ Б' : 'ВАРИАНТ А'}</div>
-      <div style={{ fontWeight: 900, fontSize: 70, lineHeight: 1.0, color: '#fff', WebkitTextStroke: stroke(12), paintOrder: 'stroke fill', marginTop: 10, transform: `scale(${1 + pulse * .04})` }}>{o.title}</div>
+      <div style={{ fontWeight: 900, fontSize: 64, lineHeight: 1.0, color: '#fff', WebkitTextStroke: stroke(12), paintOrder: 'stroke fill', marginTop: 10, whiteSpace: 'nowrap', transform: `scale(${1 + pulse * .03})` }}>{o.title}</div>
       <div style={{ fontWeight: 800, fontSize: 32, color: o.col, marginTop: 8, WebkitTextStroke: stroke(6), paintOrder: 'stroke fill' }}>{o.sub}</div></div></div>);
   return (<AbsoluteFill style={{ background: '#14121c' }}>{half(0, left, kl)}{half(1, right, kr)}
     <div style={{ position: 'absolute', left: 528, top: 0, width: 24, height: 1920, background: 'linear-gradient(180deg, #ffd23f, #fff, #ffd23f)', boxShadow: '0 0 30px #ffd23f', transform: `scaleY(${out(win(t, .5, .9))})` }} />
-    <div style={{ position: 'absolute', left: 540, top: 600, transform: `translate(-50%,-50%) scale(${spr(t, .7, { damping: 9 })})`, width: 150, height: 150, borderRadius: 75, background: '#ffd23f', border: '8px solid #14121c', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 64, color: '#14121c' }}>ИЛИ</div>
+    <div style={{ position: 'absolute', left: 540, top: 600, transform: `translate(-50%,-50%) scale(${spr(t, .7, { damping: 9 })})`, width: 150, height: 150, borderRadius: 75, background: '#ffd23f', border: '8px solid #14121c', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 50, color: '#14121c' }}>ИЛИ</div>
     {center}</AbsoluteFill>); };
 
 export const EndCard: React.FC<{ t: number }> = ({ t }) => { const k = out(win(t, 0, .35)), k2 = out(win(t, .35, .7));

@@ -222,3 +222,65 @@ export const ChibiSlime: React.FC<{ x: number; y: number; s?: number; t: number;
     <ellipse cx={-110} cy={-70} rx={26} ry={13} fill="#ff8aa6" opacity={.6} /><ellipse cx={110} cy={-70} rx={26} ry={13} fill="#ff8aa6" opacity={.6} />
     <g transform="translate(0,-62)">{mouth > .06 ? <path d={`M-22,0 Q0,${8 + mouth * 40} 22,0 Z`} fill="#0f4a3a" /> : <path d="M-16,0 Q0,12 16,0" stroke="#0f4a3a" strokeWidth={6} fill="none" strokeLinecap="round" />}</g>
   </g>); };
+
+// ───── Эльфийка-лучница (сплит-экран выбора): поясной план, начало — пояс по центру ─────
+export const Elf: React.FC<{ x: number; y: number; s?: number; t: number }> = ({ x, y, s = 1, t }) => {
+  const b = blink(t, 21), lid = clamp(Math.max(.15, 1 - b)), hy = -360 + Math.sin(t * 1.7) * 4, wind = Math.sin(t * 1.3) * 6;
+  const eye = (sd: number) => { const cx = sd * 38; return (<g key={sd}><clipPath id={`elfE${sd}`}><path d={`M${cx - 28},2 Q${cx},-30 ${cx + 28},2 Q${cx},26 ${cx - 28},2 Z`} /></clipPath>
+    <path d={`M${cx - 28},2 Q${cx},-30 ${cx + 28},2 Q${cx},26 ${cx - 28},2 Z`} fill="#fff" />
+    <g clipPath={`url(#elfE${sd})`}><ellipse cx={cx + 2} cy={4} rx={15} ry={20} fill="#2fb36a" /><ellipse cx={cx + 2} cy={4} rx={7} ry={10} fill="#0f3a20" /><circle cx={cx - 4} cy={-4} r={5} fill="#fff" />
+      <rect x={cx - 30} y={-30} width={60} height={56 * lid} fill="#f6d8c2" /></g>
+    <path d={`M${cx - 32},2 Q${cx},${-30 + lid * 28} ${cx + 32},-2 l${sd * 10},-8`} stroke="#3a2a10" strokeWidth={6} fill="none" strokeLinecap="round" />
+    <path d={`M${cx - 24},-44 Q${cx},-52 ${cx + 24},-46`} stroke="#c9a040" strokeWidth={6} fill="none" strokeLinecap="round" /></g>); };
+  return (<g transform={`translate(${x},${y}) scale(${s})`}>
+    {/* волосы сзади и коса */}
+    <path d={`M-120,${hy - 10} C-170,${hy + 160} -150,-140 -${130 + wind},-20 L${130 - wind},-20 C150,-140 170,${hy + 160} 120,${hy - 10} Z`} fill="#f2d27a" />
+    {/* лук за спиной */}
+    <path d="M150,-520 Q260,-260 150,0" stroke="#7a4a2a" strokeWidth={14} fill="none" /><path d="M150,-520 L150,0" stroke="#e8e0c8" strokeWidth={3} />
+    {/* плащ и туника */}
+    <path d="M-170,40 L-140,-200 Q0,-240 140,-200 L170,40 Z" fill="#2f7a52" /><path d="M-90,40 L-80,-210 Q0,-230 80,-210 L90,40 Z" fill="#e8f0d8" />
+    <path d="M-80,-210 L0,-120 L80,-210" fill="none" stroke="#c9a040" strokeWidth={8} /><path d="M-130,-60 L130,-60" stroke="#7a4a2a" strokeWidth={16} />
+    <path d="M-150,-190 Q-110,-260 -40,-232 L-60,-180 Z M150,-190 Q110,-260 40,-232 L60,-180 Z" fill="#24603f" />
+    <rect x={-18} y={hy + 70} width={36} height={70} fill="#ecc6ae" />
+    <g transform={`translate(0,${hy})`}>
+      {/* острые уши */}
+      {[-1, 1].map(sd => <path key={sd} d={`M${sd * 84},-6 L${sd * 160},-70 L${sd * 92},26 Z`} fill="#f6d8c2" stroke="#e0b8a0" strokeWidth={3} />)}
+      <path d="M-88,-10 C-92,-90 -46,-116 0,-116 C46,-116 92,-90 88,-10 C86,42 58,78 18,88 Q0,92 -18,88 C-58,78 -86,42 -88,-10 Z" fill="#f6d8c2" />
+      {eye(-1)}{eye(1)}
+      <path d="M-2,32 Q3,40 -4,44" stroke="#d9a58a" strokeWidth={4} fill="none" strokeLinecap="round" />
+      <path d="M-16,60 Q0,70 16,58" stroke="#c0405a" strokeWidth={6} fill="none" strokeLinecap="round" />
+      <g opacity={.5}><ellipse cx={-58} cy={38} rx={15} ry={8} fill="#ff8aa6" /><ellipse cx={58} cy={38} rx={15} ry={8} fill="#ff8aa6" /></g>
+      {/* чёлка и обруч */}
+      <path d="M-98,0 C-108,-92 -58,-136 0,-134 C58,-136 108,-92 98,0 C90,-40 74,-62 50,-70 C38,-44 18,-50 0,-76 C-18,-50 -38,-44 -50,-70 C-74,-62 -90,-40 -98,0 Z" fill="#f2d27a" />
+      <path d="M-86,-60 Q0,-100 86,-60" stroke="#c9a040" strokeWidth={8} fill="none" /><path d="M0,-92 L10,-74 L0,-60 L-10,-74 Z" fill="#7dffb0" />
+      <path d={`M80,-20 C120,80 110,200 ${130 + wind},300`} stroke="#f2d27a" strokeWidth={34} fill="none" strokeLinecap="round" />
+    </g>
+  </g>); };
+
+// ───── Дракон: голова и шея из пещеры, рога, гребень, светящиеся глаза, дым ─────
+export const Dragon: React.FC<{ x: number; y: number; s?: number; t: number; roar?: number }> = ({ x, y, s = 1, t, roar = 0 }) => {
+  const b = blink(t, 23), bob = Math.sin(t * 1.2) * 10, sm = (t * .6) % 1;
+  return (<g transform={`translate(${x},${y + bob}) scale(${s})`}>
+    <defs><radialGradient id="drEye"><stop offset="0" stopColor="#fff6b0" /><stop offset=".4" stopColor="#ffb020" /><stop offset="1" stopColor="#ff6a00" stopOpacity="0" /></radialGradient>
+      <linearGradient id="drSk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#c8302a" /><stop offset="1" stopColor="#6a1414" /></linearGradient></defs>
+    {/* крыло-силуэт */}
+    <path d="M60,40 L320,-300 L300,-150 L380,-170 L300,-40 L360,-20 L200,60 Z" fill="#4a0e10" opacity={.85} />
+    {/* шея */}
+    <path d="M-60,400 C-80,200 -40,40 20,-40 L120,-10 C80,80 70,220 90,400 Z" fill="url(#drSk)" />
+    {[0, 1, 2, 3, 4].map(i => <path key={i} d={`M${-50 + i * 6},${330 - i * 80} l-40,-20 l30,-30 Z`} fill="#ffb020" opacity={.9} />)}
+    {/* голова */}
+    <g transform={`rotate(${-6 + roar * -8})`}>
+      {[-1, 1].map(sd => <path key={sd} d={`M${sd * 50 + 30},-150 C${sd * 110 + 30},-230 ${sd * 120 + 30},-300 ${sd * 90 + 30},-360 C${sd * 150 + 30},-290 ${sd * 150 + 30},-200 ${sd * 90 + 30},-130 Z`} fill="#3a2a20" />)}
+      <path d="M-90,-120 C-110,-200 -20,-230 40,-220 C120,-210 170,-170 230,-120 L250,-60 C200,-40 120,-30 40,-30 C-30,-30 -80,-60 -90,-120 Z" fill="url(#drSk)" />
+      {/* челюсть */}
+      <path d={`M-70,-60 C-20,${-20 + roar * 60} 120,${-10 + roar * 70} 240,${-50 + roar * 40} L230,${-20 + roar * 60} C120,${30 + roar * 80} 0,${30 + roar * 60} -60,-20 Z`} fill="#8a1c18" />
+      {roar > .1 && <path d={`M-40,-50 C40,${-20 + roar * 50} 140,${-20 + roar * 50} 220,-50 Z`} fill="#3a0606" />}
+      {[30, 70, 110, 150, 190].map(xx => <path key={xx} d={`M${xx},-48 l8,22 l8,-22 Z`} fill="#f2ead0" />)}
+      <ellipse cx={230} cy={-110} rx={10} ry={6} fill="#2a0808" />
+      {/* глаз */}
+      <circle cx={70} cy={-150} r={40} fill="url(#drEye)" /><ellipse cx={70} cy={-150} rx={24} ry={18 * b} fill="#ffd23f" /><ellipse cx={70} cy={-150} rx={6} ry={16 * b} fill="#1a0800" />
+      <path d="M30,-180 L120,-170" stroke="#3a0808" strokeWidth={12} strokeLinecap="round" />
+      {/* дым из ноздрей */}
+      <circle cx={260 + sm * 60} cy={-120 - sm * 80} r={18 + sm * 40} fill="#8a7a7a" opacity={.45 * (1 - sm)} />
+    </g>
+  </g>); };

@@ -270,7 +270,7 @@ export const GooseShot: React.FC<P> = ({ t, T }) => { const land = .75, gy = t <
     <Goose x={720} y={gy} s={1.45} t={T} state={t < land ? 'fly' : 'attack'} honk={t > .85 && t < 1.6 ? .9 : 0} flap={t > land ? Math.max(0, .8 - (t - land) * 2) : 0} flip />
     <Puffs t={t} t0={land} x={720} y={1720} col="#f2e6ff" n={10} spread={360} size={70} id="gdust" />
   </Cam></Frame>
-    <Onomato t={t} t0={.88} x={640} y={620} text="ГА-А-А!" col={C.red} size={150} rot={-6} dur={1.3} />
+    <Onomato t={t} t0={.88} x={520} y={620} text="ГА-А-А!" col={C.red} size={125} rot={-6} dur={1.3} />
     <Tag t={t} t0={1.15} x={70} y={420} w={720} title="АДСКИЙ ГУСЬ" sub="РАЗВЕДЧИК КОРОЛЯ ДЕМОНОВ" col={C.red} /></>); };
 
 // ───────────────────────── 20. ИНФО-СТЕНД: ЗАКОН №3 ─────────────────────────
@@ -341,7 +341,7 @@ export const Groin: React.FC<P> = ({ t, T }) => { const hit = .55, s = shake(t, 
     <Slime x={870} y={1830} s={.9} t={T} mouth={mouth('slime', T)} look={[-.8, -.2]} />
   </Cam></Frame>
     <Onomato t={t} t0={hit} x={560} y={1150} text="ДЗЫНЬ!" col="#ffffff" size={160} rot={-6} dur={.9} />
-    {t > 1.65 && <div style={html({ left: 0, width: 1080, top: 640, textAlign: 'center', transform: `scale(${spr(t, 1.65, { damping: 8 })}) rotate(-4deg)`, fontSize: 140, fontWeight: 900, color: C.red, WebkitTextStroke: '16px #14121c', paintOrder: 'stroke fill' })}>−20 АУРЫ</div>}</>); };
+    {t > 1.65 && <div style={html({ left: 0, width: 1080, top: 640, textAlign: 'center', transform: `scale(${spr(t, 1.65, { damping: 8 })}) rotate(-4deg)`, fontSize: 120, fontWeight: 900, color: C.red, WebkitTextStroke: '14px #14121c', paintOrder: 'stroke fill' })}>−20 АУРЫ</div>}</>); };
 
 // ───────────────────────── 26. СИГНАЛ ─────────────────────────
 export const Signal: React.FC<P> = ({ t, T }) => { const up = io(win(t, .6, 2.2)), beam = out(win(t, .3, .7));

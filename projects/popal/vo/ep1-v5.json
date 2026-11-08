@@ -1,0 +1,227 @@
+{
+ "roles": {
+  "narrator": {
+   "instruct": "Deep, warm, velvety adult male voice. Professional Russian audiobook narrator, calm confident storytelling with a light ironic smile, clear diction, lively medium-fast pace.",
+   "ref": "Это история о парне, которому очень не повезло. Но, как оказалось, это было только начало."
+  },
+  "max": {
+   "instruct": "Young Russian man, about 27, casual and ironic, a bit tired, expressive and emotional, natural everyday speech, medium-fast pace.",
+   "ref": "Слушай, ну я же просто хотел поесть. Почему всегда я?"
+  },
+  "lumina": {
+   "instruct": "Young woman, bored and sarcastic goddess working at an office desk, sultry low voice, lazy drawl, deadpan humor.",
+   "ref": "Следующий. Талон, пожалуйста. И давайте побыстрее, у меня обед."
+  },
+  "courier": {
+   "instruct": "Calm neutral male voice, overly polite delivery guy, slightly mechanical and emotionless.",
+   "ref": "Добрый вечер. Ваш заказ доставлен. Приятного аппетита."
+  },
+  "slime": {
+   "instruct": "Cute high-pitched childlike voice, cheerful and curious, bouncy, cartoon mascot.",
+   "ref": "Привет-привет! Я тут живу. А ты кто такой?"
+  },
+  "king": {
+   "instruct": "Very deep, menacing, slow and gravelly male voice of a demon king, cold and powerful.",
+   "ref": "Вы смеете тревожить меня? Я правлю этой тьмой тысячу лет."
+  },
+  "succ": {
+   "instruct": "Seductive breathy female voice, soft and playful, half-whisper, sly.",
+   "ref": "Ну здравствуй, красавчик. Скучал по мне?"
+  }
+ },
+ "lines": [
+  {
+   "id": "a1",
+   "role": "narrator",
+   "text": "Это Макс. Через минуту он умрёт. Из-за д+онера."
+  },
+  {
+   "id": "a3",
+   "role": "max",
+   "text": "К+олы нет. Всухомятку я его есть не буду."
+  },
+  {
+   "id": "a4",
+   "role": "narrator",
+   "text": "И Макс пошёл за сушняком."
+  },
+  {
+   "id": "b1",
+   "role": "narrator",
+   "text": "Обычно в аниме героя сбивает грузовик. А Макса сбил курьер. С его же д+онером."
+  },
+  {
+   "id": "c1",
+   "role": "courier",
+   "text": "Ваш заказ. Пять звёзд поставите?"
+  },
+  {
+   "id": "c2",
+   "role": "courier",
+   "text": "Избр+анный доставлен.",
+   "fx": "radio"
+  },
+  {
+   "id": "d1",
+   "role": "narrator",
+   "text": "Так Макс и умер. Девственником."
+  },
+  {
+   "id": "s1",
+   "role": "max",
+   "text": "Стоп. Я что, умер?! А донер?!"
+  },
+  {
+   "id": "e1",
+   "role": "narrator",
+   "text": "На том свете — вечная очередь. Но Макс — избр+анный. Такой один на тысячу лет."
+  },
+  {
+   "id": "e2",
+   "role": "max",
+   "text": "О, быстро!"
+  },
+  {
+   "id": "f1",
+   "role": "lumina",
+   "text": "Перерождение. Мир — Эльд+ория. Вопросы?"
+  },
+  {
+   "id": "f2",
+   "role": "max",
+   "text": "А можно мир, где девушки-кошки?"
+  },
+  {
+   "id": "f3",
+   "role": "lumina",
+   "text": "Кошки — по подписке."
+  },
+  {
+   "id": "g1",
+   "role": "narrator",
+   "text": "Сила — один. Здоровье — один. Аура — ноль."
+  },
+  {
+   "id": "g2",
+   "role": "narrator",
+   "text": "Сила и здоровье растут с опытом. Аура — только от побед."
+  },
+  {
+   "id": "h1",
+   "role": "lumina",
+   "text": "Теперь дар. Крути."
+  },
+  {
+   "id": "h2",
+   "role": "narrator",
+   "text": "Легендарный меч выпадает один раз из ста. Сковородка — девяносто семь из ста."
+  },
+  {
+   "id": "h3",
+   "role": "lumina",
+   "text": "Сковорода Судьбы. Не промахивается."
+  },
+  {
+   "id": "h4",
+   "role": "max",
+   "text": "Не-не-не, это кринж. Дод+еп! Дай ещё прокрутку!"
+  },
+  {
+   "id": "h5",
+   "role": "lumina",
+   "text": "Пошёл нахер."
+  },
+  {
+   "id": "i1",
+   "role": "narrator",
+   "text": "Так Макс попал в Эльд+орию. Две луны, летающие остров+а..."
+  },
+  {
+   "id": "i2",
+   "role": "narrator",
+   "text": "...и пруд."
+  },
+  {
+   "id": "j1",
+   "role": "slime",
+   "text": "Ты как сюда упал?"
+  },
+  {
+   "id": "j2",
+   "role": "max",
+   "text": "Желе разговаривает. Всё, кукуха поехала."
+  },
+  {
+   "id": "k1",
+   "role": "narrator",
+   "text": "Но в этом пруду плавал гусь. И гусь был очень зол."
+  },
+  {
+   "id": "k2",
+   "role": "max",
+   "text": "Блин, это не простой гусь. Это вражеский моб!"
+  },
+  {
+   "id": "k3",
+   "role": "narrator",
+   "text": "Адский гусь — разведчик Короля демонов. Один щипок — и Максу конец."
+  },
+  {
+   "id": "k4",
+   "role": "max",
+   "text": "Надо его сковородкой прибить!"
+  },
+  {
+   "id": "l1",
+   "role": "narrator",
+   "text": "Первая победа!"
+  },
+  {
+   "id": "l2",
+   "role": "max",
+   "text": "Ма-ам..."
+  },
+  {
+   "id": "l3",
+   "role": "slime",
+   "text": "Минус аура."
+  },
+  {
+   "id": "m1",
+   "role": "narrator",
+   "text": "А тем временем в землях демонов..."
+  },
+  {
+   "id": "m2",
+   "role": "king",
+   "text": "Сковородкой. Моего гуся.",
+   "fx": "dead"
+  },
+  {
+   "id": "m3",
+   "role": "succ",
+   "text": "Мне им заняться, повелитель?"
+  },
+  {
+   "id": "m4",
+   "role": "king",
+   "text": "Найти. Привести. Живым — необязательно.",
+   "fx": "dead"
+  },
+  {
+   "id": "w1",
+   "role": "max",
+   "text": "Слышь, Желе, а куда нам вообще?"
+  },
+  {
+   "id": "w2",
+   "role": "slime",
+   "text": "Впереди развилка. Выбирай с умом."
+  },
+  {
+   "id": "n2",
+   "role": "slime",
+   "text": "Эльф+ийки или дракон? Пишите в комментах!"
+  }
+ ]
+}

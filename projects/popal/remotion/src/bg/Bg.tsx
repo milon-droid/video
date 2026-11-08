@@ -170,8 +170,13 @@ export const Apartment: React.FC<{ t: number }> = ({ t }) => (<g>
     {Array.from({ length: 12 }, (_, j) => hash(i * 20 + j) > .5 ? <rect key={j} x={x + 10 + (j % 3) * (w - 20) / 3} y={y + 16 + Math.floor(j / 3) * 46} width={14} height={22} fill="#ffd27a" opacity={.7} /> : null)}</g>)}
   <path d="M400,300 L400,940 M120,620 L680,620" stroke="#4a4466" strokeWidth={14} />
   <circle cx={580} cy={390} r={34} fill="#fff6ee" opacity={.9} />
-  {/* постер и полка */}
-  <rect x={760} y={360} width={200} height={280} rx={8} fill="#e5383b" opacity={.8} /><circle cx={860} cy={470} r={60} fill="#ffd23f" opacity={.9} /><text x={860} y={600} fontSize={30} fontWeight={900} textAnchor="middle" fill="#fff" fontFamily="Mont">ANIME</text>
+  {/* настенные часы (три часа ночи) и полка с цветком */}
+  <g transform="translate(860,450)"><circle r={95} fill="#f4efe6" stroke="#4a4466" strokeWidth={14} />{Array.from({ length: 12 }, (_, i) => <rect key={i} x={-3} y={-82} width={6} height={16} fill="#4a4466" transform={`rotate(${i * 30})`} />)}
+    <path d="M0,0 L0,-55" stroke="#2a2a3a" strokeWidth={9} strokeLinecap="round" /><path d="M0,0 L44,0" stroke="#2a2a3a" strokeWidth={11} strokeLinecap="round" />
+    <path d="M0,0 L0,70" stroke="#e5383b" strokeWidth={4} transform={`rotate(${t * 36})`} /><circle r={8} fill="#2a2a3a" /></g>
+  <rect x={750} y={640} width={230} height={16} rx={6} fill="#4a3a5a" />
+  <g transform="translate(800,640)"><path d="M-26,0 L26,0 L20,-50 L-20,-50 Z" fill="#c26a4a" /><path d="M0,-50 Q-30,-110 -10,-140 M0,-50 Q30,-100 20,-130 M0,-50 Q0,-120 4,-150" stroke="#4f9e64" strokeWidth={10} fill="none" strokeLinecap="round" /></g>
+  <g transform="translate(920,640)"><rect x={-40} y={-70} width={22} height={70} fill="#5a8ad8" /><rect x={-16} y={-62} width={20} height={62} fill="#ffd23f" /><rect x={6} y={-74} width={24} height={74} fill="#e5383b" /></g>
   {/* лампа */}
   <rect x={900} y={820} width={14} height={480} fill="#1a1a2a" /><path d="M850,820 L964,820 L930,740 L884,740 Z" fill="#ffd27a" />
   <Glow x={907} y={860} r={420} c="#ffc070" o={.55} id="apL" />

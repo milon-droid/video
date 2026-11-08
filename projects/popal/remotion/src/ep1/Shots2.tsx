@@ -136,7 +136,7 @@ export const Dodep: React.FC<P> = ({ t, T }) => { const hh = handheld(T, 4), dd 
     <g transform="translate(150,1000) scale(.8)"><SlotBody t={T} lever={0} lights={0} /></g>
     <Person x={680} y={1900} s={1.45} t={T} hold="pan" panGlow={.4} pose={dd ? { armR: [.5, -2.3], armL: [-1.5, -.1] } : { armR: [.4, -2.2], armL: [-.6, 1.6] }} expr={dd ? 'determined' : 'deadpan'} mouth={mouth('max', T)} eye={dd ? [-.8, -.2] : [0, 0]} headTilt={dd ? -8 : 4} />
   </Cam></Frame>
-    {dd && <Onomato t={t} t0={2.55} x={540} y={600} text="ДОДЕП!" col={C.yellow} size={170} rot={-6} dur={1.6} />}</>); };
+    {dd && <Onomato t={t} t0={2.55} x={540} y={600} text="ДОДЕП!" col={C.yellow} size={145} rot={-6} dur={1.6} />}</>); };
 
 // ───────────────────────── 15. «ПОШЁЛ НАХЕР» → портал ─────────────────────────
 export const Nah: React.FC<P> = ({ t, T }) => {
@@ -157,7 +157,7 @@ export const GooseUp: React.FC<P> = ({ t, T }) => { const evil = out(win(t, 1.2,
     <clipPath id="maxWater2"><rect x={0} y={0} width={1080} height={1470} /></clipPath>
     <g clipPath="url(#maxWater2)"><Person x={300} y={1800} s={1.2} t={T} pose={rise > .3 ? POSES.shrug : { armL: [-.5, .5], armR: [.5, -.5] }} expr={evil > .3 ? 'scared' : 'deadpan'} eye={[.9, -.2]} sweat={evil} /></g>
     <Slime x={300} y={1800 - 1.2 * 600 - 40} s={.9} t={T} look={[.9, -.2]} />
-  </Cam></Frame>{t > 3.0 && <Onomato t={t} t0={3.0} x={640} y={560} text="ГА-А-А!" col={C.red} size={160} rot={-6} dur={1.2} />}</>); };
+  </Cam></Frame>{t > 3.0 && <Onomato t={t} t0={3.0} x={520} y={560} text="ГА-А-А!" col={C.red} size={125} rot={-6} dur={1.2} />}</>); };
 
 // ───────────────────────── 20. БЕСТИАРИЙ: ВРАЖЕСКИЙ МОБ ─────────────────────────
 export const Mob: React.FC<P> = ({ t, T }) => (<InfoStand t={t} num="ВРАЖЕСКИЙ МОБ" title="Адский гусь" col="#e5383b" top={360}
