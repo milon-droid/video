@@ -50,7 +50,7 @@ const SubWidget: React.FC<{ t: number }> = ({ t }) => { const k = clamp((t - .15
     <div style={{ background: '#ffd23f', color: '#14121c', fontSize: 34, padding: '8px 26px', letterSpacing: 4 }}>SUBSTITUTION · 71'</div>
     <div style={{ background: 'rgba(14,12,22,.92)', color: '#fff', fontSize: 46, padding: '14px 26px', display: 'flex', flexDirection: 'column', gap: 6 }}>
       <div><span style={{ color: '#2aff6a' }}>▲</span> VINÍCIUS JR. <span style={{ color: '#9aa0b0', fontSize: 34 }}>7</span></div>
-      <div><span style={{ color: '#ff3a3a' }}>▼</span> YAN DIOMANDE</div></div></div>); };
+      <div><span style={{ color: '#ff3a3a' }}>▼</span> YAN DIOMANDE <span style={{ color: '#9aa0b0', fontSize: 34 }}>25</span></div></div></div>); };
 
 export const NeClip: React.FC<{ audio?: boolean }> = ({ audio = true }) => {
   const f = useCurrentFrame(), { fps, width } = useVideoConfig(), T = f / fps;
@@ -58,21 +58,27 @@ export const NeClip: React.FC<{ audio?: boolean }> = ({ audio = true }) => {
   const prevFlash = s.id === 'flash' || s.id === 'hide' ? clamp(1 - t / .25) : 0;
   return (<AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}>
     <div style={{ position: 'absolute', width: 1080, height: 1920, transform: `scale(${width / 1080})`, transformOrigin: '0 0', overflow: 'hidden' }}>
-      {s.id === 'phone' ? <PhoneUI t={t} msg="Wanna see a real superhero? Bernabéu, Saturday." reply="No, thanks." tSend={2.3} tReply={4.15} />
+      {s.id === 'phone' ? <PhoneUI t={t} msg="Wanna see a real superhero? Bernabéu, Saturday." reply="No, thanks." tSend={2.0} tReply={3.3} />
         : <svg viewBox="0 0 1080 1920" width={1080} height={1920} style={{ position: 'absolute', inset: 0 }}>
           <Scene s={s} t={t} />
           {s.id !== 'black' && <><defs><radialGradient id="neVig" cx=".5" cy=".45" r=".78"><stop offset=".62" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".5" /></radialGradient></defs>
             <rect width={1080} height={1920} fill="url(#neVig)" /></>}
         </svg>}
-      {s.id === 'tv' && <NameTag t={t} t0={.5} x={60} y={210} name="SADIE SINK" sub="on TV" col="#ff5a7a" />}
+      {s.id === 'tv' && <NameTag t={t} t0={.5} x={60} y={420} name="SADIE SINK" sub="on TV" col="#ff5a7a" />}
       {s.id === 'couch' && <NameTag t={t} t0={.2} x={60} y={210} name="VINÍCIUS JR." sub="at home" col="#ffd23f" />}
       {['benchSad', 'bench', 'shake', 'run', 'hearts', 'steal', 'wave'].includes(s.id) && <Scoreboard min={s.id === 'benchSad' ? 64 : s.id === 'bench' || s.id === 'shake' ? 71 : 72} />}
-      {s.id === 'benchSad' && <NameTag t={t} t0={.3} x={60} y={330} name="YAN DIOMANDE" sub="new signing · 19" col="#5af0c8" />}
+      {s.id === 'benchSad' && t < 2.4 && <NameTag t={t} t0={.3} x={60} y={330} name="YAN DIOMANDE" sub="new signing" col="#5af0c8" />}
       {s.id === 'shake' && <SubWidget t={t} />}
       {s.id === 'black' && <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, opacity: clamp((t - .55) / .3) }}>
         <div style={{ color: '#fff', fontSize: 92, fontWeight: 900, textAlign: 'center', lineHeight: 1.1, padding: '0 80px' }}>Didn't want to<br />anyway.</div>
-        <div style={{ color: '#8a8a96', fontSize: 34, fontWeight: 700, marginTop: 40 }}>Parody. All events are fictional.</div></div>}
-      {s.vo && s.text && <div style={{ position: 'absolute', inset: 0, transform: s.id === 'phone' ? 'translateY(-1020px)' : undefined }}><Sub t={t} t0={s.at ?? 0} dur={s.voDur ?? 1} text={s.text} /></div>}
+        <div style={{ color: '#8a8a96', fontSize: 46, fontWeight: 700, marginTop: 40 }}>Parody. All events are fictional.</div></div>}
+      {s.vo && s.text && s.id !== 'flash' && (() => { const off = s.id === 'phone' ? -1020 : s.id === 'grab' ? -980 : s.id === 'benchSad' ? -760 : 0;
+        // длинную фразу — двумя блоками по очереди (по «...»), чтобы не закрывать действие
+        const parts = s.text.includes('... ') && s.id === 'benchSad' ? [s.text.slice(0, s.text.indexOf('... ') + 3), s.text.slice(s.text.indexOf('... ') + 4)] : [s.text];
+        let acc = 0; const tot = parts.reduce((a, p) => a + p.length, 0);
+        return <div style={{ position: 'absolute', inset: 0, transform: `translateY(${off}px)` }}>{parts.map((p, i) => { const t0 = (s.at ?? 0) + (s.voDur ?? 1) * acc / tot, d = (s.voDur ?? 1) * p.length / tot; acc += p.length;
+          return <Sub key={i} t={i < parts.length - 1 && t > t0 + d ? -99 : t} t0={t0} dur={d} text={p} />; })}</div>; })()}
+      {s.id === 'corridor' && t < 1.7 && <div style={{ position: 'absolute', top: 230, width: 1080, textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 52, color: '#fff', letterSpacing: 6, opacity: clamp(t / .2) * clamp((1.7 - t) / .2), textShadow: '0 4px 0 #14121c' }}>AFTER THE MATCH</div>}
       {s.id === 'flash' && t < 1.1 && <div style={{ position: 'absolute', top: 200, width: 1080, textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 44, color: '#f4e4c0', letterSpacing: 6, opacity: .85 }}>EARLIER…</div>}
-      <AbsoluteFill style={{ background: '#fff', opacity: prevFlash * .8, pointerEvents: 'none' }} />
+      <AbsoluteFill style={{ background: '#fff', opacity: prevFlash * .3, pointerEvents: 'none' }} />
     </div>{audio && <Audio src={staticFile('ne-mix.wav')} />}</AbsoluteFill>); };

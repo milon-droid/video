@@ -30,7 +30,8 @@
    "id": "a3",
    "role": "vini_en",
    "text": "But why be jealous? I'm Vinícius Júnior.",
-   "emo": "Smug, confident, laughing a little at the end."
+   "emo": "Smug, confident, laughing a little at the end. Pronounce 'Junior' the English way: JOO-nyer, with a J sound.",
+   "say": "But why be jealous? I'm Vinicius Junior."
   },
   {
    "id": "a4",
@@ -48,7 +49,8 @@
    "id": "d1",
    "role": "vini_en",
    "text": "Ever since Diomande showed up... the bench is my best friend.",
-   "emo": "Sad, self-pitying, sighing, comedic, slow."
+   "emo": "Sad, self-pitying, sighing, comedic, slow.",
+   "say": "Ever since Dee-oh-mahn-deh showed up... the bench is my best friend."
   },
   {
    "id": "b1",

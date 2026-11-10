@@ -5,6 +5,7 @@
     ~/.venvs/qwentts/bin/python tools/vo-qwen.py lines.json -o projects/<имя>/assets/vo/ep1 [--only a1,b1] [--check] [--lang English]
   English: hf download Qwen/Qwen3-TTS-12Hz-1.7B-Base --local-dir ~/models/base
 
+# "say" в реплике — текст для синтеза (произношение), "text" — для субтитров.
 lines.json: {"roles": {"narrator": {"instruct": "Deep warm male narrator...", "ref": "Фраза-образец голоса."}, ...},
              "lines": [{"id": "a1", "role": "narrator", "text": "Это Макс.", "fx": "radio|dead|whisper", "pitch": 1.0, "speed": 1.0}]}
 Ударения: ставятся автоматически по словарю Vosk на каждое слово (модель обучена на полностью размеченном тексте);
@@ -103,8 +104,8 @@ for ln in lines:
     if r not in prompts and not a.direct: prompts[r] = tts.create_voice_clone_prompt(ref_audio=str(REF_DIR / f"{r}.wav"), ref_text=(REF_DIR / f"{r}.txt").read_text(encoding="utf-8"))
     best, best_s, info = None, -1e9, ""
     for k in range(max(1, a.cands)):
-        if a.direct: w, sr = tts.generate_voice_design(text=mark(ln["text"]), language=a.lang, instruct=(roles[r]["instruct"] + " " + ln.get("emo", "")).strip(), do_sample=True, temperature=.9)
-        else: w, sr = tts.generate_voice_clone(text=mark(ln["text"]), language="Russian", voice_clone_prompt=prompts[r]) if a.lang == "Russian" else tts.generate_voice_clone(text=ln["text"], language=a.lang, voice_clone_prompt=prompts[r])
+        if a.direct: w, sr = tts.generate_voice_design(text=mark(ln.get("say", ln["text"])), language=a.lang, instruct=(roles[r]["instruct"] + " " + ln.get("emo", "")).strip(), do_sample=True, temperature=.9)
+        else: w, sr = tts.generate_voice_clone(text=mark(ln.get("say", ln["text"])), language="Russian", voice_clone_prompt=prompts[r]) if a.lang == "Russian" else tts.generate_voice_clone(text=ln.get("say", ln["text"]), language=a.lang, voice_clone_prompt=prompts[r])
         sc, inf = score(w[0], sr, ln, roles[r])
         if sc > best_s: best, best_s, info = w[0], sc, inf
     raw, wav = out / f"{ln['id']}.raw.wav", out / f"{ln['id']}.wav"; sf.write(raw, best, sr)

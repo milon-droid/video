@@ -13,30 +13,28 @@ const full = (p: Partial<Pose>): Pose => ({ ...POSES.stand, ...p } as Pose);
 const wave = (t: number, base: number, amp = .25, f = 11) => base + Math.sin(t * f) * amp;
 export type ShotP = { t: number; m?: number };   // m — открытие рта по голосу
 
-// ───── 1c: Вини достаёт телефон (диван, средний план) ─────
+// ───── 1c: Вини достаёт телефон (диван, средний план, герой крупнее, текст — сверху) ─────
 export const ShotGrab: React.FC<ShotP> = ({ t, m = 0 }) => {
   const k = spr(t, .25, { damping: 12, stiffness: 140 }), fl = .5 + .5 * noise('gf', t, 3);
-  return (<Cam z={1.55} fy={1050} dy={-80}>
+  return (<Cam z={1.85} fy={1250} dy={-330}>
     <rect width={1080} height={1920} fill="#1c1828" />
     <rect x={720} y={300} width={300} height={520} rx={8} fill="#0e0c16" /><rect x={734} y={314} width={272} height={492} fill="#1a2a5a" />
-    <Glow x={540} y={700} r={900} c="#6a7aff" o={.35 + .2 * fl} id="grabTv" />
-    <rect x={60} y={1080} width={960} height={260} rx={70} fill="#4a3650" /><rect x={30} y={1260} width={1020} height={420} rx={60} fill="#3a2a40" />
-    <Baller who="vini" outfit="home" sit x={540} y={1560} s={1.1} t={t + 9} expr="smug" mouth={m} hold="phone" headTilt={-6}
+    <Glow x={540} y={800} r={900} c="#6a7aff" o={.35 + .2 * fl} id="grabTv" />
+    <rect x={60} y={1080} width={960} height={400} rx={70} fill="#4a3650" /><rect x={30} y={1430} width={1020} height={120} rx={40} fill="#4a3858" /><rect x={50} y={1530} width={980} height={180} rx={30} fill="#33243a" />
+    <Baller who="vini" outfit="home" sit x={540} y={1730} s={1.1} t={t + 9} expr="smug" mouth={m} hold="phone" headTilt={-6}
       pose={blendPose(full({ armL: [-.15, .5], armR: [.15, -.5] }), full({ armL: [-.15, .5], armR: [.25, -2.15] }), k)} eye={[.3, .1]} />
   </Cam>); };
 
-// ───── 1d: экран мессенджера (без логотипа) — рисуется в HTML поверх, см. Phone UI в Ne.tsx ─────
-
-// ───── 1e: лицо Вини крупно, отбрасывает телефон ─────
+// ───── 1e: лицо Вини крупно: отвечает «Whatever» и бросает телефон (телефон в руке до броска) ─────
 export const ShotToss: React.FC<ShotP & { toss: number }> = ({ t, m = 0, toss }) => {
-  const k = spr(t, toss, { damping: 10, stiffness: 200 }), fly = t > toss ? t - toss : 0;
-  return (<Cam z={2.1} fy={900} dy={-120}>
+  const k = spr(t, toss, { damping: 10, stiffness: 200 }), rel = toss + .16, fly = t > rel ? t - rel : 0;
+  return (<Cam z={2.1} fy={1160} dy={-340}>
     <rect width={1080} height={1920} fill="#1c1828" />
-    <Glow x={540} y={700} r={900} c="#6a7aff" o={.4} id="tossTv" />
-    <rect x={60} y={1080} width={960} height={260} rx={70} fill="#4a3650" />
-    <Baller who="vini" outfit="home" sit x={540} y={1560} s={1.1} t={t + 12} expr="deadpan" mouth={m} hold={t < toss ? 'phone' : null} headTilt={4}
+    <Glow x={540} y={800} r={900} c="#6a7aff" o={.4} id="tossTv" />
+    <rect x={60} y={1080} width={960} height={400} rx={70} fill="#4a3650" /><rect x={30} y={1430} width={1020} height={120} rx={40} fill="#4a3858" />
+    <Baller who="vini" outfit="home" sit x={540} y={1730} s={1.1} t={t + 12} expr="deadpan" mouth={m} hold={t < rel ? 'phone' : null} headTilt={4}
       pose={blendPose(full({ armL: [-.15, .5], armR: [.25, -2.15] }), full({ armL: [-.15, .5], armR: [2.2, -.3] }), k)} eye={[-.1, 0]} />
-    {fly > 0 && <g transform={`translate(${760 + fly * 1500},${700 - fly * 900 + fly * fly * 1400}) rotate(${fly * 900})`}><rect x={-28} y={-54} width={56} height={104} rx={10} fill="#111" /><rect x={-23} y={-47} width={46} height={88} rx={6} fill="#5ad0ff" /></g>}
+    {fly > 0 && <g transform={`translate(${780 + fly * 1500},${880 - fly * 900 + fly * fly * 1400}) rotate(${fly * 900})`}><rect x={-28} y={-54} width={56} height={104} rx={10} fill="#111" /><rect x={-23} y={-47} width={46} height={88} rx={6} fill="#5ad0ff" /></g>}
   </Cam>); };
 
 // ───── массовка: игроки на дальнем плане поля ─────
@@ -49,7 +47,7 @@ export const FieldExtras: React.FC<{ t: number; skip?: number[]; dy?: number }> 
   const x = e.x + Math.sin(t * .8 + e.ph) * Math.abs(e.sp), ph = (t * Math.abs(e.sp) * 2) / 40 + e.ph;
   return <Baller key={i} who={e.who} outfit={e.outfit} x={x} y={e.y + dy} s={e.s} t={t + i} pose={runPose(ph)} flip={Math.cos(t * .8 + e.ph) * e.sp < 0} shadow={.2} eye={[e.sp > 0 ? .6 : -.6, 0]} />; })}</g>);
 // рекламные щиты у бровки
-const Boards: React.FC<{ y: number; t: number }> = ({ y, t }) => (<g>{Array.from({ length: 4 }, (_, i) => <g key={i}><rect x={-40 + i * 300} y={y} width={292} height={70} fill="#0c1430" />
+const Boards: React.FC<{ y: number; t: number }> = ({ y, t }) => (<g>{Array.from({ length: 4 }, (_, i) => <g key={i}><rect x={-40 + i * 300} y={y} width={301} height={70} fill="#0c1430" />
   <text x={106 + i * 300} y={y + 48} fontSize={36} fontWeight={900} fill={['#5af0ff', '#ffd23f', '#ff5a7a', '#7dffb0'][(i + Math.floor(t * 1.5)) % 4]} textAnchor="middle" fontFamily="Mont" letterSpacing={4}>{['FOOTBALL', 'GOAL!', 'MATCHDAY', 'ON AIR'][i]}</text></g>)}</g>);
 
 // ───── скамейка запасных, снятая С ПОЛЯ: трибуны позади, навес из оргстекла, сиденья, техзона перед ней ─────
@@ -116,21 +114,27 @@ export const ShotBench: React.FC<ShotP & { up: number }> = ({ t, m = 0, up }) =>
 
 // ───── 2b: замена у бровки: Диоманде уходит с поля, рукопожатие и хлопок по плечу; резервный судья с табло ─────
 export const ShotHandshake: React.FC<ShotP & { faded?: boolean }> = ({ t, m = 0 }) => {
-  const pat = Math.max(0, Math.sin(t * 9)) * .12, walk = clamp(t / .5), dX = lerp(300, 360, walk);
-  return (<Cam z={1.08 + .04 * t} fy={1150} dy={-40}>
+  // 1) Диоманде уходит с поля за линию → 2) короткий хлопок по плечу → 3) Вини выходит на поле, Диоманде идёт к скамейке
+  const out = smooth(0, .6, t), dX = lerp(380, 400, out) - Math.max(0, t - 1.5) * 260, dY = lerp(1480, 1700, out), dS = lerp(.88, 1.05, out);
+  const patOn = t > .65 && t < 1.15, pat = patOn ? Math.max(0, Math.sin((t - .65) * 18)) * .12 : 0, reach = smooth(.6, .7, t) * (1 - smooth(1.1, 1.25, t));
+  const enter = smooth(1.5, 2.6, t), vY = lerp(1700, 1540, enter), vS = lerp(1.05, .95, enter), vX = lerp(700, 620, enter);
+  const vPose = t > 1.5 ? runPose(t * 8) : blendPose(full({ armL: [-.2, .2], armR: [.2, -.2] }), full({ armL: [-1.75 - pat, .45], armR: [.2, -.2] }), reach);
+  return (<Cam z={1.06 + .03 * t} fy={1180} dy={-40}>
     <Stadium t={t + 4} />
     <FieldExtras t={t + 6} dy={-20} />
-    {/* бровка: белая линия у ног, техзона */}
+    {/* бровка: белая линия, за ней — зона у скамейки */}
     <path d="M-40,1610 L1120,1610" stroke="#f4f8f4" strokeWidth={10} />
-    <rect x={-40} y={1640} width={1160} height={300} fill="#1e5a32" />
-    <Boards y={1700} t={t} />
-    {/* резервный судья с электронным табло замены */}
-    <Baller who="coach" outfit="coat" x={960} y={1630} s={.9} t={t + 2} expr="neutral" pose={{ armL: [-2.6, .2], armR: [2.6, -.2] }} eye={[-.5, -.4]} />
-    <g transform="translate(960,1020)"><rect x={-110} y={-70} width={220} height={140} rx={12} fill="#111" stroke="#333" strokeWidth={6} />
-      <text x={-50} y={22} fontSize={78} fontWeight={900} fill="#2aff6a" textAnchor="middle" fontFamily="JBM">7</text><path d="M-8,10 L10,-20 L28,10 Z" fill="#2aff6a" />
-      <path d="M48,-20 L66,10 L84,-20 Z" fill="#ff3a3a" transform="translate(0,20)" /><rect x={40} y={-48} width={52} height={10} fill="#ff3a3a" opacity={.4} /></g>
-    <Baller who="diom" x={dX} y={1600} s={1.05} t={t + 1} expr="happy" teeth pose={walk < 1 ? runPose(t * 8) : { armR: [1.25, .35], armL: [-.2, .2] }} eye={[.8, 0]} headTilt={5} />
-    <Baller who="vini" x={720} y={1600} s={1.05} t={t + 5} expr="smug" mouth={m} pose={{ armL: [-1.45 - pat * (t > .5 ? 1 : 0), .3], armR: [.2, -.2] }} eye={[-.8, 0]} headTilt={-4} />
+    <rect x={-40} y={1620} width={1160} height={320} fill="#1e5a32" />
+    <Boards y={1790} t={t} />
+    {/* резервный судья с табло: зелёная 7 — выходит Вини, красная 25 — уходит Диоманде */}
+    <Baller who="coach" outfit="coat" x={960} y={1700} s={.9} t={t + 2} expr="neutral" pose={{ armL: [-2.6, .2], armR: [2.6, -.2] }} eye={[-.5, -.4]} />
+    <g transform="translate(830,880)"><rect x={-150} y={-70} width={300} height={140} rx={12} fill="#111" stroke="#333" strokeWidth={6} />
+      <path d="M-128,12 L-110,-18 L-92,12 Z" fill="#2aff6a" /><text x={-50} y={26} fontSize={78} fontWeight={900} fill="#2aff6a" textAnchor="middle" fontFamily="JBM">7</text>
+      <path d="M8,-18 L26,12 L44,-18 Z" fill="#ff3a3a" /><text x={98} y={26} fontSize={78} fontWeight={900} fill="#ff3a3a" textAnchor="middle" fontFamily="JBM">25</text></g>
+    {vY < dY ? <><Baller who="vini" x={vX} y={vY} s={vS} t={t + 5} expr="smug" mouth={m} pose={vPose} eye={[-.6, 0]} headTilt={-4} />
+      <Baller who="diom" x={dX} y={dY} s={dS} t={t + 1} expr="happy" teeth pose={t < .6 || t > 1.5 ? runPose(t * 8) : { armR: [.25, -.2], armL: [-.2, .2] }} eye={[.8, 0]} headTilt={5} flip={t > 1.5} /></>
+      : <><Baller who="diom" x={dX} y={dY} s={dS} t={t + 1} expr="happy" teeth pose={t < .6 || t > 1.5 ? runPose(t * 8) : { armR: [.25, -.2], armL: [-.2, .2] }} eye={[.8, 0]} headTilt={5} flip={t > 1.5} />
+      <Baller who="vini" x={vX} y={vY} s={vS} t={t + 5} expr="smug" mouth={m} pose={vPose} eye={[-.6, 0]} headTilt={-4} /></>}
   </Cam>); };
 
 // ───── ворота анфас: ширина = 3 × высоты (7,32 × 2,44 м), сетка, разметка на газоне; base — линия ворот ─────
@@ -181,7 +185,7 @@ export const ShotRun: React.FC<ShotP> = ({ t }) => {
   </Cam>); };
 
 // ───── 3b: VIP-ложа — за стеклом только Сэди, машет (взгляд в сторону скамейки) ─────
-export const VipBox: React.FC<{ t: number; look?: [number, number] }> = ({ t, look = [-.8, .4] }) => (<g>
+export const VipBox: React.FC<{ t: number; look?: [number, number] }> = ({ t, look = [-.6, .9] }) => (<g>
   <rect width={1080} height={1920} fill="#0c1022" />
   <path d="M-40,1160 Q540,1080 1120,1160 L1120,1920 L-40,1920 Z" fill="#141c3a" />
   {Array.from({ length: 160 }, (_, i) => { const x = hash(i) * 1120 - 20, y = 1200 + hash(i * 3) * 700; return <circle key={i} cx={x} cy={y} r={10 + hash(i * 5) * 5} fill={['#3a4a8a', '#5a3a6a', '#e8e8f0', '#2a4a6a'][i % 4]} opacity={.5} />; })}
@@ -206,7 +210,7 @@ export const ShotHearts: React.FC<ShotP> = ({ t, m = 0 }) => {
   return (<Cam z={2.2} fy={880} dy={-80}>
     <Stadium t={t + 8} />
     <Glow x={540} y={760} r={500} c="#ff7aa0" o={.35 * h} id="heartGlow" />
-    <Baller who="vini" x={540} y={1600} s={1.0} t={t + 9} expr="happy" teeth={t > .35} mouth={m} hearts={h} headTilt={-8} eye={[-.6, -.6]} pose={{ armL: [-.3, .3], armR: [.3, -.3] }} />
+    <Baller who="vini" x={540} y={1600} s={1.0} t={t + 9} expr="happy" teeth={t > .35} mouth={m} hearts={h} headTilt={-14} eye={[-.6, -.9]} pose={{ armL: [-.3, .3], armR: [.3, -.3] }} />
     {t > .4 && [0, 1, 2, 3].map(i => { const u = t - .4 - i * .3; if (u < 0) return null; const x = 440 + i * 70 + Math.sin(u * 5 + i) * 20, y = 760 - u * 260;
       return <path key={i} transform={`translate(${x},${y}) scale(.9)`} d="M0,14 C-6,8 -30,-4 -30,-18 C-30,-32 -12,-36 0,-22 C12,-36 30,-32 30,-18 C30,-4 6,8 0,14 Z" fill="#ff5a8a" opacity={clamp(1 - u)} />; })}
   </Cam>); };
@@ -214,23 +218,29 @@ export const ShotHearts: React.FC<ShotP> = ({ t, m = 0 }) => {
 // ───── 3d: у пустых ворот (вратарь лежит у штанги после падения) засмотрелся на ложу — соперник подкатом отбирает мяч ─────
 export const STEAL_AT = .85;
 export const ShotSteal: React.FC<ShotP> = ({ t }) => {
+  // Вини машет ложе, мяч у ноги → соперник подкатом справа, низко (касание на STEAL_AT) → мяч отлетает влево, отдельно от ног →
+  // соперник встаёт и убегает за мячом влево (одно направление). Вратарь уже лежит на газоне у штанги.
   const H = 700, base = 1330, cx = -100, ks = H / 1.6 / KEEPER_H;
-  const vx = 560, vy = 1640, s = .85, ballFoot: [number, number] = [vx + 80 * s, vy - 34 * s];
-  const slide = smooth(STEAL_AT - .35, STEAL_AT, t), ox = lerp(1250, 700, slide) - (t > STEAL_AT ? (t - STEAL_AT) * 520 : 0);
-  const got = t > STEAL_AT, bx = got ? ox - 70 : ballFoot[0], by = got ? vy - 30 : ballFoot[1];
-  const oPose = t < STEAL_AT ? full({ legL: [-1.35, .1], legR: [-.5, .9], armL: [-1.8, .4], armR: [1.2, .3], lean: -.5 }) : runPose((t - STEAL_AT) * 10);
+  const vx = 560, vy = 1640, s = .85, foot: [number, number] = [vx + 80 * s, vy - 30 * s];
+  const slideK = smooth(STEAL_AT - .4, STEAL_AT, t), up = t > STEAL_AT + .15, runU = Math.max(0, t - STEAL_AT - .15);
+  const ox = up ? 760 - runU * 700 : lerp(1300, 760, slideK);
+  const bu = Math.max(0, t - STEAL_AT), bx = t < STEAL_AT ? foot[0] : foot[0] - bu * 900, by = t < STEAL_AT ? foot[1] : foot[1] - Math.sin(clamp(bu / .3) * Math.PI) * 90;
+  const slidePose = full({ legL: [-1.45, .05], legR: [-.9, .6], armL: [-2.2, .4], armR: [1.4, .2], lean: -.55, hip: 0 });
   const h = spr(t, .2, { damping: 8, stiffness: 200 }), sh = shake(t, STEAL_AT, 8, .3);
+  const kx = 900, ky = base - 95 * ks;
   return (<Cam z={1.0} fy={1250} dx={sh[0]} dy={sh[1] - 40}>
     <GoalEnd t={t + 10} base={base} H={H} cx={cx} />
     <GoalFront cx={cx} base={base} H={H}>
-      <Baller who="opp2" outfit="gk" x={900} y={base - 30} s={ks} t={t} rot={-88} expr="ko" pose={{ armL: [-2.4, .3], armR: [2.6, -.2], legL: [-.2, .2], legR: [.3, -.1] }} shadow={0} />
+      <ellipse cx={kx - 220 * ks * 1.6} cy={base + 4} rx={260} ry={18} fill="#000" opacity={.3} />
+      <Baller who="opp2" outfit="gk" x={kx} y={ky} s={ks} t={t} rot={-90} expr="ko" pose={{ armL: [-.3, .2], armR: [.3, -.2], legL: [-.05, .05], legR: [.05, -.05] }} shadow={0} />
+      {[0, 1, 2].map(i => { const a = t * 4 + i * 2.1; return <path key={i} d={`M${kx - 360 * ks * 1.4 + Math.cos(a) * 50},${ky - 90 + Math.sin(a) * 16} l0,-18 l5,13 l13,5 l-13,5 z`} fill="#ffe27a" />; })}
     </GoalFront>
-    {[0, 1, 2].map(i => { const a = t * 4 + i * 2.1; return <path key={i} d={`M${560 + Math.cos(a) * 60},${base - 120 + Math.sin(a) * 20} l0,-18 l5,13 l13,5 l-13,5 z`} fill="#ffe27a" />; })}
+    {up && <Baller who="opp" outfit="opp" x={ox} y={vy - 50} s={s * .95} t={t + 3} expr="happy" teeth pose={runPose(runU * 11)} flip eye={[-.8, .3]} />}
     <Baller who="vini" x={vx} y={vy} s={s} t={t + 11} expr="happy" teeth hearts={h * .8} headTilt={-16} eye={[-.7, -.9]} pose={{ armL: [-.3, .3], armR: [wave(t, 2.4, .25), .4] }} />
-    {t > STEAL_AT - .4 && <Baller who="opp" outfit="opp" x={ox} y={vy + (t < STEAL_AT ? 30 : 0)} s={s} t={t + 3} expr="determined" pose={oPose} flip eye={[-.8, .3]} />}
-    {t > STEAL_AT - .35 && t < STEAL_AT && <path d={`M${ox + 60},${vy + 10} l260,0 M${ox + 80},${vy - 30} l200,0`} stroke="#c8e8c8" strokeWidth={8} opacity={.6} strokeLinecap="round" />}
-    <Ball x={bx} y={by} r={32 * s} rot={got ? -t * 900 : t * 60} />
-    {got && t < STEAL_AT + .25 && <circle cx={ballFoot[0]} cy={ballFoot[1]} r={30 + (t - STEAL_AT) * 500} fill="none" stroke="#fff" strokeWidth={10} opacity={1 - (t - STEAL_AT) / .25} />}
+    {!up && t > STEAL_AT - .4 && <Baller who="opp" outfit="opp" x={ox} y={vy + 40} s={s} t={t + 3} expr="determined" pose={slidePose} flip eye={[-.8, .3]} />}
+    {!up && t > STEAL_AT - .4 && <path d={`M${ox + 120},${vy + 20} l260,0 M${ox + 140},${vy - 20} l200,0`} stroke="#c8e8c8" strokeWidth={8} opacity={.6} strokeLinecap="round" />}
+    <Ball x={bx} y={by} r={32 * s} rot={t < STEAL_AT ? t * 60 : -t * 900} />
+    {t > STEAL_AT && t < STEAL_AT + .25 && <circle cx={foot[0]} cy={foot[1]} r={30 + (t - STEAL_AT) * 500} fill="none" stroke="#fff" strokeWidth={10} opacity={1 - (t - STEAL_AT) / .25} />}
   </Cam>); };
 
 // ───── 3e: трибуны ругают Вини: злые лица, кричат, грозят кулаками, «БУ» ─────
@@ -242,18 +252,22 @@ export const ShotFans: React.FC<ShotP> = ({ t }) => {
     {[0, 1, 2, 3].map(row => <g key={row}>
       <rect x={-40} y={520 + row * 360} width={1160} height={60} fill="#1d2a55" />
       {Array.from({ length: 5 }, (_, i) => { const n = row * 5 + i, cx = 110 + i * 215 + (row % 2) * 100 - 50, cy = 470 + row * 360, sk = skins[n % 5], sc = .9 + row * .12;
-        const shakeF = Math.sin(t * 22 + n) * 14 * up, kind = n % 3;  // 0 — два кулака, 1 — палец-указка, 2 — кулак и рупор-ладонь
+        // 4 разные реакции, начало у каждого своё: 0 — руки на голове, 1 — грозит кулаком, 2 — ладонь на лице, 3 — тычет пальцем
+        const kind = (n * 7 + row) % 4, u = spr(t, .04 + hash(n) * .35, { damping: 10, stiffness: 180 }), shk = Math.sin(t * 22 + n) * 14 * u;
         const shout = .55 + .45 * Math.abs(Math.sin(t * 10 + n));
-        return (<g key={i} transform={`translate(${cx},${cy}) scale(${sc})`}>
+        const tgt = (sd: number): [number, number] => kind === 0 ? [sd * 46, -150] : kind === 1 ? (sd > 0 ? [92, -200 + shk] : [-60, 50]) : kind === 2 ? (sd > 0 ? [8, -96] : [-58, 50]) : (sd > 0 ? [120, -70] : [-40, 40]);
+        const arms = [-1, 1].map(sd => { const [tx, ty] = tgt(sd), hx = lerp(sd * 60, tx, u), hy = lerp(50, ty, u);
+          return <g key={sd}><path d={`M${sd * 52},-10 Q${sd * 86},${(hy - 10) / 2} ${hx},${hy}`} stroke={sk} strokeWidth={22} fill="none" strokeLinecap="round" />
+            {kind === 3 && sd > 0 ? <g><circle cx={hx} cy={hy} r={16} fill={sk} /><path d={`M${hx},${hy} l44,10`} stroke={sk} strokeWidth={10} strokeLinecap="round" /></g> : <circle cx={hx} cy={hy} r={19} fill={sk} />}</g>; });
+        return (<g key={i} transform={`translate(${cx},${cy + (kind === 0 ? 6 * u : 0)}) scale(${sc})`}>
           <path d="M-70,90 Q-74,-10 -40,-30 L40,-30 Q74,-10 70,90 Z" fill={shirts[n % 5]} />
-          {[-1, 1].map(sd => { const raise = kind === 1 && sd < 0 ? 0 : up, hx = sd * (60 + 30 * raise) + (kind === 1 && sd > 0 ? 50 : 0), hy = lerp(40, -170, raise) + (raise ? shakeF * (sd > 0 ? 1 : -1) : 0);
-            return <g key={sd}><path d={`M${sd * 52},-10 Q${sd * 90},${(hy - 10) / 2} ${hx},${hy}`} stroke={sk} strokeWidth={22} fill="none" strokeLinecap="round" />
-              {kind === 1 && sd > 0 ? <g><circle cx={hx} cy={hy} r={16} fill={sk} /><path d={`M${hx},${hy} l40,-26`} stroke={sk} strokeWidth={10} strokeLinecap="round" /></g> : <circle cx={hx} cy={hy} r={19} fill={sk} />}</g>; })}
+          {kind !== 2 && arms}
           <circle cx={0} cy={-100} r={50} fill={sk} />
           <ellipse cx={-17} cy={-104} rx={8} ry={7} fill="#fff" /><ellipse cx={17} cy={-104} rx={8} ry={7} fill="#fff" /><circle cx={-15} cy={-103} r={4} fill="#1a0f0a" /><circle cx={15} cy={-103} r={4} fill="#1a0f0a" />
           <path d="M-32,-126 L-6,-114 M32,-126 L6,-114" stroke="#2a1a1a" strokeWidth={6} strokeLinecap="round" />
           <path d={`M-16,${-82} L16,${-82} L12,${-82 + 22 * shout} L-12,${-82 + 22 * shout} Z`} fill="#5a1d24" /><rect x={-13} y={-82} width={26} height={5} fill="#fff" />
-          {n % 4 === 0 && <path d="M60,-120 l14,-6 M62,-104 l16,0 M60,-88 l14,6" stroke="#ff6a6a" strokeWidth={4} strokeLinecap="round" opacity={up} />}
+          {kind === 2 && arms}
+          {kind === 1 && <path d="M60,-120 l14,-6 M62,-104 l16,0 M60,-88 l14,6" stroke="#ff6a6a" strokeWidth={4} strokeLinecap="round" opacity={u} />}
         </g>); })}
     </g>)}
     {t > .15 && <g transform={`translate(${200 + (t - .15) * 700},${400 + (t - .15) * 300}) rotate(${(t - .15) * 600})`}><path d="M-20,-30 L20,-30 L14,30 L-14,30 Z" fill="#fff" /><rect x={-20} y={-34} width={40} height={8} fill="#e5383b" /></g>}
@@ -283,6 +297,7 @@ export const ShotCorridor: React.FC<ShotP & { swap: number }> = ({ t, swap }) =>
   const P = hair ? full({ armL: [-2.3, -1.3 + Math.sin(t * 12) * .25], armR: [-.35, -.3] }) : blendPose(full({ armL: [-.2, .2], armR: [-.35, -.3] }), full({ armL: [-.2, .2], armR: [.9, -1.6] }), k);
   return (<Cam z={1.25} fy={1100} dy={-40}>
     <Corridor t={t} />
+    {t <= swap && <g transform="translate(616,1310) rotate(170) scale(.62)"><Bouquet t={t} /></g>}
     <Baller who="vini" x={540} y={1640} s={1.05} t={t + 14} expr={hair ? 'cool' : 'smug'} teeth={!hair} hold={t > swap ? 'flowers' : null} pose={P} eye={[.3, 0]} headTilt={hair ? -6 : 0} />
     {t > swap && t < swap + .5 && [0, 1, 2, 3, 4].map(i => { const a = i * 1.26, r = 60 + (t - swap) * 400; return <path key={i} d={`M${700 + Math.cos(a) * r},${1050 + Math.sin(a) * r} l0,-24 l6,18 l18,6 l-18,6 z`} fill="#ffe27a" opacity={1 - (t - swap) / .5} />; })}
   </Cam>); };
@@ -298,4 +313,6 @@ export const ShotDoor: React.FC<ShotP> = ({ t }) => {
       <rect x={200} y={220 + 200} width={200} height={70} rx={10} fill="#c8a24a" /><text x={300} y={470} fontSize={44} fontWeight={900} fill="#3a2414" textAnchor="middle" fontFamily="Mont">VIP</text>
       <circle cx={530} cy={960} r={22} fill="#e8c46a" /></g>
     <rect x={220} y={280} width={640} height={1340} fill="none" stroke="#2a1e18" strokeWidth={40} />
+    {(() => { const hx = 240 + 530 * (1 - k * .85), hy = 960; return <g><path d={`M1100,1500 Q${hx + 260},${hy + 260} ${hx + 30},${hy + 30}`} stroke="#f6f6f3" strokeWidth={110} fill="none" strokeLinecap="round" />
+      <path d={`M${hx + 120},${hy + 110} L${hx + 20},${hy + 20}`} stroke="#6e4632" strokeWidth={62} strokeLinecap="round" /><circle cx={hx + 6} cy={hy + 4} r={42} fill="#6e4632" /></g>; })()}
   </Cam>); };

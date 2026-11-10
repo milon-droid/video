@@ -44,6 +44,9 @@ const MovieScene: React.FC<{ tm: number }> = ({ tm }) => {
     {tm > 1.9 && [0, 1, 2].map(i => { const u = tm - 1.9 - i * .25; if (u < 0) return null; const y = 540 - u * 120, x = SADIE_X - 70 + i * 28 + Math.sin(u * 5 + i) * 10;
       return <path key={i} d={`M${x},${y} c-7,-10 -21,-3 0,12 c21,-15 7,-22 0,-12z`} fill="#ff6a8a" opacity={clamp(1 - u / 1.2)} />; })}
     <Wind t={tm} o={.5} />
+    <g opacity={clamp((tm - .3) / .3) * clamp((2.6 - tm) / .4)} fontFamily="Mont" fontWeight={900} textAnchor="middle">
+      <text x={960} y={92} fontSize={40} fill="#ffffff" letterSpacing={3}>SPIDER-MAN:</text>
+      <text x={960} y={140} fontSize={34} fill="#ffd8a0" letterSpacing={2}>BRAND NEW DAY (2026)</text></g>
   </g>); };
 
 // ───── комната Вини: общие предметы ─────
@@ -122,14 +125,14 @@ export const ShotCouch: React.FC<{ t: number; crush?: number }> = ({ t, crush = 
     <path d="M110,1560 L110,1060" stroke="#2a2430" strokeWidth={10} /><path d="M50,1060 L170,1060 L140,970 L80,970 Z" fill="#f4d8a0" /><Glow x={110} y={1040} r={300} c="#ffc070" o={.55} id="lamp" />
     <Plant x={980} y={1560} s={1.1} t={t} />
     <Glow x={540} y={700} r={900} c="#6a7aff" o={.35 + .2 * fl} id="couchTv" />
-    <rect x={60} y={1080} width={960} height={260} rx={70} fill="#4a3650" /><rect x={30} y={1260} width={1020} height={420} rx={60} fill="#3a2a40" />
-    <rect x={90} y={1140} width={180} height={150} rx={30} fill="#e8c050" opacity={.85} /><rect x={810} y={1140} width={180} height={150} rx={30} fill="#5af0ff" opacity={.6} />
-    <Baller who="vini" outfit="home" sit x={540} y={1560} s={1.1} t={t} expr={t < crush ? 'shock' : 'determined'} mouth={t < crush ? .3 : 0}
+    <rect x={60} y={1080} width={960} height={400} rx={70} fill="#4a3650" /><rect x={30} y={1430} width={1020} height={120} rx={40} fill="#4a3858" /><rect x={50} y={1530} width={980} height={180} rx={30} fill="#33243a" />
+    <rect x={90} y={1290} width={180} height={150} rx={30} fill="#e8c050" opacity={.85} /><rect x={810} y={1290} width={180} height={150} rx={30} fill="#5af0ff" opacity={.6} />
+    <Baller who="vini" outfit="home" sit x={540} y={1730} s={1.1} t={t} expr={t < crush ? 'shock' : 'determined'} mouth={t < crush ? .3 : 0}
       pose={{ armL: [-.15, .5 + c * .3], armR: [.15, -.5 - c * .3], legL: [-.15, 0], legR: [.15, 0] }} eye={[0, -.2]} />
-    <g transform={`translate(540,${1330}) scale(${1 + c * .12},${1 - c * .22})`}>
+    <g transform={`translate(540,${1480}) scale(${1 + c * .12},${1 - c * .22})`}>
       <path d="M-80,-100 L80,-100 L62,90 L-62,90 Z" fill="#e5383b" />{[-48, 0, 48].map(x => <rect key={x} x={x - 12} y={-100} width={24} height={190} fill="#fff" opacity={.9} />)}
       {Array.from({ length: 10 }, (_, i) => <circle key={i} cx={-70 + i * 15} cy={-106 - (i % 3) * 12} r={17} fill="#fff4d0" />)}</g>
-    {pop > 0 && Array.from({ length: 14 }, (_, i) => { const a = -Math.PI / 2 + (hash(i) - .5) * 2.4, v = 500 + hash(i * 2) * 400, x = 540 + Math.cos(a) * v * pop, y = 1220 + Math.sin(a) * v * pop + 900 * pop * pop;
+    {pop > 0 && Array.from({ length: 14 }, (_, i) => { const a = -Math.PI / 2 + (hash(i) - .5) * 2.4, v = 500 + hash(i * 2) * 400, x = 540 + Math.cos(a) * v * pop, y = 1370 + Math.sin(a) * v * pop + 900 * pop * pop;
       return <circle key={i} cx={x} cy={y} r={16} fill="#fff4d0" opacity={1 - pop * .6} />; })}
     <rect width={1080} height={1920} fill="#5a6aff" opacity={.06 + .05 * fl} />
   </g>); };
