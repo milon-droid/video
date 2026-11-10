@@ -8,13 +8,12 @@ import { ShotCouch, ShotTv } from './Movie';
 import { ShotBench, ShotBox, ShotCorridor, ShotDoor, ShotFans, ShotGrab, ShotHandshake, ShotHearts, ShotSteal, ShotRun, ShotBenchSad, ShotToss, ShotWave } from './Stadium';
 import { PhoneUI, ShotFlash, ShotFrozen, ShotLounge, Sub } from './Final';
 import TL_EN from './timeline.json';
-import TL_RU from './timeline-ru.json';
 import MOUTH_EN from './mouth.json';
-import MOUTH_RU from './mouth-ru.json';
 import { Lang, setLang, T as tr } from './i18n';
 
 type Shot = { id: string; a: number; b: number; vo?: string; at?: number; voDur?: number; text?: string };
-const TLS = { en: TL_EN, ru: TL_RU } as const, MOUTHS = { en: MOUTH_EN, ru: MOUTH_RU } as const;
+// русская версия снята по решению пользователя (2026-11-10); экранные строки RU остаются в i18n.ts
+const TLS: Record<Lang, typeof TL_EN> = { en: TL_EN, ru: TL_EN }, MOUTHS: Record<Lang, any> = { en: MOUTH_EN, ru: MOUTH_EN };
 export const neFrames = (l: Lang) => Math.round(TLS[l].total * 30);
 export const NE_FRAMES = neFrames('en');
 let SHOTS = TL_EN.shots as Shot[], MOUTH: any = MOUTH_EN;
@@ -86,4 +85,4 @@ export const NeClip: React.FC<{ audio?: boolean; lang?: Lang }> = ({ audio = tru
       {s.id === 'corridor' && t < 1.7 && <div style={{ position: 'absolute', top: 230, width: 1080, textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 52, color: '#fff', letterSpacing: 6, opacity: clamp(t / .2) * clamp((1.7 - t) / .2), textShadow: '0 4px 0 #14121c' }}>{tr('after')}</div>}
       {s.id === 'flash' && t < 1.1 && <div style={{ position: 'absolute', top: 200, width: 1080, textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 44, color: '#f4e4c0', letterSpacing: 6, opacity: .85 }}>{tr('earlier')}</div>}
       <AbsoluteFill style={{ background: '#fff', opacity: prevFlash * .3, pointerEvents: 'none' }} />
-    </div>{audio && <Audio src={staticFile(lang === 'ru' ? 'ne-ru-mix.wav' : 'ne-mix.wav')} />}</AbsoluteFill>); };
+    </div>{audio && <Audio src={staticFile('ne-mix.wav')} />}</AbsoluteFill>); };
