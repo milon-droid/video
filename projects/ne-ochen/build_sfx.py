@@ -14,7 +14,7 @@ c.append({"t": 0, "type": "file", "path": "projects/ne-ochen/render/music.wav", 
 for s in TL["shots"]:
     if "vo" in s:
         f = "b2_echo" if s["id"] == "flash" else s["vo"]
-        c.append({"t": A(s["id"], s["at"]), "type": "file", "path": f"projects/ne-ochen/assets/vo2/{f}.wav", "gain": 1, "voice": True})
+        c.append({"t": A(s["id"], s["at"]), "type": "file", "path": f"projects/ne-ochen/assets/vo2n/{f}.wav", "gain": 1, "voice": True})
 # 1: ТВ, диван, телефон
 lib(A("tv", .3), "shimmer-long-soft", .35, 1, "start"); lib(A("tv", 2.4), "whoosh-slow-soft", .5, 1, "start")
 lib(A("couch", 1.0), "impact-heavy-firm", .7, 1.6); lib(A("couch", 1.02), "bsb-snow-steps-quick", .6, 1.6, "start"); syn(A("couch", 1.0), "pop", .5)
@@ -28,8 +28,8 @@ while t < A("corridor"): lib(round(t, 3), "celebration-applause-small", .22, .8,
 syn(A("bench", .15), "refwhistle", .5, dur=.35); lib(A("bench", .45), "whoosh-fast-soft", .6)
 lib(A("shake", .35), "impact-heavy-firm", .55, 1.9); lib(A("shake", .8), "impact-heavy-firm", .35, 1.7); lib(A("shake", 1.15), "impact-heavy-firm", .35, 1.7)
 lib(A("run", .3), "impact-heavy-firm", .5, 1.3)
-lib(A("box", .15), "shimmer-long-sparkle", .4, 1, "start")
-syn(A("hearts", .35), "boing", .5)
+lib(A("box", .05), "shimmer-long-sparkle", .25, 1.3, "start")
+syn(A("hearts", .02), "boing", .25)
 lib(A("miss", .3), "whoosh-medium-hard", .5, 1, "start"); lib(A("miss", .55), "impact-deep-hard", .9); lib(A("miss", .6), "whoosh-fast-hard", .7, .8, "start")
 syn(A("fans", .05), "wah", .6); lib(A("fans", .05), "celebration-applause-big", .5, .55, "start")
 # 4–5: коридор, дверь, твист, тишина

@@ -60,4 +60,4 @@
 - Рендер: `npx remotion render Ne-720 …/render/raw.mp4` → `tools/master.py` → `render/didnt-want-to-anyway.mp4`.
 
 ## Статус
-- v1 рендерится; после — отчёт пользователю, ждём отзыв.
+- v1 готов: `render/didnt-want-to-anyway.mp4` (720×1280, 46,5 с, −14,3 LUFS). Голос нормализован (`assets/vo2n`, loudnorm −18), баланс голос/фон 8–12 дБ, на телефоне ничего не пропадает. Ждём отзыв.
