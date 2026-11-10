@@ -1,0 +1,16 @@
+{"roles": {
+  "vini_en": {"instruct": "Young adult Brazilian man in his mid twenties speaking English with a light, charming Brazilian Portuguese accent. Cocky, playful, self-confident, smiling while he talks, energetic but relaxed, warm mid-low voice. Comedic voice-over for a cartoon.", "ref": "Hey! You know who I am, right? Relax, today is going to be a beautiful day."},
+  "diom_en": {"instruct": "Young man, nineteen years old, from Ivory Coast, speaking English with a soft West African French accent. Friendly, shy, light laugh in the voice, gentle mid-high voice.", "ref": "Hey, thank you, my friend. It was a good game today, really."},
+  "sadie_en": {"instruct": "Young American woman in her early twenties, clear bright voice, polite but cool and a little dry, slightly amused.", "ref": "Oh, hi. Thanks, but I already have plans tonight."}
+},
+"lines": [
+  {"id": "a1", "role": "vini_en", "text": "I've never been jealous of Spider-Man."},
+  {"id": "a2", "role": "vini_en", "text": "Until today."},
+  {"id": "a3", "role": "vini_en", "text": "But why be jealous? I'm Vinícius Júnior."},
+  {"id": "a4", "role": "vini_en", "text": "I invited her to see a real superhero. At the Bernabéu."},
+  {"id": "a5", "role": "vini_en", "text": "Whatever. Didn't want to anyway."},
+  {"id": "b1", "role": "vini_en", "text": "Finally! My moment!"},
+  {"id": "b2", "role": "vini_en", "text": "Thanks, bro. I'll take it from here."},
+  {"id": "c1", "role": "vini_en", "text": "Wait... is that Sadie?!"},
+  {"id": "c2", "role": "vini_en", "text": "Knew it. She couldn't resist."}
+]}

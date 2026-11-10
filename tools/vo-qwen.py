@@ -2,7 +2,8 @@
 """Озвучка Qwen3-TTS (Apache 2.0, локально на CPU): голос персонажа создаётся по описанию (VoiceDesign),
 реплики читает русская модель с точными ударениями (siriusfreak/qwen3-tts-12hz-1.7b-ru-stress-cf) — живее Vosk и Piper.
 
-    ~/.venvs/qwentts/bin/python tools/vo-qwen.py lines.json -o projects/<имя>/assets/vo/ep1 [--only a1,b1] [--check]
+    ~/.venvs/qwentts/bin/python tools/vo-qwen.py lines.json -o projects/<имя>/assets/vo/ep1 [--only a1,b1] [--check] [--lang English]
+  English: hf download Qwen/Qwen3-TTS-12Hz-1.7B-Base --local-dir ~/models/base
 
 lines.json: {"roles": {"narrator": {"instruct": "Deep warm male narrator...", "ref": "Фраза-образец голоса."}, ...},
              "lines": [{"id": "a1", "role": "narrator", "text": "Это Макс.", "fx": "radio|dead|whisper", "pitch": 1.0, "speed": 1.0}]}
@@ -24,6 +25,8 @@ REF_DIR = ROOT / "assets/voices/qwen-ref"
 VOW = "аеёиоуыэюя"
 ap = argparse.ArgumentParser(); ap.add_argument("lines"); ap.add_argument("-o", "--out"); ap.add_argument("--only"); ap.add_argument("--check", action="store_true")
 ap.add_argument("--cands", type=int, default=1, help="дублей на реплику; лучший выбирается по замеру тона (вопрос — подъём к концу, король — низкий голос)")
+ap.add_argument("--lang", default="Russian", help="English и др.: без разметки ударений, клон — базовой моделью --base")
+ap.add_argument("--base", default=os.path.expanduser("~/models/base"))
 ap.add_argument("--vd", default=os.path.expanduser("~/models/vd")); ap.add_argument("--rus", default=os.path.expanduser("~/models/rus"))
 a = ap.parse_args()
 cfg = json.loads(Path(a.lines).read_text(encoding="utf-8")); roles, lines = cfg["roles"], cfg["lines"]
@@ -46,7 +49,9 @@ def stress_word(w):
     k = next((i for i, x in enumerate(vph) if x.endswith("1")), None)
     if k is None or k >= len(nv): return w
     i = nv[k]; return w[:i + 1] + "́" + w[i + 1:]
-def mark(text): return re.sub(r"[А-Яа-яЁё+]+(?:-[А-Яа-яЁё+]+)*", lambda m: "-".join(stress_word(p) for p in m.group(0).split("-")), text)
+def mark(text):
+    if a.lang != "Russian": return text
+    return re.sub(r"[А-Яа-яЁё+]+(?:-[А-Яа-яЁё+]+)*", lambda m: "-".join(stress_word(p) for p in m.group(0).split("-")), text)
 if a.check:
     for l in lines: print(l["id"], mark(l["text"]))
     sys.exit(0)
@@ -59,10 +64,10 @@ need = sorted({l["role"] for l in lines if not (REF_DIR / f"{l['role']}.wav").ex
 if need:  # голоса по описанию
     vd = Qwen3TTSModel.from_pretrained(a.vd, device_map="cpu", dtype=torch.float32)
     for r in need:
-        w, sr = vd.generate_voice_design(text=roles[r]["ref"], language="Russian", instruct=roles[r]["instruct"])
+        w, sr = vd.generate_voice_design(text=roles[r]["ref"], language=a.lang, instruct=roles[r]["instruct"])
         sf.write(REF_DIR / f"{r}.wav", w[0], sr); (REF_DIR / f"{r}.txt").write_text(roles[r]["ref"], encoding="utf-8"); print("голос", r, round(len(w[0]) / sr, 1), "с")
     del vd
-tts = Qwen3TTSModel.from_pretrained(a.rus, device_map="cpu", dtype=torch.float32)
+tts = Qwen3TTSModel.from_pretrained(a.rus if a.lang == "Russian" else a.base, device_map="cpu", dtype=torch.float32)
 prompts = {}
 def f0_track(y, sr):
     """высота тона по кадрам 40 мс (автокорреляция), 0 — нет голоса"""
@@ -96,7 +101,7 @@ for ln in lines:
     if r not in prompts: prompts[r] = tts.create_voice_clone_prompt(ref_audio=str(REF_DIR / f"{r}.wav"), ref_text=(REF_DIR / f"{r}.txt").read_text(encoding="utf-8"))
     best, best_s, info = None, -1e9, ""
     for k in range(max(1, a.cands)):
-        w, sr = tts.generate_voice_clone(text=mark(ln["text"]), language="Russian", voice_clone_prompt=prompts[r])
+        w, sr = tts.generate_voice_clone(text=mark(ln["text"]), language="Russian", voice_clone_prompt=prompts[r]) if a.lang == "Russian" else tts.generate_voice_clone(text=ln["text"], language=a.lang, voice_clone_prompt=prompts[r])
         sc, inf = score(w[0], sr, ln, roles[r])
         if sc > best_s: best, best_s, info = w[0], sc, inf
     raw, wav = out / f"{ln['id']}.raw.wav", out / f"{ln['id']}.wav"; sf.write(raw, best, sr)

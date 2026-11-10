@@ -31,65 +31,105 @@ const Hand: React.FC<{ x: number; y: number; a: number; skin: string; sh: string
 type StarProps = { x: number; y: number; s?: number; t: number; pose?: Partial<Pose>; expr?: Expr; mouth?: number; eye?: [number, number]; headTilt?: number; lid?: number; flip?: boolean; teeth?: boolean; shadow?: number };
 const blendIn = (p?: Partial<Pose>): Pose => ({ ...POSES.stand, ...(p || {}) } as Pose);
 
-// ═════════ Винисиус Жуниор ═════════
-const VJ = { skin: '#6e4632', skinSh: '#53321f', skinHi: '#8a5a40', hair: '#151011', hairHi: '#4a3226', iris: '#2a1810',
-  kit: '#f6f6f3', kitSh: '#d3d6de', gold: '#d2a640', navy: '#1d2a5c', boot: '#ff5a2a', bootSole: '#ffe14a' };
-export const Vini: React.FC<StarProps> = (p) => {
-  const L = VJ, s = p.s ?? 1, t = p.t, P = blendIn(p.pose);
-  const br = Math.sin(t * 2.4 + 1) * 3, hipY = HIP_Y + (P.hip ?? 0), shY = SH_Y + br, lean = P.lean ?? 0;
-  const FL = { skin: L.skin, skinSh: L.skinSh, hair: L.hair, iris: L.iris } as any;
-  const leg = (side: -1 | 1, l: Limb) => { const { hp, kn, an } = legPts(side, l), hpp: P2 = [hp[0], hipY], fa = l[0] + l[1];
+// ═════════ футболисты: Винисиус Жуниор и Ян Диоманде ═════════
+// Вини 2026: первая борода, чёткий подбородок, короткие твисты с фейдом. Диоманде (фото пользователя): худой, вытянутое лицо,
+// тонкие усы, длинные тонкие косички-локи до плеч со светлыми кончиками, широкая улыбка.
+type BallerLook = { skin: string; skinSh: string; skinHi: string; hair: string; hairHi: string; tips?: string; iris: string; boot: string; bootSole: string; num?: string };
+const KIT = { kit: '#f6f6f3', kitSh: '#d3d6de', gold: '#d2a640', navy: '#1d2a5c' };
+const BL: Record<'vini' | 'diom', BallerLook> = {
+  vini: { skin: '#6e4632', skinSh: '#53321f', skinHi: '#8a5a40', hair: '#151011', hairHi: '#4a3226', iris: '#2a1810', boot: '#ff5a2a', bootSole: '#ffe14a', num: '7' },
+  diom: { skin: '#4c2e20', skinSh: '#382014', skinHi: '#6a4432', hair: '#141012', hairHi: '#3a2a20', tips: '#8a6440', iris: '#2a1810', boot: '#3ad0ff', bootSole: '#f4f4f4' },
+};
+type Outfit = 'kit' | 'home' | 'track';
+const OUT: Record<Outfit, { top: string; topSh: string; low: string; lowSh: string; sleeve: number }> = {
+  kit: { top: KIT.kit, topSh: KIT.kitSh, low: KIT.kit, lowSh: KIT.kitSh, sleeve: .55 },
+  home: { top: '#3a3f58', topSh: '#2a2e42', low: '#22252f', lowSh: '#181a22', sleeve: 1.4 },     // худи и спортивки дома
+  track: { top: '#1f4a3c', topSh: '#15362b', low: '#1a1c24', lowSh: '#121318', sleeve: 1.4 },    // тёмно-зелёная олимпийка после матча
+};
+export type BallerProps = StarProps & { who: 'vini' | 'diom'; outfit?: Outfit; sit?: boolean; hold?: 'phone' | 'flowers' | null; holdBack?: number; tears?: number };
+export const Phone: React.FC<{ lit?: number }> = ({ lit = 1 }) => (<g><rect x={-28} y={-54} width={56} height={104} rx={10} fill="#111" /><rect x={-23} y={-47} width={46} height={88} rx={6} fill={lit ? '#5ad0ff' : '#111'} opacity={.9} /></g>);
+export const Bouquet: React.FC<{ t?: number }> = ({ t = 0 }) => (<g>
+  {[[-34, -150, '#ff4a6a'], [0, -170, '#ff7a9a'], [34, -150, '#ff4a6a'], [-18, -122, '#ffd23f'], [20, -124, '#ff9ab8'], [-46, -112, '#ff7a9a'], [46, -112, '#ff4a6a']].map(([x, y, c], i) =>
+    <g key={i}><path d={`M0,-40 L${x},${y}`} stroke="#3a8a3a" strokeWidth={5} /><circle cx={x as number} cy={(y as number) + noise('bq' + i, t, .8) * 2} r={24} fill={c as string} /><circle cx={x as number} cy={y as number} r={9} fill="#fff" opacity={.35} /></g>)}
+  <path d="M-60,-100 L60,-100 L18,20 L-18,20 Z" fill="#f4ecd8" /><path d="M-60,-100 L0,-60 L60,-100" fill="none" stroke="#d8c8a0" strokeWidth={4} />
+  <path d="M-22,-10 Q0,4 22,-10 M-10,-4 l-14,24 M10,-4 l14,24" stroke="#e5383b" strokeWidth={7} fill="none" strokeLinecap="round" /></g>);
+export const Baller: React.FC<BallerProps> = (p) => {
+  const L = BL[p.who], O = OUT[p.outfit ?? 'kit'], s = p.s ?? 1, t = p.t, P = blendIn(p.pose), isV = p.who === 'vini';
+  const br = Math.sin(t * 2.4 + (isV ? 1 : 3)) * 3, hipY = HIP_Y + (P.hip ?? 0), shY = SH_Y + br, lean = P.lean ?? 0, thighL = p.sit ? 44 : THIGH;
+  const FL = { skin: L.skin, skinSh: L.skinSh, hair: L.hair, iris: L.iris } as any, kit = (p.outfit ?? 'kit') === 'kit';
+  const leg = (side: -1 | 1, l: Limb) => { const hp: P2 = [side * 34, hipY], kn = p.sit ? [side * 46, hipY + thighL] as P2 : pt(hp[0], hp[1], l[0], thighL), an = pt(kn[0], kn[1], p.sit ? l[0] * .3 + side * .05 : l[0] + l[1], SHIN), fa = p.sit ? 0 : l[0] + l[1];
     const sockTop = lp(kn, an, .3);
-    return (<g key={'l' + side}>{seg(hpp, kn, 62, 50, L.skin, 'th')}{seg(kn, an, 50, 42, L.skin, 'sh')}
-      {seg(hpp, lp(hpp, kn, .55), 92, 80, L.kit, 'shorts')}{seg(lp(hpp, kn, .4), lp(hpp, kn, .55), 82, 80, L.kitSh, 'shH')}
-      {seg(sockTop, an, 54, 46, L.kit, 'sock')}
+    return (<g key={'l' + side}>{seg(hp, kn, 62, 50, kit ? L.skin : O.low, 'th')}{seg(kn, an, 50, 42, kit ? L.skin : O.low, 'sh')}
+      {kit ? <>{seg(hp, lp(hp, kn, p.sit ? 1 : .55), 92, 80, O.low, 'shorts')}{!p.sit && seg(lp(hp, kn, .4), lp(hp, kn, .55), 82, 80, O.lowSh, 'shH')}{seg(sockTop, an, 54, 46, KIT.kit, 'sock')}</>
+        : seg(lp(kn, an, .3), an, 22, 18, O.lowSh, 'crease')}
       <g transform={`translate(${an[0]},${an[1]}) rotate(${-fa * 180 / Math.PI})`}>
-        <path d={`M-26,-10 L${side * 54},-6 Q${side * 66},14 ${side * 48},22 L-28,22 Q-34,6 -26,-10 Z`} fill={L.boot} />
-        <path d={`M${side * 6},-6 L${side * 40},4`} stroke="#fff" strokeWidth={6} strokeLinecap="round" opacity={.9} />
-        <rect x={side > 0 ? -30 : -46} y={17} width={76} height={9} rx={4} fill={L.bootSole} />
-        {[-14, 8, 30].map(c => <rect key={c} x={side * c - 4} y={25} width={8} height={7} rx={2} fill={L.bootSole} />)}</g></g>); };
-  const arm = (side: -1 | 1, l: Limb) => { const sp: P2 = [side * 76, shY + 16], el = pt(sp[0], sp[1], l[0], UP), wr = pt(el[0], el[1], l[0] + l[1], FORE), fa = l[0] + l[1], sl = lp(sp, el, .55);
+        <path d={`M-26,-10 L${side * 54},-6 Q${side * 66},14 ${side * 48},22 L-28,22 Q-34,6 -26,-10 Z`} fill={kit ? L.boot : '#f2f2f2'} />
+        <path d={`M${side * 6},-6 L${side * 40},4`} stroke={kit ? '#fff' : '#c8ccd6'} strokeWidth={6} strokeLinecap="round" opacity={.9} />
+        <rect x={side > 0 ? -30 : -46} y={17} width={76} height={9} rx={4} fill={kit ? L.bootSole : '#d0d4dc'} />
+        {kit && [-14, 8, 30].map(c => <rect key={c} x={side * c - 4} y={25} width={8} height={7} rx={2} fill={L.bootSole} />)}</g></g>); };
+  const arm = (side: -1 | 1, l: Limb, front: boolean) => { const sp: P2 = [side * 76, shY + 16], el = pt(sp[0], sp[1], l[0], UP), wr = pt(el[0], el[1], l[0] + l[1], FORE), fa = l[0] + l[1];
+    const holdIt = front && p.hold;
     return (<g key={'a' + side}>{seg(sp, el, 46, 40, L.skin, 'u')}{seg(el, wr, 40, 34, L.skin, 'f')}
-      {seg(sp, sl, 60, 56, L.kit, 'sl')}
-      <Hand x={wr[0]} y={wr[1]} a={fa} skin={L.skin} sh={L.skinSh} /></g>); };
-  const headY = shY - 128, ht = (p.headTilt ?? 0) + noise('vht', t, .3) * 2.5;
+      {O.sleeve <= 1 ? seg(sp, lp(sp, el, O.sleeve), 60, 56, O.top, 'sl') : <>{seg(sp, el, 56, 50, O.top, 'su')}{seg(el, lp(el, wr, .86), 50, 44, O.top, 'sf')}{seg(lp(el, wr, .78), lp(el, wr, .86), 46, 46, O.topSh, 'cuff')}</>}
+      {holdIt && <g transform={`translate(${wr[0] + Math.sin(fa) * 22},${wr[1] + Math.cos(fa) * 22}) rotate(${-fa * 180 / Math.PI + 180})`}>{p.hold === 'phone' ? <g transform="translate(0,-36)"><Phone /></g> : <Bouquet t={t} />}</g>}
+      <Hand x={wr[0]} y={wr[1]} a={fa} skin={L.skin} sh={L.skinSh} open={!holdIt} /></g>); };
+  const headY = shY - 128, ht = (p.headTilt ?? 0) + noise(p.who + 'ht', t, .3) * 2.5, hw = noise(p.who + 'hw', t, .7) * 6;
+  // локи Диоманде: пряди от макушки к плечам, светлые кончики; сзади головы и спереди у висков
+  const locs = (front: boolean) => Array.from({ length: front ? 4 : 12 }, (_, i) => { const n = front ? 2 : 6, k = i < n ? -1 : 1, j = i % n;
+    const x0 = k * (front ? 74 + j * 10 : 40 + j * 11), y0 = front ? -84 + j * 8 : -122 + j * 8, x1 = k * (front ? 92 + j * 8 : 88 + j * 7) + hw * (1 + j * .15), y1 = front ? 40 + j * 16 : 96 + j * 12;
+    const cx = k * (front ? 104 : 106 + j * 3), cy = (y0 + y1) / 2 - 24, d = `M${x0},${y0} Q${cx},${cy} ${x1},${y1}`;
+    return <g key={i}><path d={d} stroke={L.hair} strokeWidth={front ? 11 : 13} fill="none" strokeLinecap="round" />
+      <path d={`M${lerp(cx, x1, .72)},${lerp(cy, y1, .72)} L${x1},${y1}`} stroke={L.tips} strokeWidth={front ? 10 : 12} strokeLinecap="round" /></g>; });
   return (<g transform={`translate(${p.x},${p.y}) scale(${(p.flip ? -1 : 1) * s},${s})`}>
-    <ellipse cx={0} cy={6} rx={130} ry={20} fill="#000" opacity={p.shadow ?? .28} />
-    <g transform={`rotate(${lean * 57} 0 ${hipY})`}>
+    {!p.sit && <ellipse cx={0} cy={6} rx={130} ry={20} fill="#000" opacity={p.shadow ?? .28} />}
+    <g transform={`translate(0,${p.sit ? THIGH - thighL : 0}) rotate(${lean * 57} 0 ${hipY})`}>
+      {!isV && <g transform={`translate(0,${headY}) rotate(${ht})`}>{locs(false)}</g>}
       {leg(-1, P.legL)}{leg(1, P.legR)}
-      {arm(-1, P.armL)}
-      {/* майка */}
-      <path d={`M-86,${shY + 4} Q0,${shY - 24} 86,${shY + 4} L94,${hipY + 4} Q0,${hipY + 22} -94,${hipY + 4} Z`} fill={L.kit} />
-      <path d={`M42,${shY} Q72,${shY + 60} 86,${hipY + 2} L94,${hipY + 4} L86,${shY + 4} Z`} fill={L.kitSh} />
-      <path d={`M-92,${hipY - 40} L-94,${hipY + 4} M92,${hipY - 40} L94,${hipY + 4}`} stroke={L.navy} strokeWidth={8} />
-      <path d={`M-90,${hipY - 6} Q0,${hipY + 14} 90,${hipY - 6}`} stroke={L.kitSh} strokeWidth={6} fill="none" />
-      {/* V-ворот: тёмно-синий с золотом */}
-      <path d={`M-34,${shY - 8} L0,${shY + 44} L34,${shY - 8}`} fill={L.skinSh} />
-      <path d={`M-38,${shY - 10} L0,${shY + 46} L38,${shY - 10}`} stroke={L.navy} strokeWidth={11} fill="none" strokeLinejoin="round" />
-      <path d={`M-38,${shY - 10} L0,${shY + 46} L38,${shY - 10}`} stroke={L.gold} strokeWidth={3} fill="none" strokeLinejoin="round" />
-      {/* номер 7 на груди */}
-      <text x={-44} y={shY + 104} fontSize={56} fontWeight={900} fill={L.navy} textAnchor="middle" fontFamily="Mont">7</text>
-      <path d={`M30,${shY + 64} l12,-6 l12,6 l0,14 q-12,12 -24,0 z`} fill={L.gold} opacity={.9} />
-      {/* шея, голова */}
+      {arm(-1, P.armL, false)}
+      <path d={`M-86,${shY + 4} Q0,${shY - 24} 86,${shY + 4} L94,${hipY + 4} Q0,${hipY + 22} -94,${hipY + 4} Z`} fill={O.top} />
+      <path d={`M42,${shY} Q72,${shY + 60} 86,${hipY + 2} L94,${hipY + 4} L86,${shY + 4} Z`} fill={O.topSh} />
+      {kit ? <>
+        <path d={`M-92,${hipY - 40} L-94,${hipY + 4} M92,${hipY - 40} L94,${hipY + 4}`} stroke={KIT.navy} strokeWidth={8} />
+        <path d={`M-90,${hipY - 6} Q0,${hipY + 14} 90,${hipY - 6}`} stroke={O.topSh} strokeWidth={6} fill="none" />
+        <path d={`M-34,${shY - 8} L0,${shY + 44} L34,${shY - 8}`} fill={L.skinSh} />
+        <path d={`M-38,${shY - 10} L0,${shY + 46} L38,${shY - 10}`} stroke={KIT.navy} strokeWidth={11} fill="none" strokeLinejoin="round" />
+        <path d={`M-38,${shY - 10} L0,${shY + 46} L38,${shY - 10}`} stroke={KIT.gold} strokeWidth={3} fill="none" strokeLinejoin="round" />
+        {L.num && <text x={-44} y={shY + 104} fontSize={56} fontWeight={900} fill={KIT.navy} textAnchor="middle" fontFamily="Mont">{L.num}</text>}
+        <path d={`M30,${shY + 64} l12,-6 l12,6 l0,14 q-12,12 -24,0 z`} fill={KIT.gold} opacity={.9} /></>
+      : p.outfit === 'track' ? <>
+        <path d={`M0,${shY - 6} L0,${hipY + 12}`} stroke="#c8ccd6" strokeWidth={5} />
+        <path d={`M-40,${shY - 10} Q0,${shY + 6} 40,${shY - 10} L36,${shY + 6} Q0,${shY + 20} -36,${shY + 6} Z`} fill={O.topSh} />
+        <path d={`M-86,${shY + 20} L-92,${hipY} M86,${shY + 20} L92,${hipY}`} stroke="#ff6ab0" strokeWidth={7} /></>
+      : <>{/* худи: капюшон, шнурки, карман */}
+        <path d={`M-78,${shY + 8} Q-70,${shY - 40} 0,${shY - 30} Q70,${shY - 40} 78,${shY + 8} Q40,${shY - 6} 0,${shY - 2} Q-40,${shY - 6} -78,${shY + 8} Z`} fill="#4a5070" />
+        <path d={`M-14,${shY + 6} L-20,${shY + 80} M14,${shY + 6} L20,${shY + 80}`} stroke="#e8e8e8" strokeWidth={5} strokeLinecap="round" />
+        <path d={`M-50,${hipY - 70} L50,${hipY - 70} L60,${hipY - 22} L-60,${hipY - 22} Z`} fill={O.topSh} /></>}
       <rect x={-22} y={headY + 70} width={44} height={58} fill={L.skinSh} />
       <g transform={`translate(0,${headY}) rotate(${ht})`}>
-        <ellipse cx={-100} cy={8} rx={14} ry={22} fill={L.skin} /><ellipse cx={100} cy={8} rx={14} ry={22} fill={L.skin} />
-        {/* чёткий подбородок 2026 */}
-        <path d="M-100,-20 C-104,-100 -50,-128 0,-128 C50,-128 104,-100 100,-20 C100,34 84,72 46,94 L22,106 Q0,112 -22,106 L-46,94 C-84,72 -100,34 -100,-20 Z" fill={L.skin} />
+        <ellipse cx={-98} cy={8} rx={14} ry={22} fill={L.skin} /><ellipse cx={98} cy={8} rx={14} ry={22} fill={L.skin} />
+        {isV ? <path d="M-100,-20 C-104,-100 -50,-128 0,-128 C50,-128 104,-100 100,-20 C100,34 84,72 46,94 L22,106 Q0,112 -22,106 L-46,94 C-84,72 -100,34 -100,-20 Z" fill={L.skin} />
+          : <path d="M-94,-24 C-98,-104 -48,-132 0,-132 C48,-132 98,-104 94,-24 C94,34 76,80 40,104 L18,116 Q0,121 -18,116 L-40,104 C-76,80 -94,34 -94,-24 Z" fill={L.skin} />}
         <path d="M-80,-60 Q-90,-20 -84,30" stroke={L.skinHi} strokeWidth={10} fill="none" opacity={.35} strokeLinecap="round" />
-        {/* борода: впервые в карьере (2026) */}
-        <path d="M-99,-2 C-98,46 -80,80 -46,96 L-22,108 Q0,114 22,108 L46,96 C80,80 98,46 99,-2 L88,2 C84,34 66,52 38,50 Q0,40 -38,50 C-66,52 -84,34 -88,2 Z" fill={L.hair} opacity={.88} />
-        <path d="M-32,48 Q0,36 32,48" stroke={L.hair} strokeWidth={9} fill="none" strokeLinecap="round" />
-        <Face t={t} expr={p.expr ?? 'neutral'} mouth={p.mouth} eye={p.eye} lid={p.lid} L={FL} seed={7} />
+        {isV && <><path d="M-99,-2 C-98,46 -80,80 -46,96 L-22,108 Q0,114 22,108 L46,96 C80,80 98,46 99,-2 L88,2 C84,34 66,52 38,50 Q0,40 -38,50 C-66,52 -84,34 -88,2 Z" fill={L.hair} opacity={.88} />
+          <path d="M-32,48 Q0,36 32,48" stroke={L.hair} strokeWidth={9} fill="none" strokeLinecap="round" /></>}
+        <Face t={t} expr={p.expr ?? 'neutral'} mouth={p.mouth} eye={p.eye} lid={p.lid} L={FL} seed={isV ? 7 : 21} />
+        {!isV && <path d="M-26,50 Q-12,44 0,47 Q12,44 26,50" stroke={L.hair} strokeWidth={5} fill="none" strokeLinecap="round" />}
         {p.teeth && <path d="M-20,59 Q0,54 20,59 Q0,70 -20,59 Z" fill="#fbf8f2" />}
-        {/* твисты сверху, фейд по бокам */}
-        <path d="M-100,-10 C-104,-60 -96,-92 -80,-104 L-82,-40 Z M100,-10 C104,-60 96,-92 80,-104 L82,-40 Z" fill={L.hair} opacity={.45} />
-        <path d="M-90,-58 C-96,-112 -50,-140 0,-140 C50,-140 96,-112 90,-58 C76,-84 46,-92 0,-92 C-46,-92 -76,-84 -90,-58 Z" fill={L.hair} />
-        {Array.from({ length: 15 }, (_, i) => { const a = -Math.PI + .28 + i * (Math.PI - .56) / 14, r = 104 + (i % 2) * 8, cx = Math.cos(a) * r * .9, cy = -62 + Math.sin(a) * r * .72 + noise('tw' + i, t, .6) * 1.5;
-          return <g key={i}><circle cx={cx} cy={cy} r={15} fill={L.hair} /><circle cx={cx - 4} cy={cy - 5} r={5} fill={L.hairHi} opacity={.8} /></g>; })}
+        {(p.tears ?? 0) > 0 && <path d="M-44,40 q-6,30 0,46 q6,-16 0,-46 Z M44,40 q-6,30 0,46 q6,-16 0,-46 Z" fill="#9fe3ff" opacity={p.tears} />}
+        {isV ? <>
+          <path d="M-100,-10 C-104,-60 -96,-92 -80,-104 L-82,-40 Z M100,-10 C104,-60 96,-92 80,-104 L82,-40 Z" fill={L.hair} opacity={.45} />
+          <path d="M-90,-58 C-96,-112 -50,-140 0,-140 C50,-140 96,-112 90,-58 C76,-84 46,-92 0,-92 C-46,-92 -76,-84 -90,-58 Z" fill={L.hair} />
+          {Array.from({ length: 15 }, (_, i) => { const a = -Math.PI + .28 + i * (Math.PI - .56) / 14, r = 104 + (i % 2) * 8, cx = Math.cos(a) * r * .9, cy = -62 + Math.sin(a) * r * .72 + noise('tw' + i, t, .6) * 1.5;
+            return <g key={i}><circle cx={cx} cy={cy} r={15} fill={L.hair} /><circle cx={cx - 4} cy={cy - 5} r={5} fill={L.hairHi} opacity={.8} /></g>; })}</>
+        : <>
+          <path d="M-90,-50 C-98,-118 -50,-144 0,-144 C50,-144 98,-118 90,-50 C80,-80 50,-96 0,-98 C-50,-96 -80,-80 -90,-50 Z" fill={L.hair} />
+          {Array.from({ length: 9 }, (_, i) => <path key={i} d={`M${-70 + i * 17},-104 Q${-74 + i * 18},-130 ${-60 + i * 15},-142`} stroke={L.hairHi} strokeWidth={4} fill="none" opacity={.7} />)}
+          {locs(true)}</>}
       </g>
-      {arm(1, P.armR)}
+      {arm(1, P.armR, true)}
     </g></g>); };
+export const Vini: React.FC<StarProps> = (p) => <Baller {...p} who="vini" />;
+export const Diomande: React.FC<StarProps & { outfit?: Outfit; sit?: boolean }> = (p) => <Baller {...p} who="diom" />;
 
 // ═════════ Сэди Синк ═════════
 const SS = { skin: '#f8ddc9', skinSh: '#e6b49a', hair: '#b8442a', hairSh: '#8a2e1c', hairHi: '#f08a5a', iris: '#5d8fae', brow: '#9a4a2e',
