@@ -7,7 +7,7 @@ import { Cam } from '../ui/Ui';
 import { FONT } from '../theme';
 import { Stadium } from '../stars/Clip';
 import { Baller, Bouquet, Sadie, smooth } from '../stars/Stars';
-import { ShotHandshake, VipBox } from './Stadium';
+import { DugoutFront, SitPose, VipBox } from './Stadium';
 import { ShotP } from './Stadium';
 
 const full = (p: Partial<Pose>): Pose => ({ ...POSES.stand, ...p } as Pose);
@@ -30,7 +30,7 @@ const SofaFront: React.FC = () => (<g><rect x={50} y={SEAT} width={980} height={
   <rect x={20} y={1180} width={110} height={420} rx={40} fill="#d0c4aa" /><rect x={950} y={1180} width={110} height={420} rx={40} fill="#d0c4aa" />
   <rect x={300} y={1610} width={480} height={30} rx={10} fill="#1a1210" /><rect x={280} y={1580} width={520} height={40} rx={12} fill="#3a2a22" /></g>);
 export const ShotLounge: React.FC<ShotP & { reveal: number }> = ({ t, reveal }) => {
-  const k = smooth(reveal - .3, reveal + 1.0, t), z = lerp(2.6, 1.0, k), fx = lerp(640, 540, k), fy = lerp(800, 1000, k);
+  const k = smooth(reveal - .2, reveal + 1.2, t), z = lerp(2.7, 1.0, k), fx = lerp(820, 540, k), fy = lerp(820, 1000, k);
   const laugh = .25 + .25 * Math.abs(Math.sin(t * 9)), hip = 268 * .9;
   return (<Cam z={z} fx={fx} fy={fy}>
     <Lounge t={t} />
@@ -57,18 +57,18 @@ export const ShotFrozen: React.FC<ShotP & { hide?: number }> = ({ t, hide }) => 
     {hide == null && <path d={`M${720 + Math.sin(petal * 4) * 30},${1060 + petal * 260} c-10,-14 -24,-4 -10,10 c14,6 20,-6 10,-10z`} fill="#ff4a6a" opacity={clamp(1 - petal / 2.2)} />}
   </Cam>); };
 
-// ───── 5b: флешбэк (выцветший): Сэди махала скамейке, где Диоманде; затем рукопожатие ─────
-export const ShotFlash: React.FC<ShotP & { cut: number }> = ({ t, m = 0, cut }) => {
-  const k = smooth(.1, cut - .1, t);
+// ───── 5b: флешбэк (выцветший), по хронологии: Сэди в ложе машет → на скамейке запасных Диоманде (уже заменён) машет ей в ответ ─────
+export const ShotFlash: React.FC<ShotP & { cut: number }> = ({ t, cut }) => {
+  const u = t - cut;
   return (<g filter="url(#sepia)">
     <defs><filter id="sepia"><feColorMatrix type="matrix" values=".39 .77 .19 0 0  .35 .69 .17 0 0  .27 .53 .13 0 0  0 0 0 1 0" /></filter></defs>
-    {t < cut ? <g>
-      <g transform={`translate(0,${lerp(0, -960, k)})`}>
-        <g transform="translate(0,0)"><VipBox t={t} look={[-.8, .7]} /></g>
-        <g transform="translate(0,1920)"><Cam z={1} fy={1200}><Stadium t={t} />
-          <Baller who="diom" sit x={540} y={1560} s={1.05} t={t + 6} expr="happy" teeth pose={{ armR: [2.6 + Math.sin(t * 11) * .25, .4], armL: [-.15, .6], legL: [-.15, 0], legR: [.15, 0] }} eye={[.3, -.9]} /></Cam></g>
-      </g></g>
-      : <ShotHandshake t={t - cut + .4} m={m} />}
+    {t < cut ? <Cam z={1.45 + .12 * t} fy={720} dy={180}><VipBox t={t} look={[-.8, .7]} /></Cam>
+      : <Cam z={1.75 + .15 * u} fx={420} fy={1180} dy={-40}>
+        <DugoutFront t={t} />
+        {[130, 660, 825].map((x, i) => <Baller key={i} who={(['mate', 'mate2', 'mate3'] as const)[i]} outfit="kit" sit x={x} y={1600} s={.85} t={t + i * 2} expr="neutral" pose={SitPose} eye={[.2, .2]} />)}
+        <Baller who="diom" sit x={395} y={1600} s={.9} t={t + 6} expr="happy" teeth headTilt={-8} eye={[.3, -.9]} pose={{ ...SitPose, armR: [2.6 + Math.sin(t * 11) * .25, .4] }} />
+        {[0, 1].map(i => { const v = u - i * .3; if (v < 0) return null; return <path key={i} transform={`translate(${470 + i * 50},${1000 - v * 220}) scale(.8)`} d="M0,14 C-6,8 -30,-4 -30,-18 C-30,-32 -12,-36 0,-22 C12,-36 30,-32 30,-18 C30,-4 6,8 0,14 Z" fill="#ff5a8a" opacity={clamp(1 - v)} />; })}
+      </Cam>}
     <rect width={1080} height={1920} fill="url(#fbVig)" /><defs><radialGradient id="fbVig" cx=".5" cy=".5" r=".7"><stop offset=".55" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#2a1a0a" stopOpacity=".8" /></radialGradient></defs>
     {Array.from({ length: 5 }, (_, i) => <rect key={i} x={(noise('fl' + i, t, 4) * .5 + .5) * 1080} y={0} width={2} height={1920} fill="#fff" opacity={.12} />)}
   </g>); };

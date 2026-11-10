@@ -59,7 +59,7 @@ const Crowd: React.FC<{ t: number; y0: number; y1: number; seed?: number }> = ({
     const tw = hash(i * 9 + Math.floor(t * 6)) > .985;
     return <g key={i}><circle cx={x} cy={y} r={9 + hash(i * 7) * 5} fill={c} opacity={.6} />{tw && <circle cx={x} cy={y - 6} r={5} fill="#fff" />}</g>; })}
 </g>);
-const DugoutFront: React.FC<{ t: number }> = ({ t }) => (<g>
+export const DugoutFront: React.FC<{ t: number }> = ({ t }) => (<g>
   <defs><linearGradient id="dgSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#040817" /><stop offset="1" stopColor="#14275a" /></linearGradient></defs>
   <rect width={1080} height={1920} fill="url(#dgSky)" />
   <Crowd t={t} y0={300} y1={1000} seed={7} />
@@ -77,8 +77,8 @@ const DugoutFront: React.FC<{ t: number }> = ({ t }) => (<g>
   <rect y={1590} width={1080} height={330} fill="#24703e" /><path d="M-40,1600 L1120,1600" stroke="#0e3a1c" strokeWidth={6} />
   <path d="M40,1880 L40,1680 L1040,1680 L1040,1880" stroke="#f4f8f4" strokeWidth={6} fill="none" strokeDasharray="30 20" opacity={.8} />
 </g>);
-const SitPose = { armL: [-.15, .6] as [number, number], armR: [.15, -.6] as [number, number], legL: [-.15, 0] as [number, number], legR: [.15, 0] as [number, number] };
-const BenchMates: React.FC<{ t: number; xs: number[] }> = ({ t, xs }) => (<g>{xs.map((x, i) => <Baller key={i} who={(['mate', 'mate2', 'mate3'] as const)[i % 3]} outfit="bib" sit x={x} y={1600} s={.85} t={t + i * 2}
+export const SitPose = { armL: [-.15, .6] as [number, number], armR: [.15, -.6] as [number, number], legL: [-.15, 0] as [number, number], legR: [.15, 0] as [number, number] };
+const BenchMates: React.FC<{ t: number; xs: number[] }> = ({ t, xs }) => (<g>{xs.map((x, i) => <Baller key={i} who={(['mate', 'mate2', 'mate3'] as const)[i % 3]} outfit="kit" sit x={x} y={1600} s={.85} t={t + i * 2}
   expr={(['neutral', 'deadpan', 'neutral'] as const)[i % 3]} pose={SitPose} eye={[.2, .2]} />)}</g>);
 
 // ───── 2a-0: сначала поле — Диоманде блистает (обводит соперника); затем скамейка — грустный Вини ─────
