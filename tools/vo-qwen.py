@@ -33,7 +33,8 @@ cfg = json.loads(Path(a.lines).read_text(encoding="utf-8")); roles, lines = cfg[
 if a.only: lines = [l for l in lines if l["id"] in a.only.split(",")]
 
 dic, pr = {}, {}
-with open(DIC_PATH, encoding="utf-8") as f:
+if a.lang == "Russian":  # словарь ударений нужен только для русского
+  with open(DIC_PATH, encoding="utf-8") as f:
     for row in f:
         it = row.split(maxsplit=2); p = float(it[1])
         if pr.get(it[0], 0) < p: dic[it[0]] = it[2].split(); pr[it[0]] = p
