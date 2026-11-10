@@ -1,0 +1,15 @@
+{"roles": {
+  "vini_ru": {"instruct": "Young adult man, 26, Brazilian, speaking Russian fluently with a light charming Brazilian accent. Very natural, human, conversational, cocky and playful, a smile in his voice, lively varied intonation, like a funny vlog voice-over, not a narrator, not robotic.", "ref": "Привет! Ты же знаешь, кто я такой? Расслабься, сегодня будет отличный день."}
+},
+"lines": [
+  {"id": "a1", "role": "vini_ru", "text": "Я никогда не завидовал Человеку-пауку."},
+  {"id": "a2", "role": "vini_ru", "text": "До сегодняшнего дня."},
+  {"id": "a3", "role": "vini_ru", "text": "Хотя зачем мне завидовать? Я же Винисиус Жуниор."},
+  {"id": "a4", "role": "vini_ru", "text": "Предложил ей посмотреть на настоящего супергероя. На «Бернабеу»."},
+  {"id": "a5", "role": "vini_ru", "text": "Ну и ладно. Не очень-то и хотелось."},
+  {"id": "d1", "role": "vini_ru", "text": "С тех пор как пришёл Диоманде... скамейка — мой лучший друг."},
+  {"id": "b1", "role": "vini_ru", "text": "Наконец-то! Мой выход!"},
+  {"id": "b2", "role": "vini_ru", "text": "Спасибо, брат. Дальше я сам."},
+  {"id": "c1", "role": "vini_ru", "text": "Стоп... Это же Сэди?!"},
+  {"id": "c2", "role": "vini_ru", "text": "Я так и знал. Не устояла."}
+]}
