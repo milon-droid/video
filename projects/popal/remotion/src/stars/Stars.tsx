@@ -38,14 +38,14 @@ type BallerLook = { skin: string; skinSh: string; skinHi: string; hair: string; 
 const KIT = { kit: '#f6f6f3', kitSh: '#d3d6de', gold: '#d2a640', navy: '#1d2a5c' };
 const BL: Record<'vini' | 'diom' | 'tom', BallerLook> = {
   vini: { skin: '#6e4632', skinSh: '#53321f', skinHi: '#8a5a40', hair: '#151011', hairHi: '#4a3226', iris: '#2a1810', boot: '#ff5a2a', bootSole: '#ffe14a', num: '7' },
-  tom: { skin: '#f1c7a6', skinSh: '#d9a684', skinHi: '#ffe0c8', hair: '#5a3a24', hairHi: '#8a5a38', iris: '#5a3a1e', boot: '#f2f2f2', bootSole: '#d0d4dc' },
+  tom: { skin: '#f3cdb0', skinSh: '#dcaa8a', skinHi: '#ffe4cc', hair: '#3e2616', hairHi: '#7a4e30', iris: '#5a3218', boot: '#f2f2f2', bootSole: '#d0d4dc' },
   diom: { skin: '#4c2e20', skinSh: '#382014', skinHi: '#6a4432', hair: '#141012', hairHi: '#3a2a20', tips: '#8a6440', iris: '#2a1810', boot: '#3ad0ff', bootSole: '#f4f4f4' },
 };
 type Outfit = 'kit' | 'home' | 'track' | 'bomber';
 const OUT: Record<Outfit, { top: string; topSh: string; low: string; lowSh: string; sleeve: number }> = {
   kit: { top: KIT.kit, topSh: KIT.kitSh, low: KIT.kit, lowSh: KIT.kitSh, sleeve: .55 },
   home: { top: '#3a3f58', topSh: '#2a2e42', low: '#22252f', lowSh: '#181a22', sleeve: 1.4 },     // худи и спортивки дома
-  bomber: { top: '#26304a', topSh: '#1a2236', low: '#3a4a6a', lowSh: '#2a3650', sleeve: 1.4 },  // бомбер, белая футболка, джинсы
+  bomber: { top: '#4a7cb4', topSh: '#355d8c', low: '#2a3450', lowSh: '#1e2740', sleeve: 1.4 },  // джинсовая куртка, тёмная футболка, тёмные джинсы (фото Тома)
   track: { top: '#1f4a3c', topSh: '#15362b', low: '#1a1c24', lowSh: '#121318', sleeve: 1.4 },    // тёмно-зелёная олимпийка после матча
 };
 export type BallerProps = StarProps & { who: 'vini' | 'diom' | 'tom'; outfit?: Outfit; sit?: boolean; hold?: 'phone' | 'flowers' | null; holdBack?: number; tears?: number };
@@ -99,10 +99,11 @@ export const Baller: React.FC<BallerProps> = (p) => {
         {L.num && <text x={-44} y={shY + 104} fontSize={56} fontWeight={900} fill={KIT.navy} textAnchor="middle" fontFamily="Mont">{L.num}</text>}
         <path d={`M30,${shY + 64} l12,-6 l12,6 l0,14 q-12,12 -24,0 z`} fill={KIT.gold} opacity={.9} /></>
       : p.outfit === 'bomber' ? <>
-        <path d={`M-34,${shY - 8} L0,${shY + 60} L34,${shY - 8} Q0,${shY + 4} -34,${shY - 8} Z`} fill="#f4f2ec" />
-        <path d={`M-40,${shY - 10} L-6,${hipY + 10} M40,${shY - 10} L6,${hipY + 10}`} stroke={O.topSh} strokeWidth={6} />
-        <path d={`M-40,${shY - 12} Q0,${shY + 8} 40,${shY - 12}`} stroke="#c8a24a" strokeWidth={8} fill="none" />
-        <rect x={-94} y={hipY - 16} width={188} height={22} rx={8} fill="#c8a24a" opacity={.85} /></>
+        <path d={`M-34,${shY - 8} L0,${shY + 70} L34,${shY - 8} Q0,${shY + 4} -34,${shY - 8} Z`} fill="#1e2636" />
+        <path d={`M-46,${shY - 14} L-50,${shY + 30} L-8,${shY + 74} L-30,${shY - 2} Z M46,${shY - 14} L50,${shY + 30} L8,${shY + 74} L30,${shY - 2} Z`} fill="#6a9ad0" />
+        <path d={`M-6,${shY + 74} L-6,${hipY + 10} M-62,${shY + 70} L-22,${shY + 70} M22,${shY + 70} L62,${shY + 70}`} stroke="#d8b070" strokeWidth={3} strokeDasharray="6 5" />
+        <rect x={-58} y={shY + 74} width={34} height={26} rx={4} fill="none" stroke="#d8b070" strokeWidth={3} strokeDasharray="5 4" /><rect x={24} y={shY + 74} width={34} height={26} rx={4} fill="none" stroke="#d8b070" strokeWidth={3} strokeDasharray="5 4" />
+        <rect x={-94} y={hipY - 14} width={188} height={18} rx={6} fill={O.topSh} /></>
       : p.outfit === 'track' ? <>
         <path d={`M0,${shY - 6} L0,${hipY + 12}`} stroke="#c8ccd6" strokeWidth={5} />
         <path d={`M-40,${shY - 10} Q0,${shY + 6} 40,${shY - 10} L36,${shY + 6} Q0,${shY + 20} -36,${shY + 6} Z`} fill={O.topSh} />
@@ -124,10 +125,9 @@ export const Baller: React.FC<BallerProps> = (p) => {
         {p.teeth && <path d="M-20,59 Q0,54 20,59 Q0,70 -20,59 Z" fill="#fbf8f2" />}
         {(p.tears ?? 0) > 0 && <path d="M-44,40 q-6,30 0,46 q6,-16 0,-46 Z M44,40 q-6,30 0,46 q6,-16 0,-46 Z" fill="#9fe3ff" opacity={p.tears} />}
         {p.who === 'tom' ? <>
-          <path d="M-60,40 Q-40,90 0,96 Q40,90 60,40" stroke={L.hair} strokeWidth={14} fill="none" opacity={.12} strokeDasharray="3 6" />
           <path d="M-98,-34 C-104,-76 -90,-112 -60,-124 L-86,-56 Z M98,-34 C104,-76 90,-112 60,-124 L86,-56 Z" fill={L.hair} opacity={.85} />
-          <path d={`M-94,-44 C-104,-120 -60,-160 -10,-162 C${30 + hw},-${190 + hw} ${90 + hw},-170 100,-120 C104,-90 98,-66 94,-44 C84,-74 70,-86 50,-88 C56,-104 40,-112 20,-104 C10,-120 -14,-120 -24,-102 C-46,-112 -70,-96 -94,-44 Z`} fill={L.hair} />
-          <path d={`M-40,-140 C-10,-160 40,-166 ${74 + hw},-142 M-60,-118 C-30,-138 20,-140 50,-128`} stroke={L.hairHi} strokeWidth={8} fill="none" strokeLinecap="round" opacity={.7} /></>
+          <path d={`M-96,-40 C-108,-118 -70,-168 -10,-172 C${40 + hw},-${196 + hw} ${104 + hw},-168 106,-110 C108,-80 100,-60 96,-40 C90,-80 80,-96 64,-100 C70,-116 54,-128 30,-118 C10,-104 -20,-100 -44,-96 C-70,-92 -86,-72 -96,-40 Z`} fill={L.hair} />
+          <path d={`M-70,-150 C-30,-176 30,-182 ${86 + hw},-150 M-60,-122 C-20,-146 30,-150 74,-128 M-40,-104 C-10,-122 30,-126 60,-112`} stroke={L.hairHi} strokeWidth={7} fill="none" strokeLinecap="round" opacity={.65} /></>
         : isV ? <>
           <path d="M-100,-10 C-104,-60 -96,-92 -80,-104 L-82,-40 Z M100,-10 C104,-60 96,-92 80,-104 L82,-40 Z" fill={L.hair} opacity={.45} />
           <path d="M-90,-58 C-96,-112 -50,-140 0,-140 C50,-140 96,-112 90,-58 C76,-84 46,-92 0,-92 C-46,-92 -76,-84 -90,-58 Z" fill={L.hair} />
