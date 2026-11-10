@@ -5,6 +5,7 @@ import { Glow } from '../bg/Bg';
 import { blendPose, Pose, POSES } from '../chars/Person';
 import { Cam } from '../ui/Ui';
 import { FONT } from '../theme';
+import { T } from './i18n';
 import { Stadium } from '../stars/Clip';
 import { Baller, Bouquet, Sadie, smooth } from '../stars/Stars';
 import { DugoutFront, SitPose, VipBox } from './Stadium';
@@ -85,16 +86,16 @@ export const PhoneUI: React.FC<{ t: number; msg: string; reply: string; tSend: n
     <div style={{ height: 230, background: '#16161c', display: 'flex', alignItems: 'center', padding: '60px 50px 0', gap: 28 }}>
       <div style={{ fontSize: 60, color: '#3a7bff' }}>‹</div>
       <div style={{ width: 110, height: 110, borderRadius: 55, background: 'radial-gradient(circle at 50% 70%, #f8ddc9 34%, #b8442a 36%)', border: '4px solid #ff5a7a' }} />
-      <div><div style={{ color: '#fff', fontSize: 50, fontWeight: 900 }}>Sadie Sink <span style={{ color: '#3a9bff', fontSize: 40 }}>✔</span></div><div style={{ color: '#8a8a96', fontSize: 34, fontWeight: 700 }}>@sadiesink_ · {typing ? 'typing…' : 'Active now'}</div></div>
+      <div><div style={{ color: '#fff', fontSize: 50, fontWeight: 900 }}>Sadie Sink <span style={{ color: '#3a9bff', fontSize: 40 }}>✔</span></div><div style={{ color: '#8a8a96', fontSize: 34, fontWeight: 700 }}>@sadiesink_ · {typing ? T('typing') : T('active')}</div></div>
     </div>
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 34, padding: '0 50px 40px' }}>
       {sent && bub(true, msg)}
-      {sent && t < tReply && <div style={{ alignSelf: 'flex-end', color: '#8a8a96', fontSize: 32, fontWeight: 700 }}>Seen</div>}
+      {sent && t < tReply && <div style={{ alignSelf: 'flex-end', color: '#8a8a96', fontSize: 32, fontWeight: 700 }}>{T('seen')}</div>}
       {typing && <div style={{ alignSelf: 'flex-start', background: '#2c2c34', borderRadius: 36, padding: '26px 34px', display: 'flex', gap: 14 }}>{[0, 1, 2].map(i => <div key={i} style={{ width: 20, height: 20, borderRadius: 10, background: '#aaa', opacity: .4 + .6 * Math.max(0, Math.sin(t * 9 - i)) }} />)}</div>}
       {t > tReply && bub(false, reply, rk)}
     </div>
     <div style={{ height: 300, background: '#16161c', padding: '30px 40px', display: 'flex', gap: 20, alignItems: 'flex-start' }}>
-      <div style={{ flex: 1, minHeight: 100, background: '#24242c', borderRadius: 50, color: '#fff', fontSize: 46, fontWeight: 600, padding: '24px 34px', lineHeight: 1.2 }}>{sent ? <span style={{ color: '#6a6a76' }}>Message…</span> : <>{msg.slice(0, n)}<span style={{ opacity: Math.sin(t * 12) > 0 ? 1 : 0 }}>|</span></>}</div>
+      <div style={{ flex: 1, minHeight: 100, background: '#24242c', borderRadius: 50, color: '#fff', fontSize: 46, fontWeight: 600, padding: '24px 34px', lineHeight: 1.2 }}>{sent ? <span style={{ color: '#6a6a76' }}>{T('message')}</span> : <>{msg.slice(0, n)}<span style={{ opacity: Math.sin(t * 12) > 0 ? 1 : 0 }}>|</span></>}</div>
       <div style={{ width: 100, height: 100, borderRadius: 50, background: '#3a7bff', color: '#fff', fontSize: 50, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</div>
     </div>
   </div>); };

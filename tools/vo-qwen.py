@@ -56,7 +56,7 @@ def mark(text):
     if a.lang != "Russian": return text
     return re.sub(r"[А-Яа-яЁё+]+(?:-[А-Яа-яЁё+]+)*", lambda m: "-".join(stress_word(p) for p in m.group(0).split("-")), text)
 if a.check:
-    for l in lines: print(l["id"], mark(l["text"]))
+    for l in lines: print(l["id"], mark(l.get("say", l["text"])))
     sys.exit(0)
 
 import numpy as np, soundfile as sf, torch

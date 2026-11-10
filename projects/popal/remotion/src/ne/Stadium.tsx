@@ -6,6 +6,7 @@ import { Glow } from '../bg/Bg';
 import { blendPose, Pose, POSES, runPose } from '../chars/Person';
 import { Cam } from '../ui/Ui';
 import { Stadium } from '../stars/Clip';
+import { T } from './i18n';
 import { Ball, Baller, Bouquet, legPts, Sadie, smooth } from '../stars/Stars';
 
 const hash = (n: number) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
@@ -48,7 +49,7 @@ export const FieldExtras: React.FC<{ t: number; skip?: number[]; dy?: number }> 
   return <Baller key={i} who={e.who} outfit={e.outfit} x={x} y={e.y + dy} s={e.s} t={t + i} pose={runPose(ph)} flip={Math.cos(t * .8 + e.ph) * e.sp < 0} shadow={.2} eye={[e.sp > 0 ? .6 : -.6, 0]} />; })}</g>);
 // рекламные щиты у бровки
 const Boards: React.FC<{ y: number; t: number }> = ({ y, t }) => (<g>{Array.from({ length: 4 }, (_, i) => <g key={i}><rect x={-40 + i * 300} y={y} width={301} height={70} fill="#0c1430" />
-  <text x={106 + i * 300} y={y + 48} fontSize={36} fontWeight={900} fill={['#5af0ff', '#ffd23f', '#ff5a7a', '#7dffb0'][(i + Math.floor(t * 1.5)) % 4]} textAnchor="middle" fontFamily="Mont" letterSpacing={4}>{['FOOTBALL', 'GOAL!', 'MATCHDAY', 'ON AIR'][i]}</text></g>)}</g>);
+  <text x={106 + i * 300} y={y + 48} fontSize={36} fontWeight={900} fill={['#5af0ff', '#ffd23f', '#ff5a7a', '#7dffb0'][(i + Math.floor(t * 1.5)) % 4]} textAnchor="middle" fontFamily="Mont" letterSpacing={4}>{[T('b1'), T('b2'), T('b3'), T('b4')][i]}</text></g>)}</g>);
 
 // ───── скамейка запасных, снятая С ПОЛЯ: трибуны позади, навес из оргстекла, сиденья, техзона перед ней ─────
 const Crowd: React.FC<{ t: number; y0: number; y1: number; seed?: number }> = ({ t, y0, y1, seed = 0 }) => (<g>
