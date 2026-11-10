@@ -104,7 +104,7 @@ for ln in lines:
     if r not in prompts and not a.direct: prompts[r] = tts.create_voice_clone_prompt(ref_audio=str(REF_DIR / f"{r}.wav"), ref_text=(REF_DIR / f"{r}.txt").read_text(encoding="utf-8"))
     best, best_s, info = None, -1e9, ""
     for k in range(max(1, a.cands)):
-        if a.direct: w, sr = tts.generate_voice_design(text=mark(ln.get("say", ln["text"])), language=a.lang, instruct=(roles[r]["instruct"] + " " + ln.get("emo", "")).strip(), do_sample=True, temperature=.9)
+        if a.direct: w, sr = tts.generate_voice_design(text=ln.get("say", ln["text"]).replace("+", ""), language=a.lang, instruct=(roles[r]["instruct"] + " " + ln.get("emo", "")).strip(), do_sample=True, temperature=.9)
         else: w, sr = tts.generate_voice_clone(text=mark(ln.get("say", ln["text"])), language="Russian", voice_clone_prompt=prompts[r]) if a.lang == "Russian" else tts.generate_voice_clone(text=ln.get("say", ln["text"]), language=a.lang, voice_clone_prompt=prompts[r])
         sc, inf = score(w[0], sr, ln, roles[r])
         if sc > best_s: best, best_s, info = w[0], sc, inf

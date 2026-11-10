@@ -4,9 +4,9 @@ let LANG: Lang = 'en';
 export const setLang = (l: Lang) => { LANG = l; };
 export const lang = () => LANG;
 const D: Record<string, [string, string]> = {
-  sadie: ['SADIE SINK', 'СЭДИ СИНК'], onTv: ['on TV', 'в кино'], vini: ['VINÍCIUS JR.', 'ВИНИСИУС ЖУНИОР'], atHome: ['at home', 'дома'],
+  sadie: ['SADIE SINK', 'СЭДИ СИНК'], onTv: ['on TV', 'в кино'], vini: ['VINÍCIUS JR.', 'ВИНИСИУС ДЖУНИОР'], atHome: ['at home', 'дома'],
   diom: ['YAN DIOMANDE', 'ЯН ДИОМАНДЕ'], newSign: ['new signing', 'новичок клуба'], home: ['HOME', 'ХОЗЯЕВА'], away: ['AWAY', 'ГОСТИ'],
-  subst: ["SUBSTITUTION · 71'", "ЗАМЕНА · 71'"], viniShort: ['VINÍCIUS JR.', 'ВИНИСИУС ЖУНИОР'],
+  subst: ["SUBSTITUTION · 71'", "ЗАМЕНА · 71'"], viniShort: ['VINÍCIUS JR.', 'ВИНИСИУС ДЖУНИОР'],
   title1: ["Didn't want to", 'Не очень-то'], title2: ['anyway.', 'и хотелось.'], parody: ['Parody. All events are fictional.', 'Пародия. Все события вымышлены.'],
   earlier: ['EARLIER…', 'ЧУТЬ РАНЬШЕ…'], after: ['AFTER THE MATCH', 'ПОСЛЕ МАТЧА'],
   msg: ['Wanna see a real superhero? Bernabéu, Saturday.', 'Хочешь увидеть настоящего супергероя? «Бернабеу», суббота.'], reply: ['No, thanks.', 'Нет, спасибо.'],
