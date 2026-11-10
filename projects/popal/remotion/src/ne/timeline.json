@@ -1,0 +1,145 @@
+{
+ "shots": [
+  {
+   "id": "tv",
+   "a": 0,
+   "b": 3.6,
+   "vo": "a1",
+   "at": 0.2,
+   "voDur": 2.443,
+   "text": "I've never been jealous of Spider-Man."
+  },
+  {
+   "id": "couch",
+   "a": 3.6,
+   "b": 5.6,
+   "vo": "a2",
+   "at": 0.15,
+   "voDur": 0.87,
+   "text": "Until today."
+  },
+  {
+   "id": "grab",
+   "a": 5.6,
+   "b": 9.3,
+   "vo": "a3",
+   "at": 0.3,
+   "voDur": 3.296,
+   "text": "But why be jealous? I'm Vinícius Júnior."
+  },
+  {
+   "id": "phone",
+   "a": 9.3,
+   "b": 13.9,
+   "vo": "a4",
+   "at": 0.2,
+   "voDur": 3.913,
+   "text": "I invited her to see a real superhero. At the Bernabéu."
+  },
+  {
+   "id": "toss",
+   "a": 13.9,
+   "b": 16.4,
+   "vo": "a5",
+   "at": 0.3,
+   "voDur": 2.1,
+   "text": "Whatever. Didn't want to anyway."
+  },
+  {
+   "id": "bench",
+   "a": 16.4,
+   "b": 19.4,
+   "vo": "b1",
+   "at": 0.25,
+   "voDur": 2.59,
+   "text": "Finally! My moment!"
+  },
+  {
+   "id": "shake",
+   "a": 19.4,
+   "b": 22.0,
+   "vo": "b2",
+   "at": 0.5,
+   "voDur": 1.938,
+   "text": "Thanks, bro. I'll take it from here."
+  },
+  {
+   "id": "run",
+   "a": 22.0,
+   "b": 23.5
+  },
+  {
+   "id": "box",
+   "a": 23.5,
+   "b": 25.0
+  },
+  {
+   "id": "hearts",
+   "a": 25.0,
+   "b": 27.3,
+   "vo": "c1",
+   "at": 0.2,
+   "voDur": 1.888,
+   "text": "Wait... is that Sadie?!"
+  },
+  {
+   "id": "miss",
+   "a": 27.3,
+   "b": 28.9
+  },
+  {
+   "id": "fans",
+   "a": 28.9,
+   "b": 30.2
+  },
+  {
+   "id": "wave",
+   "a": 30.2,
+   "b": 32.5,
+   "vo": "c2",
+   "at": 0.25,
+   "voDur": 1.776,
+   "text": "Knew it. She couldn't resist."
+  },
+  {
+   "id": "corridor",
+   "a": 32.5,
+   "b": 34.5
+  },
+  {
+   "id": "door",
+   "a": 34.5,
+   "b": 35.6
+  },
+  {
+   "id": "lounge",
+   "a": 35.6,
+   "b": 38.8
+  },
+  {
+   "id": "frozen",
+   "a": 38.8,
+   "b": 40.3
+  },
+  {
+   "id": "flash",
+   "a": 40.3,
+   "b": 42.5,
+   "vo": "b2",
+   "at": 0.15,
+   "voDur": 1.938,
+   "text": "Thanks, bro. I'll take it from here."
+  },
+  {
+   "id": "hide",
+   "a": 42.5,
+   "b": 44.3
+  },
+  {
+   "id": "black",
+   "a": 44.3,
+   "b": 46.5
+  }
+ ],
+ "total": 46.5
+}

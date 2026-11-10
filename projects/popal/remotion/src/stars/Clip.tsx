@@ -22,7 +22,7 @@ const footTop = (side: -1 | 1, l: Limb, lean = 0): [number, number] => { const {
 const kneeTop = (side: -1 | 1, l: Limb): [number, number] => { const { kn } = legPts(side, l); return [kn[0], kn[1] - 58]; };
 
 // ───── фон: ночной стадион ─────
-const Stadium: React.FC<{ t: number; flash?: number }> = ({ t, flash = 0 }) => (<g>
+export const Stadium: React.FC<{ t: number; flash?: number }> = ({ t, flash = 0 }) => (<g>
   <defs><linearGradient id="sdSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#040817" /><stop offset=".7" stopColor="#14275a" /><stop offset="1" stopColor="#2a3f7a" /></linearGradient>
     <linearGradient id="sdPitch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2f8a4a" /><stop offset="1" stopColor="#14502a" /></linearGradient>
     <linearGradient id="sdBeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#dff2ff" stopOpacity=".32" /><stop offset="1" stopColor="#dff2ff" stopOpacity="0" /></linearGradient></defs>
@@ -73,12 +73,12 @@ const RedCarpet: React.FC<{ t: number; beats: number[] }> = ({ t, beats }) => (<
       {f > 0 && <><Glow x={sd * 34} y={-56} r={230 * f + 40} c="#ffffff" o={f} id={'pf' + i} /><circle cx={sd * 34} cy={-56} r={16} fill="#fff" opacity={f} /></>}</g>); })}
 </g>);
 
-const Confetti: React.FC<{ t: number; t0: number }> = ({ t, t0 }) => { if (t < t0) return null; const u = t - t0;
+export const Confetti: React.FC<{ t: number; t0: number }> = ({ t, t0 }) => { if (t < t0) return null; const u = t - t0;
   return <g>{Array.from({ length: 70 }, (_, i) => { const x = hash(i) * 1080 + Math.sin(u * 3 + i) * 30, y = -40 + (hash(i * 2) * 300 + u * (380 + hash(i * 3) * 260)), c = ['#ffd23f', '#ff5a7a', '#4ad0ff', '#7dffb0', '#ffffff'][i % 5];
     return <rect key={i} x={x} y={y} width={16} height={26} rx={3} fill={c} transform={`rotate(${u * 300 * (hash(i * 7) - .5) + i * 40} ${x + 8} ${y + 13})`} />; })}</g>; };
 
 // ───── подпись-бирка ─────
-const NameTag: React.FC<{ t: number; t0: number; x: number; y: number; name: string; sub: string; col: string }> = ({ t, t0, x, y, name, sub, col }) => { if (t < t0) return null; const k = spr(t, t0, { damping: 11, stiffness: 160 });
+export const NameTag: React.FC<{ t: number; t0: number; x: number; y: number; name: string; sub: string; col: string }> = ({ t, t0, x, y, name, sub, col }) => { if (t < t0) return null; const k = spr(t, t0, { damping: 11, stiffness: 160 });
   return <div style={{ position: 'absolute', left: x, top: y, transform: `translateX(${(1 - k) * -60}px)`, opacity: clamp(k * 1.5), background: 'rgba(14,12,22,.82)', borderLeft: `10px solid ${col}`, borderRadius: 14, padding: '12px 24px', fontFamily: FONT, color: '#fbf8f2' }}>
     <div style={{ fontSize: 54, fontWeight: 900, lineHeight: 1.05, letterSpacing: 1 }}>{name}</div><div style={{ fontSize: 30, fontWeight: 800, color: col, marginTop: 4 }}>{sub}</div></div>; };
 

@@ -7,7 +7,7 @@ cues.json — список событий:
     [{"t": 0.15, "type": "step", "gain": 0.6}, {"t": 3.6, "type": "ff", "dur": 0.8}, ...]
 
 Типы: note (freq), step, skid, beep, bloop, click, glitch, ff (перемотка вперёд), rewind,
-boing, whistle, thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
+boing, whistle (слайд), refwhistle (свисток судьи), thud, bonk, drone, pop, puff, wah (грустный спуск), tick, boom,
 wind, tires, hum (печка), engine, snowstep, heartbeat, murmur (речь из телевизора), tone (ровный писк), chord (аккорд-пэд: notes, attack), pluck (струна/домбра: freq), breath_in, hiss (шипение: lo, hi, pulse),
 roar (рёв ракеты), jet (пролёт самолёта), rattle (дрожь стекла), tinkle (хрусталь люстры), knock (стук в дверь), siren (сирена), horn (гудок машины), crackle (огонь), debris (обломки), brush (смахнуть снег),
 hum50 (гул сети 50 Гц), charge (подключение зарядки), lowbat (тройной писк), powerdown (выключение), zap (треск тока).
@@ -181,6 +181,11 @@ def gen(c):
         f = 220 * p * (1 + 0.6 * np.exp(-np.arange(n) / SR * 10) * np.sin(2 * np.pi * 14 * np.arange(n) / SR))
         x = np.sin(2 * np.pi * np.cumsum(f) / SR)
         return x * env(n, 0.003, d * 0.5)
+    if ty == "refwhistle":  # свисток судьи: два близких тона ~3 кГц с трелью шарика (АМ ~32 Гц)
+        d = d or 0.8
+        n = int(d * SR); t = np.arange(n) / SR
+        x = (np.sin(2 * np.pi * 3050 * p * t) + .6 * np.sin(2 * np.pi * 3190 * p * t)) * (0.65 + 0.35 * np.sin(2 * np.pi * 32 * t)) + .08 * noise(n)
+        return x / np.abs(x).max() * np.minimum(1, t / .015) * np.minimum(1, (d - t) / .05) * .6
     if ty == "whistle":
         d = d or 1.0
         n = int(d * SR)

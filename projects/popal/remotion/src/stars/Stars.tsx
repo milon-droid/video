@@ -36,19 +36,21 @@ const blendIn = (p?: Partial<Pose>): Pose => ({ ...POSES.stand, ...(p || {}) } a
 // тонкие усы, длинные тонкие косички-локи до плеч со светлыми кончиками, широкая улыбка.
 type BallerLook = { skin: string; skinSh: string; skinHi: string; hair: string; hairHi: string; tips?: string; iris: string; boot: string; bootSole: string; num?: string };
 const KIT = { kit: '#f6f6f3', kitSh: '#d3d6de', gold: '#d2a640', navy: '#1d2a5c' };
-const BL: Record<'vini' | 'diom' | 'tom', BallerLook> = {
+const BL: Record<'vini' | 'diom' | 'tom' | 'coach', BallerLook> = {
   vini: { skin: '#6e4632', skinSh: '#53321f', skinHi: '#8a5a40', hair: '#151011', hairHi: '#4a3226', iris: '#2a1810', boot: '#ff5a2a', bootSole: '#ffe14a', num: '7' },
   tom: { skin: '#f3cdb0', skinSh: '#dcaa8a', skinHi: '#ffe4cc', hair: '#3e2616', hairHi: '#7a4e30', iris: '#5a3218', boot: '#f2f2f2', bootSole: '#d0d4dc' },
+  coach: { skin: '#e2b08c', skinSh: '#c48e6c', skinHi: '#f4caa8', hair: '#9a9894', hairHi: '#c8c6c0', iris: '#3a2a1e', boot: '#1a1a1a', bootSole: '#333' },
   diom: { skin: '#4c2e20', skinSh: '#382014', skinHi: '#6a4432', hair: '#141012', hairHi: '#3a2a20', tips: '#8a6440', iris: '#2a1810', boot: '#3ad0ff', bootSole: '#f4f4f4' },
 };
-type Outfit = 'kit' | 'home' | 'track' | 'bomber';
+type Outfit = 'kit' | 'home' | 'track' | 'bomber' | 'coat';
 const OUT: Record<Outfit, { top: string; topSh: string; low: string; lowSh: string; sleeve: number }> = {
   kit: { top: KIT.kit, topSh: KIT.kitSh, low: KIT.kit, lowSh: KIT.kitSh, sleeve: .55 },
   home: { top: '#3a3f58', topSh: '#2a2e42', low: '#22252f', lowSh: '#181a22', sleeve: 1.4 },     // худи и спортивки дома
   bomber: { top: '#4a7cb4', topSh: '#355d8c', low: '#2a3450', lowSh: '#1e2740', sleeve: 1.4 },  // джинсовая куртка, тёмная футболка, тёмные джинсы (фото Тома)
+  coat: { top: '#1c2236', topSh: '#121626', low: '#22283a', lowSh: '#161a28', sleeve: 1.4 },     // пальто тренера
   track: { top: '#1f4a3c', topSh: '#15362b', low: '#1a1c24', lowSh: '#121318', sleeve: 1.4 },    // тёмно-зелёная олимпийка после матча
 };
-export type BallerProps = StarProps & { who: 'vini' | 'diom' | 'tom'; outfit?: Outfit; sit?: boolean; hold?: 'phone' | 'flowers' | null; holdBack?: number; tears?: number };
+export type BallerProps = StarProps & { who: 'vini' | 'diom' | 'tom' | 'coach'; hearts?: number; outfit?: Outfit; sit?: boolean; hold?: 'phone' | 'flowers' | null; holdBack?: number; tears?: number };
 export const Phone: React.FC<{ lit?: number }> = ({ lit = 1 }) => (<g><rect x={-28} y={-54} width={56} height={104} rx={10} fill="#111" /><rect x={-23} y={-47} width={46} height={88} rx={6} fill={lit ? '#5ad0ff' : '#111'} opacity={.9} /></g>);
 export const Bouquet: React.FC<{ t?: number }> = ({ t = 0 }) => (<g>
   {[[-34, -150, '#ff4a6a'], [0, -170, '#ff7a9a'], [34, -150, '#ff4a6a'], [-18, -122, '#ffd23f'], [20, -124, '#ff9ab8'], [-46, -112, '#ff7a9a'], [46, -112, '#ff4a6a']].map(([x, y, c], i) =>
@@ -104,6 +106,9 @@ export const Baller: React.FC<BallerProps> = (p) => {
         <path d={`M-6,${shY + 74} L-6,${hipY + 10} M-62,${shY + 70} L-22,${shY + 70} M22,${shY + 70} L62,${shY + 70}`} stroke="#d8b070" strokeWidth={3} strokeDasharray="6 5" />
         <rect x={-58} y={shY + 74} width={34} height={26} rx={4} fill="none" stroke="#d8b070" strokeWidth={3} strokeDasharray="5 4" /><rect x={24} y={shY + 74} width={34} height={26} rx={4} fill="none" stroke="#d8b070" strokeWidth={3} strokeDasharray="5 4" />
         <rect x={-94} y={hipY - 14} width={188} height={18} rx={6} fill={O.topSh} /></>
+      : p.outfit === 'coat' ? <>
+        <path d={`M-40,${shY - 10} L-10,${hipY + 30} M40,${shY - 10} L10,${hipY + 30}`} stroke={O.topSh} strokeWidth={8} />
+        <path d={`M-34,${shY - 14} Q0,${shY + 10} 34,${shY - 14} L20,${shY + 120} L4,${shY + 120} L0,${shY + 20} Z`} fill="#c8c0b0" /></>
       : p.outfit === 'track' ? <>
         <path d={`M0,${shY - 6} L0,${hipY + 12}`} stroke="#c8ccd6" strokeWidth={5} />
         <path d={`M-40,${shY - 10} Q0,${shY + 6} 40,${shY - 10} L36,${shY + 6} Q0,${shY + 20} -36,${shY + 6} Z`} fill={O.topSh} />
@@ -123,8 +128,12 @@ export const Baller: React.FC<BallerProps> = (p) => {
         <Face t={t} expr={p.expr ?? 'neutral'} mouth={p.mouth} eye={p.eye} lid={p.lid} L={FL} seed={isV ? 7 : 21} />
         {p.who === 'diom' && <path d="M-26,50 Q-12,44 0,47 Q12,44 26,50" stroke={L.hair} strokeWidth={5} fill="none" strokeLinecap="round" />}
         {p.teeth && <path d="M-20,59 Q0,54 20,59 Q0,70 -20,59 Z" fill="#fbf8f2" />}
+        {(p.hearts ?? 0) > 0 && [-42, 42].map(hx => <path key={hx} transform={`translate(${hx},10) scale(${(p.hearts ?? 0) * (1 + .12 * Math.sin(t * 14))})`} d="M0,14 C-6,8 -30,-4 -30,-18 C-30,-32 -12,-36 0,-22 C12,-36 30,-32 30,-18 C30,-4 6,8 0,14 Z" fill="#ff3a6a" stroke="#fff" strokeWidth={3} />)}
         {(p.tears ?? 0) > 0 && <path d="M-44,40 q-6,30 0,46 q6,-16 0,-46 Z M44,40 q-6,30 0,46 q6,-16 0,-46 Z" fill="#9fe3ff" opacity={p.tears} />}
-        {p.who === 'tom' ? <>
+        {p.who === 'coach' ? <>
+          <path d="M-98,-20 C-104,-80 -84,-118 -50,-128 C-30,-108 30,-108 50,-128 C84,-118 104,-80 98,-20 C92,-50 84,-70 70,-80 C40,-96 -40,-96 -70,-80 C-84,-70 -92,-50 -98,-20 Z" fill={L.hair} />
+          <path d="M-60,40 Q0,30 60,40 Q50,96 0,104 Q-50,96 -60,40 Z" fill={L.hair} opacity={.25} /></>
+        : p.who === 'tom' ? <>
           <path d="M-98,-34 C-104,-76 -90,-112 -60,-124 L-86,-56 Z M98,-34 C104,-76 90,-112 60,-124 L86,-56 Z" fill={L.hair} opacity={.85} />
           <path d={`M-96,-40 C-108,-118 -70,-168 -10,-172 C${40 + hw},-${196 + hw} ${104 + hw},-168 106,-110 C108,-80 100,-60 96,-40 C90,-80 80,-96 64,-100 C70,-116 54,-128 30,-118 C10,-104 -20,-100 -44,-96 C-70,-92 -86,-72 -96,-40 Z`} fill={L.hair} />
           <path d={`M-70,-150 C-30,-176 30,-182 ${86 + hw},-150 M-60,-122 C-20,-146 30,-150 74,-128 M-40,-104 C-10,-122 30,-126 60,-112`} stroke={L.hairHi} strokeWidth={7} fill="none" strokeLinecap="round" opacity={.65} /></>
