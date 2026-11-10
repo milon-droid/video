@@ -45,6 +45,12 @@
    "emo": "Annoyed, dismissive, sigh."
   },
   {
+   "id": "d1",
+   "role": "vini_en",
+   "text": "Ever since Diomande showed up... the bench is my best friend.",
+   "emo": "Sad, self-pitying, sighing, comedic, slow."
+  },
+  {
    "id": "b1",
    "role": "vini_en",
    "text": "Finally! My moment!",

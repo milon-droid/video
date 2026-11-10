@@ -4,7 +4,7 @@
 "type": "file",
 "path": "projects/ne-ochen/render/music.wav",
 "gain": 0.45,
-"dur": 36.6
+"dur": 42.6
 },
 {
 "t": 0.2,
@@ -21,56 +21,63 @@
 "voice": true
 },
 {
-"t": 5.9,
+"t": 5.85,
 "type": "file",
 "path": "projects/ne-ochen/assets/vo2n/a3.wav",
 "gain": 1,
 "voice": true
 },
 {
-"t": 9.5,
+"t": 9.4,
 "type": "file",
 "path": "projects/ne-ochen/assets/vo2n/a4.wav",
 "gain": 1,
 "voice": true
 },
 {
-"t": 14.2,
+"t": 14.0,
 "type": "file",
 "path": "projects/ne-ochen/assets/vo2n/a5.wav",
 "gain": 1,
 "voice": true
 },
 {
-"t": 16.65,
+"t": 16.4,
+"type": "file",
+"path": "projects/ne-ochen/assets/vo2n/d1.wav",
+"gain": 1,
+"voice": true
+},
+{
+"t": 21.75,
 "type": "file",
 "path": "projects/ne-ochen/assets/vo2n/b1.wav",
 "gain": 1,
 "voice": true
 },
 {
-"t": 19.9,
+"t": 25.2,
 "type": "file",
 "path": "projects/ne-ochen/assets/vo2n/b2.wav",
 "gain": 1,
 "voice": true
 },
 {
-"t": 25.2,
+"t": 30.5,
 "type": "file",
 "path": "projects/ne-ochen/assets/vo2n/c1.wav",
 "gain": 1,
 "voice": true
 },
 {
-"t": 30.45,
+"t": 36.45,
 "type": "file",
 "path": "projects/ne-ochen/assets/vo2n/c2.wav",
 "gain": 1,
 "voice": true
 },
 {
-"t": 40.45,
+"t": 46.45,
 "type": "file",
 "path": "projects/ne-ochen/assets/vo2n/b2_echo.wav",
 "gain": 1,
@@ -122,127 +129,127 @@
 "align": "sync"
 },
 {
-"t": 9.55,
+"t": 9.45,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 9.635,
+"t": 9.535,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 9.72,
+"t": 9.62,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 9.805,
+"t": 9.705,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 9.89,
+"t": 9.79,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 9.975,
+"t": 9.875,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.06,
+"t": 9.96,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.145,
+"t": 10.045,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.23,
+"t": 10.13,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.315,
+"t": 10.215,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.4,
+"t": 10.3,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.485,
+"t": 10.385,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.57,
+"t": 10.47,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.655,
+"t": 10.555,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.74,
+"t": 10.64,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.825,
+"t": 10.725,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.91,
+"t": 10.81,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 10.995,
+"t": 10.895,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 11.08,
+"t": 10.98,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 11.165,
+"t": 11.065,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 11.25,
+"t": 11.15,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 11.335,
+"t": 11.235,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 11.42,
+"t": 11.32,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 11.505,
+"t": 11.405,
 "type": "click",
 "gain": 0.25
 },
 {
-"t": 11.6,
+"t": 11.5,
 "type": "lib",
 "id": "zip-out-medium",
 "gain": 0.7,
@@ -250,7 +257,7 @@
 "align": "sync"
 },
 {
-"t": 13.45,
+"t": 13.35,
 "type": "lib",
 "id": "notification-message-in-clear",
 "gain": 0.9,
@@ -258,7 +265,7 @@
 "align": "sync"
 },
 {
-"t": 14.9,
+"t": 14.7,
 "type": "lib",
 "id": "whoosh-fast-medium",
 "gain": 0.7,
@@ -266,7 +273,7 @@
 "align": "sync"
 },
 {
-"t": 15.35,
+"t": 15.15,
 "type": "lib",
 "id": "impact-deep-soft",
 "gain": 0.45,
@@ -274,7 +281,7 @@
 "align": "sync"
 },
 {
-"t": 16.4,
+"t": 16.2,
 "type": "lib",
 "id": "celebration-applause-small",
 "gain": 0.22,
@@ -282,7 +289,7 @@
 "align": "start"
 },
 {
-"t": 19.0,
+"t": 18.8,
 "type": "lib",
 "id": "celebration-applause-small",
 "gain": 0.22,
@@ -290,7 +297,7 @@
 "align": "start"
 },
 {
-"t": 21.6,
+"t": 21.4,
 "type": "lib",
 "id": "celebration-applause-small",
 "gain": 0.22,
@@ -298,7 +305,7 @@
 "align": "start"
 },
 {
-"t": 24.2,
+"t": 24.0,
 "type": "lib",
 "id": "celebration-applause-small",
 "gain": 0.22,
@@ -306,7 +313,7 @@
 "align": "start"
 },
 {
-"t": 26.8,
+"t": 26.6,
 "type": "lib",
 "id": "celebration-applause-small",
 "gain": 0.22,
@@ -314,7 +321,7 @@
 "align": "start"
 },
 {
-"t": 29.4,
+"t": 29.2,
 "type": "lib",
 "id": "celebration-applause-small",
 "gain": 0.22,
@@ -322,7 +329,7 @@
 "align": "start"
 },
 {
-"t": 32.0,
+"t": 31.8,
 "type": "lib",
 "id": "celebration-applause-small",
 "gain": 0.22,
@@ -330,13 +337,29 @@
 "align": "start"
 },
 {
-"t": 16.55,
+"t": 34.4,
+"type": "lib",
+"id": "celebration-applause-small",
+"gain": 0.22,
+"rate": 0.8,
+"align": "start"
+},
+{
+"t": 37.0,
+"type": "lib",
+"id": "celebration-applause-small",
+"gain": 0.22,
+"rate": 0.8,
+"align": "start"
+},
+{
+"t": 21.65,
 "type": "refwhistle",
 "gain": 0.5,
 "dur": 0.35
 },
 {
-"t": 16.85,
+"t": 21.95,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.6,
@@ -344,7 +367,15 @@
 "align": "sync"
 },
 {
-"t": 19.75,
+"t": 24.65,
+"type": "lib",
+"id": "notification-message-in-soft",
+"gain": 0.5,
+"rate": 1,
+"align": "sync"
+},
+{
+"t": 25.05,
 "type": "lib",
 "id": "impact-heavy-firm",
 "gain": 0.55,
@@ -352,7 +383,7 @@
 "align": "sync"
 },
 {
-"t": 20.2,
+"t": 25.4,
 "type": "lib",
 "id": "impact-heavy-firm",
 "gain": 0.35,
@@ -360,7 +391,7 @@
 "align": "sync"
 },
 {
-"t": 20.55,
+"t": 25.65,
 "type": "lib",
 "id": "impact-heavy-firm",
 "gain": 0.35,
@@ -368,7 +399,7 @@
 "align": "sync"
 },
 {
-"t": 22.3,
+"t": 27.6,
 "type": "lib",
 "id": "impact-heavy-firm",
 "gain": 0.5,
@@ -376,7 +407,7 @@
 "align": "sync"
 },
 {
-"t": 23.55,
+"t": 28.85,
 "type": "lib",
 "id": "shimmer-long-sparkle",
 "gain": 0.25,
@@ -384,12 +415,12 @@
 "align": "start"
 },
 {
-"t": 25.02,
+"t": 30.32,
 "type": "boing",
 "gain": 0.25
 },
 {
-"t": 27.6,
+"t": 33.1,
 "type": "lib",
 "id": "whoosh-medium-hard",
 "gain": 0.5,
@@ -397,36 +428,56 @@
 "align": "start"
 },
 {
-"t": 27.85,
+"t": 33.45,
 "type": "lib",
-"id": "impact-deep-hard",
-"gain": 0.9,
-"rate": 1,
+"id": "impact-heavy-hard",
+"gain": 0.8,
+"rate": 1.1,
 "align": "sync"
 },
 {
-"t": 27.9,
+"t": 33.5,
 "type": "lib",
 "id": "whoosh-fast-hard",
-"gain": 0.7,
-"rate": 0.8,
+"gain": 0.6,
+"rate": 1,
 "align": "start"
 },
 {
-"t": 28.95,
+"t": 33.5,
 "type": "wah",
-"gain": 0.6
+"gain": 0.45
 },
 {
-"t": 28.95,
+"t": 34.62,
+"type": "boo",
+"gain": 0.9,
+"dur": 2.0
+},
+{
+"t": 36.2,
+"type": "boo",
+"gain": 0.35,
+"dur": 1.4
+},
+{
+"t": 16.4,
 "type": "lib",
 "id": "celebration-applause-big",
-"gain": 0.5,
-"rate": 0.55,
+"gain": 0.35,
+"rate": 1,
 "align": "start"
 },
 {
-"t": 33.55,
+"t": 18.8,
+"type": "lib",
+"id": "celebration-applause-big",
+"gain": 0.3,
+"rate": 1.05,
+"align": "start"
+},
+{
+"t": 39.55,
 "type": "lib",
 "id": "shimmer-long-bright",
 "gain": 0.45,
@@ -434,12 +485,12 @@
 "align": "start"
 },
 {
-"t": 33.55,
+"t": 39.55,
 "type": "pop",
 "gain": 0.5
 },
 {
-"t": 34.7,
+"t": 40.7,
 "type": "lib",
 "id": "bsb-door-creak-open",
 "gain": 0.7,
@@ -447,19 +498,19 @@
 "align": "start"
 },
 {
-"t": 36.480000000000004,
+"t": 42.480000000000004,
 "type": "rewind",
 "gain": 0.55,
 "dur": 0.35
 },
 {
-"t": 36.85,
+"t": 42.85,
 "type": "wind",
 "gain": 0.05,
 "dur": 9.649999999999999
 },
 {
-"t": 40.3,
+"t": 46.3,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.5,
@@ -467,24 +518,24 @@
 "align": "start"
 },
 {
-"t": 43.0,
+"t": 49.0,
 "type": "brush",
 "gain": 0.3
 },
 {
-"t": 44.45,
+"t": 50.45,
 "type": "refwhistle",
 "gain": 0.7,
 "dur": 0.25
 },
 {
-"t": 44.85,
+"t": 50.85,
 "type": "refwhistle",
 "gain": 0.7,
 "dur": 0.25
 },
 {
-"t": 45.25,
+"t": 51.25,
 "type": "refwhistle",
 "gain": 0.8,
 "dur": 1.0

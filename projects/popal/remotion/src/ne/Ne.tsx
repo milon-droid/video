@@ -5,7 +5,7 @@ import { clamp } from '../anim';
 import { FONT } from '../theme';
 import { NameTag } from '../stars/Clip';
 import { ShotCouch, ShotTv } from './Movie';
-import { ShotBench, ShotBox, ShotCorridor, ShotDoor, ShotFans, ShotGrab, ShotHandshake, ShotHearts, ShotMiss, ShotRun, ShotToss, ShotWave } from './Stadium';
+import { ShotBench, ShotBox, ShotCorridor, ShotDoor, ShotFans, ShotGrab, ShotHandshake, ShotHearts, ShotSteal, ShotRun, ShotBenchSad, ShotToss, ShotWave } from './Stadium';
 import { PhoneUI, ShotFlash, ShotFrozen, ShotLounge, Sub } from './Final';
 import TL from './timeline.json';
 import MOUTH from './mouth.json';
@@ -28,7 +28,8 @@ const Scene: React.FC<{ s: Shot; t: number }> = ({ s, t }) => { const m = mouth(
     case 'run': return <ShotRun t={t} />;
     case 'box': return <ShotBox t={t} />;
     case 'hearts': return <ShotHearts t={t} />;
-    case 'miss': return <ShotMiss t={t} />;
+    case 'steal': return <ShotSteal t={t} />;
+    case 'benchSad': return <ShotBenchSad t={t} />;
     case 'fans': return <ShotFans t={t} />;
     case 'wave': return <ShotWave t={t} />;
     case 'corridor': return <ShotCorridor t={t} swap={1.05} />;
@@ -39,6 +40,17 @@ const Scene: React.FC<{ s: Shot; t: number }> = ({ s, t }) => { const m = mouth(
     case 'hide': return <ShotFrozen t={t} hide={.25} />;
     default: return <rect width={1080} height={1920} fill="#000" />;
   } };
+
+// ТВ-графика матча: табло (вымышленные HOME/AWAY) и плашка замены
+const Scoreboard: React.FC<{ min: number }> = ({ min }) => (<div style={{ position: 'absolute', left: 60, top: 150, display: 'flex', fontFamily: FONT, fontWeight: 900, fontSize: 38, borderRadius: 10, overflow: 'hidden', boxShadow: '0 6px 20px rgba(0,0,0,.4)' }}>
+  <div style={{ background: '#f6f6f3', color: '#1d2a5c', padding: '8px 18px' }}>HOME</div><div style={{ background: '#14121c', color: '#fff', padding: '8px 18px' }}>0 – 0</div>
+  <div style={{ background: '#b8202e', color: '#fff', padding: '8px 18px' }}>AWAY</div><div style={{ background: '#2a2838', color: '#7dffb0', padding: '8px 18px' }}>{min}'</div></div>);
+const SubWidget: React.FC<{ t: number }> = ({ t }) => { const k = clamp((t - .15) / .3), e = 1 - (1 - k) ** 3;
+  return (<div style={{ position: 'absolute', left: 60, right: 60, top: 1520, transform: `translateX(${(1 - e) * -1100}px)`, fontFamily: FONT, fontWeight: 900, borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,.5)' }}>
+    <div style={{ background: '#ffd23f', color: '#14121c', fontSize: 34, padding: '8px 26px', letterSpacing: 4 }}>SUBSTITUTION · 71'</div>
+    <div style={{ background: 'rgba(14,12,22,.92)', color: '#fff', fontSize: 46, padding: '14px 26px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div><span style={{ color: '#2aff6a' }}>▲</span> VINÍCIUS JR. <span style={{ color: '#9aa0b0', fontSize: 34 }}>7</span></div>
+      <div><span style={{ color: '#ff3a3a' }}>▼</span> YAN DIOMANDE</div></div></div>); };
 
 export const NeClip: React.FC<{ audio?: boolean }> = ({ audio = true }) => {
   const f = useCurrentFrame(), { fps, width } = useVideoConfig(), T = f / fps;
@@ -54,7 +66,9 @@ export const NeClip: React.FC<{ audio?: boolean }> = ({ audio = true }) => {
         </svg>}
       {s.id === 'tv' && <NameTag t={t} t0={.5} x={60} y={210} name="SADIE SINK" sub="on TV" col="#ff5a7a" />}
       {s.id === 'couch' && <NameTag t={t} t0={.2} x={60} y={210} name="VINÍCIUS JR." sub="at home" col="#ffd23f" />}
-      {s.id === 'shake' && <NameTag t={t} t0={.25} x={60} y={210} name="YAN DIOMANDE" sub="teammate" col="#5af0c8" />}
+      {['benchSad', 'bench', 'shake', 'run', 'hearts', 'steal', 'wave'].includes(s.id) && <Scoreboard min={s.id === 'benchSad' ? 64 : s.id === 'bench' || s.id === 'shake' ? 71 : 72} />}
+      {s.id === 'benchSad' && <NameTag t={t} t0={.3} x={60} y={330} name="YAN DIOMANDE" sub="new signing · 19" col="#5af0c8" />}
+      {s.id === 'shake' && <SubWidget t={t} />}
       {s.id === 'black' && <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, opacity: clamp((t - .55) / .3) }}>
         <div style={{ color: '#fff', fontSize: 92, fontWeight: 900, textAlign: 'center', lineHeight: 1.1, padding: '0 80px' }}>Didn't want to<br />anyway.</div>
         <div style={{ color: '#8a8a96', fontSize: 34, fontWeight: 700, marginTop: 40 }}>Parody. All events are fictional.</div></div>}

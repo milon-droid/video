@@ -41,7 +41,7 @@ export const blendPose = (a: Pose, b: Pose, k: number): Pose => ({
 export const runPose = (ph: number): Pose => { const s = Math.sin(ph), c = Math.cos(ph);
   return { armL: [-s * .9, -.9 - c * .2], armR: [s * .9, .9 + c * .2], legL: [s * .75, -Math.max(0, -c) * 1.3 - .15], legR: [-s * .75, Math.max(0, c) * 1.3 + .15], lean: .18 }; };
 
-type LookT = { skin: string; skinSh: string; top: string; topSh: string; topHi: string; pants: string; pantsSh: string; shoe: string; shoeSole: string; hair: string; hairHi: string; iris: string; fem?: boolean; cloak?: string; trim?: string; gem?: string; brow?: string };
+type LookT = { skin: string; skinSh: string; top: string; topSh: string; topHi: string; pants: string; pantsSh: string; shoe: string; shoeSole: string; hair: string; hairHi: string; iris: string; fem?: boolean; cloak?: string; trim?: string; gem?: string; brow?: string; browFlat?: boolean };
 // эльфийки (серия 2): Лира — золотая коса, зелёный плащ; сёстры — розовая, серебряная, рыжая
 const LOOK: Record<string, LookT> = {
   lira: { skin: '#f6d8c2', skinSh: '#e0b49a', top: '#e8f0d8', topSh: '#c4d2b0', topHi: '#ffffff', pants: '#2c4a36', pantsSh: '#22392a', shoe: '#7a4a2a', shoeSole: '#4a2a18', hair: '#f2d27a', hairHi: '#fff0b8', iris: '#2fb36a', fem: true, cloak: '#2f7a52', trim: '#c9a040', gem: '#7dffb0' },
@@ -83,6 +83,7 @@ export const Face: React.FC<{ t: number; expr: Expr; mouth?: number; eye?: [numb
       {lidK < .9 && <path d={`M${cx - rx * .6},${cy + ry + 3} Q${cx},${cy + ry + 7} ${cx + rx * .6},${cy + ry + 3}`} stroke="#c58a6e" strokeWidth={3} fill="none" strokeLinecap="round" />}
     </g>); };
   const brow = (side: -1 | 1) => { const k = side < 0 ? e.bl : e.br, cx = side * 42, y = -40 + e.by;
+    if (L.browFlat) return <path key={'b' + side} d={`M${cx - 30 * side},${y + 2 + k * 8} L${cx + 26 * side},${y - 4 - k * 8} L${cx + 24 * side},${y + 8 - k * 8} L${cx - 30 * side},${y + 14 + k * 8} Z`} fill={L.hair} />;
     return <path key={'b' + side} d={`M${cx - 26 * side},${y + k * 10} Q${cx},${y - 12 - k * 4} ${cx + 26 * side},${y - k * 12}`} stroke={L.brow ?? (L.fem ? '#6a4a2a' : L.hair)} strokeWidth={L.fem ? 6 : 10} fill="none" strokeLinecap="round" />; };
   const my = 62, mw = 22 + op * 6;
   return (<g>

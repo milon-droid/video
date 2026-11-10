@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Оригинальная фоновая музыка (синтез, без чужих треков и сэмплов).
 
-    python3 tools/music.py -o music.wav --duration 30 [--style synthwave|trap] [--bpm 96] [--seed 1]
+    python3 tools/music.py -o music.wav --duration 30 [--style synthwave|trap|comedy] [--bpm 96] [--seed 1]
 
 synthwave — неоновые 80-е / Майами: бочка-снейр, басовые восьмые, широкий пэд, арпеджио.
 trap      — медленный хип-хоп бит: 808-бас, хэты с триолями, мягкий пэд.
@@ -146,6 +146,35 @@ if a.style == "isekai":  # фэнтези-аниме: арфа-арпеджио,
             for m in ch + [root]: pad += smooth(saw(note(m), ln, -.004) + saw(note(m), ln, .004), 60)
             tt = np.arange(len(pad)) / SR; e = np.minimum(1, tt / .5) * np.minimum(1, (ln - tt) / .5)
             add(pad * e * 0.03, t, 1, .85); add(pad * e * 0.03, t + .015, .85, 1)
+    total_beats = 0
+if a.style == "comedy":  # комедия: свинг, пиццикато-бас «на цыпочках», маримба-мелодия, хлопок на 2 и 4, шейкер; мажор C–Am–F–G
+    prog = [(48, [60, 64, 67]), (45, [57, 60, 64]), (41, [57, 60, 65]), (43, [59, 62, 67])]
+    sw = beat * 2 / 3  # свинг: вторая восьмая сдвинута
+    mel = [72, 76, 79, 76, 77, 76, 74, 0, 72, 74, 76, 72, 71, 0, 67, 0, 69, 72, 76, 72, 77, 76, 74, 72, 71, 72, 74, 0, 79, 0, 0, 0]
+    def marimba(f, ln=.5, g=.14):
+        tt = np.arange(int(ln * SR)) / SR
+        return (np.sin(2 * np.pi * f * tt) * np.exp(-tt * 9) + .35 * np.sin(2 * np.pi * f * 4.0 * tt) * np.exp(-tt * 30) + .15 * np.sin(2 * np.pi * f * 10 * tt) * np.exp(-tt * 60)) * g
+    def pizz(f, ln=.35, g=.32):
+        tt = np.arange(int(ln * SR)) / SR; x = np.sin(2 * np.pi * f * tt) + .4 * np.sin(4 * np.pi * f * tt) + .15 * np.sin(6 * np.pi * f * tt)
+        return x * np.minimum(1, tt / .004) * np.exp(-tt * 11) * g
+    def clap(t):
+        for d in (0, .011, .023):
+            m = int(.12 * SR); x = rng.uniform(-1, 1, m); x = band(x, 900, 6000); add(x * env(.12, .001, .03) * .22, t + d, .9, 1)
+    for b in range(total_beats):
+        t = b * beat; bi = b % 4; root, ch = prog[(b // 4) % 4]
+        # пиццикато-бас: корень — квинта, «шажками» на каждую долю, на 4-й — подход
+        bm = [root, root + 7, root + 12, root + 7][bi] - 12
+        add(pizz(note(bm)), t); add(pizz(note(bm + 12), .2, .12), t + sw, .8, 1)
+        if bi in (1, 3): clap(t)
+        hat(t, g=.05); hat(t + sw, g=.08)  # шейкер
+        if bi in (0, 2):  # аккорд маримбой
+            for k, m in enumerate(ch): add(marimba(note(m), .45, .05), t + k * .012, .8, 1)
+        for q, dt in enumerate((0, sw)):  # мелодия восьмыми (свинг), в каждом втором проходе — октавой выше
+            m = mel[(b * 2 + q) % len(mel)]
+            if m: add(marimba(note(m + (12 if (b // 16) % 2 else 0)), .55, .16), t + dt, 1, .85)
+        if b % 16 == 15:  # «подмигивание»: глиссандо свистулькой в конце фразы
+            ln = beat * .9; tt = np.arange(int(ln * SR)) / SR; fq = note(84) * (1 + .5 * tt / ln)
+            add(np.sin(2 * np.pi * np.cumsum(fq) / SR) * np.minimum(1, tt / .03) * np.minimum(1, (ln - tt) / .1) * .05, t)
     total_beats = 0
 for b in range(total_beats):
     t = b * beat; bi = b % 4; chord = PROG[(b // 8) % 4]
