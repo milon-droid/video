@@ -7,6 +7,7 @@ import { clamp, lerp, noise, spr } from '../anim';
 import { Glow, Motes } from '../bg/Bg';
 import { blendPose, Pose, POSES } from '../chars/Person';
 import { Baller, Sadie, smooth } from '../stars/Stars';
+import { Cut } from './Cut';
 
 type P2 = [number, number];
 const hash = (n: number) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
@@ -16,7 +17,7 @@ const full = (p: Partial<Pose>): Pose => ({ ...POSES.stand, ...p } as Pose);
 const Rooftop: React.FC<{ t: number }> = ({ t }) => (<g>
   <defs><linearGradient id="mvSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#0a0a24" /><stop offset=".6" stopColor="#2a1f5a" /><stop offset="1" stopColor="#7a3a6a" /></linearGradient></defs>
   <rect width={1920} height={1080} fill="url(#mvSky)" />
-  <circle cx={1180} cy={170} r={70} fill="#fff4dc" /><Glow x={1180} y={170} r={260} c="#ffe8c0" o={.6} id="mvMoon" />
+  <circle cx={1010} cy={262} r={58} fill="#fff4dc" /><Glow x={1010} y={262} r={230} c="#ffe8c0" o={.6} id="mvMoon" />
   {Array.from({ length: 30 }, (_, i) => { const w = 60 + hash(i) * 60, h = 200 + hash(i * 3) * 420, x = i * 66 - 30;
     return <g key={i}><rect x={x} y={830 - h} width={w} height={h} fill={i % 2 ? '#1a1838' : '#221e46'} />
       {Array.from({ length: 24 }, (_, k) => hash(i * 50 + k) > .55 ? <rect key={k} x={x + 8 + (k % 3) * (w / 3.3)} y={830 - h + 16 + Math.floor(k / 3) * 30} width={9} height={13} fill="#ffd27a" opacity={.55 + .4 * hash(k + i)} /> : null)}</g>; })}
@@ -29,24 +30,27 @@ const Rooftop: React.FC<{ t: number }> = ({ t }) => (<g>
 const Wind: React.FC<{ t: number; o?: number }> = ({ t, o = 1 }) => <g opacity={o}>{Array.from({ length: 14 }, (_, i) => { const y = 100 + hash(i) * 900, x = ((hash(i * 3) * 2400 + t * 1600) % 2400) - 300;
   return <path key={i} d={`M${x},${y} l110,-12`} stroke="#fff" strokeWidth={2.5} opacity={.18} strokeLinecap="round" />; })}</g>;
 
-// Том Холланд (актёр, в обычной одежде) подходит к Сэди и обнимает её; на крупном плане видно x≈660…1260
-const MS = .5, FLOOR = 900, SADIE_X = 1050, TOM_X0 = 520, TOM_X1 = 860, STOP = 1.3;
+// Том Холланд (актёр, в обычной одежде — синяя рубашка, без костюма) выпускает паутину: поднял руку → сложил пальцы → нить вытянулась
+// вверх-вправо над Сэди; Сэди восхищена (сердечки). На крупном плане видно x≈660…1260 — перед кистью и по ходу нити пусто.
+const MS = .5, FLOOR = 900, SADIE_X = 1130, TOM_X = 800;
 const MovieScene: React.FC<{ tm: number }> = ({ tm }) => {
-  const k = smooth(0, STOP, tm), tx = lerp(TOM_X0, TOM_X1, k), ph = (tx - TOM_X0) / 32, walking = tm < STOP;
-  const hug = spr(tm, 1.7, { damping: 12, stiffness: 120 });
-  const tPose: Partial<Pose> = walking ? { legL: [Math.sin(ph) * .45, Math.max(0, -Math.cos(ph)) * .5], legR: [-Math.sin(ph) * .45, -Math.max(0, Math.cos(ph)) * .5], armL: [-Math.sin(ph) * .35, .3], armR: [Math.sin(ph) * .35, -.3] }
-    : blendPose(full({ armL: [-.15, .15], armR: [.3, -.3] }), full({ armL: [-.15, .15], armR: [1.35, .35] }), hug) as Pose;
-  const sPose: Partial<Pose> = tm < 1.6 ? { armL: [-.2, .15], armR: [.4, -1.6], legR: [.12, -.1] } : { armL: [-.9, -1.2], armR: [.3, -.3], legR: [.16, -.14], lean: -.04 };
+  const raise = smooth(.3, .8, tm), fold = tm > .86 ? 1 : 0, web = smooth(1.0, 1.42, tm);
+  const kick = tm > 1.0 && tm < 1.2 ? Math.sin((tm - 1.0) / .2 * Math.PI) * .06 : 0;   // отдача кисти при выстреле
+  const tPose: Partial<Pose> = { armR: [lerp(.12, 2.45, raise) - kick, lerp(-.15, -.05, raise)], armL: [lerp(-.12, -.32, raise), lerp(.15, .35, raise)], legL: [-.06 - .12 * raise, .04], legR: [.06 + .14 * raise, -.04], lean: -.03 * raise };
+  const wow = smooth(1.45, 1.75, tm);
+  const sPose: Partial<Pose> = { armL: [lerp(-.12, -2.5, wow), lerp(.15, -1.2, wow)], armR: [lerp(.12, 2.5, wow), lerp(-.15, 1.2, wow)] };
   return (<g>
     <Rooftop t={tm} />
-    <Sadie x={SADIE_X} y={FLOOR} s={MS * .95} t={tm + 3} hair="fringe" outfit="jacket" pose={sPose} expr={tm < 1.6 ? 'neutral' : 'happy'} blush={tm > 1.6 ? .8 : .2} eye={[-.8, 0]} headTilt={tm > 1.6 ? -10 : 0} />
-    <Baller who="tom" outfit="bomber" x={tx} y={FLOOR - (walking ? Math.abs(Math.sin(ph)) * 4 : 0)} s={MS} t={tm} pose={tPose} expr={tm > 1.6 ? 'happy' : 'cool'} eye={[.8, 0]} headTilt={tm > 1.6 ? 8 : 0} />
-    {tm > 1.9 && [0, 1, 2].map(i => { const u = tm - 1.9 - i * .25; if (u < 0) return null; const y = 540 - u * 120, x = SADIE_X - 70 + i * 28 + Math.sin(u * 5 + i) * 10;
+    <Sadie x={SADIE_X} y={FLOOR} s={MS * .95} t={tm + 3} hair="fringe" outfit="jacket" pose={sPose} blush={.3 + wow * .6} headTilt={lerp(0, -10, smooth(1.0, 1.4, tm))} />
+    <Cut id="tom" x={TOM_X} y={FLOOR} s={MS} t={tm} pose={tPose} headTilt={lerp(0, -6, raise)} gest={fold} web={web} webLen={3400} />
+    {tm > 1.6 && [0, 1, 2].map(i => { const u = tm - 1.6 - i * .22; if (u < 0) return null; const y = 520 - u * 140, x = SADIE_X - 40 + i * 30 + Math.sin(u * 5 + i) * 10;
       return <path key={i} d={`M${x},${y} c-7,-10 -21,-3 0,12 c21,-15 7,-22 0,-12z`} fill="#ff6a8a" opacity={clamp(1 - u / 1.2)} />; })}
     <Wind t={tm} o={.5} />
+    {/* название: левее луны, на спокойной тёмной подложке */}
     <g opacity={clamp((tm - .3) / .3) * clamp((2.6 - tm) / .4)} fontFamily="Mont" fontWeight={900} textAnchor="middle">
-      <text x={960} y={92} fontSize={40} fill="#ffffff" letterSpacing={3}>SPIDER-MAN:</text>
-      <text x={960} y={140} fontSize={34} fill="#ffd8a0" letterSpacing={2}>BRAND NEW DAY (2026)</text></g>
+      <rect x={700} y={44} width={400} height={116} rx={14} fill="#0a0a1c" opacity={.6} />
+      <text x={900} y={94} fontSize={40} fill="#ffffff" letterSpacing={3}>SPIDER-MAN:</text>
+      <text x={900} y={140} fontSize={32} fill="#ffd8a0" letterSpacing={2}>BRAND NEW DAY (2026)</text></g>
   </g>); };
 
 // ───── комната Вини: общие предметы ─────
@@ -127,7 +131,7 @@ export const ShotCouch: React.FC<{ t: number; crush?: number }> = ({ t, crush = 
     <Glow x={540} y={700} r={900} c="#6a7aff" o={.35 + .2 * fl} id="couchTv" />
     <rect x={60} y={1080} width={960} height={400} rx={70} fill="#4a3650" /><rect x={30} y={1430} width={1020} height={120} rx={40} fill="#4a3858" /><rect x={50} y={1530} width={980} height={180} rx={30} fill="#33243a" />
     <rect x={90} y={1290} width={180} height={150} rx={30} fill="#e8c050" opacity={.85} /><rect x={810} y={1290} width={180} height={150} rx={30} fill="#5af0ff" opacity={.6} />
-    <Baller who="vini" outfit="home" sit x={540} y={1730} s={1.1} t={t} expr={t < crush ? 'shock' : 'determined'} mouth={t < crush ? .3 : 0}
+    <Baller who="vini" outfit="home" sit x={540} y={1700} s={1.1} t={t} expr={t < crush ? 'shock' : 'determined'} mouth={t < crush ? .3 : 0}
       pose={{ armL: [-.15, .5 + c * .3], armR: [.15, -.5 - c * .3], legL: [-.15, 0], legR: [.15, 0] }} eye={[0, -.2]} />
     <g transform={`translate(540,${1480}) scale(${1 + c * .12},${1 - c * .22})`}>
       <path d="M-80,-100 L80,-100 L62,90 L-62,90 Z" fill="#e5383b" />{[-48, 0, 48].map(x => <rect key={x} x={x - 12} y={-100} width={24} height={190} fill="#fff" opacity={.9} />)}

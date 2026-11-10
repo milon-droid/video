@@ -9,6 +9,7 @@ import { T } from './i18n';
 import { Stadium } from '../stars/Clip';
 import { Baller, Bouquet, Sadie, smooth } from '../stars/Stars';
 import { DugoutFront, SitPose, VipBox } from './Stadium';
+import { Cut } from './Cut';
 import { ShotP } from './Stadium';
 
 const full = (p: Partial<Pose>): Pose => ({ ...POSES.stand, ...p } as Pose);
@@ -34,14 +35,14 @@ const SofaBase: React.FC = () => (<g>
   <ellipse cx={540} cy={1505} rx={500} ry={22} fill="#000" opacity={.25} /></g>);
 const SEAT_S = .9, SIT_Y = 1500;   // таз на подушке (≈1342), ступни на полу у основания дивана   // ступни на полу перед диваном (таз на подушке)
 export const ShotLounge: React.FC<ShotP & { reveal: number }> = ({ t, reveal }) => {
-  const k = smooth(reveal - .2, reveal + 1.0, t), z = lerp(2.7, 1.35, k), fx = lerp(820, 540, k), fy = lerp(820, 1080, k);
+  const k = smooth(reveal - .2, reveal + 1.0, t), z = lerp(2.7, 1.95, k), fx = lerp(820, 540, k), fy = lerp(820, 930, k);   // отъезд до среднего плана: таз на подушке у нижнего края, лица крупно
   const laugh = .25 + .25 * Math.abs(Math.sin(t * 9));
   return (<Cam z={z} fx={fx} fy={fy}>
     <Lounge t={t} />
     <SofaBase />
     {[400, 650].map(x => <ellipse key={x} cx={x} cy={SIT_Y + 4} rx={80} ry={12} fill="#000" opacity={.3} />)}
-    <Baller who="diom" outfit="track" sit x={400} y={SIT_Y} s={SEAT_S} t={t + 2} expr="happy" teeth mouth={laugh} headTilt={8} eye={[.6, 0]} pose={{ armR: [1.55, .65], armL: [-.2, .5], legL: [-.5, 0], legR: [.5, 0] }} />
-    <Sadie sit x={650} y={SIT_Y} s={SEAT_S} t={t + 4} expr="happy" mouth={laugh * .8} headTilt={-12} eye={[-.6, 0]} pose={{ armL: [-.6, .9], armR: [.4, -1.5], lean: -.08, legL: [.4, 0], legR: [.4, 0] }} />
+    <Baller who="diom" outfit="track" sit x={400} y={SIT_Y} s={SEAT_S} t={t + 2} expr="happy" teeth headTilt={8 + laugh * 6} eye={[.6, 0]} pose={{ armR: [1.55, .65], armL: [-.2, .5], legL: [-.5, 0], legR: [.5, 0] }} />
+    <Sadie sit x={650} y={SIT_Y} s={SEAT_S} t={t + 4} expr="happy" headTilt={-12 - laugh * 5} eye={[-.6, 0]} pose={{ armL: [-.6, .9], armR: [.4, -1.5], lean: -.08, legL: [.4, 0], legR: [.4, 0] }} />
   </Cam>); };
 
 // ───── 5a / 5c: Вини в дверях с букетом; потом медленно прячет его за спину ─────
@@ -52,14 +53,23 @@ const Doorway: React.FC<{ t: number }> = ({ t }) => (<g>
   <rect y={1640} width={1080} height={280} fill="#3a2a22" />
 </g>);
 export const ShotFrozen: React.FC<ShotP & { hide?: number }> = ({ t, hide }) => {
-  const k = hide != null ? smooth(hide, hide + 1.1, t) : 0, behind = k > .55;
-  const P = blendPose(full({ armL: [-.2, .2], armR: [.9, -1.6] }), full({ armL: [-.1, .1], armR: [-.15, -.05], hip: 8 }), k);
   const petal = t * 1.0 % 2.2;
-  return (<Cam z={hide != null ? 1.3 + .1 * k : 1.3 + .04 * t} fy={1080} dy={-40}>
+  if (hide == null) {
+    // 5a: застыл в дверях: короткое «О» → улыбка пропала, осознание (рот ровной линией, без улыбки)
+    return (<Cam z={1.3 + .04 * t} fy={1080} dy={-40}>
+      <Doorway t={t} />
+      <Cut id="vini-kit" x={540} y={1650} s={1.05} t={30 + t} face={t < .55 ? 'o' : 'flat'} pose={full({ armL: [-.2, .2], armR: [.35, -2.3] })} hold="flowers" lid={t > .55 ? .12 : 0} />
+      <path d={`M${720 + Math.sin(petal * 4) * 30},${1060 + petal * 260} c-10,-14 -24,-4 -10,10 c14,6 20,-6 10,-10z`} fill="#ff4a6a" opacity={clamp(1 - petal / 2.2)} />
+    </Cam>); }
+  // 5c: прячет букет — кисть с цветами уходит за боковой контур тела, потом за спину (цветы перекрывает корпус);
+  // затем плач: брови домиком → губа дрожит → слёзы из обоих глаз → плечи опускаются; короткая выдержка перед финальной карточкой
+  const out = smooth(0, .32, t), back = t > .3, inK = smooth(.3, .62, t);
+  const armR: [number, number] = back ? [lerp(.75, .3, inK), lerp(-.9, -2.7, inK)] : [lerp(.35, .75, out), lerp(-2.3, -.9, out)];
+  const cry = smooth(.45, 1.15, t), slump = smooth(.8, 1.3, t);
+  return (<Cam z={lerp(1.35, 1.75, smooth(.5, 1.8, t))} fy={lerp(1080, 960, smooth(.5, 1.8, t))} dy={-40}>
     <Doorway t={t} />
-    {behind && <g transform="translate(596,1290) rotate(172) scale(.46)"><Bouquet t={t} /></g>}
-    <Baller who="vini" x={540} y={1650} s={1.05} t={hide != null ? 30 : 30} expr={hide != null && k > .2 ? 'sad' : 'scared'} mouth={hide != null && k > .2 ? 0 : -1} oMouth={hide == null || k <= .2} pose={P} hold={behind ? null : 'flowers'} eye={hide != null ? [-.3, .3] : [0, 0]} lid={hide != null ? .45 : 0} headTilt={hide != null ? 6 * k : 0} />
-    {hide == null && <path d={`M${720 + Math.sin(petal * 4) * 30},${1060 + petal * 260} c-10,-14 -24,-4 -10,10 c14,6 20,-6 10,-10z`} fill="#ff4a6a" opacity={clamp(1 - petal / 2.2)} />}
+    <Cut id="vini-kit" x={540} y={1650} s={1.05} t={30 + t} face={t < .4 ? 'flat' : 'cry'} cry={cry} slump={slump} headTilt={6 * slump}
+      pose={full({ armL: [lerp(-.2, -.06, slump), lerp(.2, .08, slump)], armR })} hold="flowers" armRBack={back} />
   </Cam>); };
 
 // ───── 5b: флешбэк (выцветший), по хронологии: Сэди в ложе машет → на скамейке запасных Диоманде (уже заменён) машет ей в ответ ─────

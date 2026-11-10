@@ -2,7 +2,8 @@
 // Начало координат — между ступнями. Углы конечностей — от вертикали вниз, плюс = в сторону +x экрана (как в Person.tsx).
 // Сэди 2026: рыжие волны до плеч, лёгкая шторка-чёлка с пробором по центру, веснушки, чёрное платье-комбинация.
 // Вини 2026 (после ЧМ-2026): первая борода, чёткий подбородок, короткие твисты с фейдом, белая форма №7, яркие бутсы.
-import React from 'react';
+import React, { useContext } from 'react';
+import { CutCtx } from '../ne/cutCtx';
 import { clamp, lerp, noise } from '../anim';
 import { Expr, Face, Limb, Pose, POSES } from '../chars/Person';
 
@@ -48,10 +49,11 @@ const BL: Record<Who, BallerLook> = {
   coach: { skin: '#e2b08c', skinSh: '#c48e6c', skinHi: '#f4caa8', hair: '#9a9894', hairHi: '#c8c6c0', iris: '#3a2a1e', boot: '#1a1a1a', bootSole: '#333' },
   diom: { num: '25', skin: '#4c2e20', skinSh: '#382014', skinHi: '#6a4432', hair: '#141012', hairHi: '#3a2a20', tips: '#8a6440', iris: '#2a1810', boot: '#3ad0ff', bootSole: '#f4f4f4' },
 };
-type Outfit = 'kit' | 'home' | 'track' | 'bomber' | 'coat' | 'opp' | 'bib' | 'gk';
+type Outfit = 'kit' | 'home' | 'track' | 'bomber' | 'coat' | 'opp' | 'bib' | 'gk' | 'ref';
 const OUT: Record<Outfit, { top: string; topSh: string; low: string; lowSh: string; sleeve: number }> = {
   kit: { top: KIT.kit, topSh: KIT.kitSh, low: KIT.kit, lowSh: KIT.kitSh, sleeve: .55 },
   opp: { top: '#b8202e', topSh: '#8a1622', low: '#15151a', lowSh: '#0c0c10', sleeve: .55 },     // соперник (вымышленная команда)
+  ref: { top: '#1a1a1e', topSh: '#0e0e12', low: '#15151a', lowSh: '#0c0c10', sleeve: .55 },        // резервный судья (табло замены)
   gk: { top: '#c8ff3a', topSh: '#9ad01e', low: '#15151a', lowSh: '#0c0c10', sleeve: 1.4 },          // вратарь соперника
   bib: { top: '#ff7a2a', topSh: '#d85a14', low: KIT.kit, lowSh: KIT.kitSh, sleeve: .55 },       // запасные в манишках
   home: { top: '#3a3f58', topSh: '#2a2e42', low: '#22252f', lowSh: '#181a22', sleeve: 1.4 },     // худи и спортивки дома
@@ -67,9 +69,10 @@ export const Bouquet: React.FC<{ t?: number }> = ({ t = 0 }) => (<g>
   <path d="M-60,-100 L60,-100 L18,20 L-18,20 Z" fill="#f4ecd8" /><path d="M-60,-100 L0,-60 L60,-100" fill="none" stroke="#d8c8a0" strokeWidth={4} />
   <path d="M-22,-10 Q0,4 22,-10 M-10,-4 l-14,24 M10,-4 l14,24" stroke="#e5383b" strokeWidth={7} fill="none" strokeLinecap="round" /></g>);
 export const Baller: React.FC<BallerProps> = (p) => {
+  const cut = useContext(CutCtx); if (cut) { const r = cut(p, 'baller'); if (r) return r; }
   const L = BL[p.who], O = OUT[p.outfit ?? 'kit'], s = p.s ?? 1, t = p.t, P = blendIn(p.pose), isV = p.who === 'vini';
   const br = Math.sin(t * 2.4 + (isV ? 1 : 3)) * 3, hipY = HIP_Y + (P.hip ?? 0), shY = SH_Y + br, lean = P.lean ?? 0, thighL = p.sit ? 44 : THIGH;
-  const FL = { skin: L.skin, skinSh: L.skinSh, hair: L.hair, iris: L.iris, browFlat: L.browFlat } as any, oc = p.outfit ?? 'kit', kit = oc === 'kit' || oc === 'opp' || oc === 'bib' || oc === 'gk', trim = oc === 'opp' || oc === 'gk' ? '#15151a' : KIT.navy, gold = oc === 'opp' || oc === 'gk' ? '#f4f4f4' : KIT.gold;
+  const FL = { skin: L.skin, skinSh: L.skinSh, hair: L.hair, iris: L.iris, browFlat: L.browFlat } as any, oc = p.outfit ?? 'kit', kit = oc === 'kit' || oc === 'opp' || oc === 'bib' || oc === 'gk' || oc === 'ref', trim = oc === 'opp' || oc === 'gk' ? '#15151a' : oc === 'ref' ? '#ffd23f' : KIT.navy, gold = oc === 'opp' || oc === 'gk' ? '#f4f4f4' : oc === 'ref' ? '#ffd23f' : KIT.gold;
   const leg = (side: -1 | 1, l: Limb) => { const hp: P2 = [side * 34, hipY], kn = p.sit ? [side * 58, hipY + thighL] as P2 : pt(hp[0], hp[1], l[0], thighL), an = pt(kn[0], kn[1], p.sit ? l[0] * .5 + side * .05 : l[0] + l[1], SHIN), fa = p.sit ? 0 : l[0] + l[1];
     const sockTop = lp(kn, an, .3);
     return (<g key={'l' + side}>{seg(hp, kn, 62, 50, kit ? L.skin : O.low, 'th')}{seg(kn, an, 50, 42, kit ? L.skin : O.low, 'sh')}
@@ -175,6 +178,7 @@ const SS = { skin: '#f8ddc9', skinSh: '#e6b49a', hair: '#b8442a', hairSh: '#8a2e
   dress: '#16141c', dressHi: '#3a3546', dressSh: '#0a090e', gold: '#e8c46a', lips: '#c4485a', nails: '#b8304a' };
 export type SadieProps = StarProps & { hair?: 'curtain' | 'fringe'; outfit?: 'dress' | 'jacket'; blush?: number; sit?: boolean };
 export const Sadie: React.FC<SadieProps> = (p) => {
+  const cut = useContext(CutCtx); if (cut) { const r = cut(p, 'sadie'); if (r) return r; }
   const fr = p.hair === 'fringe', jk = p.outfit === 'jacket', JK = { olive: '#4a4a2c', oliveSh: '#33331e', oliveHi: '#6a6a42', tan: '#d8b07a', tee: '#1a2420', jeans: '#2c3448', jeansSh: '#20273a' };
   const L = SS, s = p.s ?? 1, t = p.t, P = blendIn(p.pose);
   const br = Math.sin(t * 2.1) * 2.6, hipY = HIP_Y + (P.hip ?? 0), shY = SH_Y + 8 + br, lean = P.lean ?? 0;

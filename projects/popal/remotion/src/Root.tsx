@@ -7,6 +7,7 @@ import { Sheet } from './ep2/Sheet';
 import { Ep2, EP2_FRAMES } from './ep2/Ep2';
 import { StarsClip, STARS_FRAMES } from './stars/Clip';
 import { NeSheet } from './ne/Sheet';
+import { NeCutTest } from './ne/CutTest';
 import { NeTv } from './ne/TvTest';
 import { NeClip, NE_FRAMES } from './ne/Ne';
 // «ПОПАЛ» с.1: Ep1-720 — сдача (720×1280 по ТЗ), Ep1 — 1080×1920, Ep1-mute — для кадров-превью без звука.
@@ -24,6 +25,7 @@ export const RemotionRoot: React.FC = () => (<>
   <Composition id="Ne-mute" component={NeClip} durationInFrames={NE_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: false }} />
   <Composition id="Ne-tv" component={NeTv} durationInFrames={170} fps={30} width={720} height={1280} />
   <Still id="NeSheet" component={NeSheet} width={1440} height={1280} />
+  <Still id="NeCutTest" component={NeCutTest} width={1600} height={1200} />
   <Still id="Sheet2" component={Sheet} width={1080} height={1920} />
   <Still id="Test" component={Test} width={1080} height={1920} />
 </>);
