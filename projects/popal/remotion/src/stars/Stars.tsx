@@ -48,17 +48,18 @@ const BL: Record<Who, BallerLook> = {
   coach: { skin: '#e2b08c', skinSh: '#c48e6c', skinHi: '#f4caa8', hair: '#9a9894', hairHi: '#c8c6c0', iris: '#3a2a1e', boot: '#1a1a1a', bootSole: '#333' },
   diom: { skin: '#4c2e20', skinSh: '#382014', skinHi: '#6a4432', hair: '#141012', hairHi: '#3a2a20', tips: '#8a6440', iris: '#2a1810', boot: '#3ad0ff', bootSole: '#f4f4f4' },
 };
-type Outfit = 'kit' | 'home' | 'track' | 'bomber' | 'coat' | 'opp' | 'bib';
+type Outfit = 'kit' | 'home' | 'track' | 'bomber' | 'coat' | 'opp' | 'bib' | 'gk';
 const OUT: Record<Outfit, { top: string; topSh: string; low: string; lowSh: string; sleeve: number }> = {
   kit: { top: KIT.kit, topSh: KIT.kitSh, low: KIT.kit, lowSh: KIT.kitSh, sleeve: .55 },
   opp: { top: '#b8202e', topSh: '#8a1622', low: '#15151a', lowSh: '#0c0c10', sleeve: .55 },     // соперник (вымышленная команда)
+  gk: { top: '#c8ff3a', topSh: '#9ad01e', low: '#15151a', lowSh: '#0c0c10', sleeve: 1.4 },          // вратарь соперника
   bib: { top: '#ff7a2a', topSh: '#d85a14', low: KIT.kit, lowSh: KIT.kitSh, sleeve: .55 },       // запасные в манишках
   home: { top: '#3a3f58', topSh: '#2a2e42', low: '#22252f', lowSh: '#181a22', sleeve: 1.4 },     // худи и спортивки дома
   bomber: { top: '#4a7cb4', topSh: '#355d8c', low: '#2a3450', lowSh: '#1e2740', sleeve: 1.4 },  // джинсовая куртка, тёмная футболка, тёмные джинсы (фото Тома)
   coat: { top: '#1c2236', topSh: '#121626', low: '#22283a', lowSh: '#161a28', sleeve: 1.4 },     // пальто тренера
   track: { top: '#1f4a3c', topSh: '#15362b', low: '#1a1c24', lowSh: '#121318', sleeve: 1.4 },    // тёмно-зелёная олимпийка после матча
 };
-export type BallerProps = StarProps & { who: Who; hearts?: number; outfit?: Outfit; sit?: boolean; hold?: 'phone' | 'flowers' | null; holdBack?: number; tears?: number };
+export type BallerProps = StarProps & { who: Who; rot?: number; hearts?: number; outfit?: Outfit; sit?: boolean; hold?: 'phone' | 'flowers' | null; holdBack?: number; tears?: number };
 export const Phone: React.FC<{ lit?: number }> = ({ lit = 1 }) => (<g><rect x={-28} y={-54} width={56} height={104} rx={10} fill="#111" /><rect x={-23} y={-47} width={46} height={88} rx={6} fill={lit ? '#5ad0ff' : '#111'} opacity={.9} /></g>);
 export const Bouquet: React.FC<{ t?: number }> = ({ t = 0 }) => (<g>
   {[[-34, -150, '#ff4a6a'], [0, -170, '#ff7a9a'], [34, -150, '#ff4a6a'], [-18, -122, '#ffd23f'], [20, -124, '#ff9ab8'], [-46, -112, '#ff7a9a'], [46, -112, '#ff4a6a']].map(([x, y, c], i) =>
@@ -68,11 +69,11 @@ export const Bouquet: React.FC<{ t?: number }> = ({ t = 0 }) => (<g>
 export const Baller: React.FC<BallerProps> = (p) => {
   const L = BL[p.who], O = OUT[p.outfit ?? 'kit'], s = p.s ?? 1, t = p.t, P = blendIn(p.pose), isV = p.who === 'vini';
   const br = Math.sin(t * 2.4 + (isV ? 1 : 3)) * 3, hipY = HIP_Y + (P.hip ?? 0), shY = SH_Y + br, lean = P.lean ?? 0, thighL = p.sit ? 44 : THIGH;
-  const FL = { skin: L.skin, skinSh: L.skinSh, hair: L.hair, iris: L.iris, browFlat: L.browFlat } as any, oc = p.outfit ?? 'kit', kit = oc === 'kit' || oc === 'opp' || oc === 'bib', trim = oc === 'opp' ? '#15151a' : KIT.navy, gold = oc === 'opp' ? '#f4f4f4' : KIT.gold;
+  const FL = { skin: L.skin, skinSh: L.skinSh, hair: L.hair, iris: L.iris, browFlat: L.browFlat } as any, oc = p.outfit ?? 'kit', kit = oc === 'kit' || oc === 'opp' || oc === 'bib' || oc === 'gk', trim = oc === 'opp' || oc === 'gk' ? '#15151a' : KIT.navy, gold = oc === 'opp' || oc === 'gk' ? '#f4f4f4' : KIT.gold;
   const leg = (side: -1 | 1, l: Limb) => { const hp: P2 = [side * 34, hipY], kn = p.sit ? [side * 46, hipY + thighL] as P2 : pt(hp[0], hp[1], l[0], thighL), an = pt(kn[0], kn[1], p.sit ? l[0] * .3 + side * .05 : l[0] + l[1], SHIN), fa = p.sit ? 0 : l[0] + l[1];
     const sockTop = lp(kn, an, .3);
     return (<g key={'l' + side}>{seg(hp, kn, 62, 50, kit ? L.skin : O.low, 'th')}{seg(kn, an, 50, 42, kit ? L.skin : O.low, 'sh')}
-      {kit ? <>{seg(hp, lp(hp, kn, p.sit ? 1 : .55), 92, 80, O.low, 'shorts')}{!p.sit && seg(lp(hp, kn, .4), lp(hp, kn, .55), 82, 80, O.lowSh, 'shH')}{seg(sockTop, an, 54, 46, oc === 'opp' ? O.top : KIT.kit, 'sock')}</>
+      {kit ? <>{seg(hp, lp(hp, kn, p.sit ? 1 : .55), 92, 80, O.low, 'shorts')}{!p.sit && seg(lp(hp, kn, .4), lp(hp, kn, .55), 82, 80, O.lowSh, 'shH')}{seg(sockTop, an, 54, 46, oc === 'opp' ? O.top : oc === 'gk' ? '#15151a' : KIT.kit, 'sock')}</>
         : seg(lp(kn, an, .3), an, 22, 18, O.lowSh, 'crease')}
       <g transform={`translate(${an[0]},${an[1]}) rotate(${-fa * 180 / Math.PI})`}>
         <path d={`M-26,-10 L${side * 54},-6 Q${side * 66},14 ${side * 48},22 L-28,22 Q-34,6 -26,-10 Z`} fill={kit ? L.boot : '#f2f2f2'} />
@@ -84,7 +85,7 @@ export const Baller: React.FC<BallerProps> = (p) => {
     return (<g key={'a' + side}>{seg(sp, el, 46, 40, L.skin, 'u')}{seg(el, wr, 40, 34, L.skin, 'f')}
       {O.sleeve <= 1 ? seg(sp, lp(sp, el, O.sleeve), 60, 56, O.top, 'sl') : <>{seg(sp, el, 56, 50, O.top, 'su')}{seg(el, lp(el, wr, .86), 50, 44, O.top, 'sf')}{seg(lp(el, wr, .78), lp(el, wr, .86), 46, 46, O.topSh, 'cuff')}</>}
       {holdIt && <g transform={`translate(${wr[0] + Math.sin(fa) * 22},${wr[1] + Math.cos(fa) * 22}) rotate(${-fa * 180 / Math.PI + 180})`}>{p.hold === 'phone' ? <g transform="translate(0,-36)"><Phone /></g> : <Bouquet t={t} />}</g>}
-      <Hand x={wr[0]} y={wr[1]} a={fa} skin={L.skin} sh={L.skinSh} open={!holdIt} /></g>); };
+      <Hand x={wr[0]} y={wr[1]} a={fa} skin={oc === 'gk' ? '#f4f4f4' : L.skin} sh={oc === 'gk' ? '#9aa0b0' : L.skinSh} open={!holdIt} /></g>); };
   const headY = shY - 128, ht = (p.headTilt ?? 0) + noise(p.who + 'ht', t, .3) * 2.5, hw = noise(p.who + 'hw', t, .7) * 6;
   // локи Диоманде: пряди от макушки к плечам, светлые кончики; сзади головы и спереди у висков
   const locs = (front: boolean) => Array.from({ length: front ? 4 : 12 }, (_, i) => { const n = front ? 2 : 6, k = i < n ? -1 : 1, j = i % n;
@@ -92,7 +93,7 @@ export const Baller: React.FC<BallerProps> = (p) => {
     const cx = k * (front ? 104 : 106 + j * 3), cy = (y0 + y1) / 2 - 24, d = `M${x0},${y0} Q${cx},${cy} ${x1},${y1}`;
     return <g key={i}><path d={d} stroke={L.hair} strokeWidth={front ? 11 : 13} fill="none" strokeLinecap="round" />
       <path d={`M${lerp(cx, x1, .72)},${lerp(cy, y1, .72)} L${x1},${y1}`} stroke={L.tips} strokeWidth={front ? 10 : 12} strokeLinecap="round" /></g>; });
-  return (<g transform={`translate(${p.x},${p.y}) scale(${(p.flip ? -1 : 1) * s},${s})`}>
+  return (<g transform={`translate(${p.x},${p.y}) rotate(${p.rot ?? 0}) scale(${(p.flip ? -1 : 1) * s},${s})`}>
     {!p.sit && <ellipse cx={0} cy={6} rx={130} ry={20} fill="#000" opacity={p.shadow ?? .28} />}
     <g transform={`translate(0,${p.sit ? THIGH - thighL : 0}) rotate(${lean * 57} 0 ${hipY})`}>
       {p.who === 'diom' && <g transform={`translate(0,${headY}) rotate(${ht})`}>{locs(false)}</g>}

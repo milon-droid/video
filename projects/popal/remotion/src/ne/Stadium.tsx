@@ -52,43 +52,66 @@ export const FieldExtras: React.FC<{ t: number; skip?: number[]; dy?: number }> 
 const Boards: React.FC<{ y: number; t: number }> = ({ y, t }) => (<g>{Array.from({ length: 4 }, (_, i) => <g key={i}><rect x={-40 + i * 300} y={y} width={292} height={70} fill="#0c1430" />
   <text x={106 + i * 300} y={y + 48} fontSize={36} fontWeight={900} fill={['#5af0ff', '#ffd23f', '#ff5a7a', '#7dffb0'][(i + Math.floor(t * 1.5)) % 4]} textAnchor="middle" fontFamily="Mont" letterSpacing={4}>{['FOOTBALL', 'GOAL!', 'MATCHDAY', 'ON AIR'][i]}</text></g>)}</g>);
 
-// ───── 2a-0: Вини грустит на скамейке, а Диоманде блистает на поле ─────
-const Dugout: React.FC = () => (<g>
-  <path d="M-40,880 Q540,780 1120,880 L1120,1420 L-40,1420 Z" fill="#0e1428" opacity={.85} />
-  <path d="M-40,880 Q540,780 1120,880 L1120,930 Q540,830 -40,930 Z" fill="#9ad0ff" opacity={.25} />
-  {Array.from({ length: 6 }, (_, i) => <g key={i} transform={`translate(${110 + i * 175},1300)`}><path d="M-70,-150 Q-74,-30 -60,0 L60,0 Q74,-30 70,-150 Q0,-170 -70,-150 Z" fill="#1d3a8a" /><rect x={-66} y={-10} width={132} height={40} rx={10} fill="#16306e" /></g>)}
+// ───── скамейка запасных, снятая С ПОЛЯ: трибуны позади, навес из оргстекла, сиденья, техзона перед ней ─────
+const Crowd: React.FC<{ t: number; y0: number; y1: number; seed?: number }> = ({ t, y0, y1, seed = 0 }) => (<g>
+  <rect x={-40} y={y0} width={1160} height={y1 - y0} fill="#0d1430" />
+  {Array.from({ length: 220 }, (_, i) => { const x = hash(i + seed) * 1120 - 20, y = y0 + 20 + hash(i * 3.1 + seed) * (y1 - y0 - 30), c = ['#3a4a8a', '#5a3a6a', '#2a4a6a', '#e8e8f0', '#d2a640'][i % 5];
+    const tw = hash(i * 9 + Math.floor(t * 6)) > .985;
+    return <g key={i}><circle cx={x} cy={y} r={9 + hash(i * 7) * 5} fill={c} opacity={.6} />{tw && <circle cx={x} cy={y - 6} r={5} fill="#fff" />}</g>; })}
 </g>);
-const BenchMates: React.FC<{ t: number; xs: number[] }> = ({ t, xs }) => (<g>{xs.map((x, i) => <Baller key={i} who={(['mate', 'mate2', 'mate3'] as const)[i % 3]} outfit="bib" sit x={x} y={1560} s={1.0} t={t + i * 2}
-  expr={(['neutral', 'deadpan', 'neutral'] as const)[i % 3]} pose={{ armL: [-.15, .6], armR: [.15, -.6], legL: [-.15, 0], legR: [.15, 0] }} eye={[.4, -.3]} />)}</g>);
+const DugoutFront: React.FC<{ t: number }> = ({ t }) => (<g>
+  <defs><linearGradient id="dgSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#040817" /><stop offset="1" stopColor="#14275a" /></linearGradient></defs>
+  <rect width={1080} height={1920} fill="url(#dgSky)" />
+  <Crowd t={t} y0={300} y1={1000} seed={7} />
+  <Glow x={540} y={260} r={700} c="#cfe8ff" o={.35} id="dgFl" />
+  {/* рекламные щиты у бровки за скамейкой */}
+  <Boards y={1000} t={t} />
+  {/* навес: задняя стенка, оргстекло, каркас */}
+  <rect x={-40} y={1070} width={1160} height={520} fill="#121a34" />
+  <path d="M-40,1000 Q540,900 1120,1000 L1120,1080 Q540,980 -40,1080 Z" fill="#c8e4ff" opacity={.28} />
+  <path d="M-40,1000 Q540,900 1120,1000" stroke="#8aa0c0" strokeWidth={10} fill="none" />
+  {[60, 1020].map(x => <path key={x} d={`M${x},${x < 540 ? 990 : 990} L${x},1600`} stroke="#8aa0c0" strokeWidth={14} />)}
+  <path d="M-40,1080 L60,1080 L60,1600 L-40,1600 Z M1020,1080 L1120,1080 L1120,1600 L1020,1600 Z" fill="#c8e4ff" opacity={.18} />
+  {Array.from({ length: 6 }, (_, i) => <g key={i} transform={`translate(${130 + i * 165},1560)`}><path d="M-68,-150 Q-72,-30 -58,0 L58,0 Q72,-30 68,-150 Q0,-168 -68,-150 Z" fill="#1d3a8a" /><rect x={-64} y={-10} width={128} height={40} rx={10} fill="#16306e" /></g>)}
+  {/* газон техзоны и её разметка */}
+  <rect y={1590} width={1080} height={330} fill="#24703e" /><path d="M-40,1600 L1120,1600" stroke="#0e3a1c" strokeWidth={6} />
+  <path d="M40,1880 L40,1680 L1040,1680 L1040,1880" stroke="#f4f8f4" strokeWidth={6} fill="none" strokeDasharray="30 20" opacity={.8} />
+</g>);
+const SitPose = { armL: [-.15, .6] as [number, number], armR: [.15, -.6] as [number, number], legL: [-.15, 0] as [number, number], legR: [.15, 0] as [number, number] };
+const BenchMates: React.FC<{ t: number; xs: number[] }> = ({ t, xs }) => (<g>{xs.map((x, i) => <Baller key={i} who={(['mate', 'mate2', 'mate3'] as const)[i % 3]} outfit="bib" sit x={x} y={1600} s={.85} t={t + i * 2}
+  expr={(['neutral', 'deadpan', 'neutral'] as const)[i % 3]} pose={SitPose} eye={[.2, .2]} />)}</g>);
+
+// ───── 2a-0: сначала поле — Диоманде блистает (обводит соперника); затем скамейка — грустный Вини ─────
+export const BENCH_CUT = 2.4;
 export const ShotBenchSad: React.FC<ShotP> = ({ t }) => {
-  const dx = Math.sin(t * 2.2) * 150, ph = t * 9, P = runPose(ph), fl = Math.cos(t * 2.2) < 0, dX = 640 + dx;
-  return (<Cam z={1.0} fy={1100} dy={-40}>
-    <Stadium t={t + 1} flash={.3 + .3 * Math.sin(t * 6)} />
-    <FieldExtras t={t} skip={[2, 3, 5]} dy={-40} />
-    {/* Диоманде блистает: финты с мячом под прожектором, искры */}
-    <Glow x={dX} y={1060} r={300} c="#fff2c0" o={.5} id="diomSpot" />
-    <Baller who="diom" x={dX} y={1250} s={.62} t={t + 3} pose={P} expr="happy" teeth flip={fl} />
-    <Ball x={dX + (fl ? -50 : 50)} y={1244 - Math.abs(Math.sin(ph)) * 18} r={20} rot={t * 900} />
-    {[0, 1, 2, 3].map(i => { const u = (t * 1.4 + i * .25) % 1; return <path key={i} d={`M${dX + Math.cos(i * 1.7) * 120 * u},${900 - u * 140} l0,-26 l7,19 l19,7 l-19,7 z`} fill="#ffe27a" opacity={1 - u} />; })}
-    {/* скамейка внизу кадра: только сиденья, без навеса */}
-    {Array.from({ length: 5 }, (_, i) => <g key={i} transform={`translate(${60 + i * 240},1590)`}><path d="M-90,-170 Q-94,-30 -76,0 L76,0 Q94,-30 90,-170 Q0,-190 -90,-170 Z" fill="#1d3a8a" /><rect x={-86} y={-10} width={172} height={44} rx={10} fill="#16306e" /></g>)}
-    <Baller who="mate2" outfit="bib" sit x={80} y={1610} s={.95} t={t + 4} expr="neutral" pose={{ armL: [-.15, .6], armR: [.15, -.6], legL: [-.15, 0], legR: [.15, 0] }} eye={[.6, -.6]} />
-    <Baller who="vini" sit x={380} y={1610} s={1.0} t={t + 5} expr="sad" lid={.35} headTilt={10} eye={[.6, -.7]}
-      pose={{ armL: [-.15, .6], armR: [.55, -2.75], legL: [-.15, 0], legR: [.15, 0] }} />
+  if (t < BENCH_CUT) {
+    const x = lerp(260, 820, smooth(0, BENCH_CUT, t)) + Math.sin(t * 7) * 30, ph = t * 10, trip = spr(t, 1.0, { damping: 10, stiffness: 120 });
+    return (<Cam z={1.05 + .04 * t} fy={1150} dy={-40}>
+      <Stadium t={t + 1} flash={.4 + .3 * Math.sin(t * 7)} />
+      <FieldExtras t={t} skip={[2, 3, 5]} dy={-30} />
+      <Baller who="opp" outfit="opp" x={600} y={1520 - trip * 10} s={.8} t={t} rot={trip * -80} pose={t < 1 ? runPose(t * 9) : full({ armL: [-2.4, .3], armR: [2.4, -.3], legL: [-.3, .4], legR: [.3, -.4] })} expr={t < 1 ? 'determined' : 'ko'} />
+      <Glow x={x} y={1100} r={320} c="#fff2c0" o={.45} id="diomSpot" />
+      <Baller who="diom" x={x} y={1560} s={.85} t={t + 3} pose={runPose(ph)} expr="happy" teeth />
+      <Ball x={x + 90 + Math.sin(ph) * 10} y={1552 - Math.abs(Math.sin(ph)) * 20} r={28} rot={t * 900} />
+      {[0, 1, 2, 3].map(i => { const u = (t * 1.4 + i * .25) % 1; return <path key={i} d={`M${x + Math.cos(i * 1.7) * 140 * u},${1000 - u * 160} l0,-30 l8,22 l22,8 l-22,8 z`} fill="#ffe27a" opacity={1 - u} />; })}
+    </Cam>); }
+  const u = t - BENCH_CUT;
+  return (<Cam z={1.0 + .03 * u} fy={1200} dy={-40}>
+    <DugoutFront t={t} />
+    <BenchMates t={t} xs={[130, 660, 825]} />
+    <Baller who="vini" sit x={395} y={1600} s={.9} t={t + 5} expr="sad" lid={.4} headTilt={10} eye={[.2, .5]} pose={{ ...SitPose, armR: [.55, -2.75] }} />
   </Cam>); };
 
-// ───── 2a: тренер зовёт, Вини вскакивает (рядом запасные) ─────
+// ───── 2a: тренер в техзоне зовёт, Вини вскакивает со скамейки ─────
 export const ShotBench: React.FC<ShotP & { up: number }> = ({ t, m = 0, up }) => {
   const sit = t < up, j = spr(t, up, { damping: 9, stiffness: 180 }), hop = t > up ? Math.sin(clamp((t - up) / .35) * Math.PI) * 60 : 0;
-  return (<Cam z={1.05 + .03 * t} fy={1200} dy={-60}>
-    <Stadium t={t + 2} />
-    <FieldExtras t={t + 3} />
-    <Dugout />
-    <BenchMates t={t} xs={[130, 640]} />
-    <Baller who="vini" sit={sit} x={420} y={sit ? 1560 : 1560 - hop} s={1.05} t={t + 3} expr={sit ? 'sad' : 'happy'} teeth={!sit} mouth={m}
-      pose={sit ? { armL: [-.15, .6], armR: [.15, -.6], legL: [-.15, 0], legR: [.15, 0] } : blendPose(full({ armL: [-.3, .3], armR: [.3, -.3] }), full({ armL: [-2.5, .3], armR: [2.5, -.3], legL: [-.2, .1], legR: [.2, -.1] }), j) as Pose} eye={[.7, -.1]} />
-    <Baller who="coach" outfit="coat" x={880} y={1620} s={1.0} t={t} expr="determined" mouth={t > .2 && t < .9 ? .3 + .2 * Math.sin(t * 20) : 0}
-      pose={{ armL: [-.2, .2], armR: [wave(t, 2.2, .5, 9), -1.2] }} eye={[-.8, 0]} headTilt={-6} />
+  return (<Cam z={1.03 + .03 * t} fy={1250} dy={-60}>
+    <DugoutFront t={t + 3} />
+    <BenchMates t={t} xs={[130, 660]} />
+    <Baller who="vini" sit={sit} x={395} y={sit ? 1600 : 1640 - hop} s={sit ? .9 : .95} t={t + 3} expr={sit ? 'sad' : 'happy'} teeth={!sit} mouth={m}
+      pose={sit ? SitPose : blendPose(full({ armL: [-.3, .3], armR: [.3, -.3] }), full({ armL: [-2.5, .3], armR: [2.5, -.3], legL: [-.2, .1], legR: [.2, -.1] }), j) as Pose} eye={[.7, -.1]} />
+    <Baller who="coach" outfit="coat" x={860} y={1800} s={1.05} t={t} expr="determined" mouth={t > .2 && t < .9 ? .3 + .2 * Math.sin(t * 20) : 0}
+      pose={{ armL: [-.2, .2], armR: [wave(t, 2.2, .5, 9), -1.2] }} eye={[-.8, -.3]} headTilt={-6} />
   </Cam>); };
 
 // ───── 2b: замена у бровки: Диоманде уходит с поля, рукопожатие и хлопок по плечу; резервный судья с табло ─────
@@ -110,26 +133,51 @@ export const ShotHandshake: React.FC<ShotP & { faded?: boolean }> = ({ t, m = 0 
     <Baller who="vini" x={720} y={1600} s={1.05} t={t + 5} expr="smug" mouth={m} pose={{ armL: [-1.45 - pat * (t > .5 ? 1 : 0), .3], armR: [.2, -.2] }} eye={[-.8, 0]} headTilt={-4} />
   </Cam>); };
 
-// ───── ворота в реальном масштабе (7,32 × 2,44 м: выше человека, шире в 4 раза) ─────
-const Goal: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (<g transform={`translate(${x},${y}) scale(${s})`}>
-  <path d="M-560,0 L-560,-370 L560,-370 L560,0" stroke="#f4f6fa" strokeWidth={14} fill="none" />
-  <path d="M-560,-370 L-500,-300 L500,-300 L560,-370 M-500,-300 L-500,30 M500,-300 L500,30" stroke="#dfe4ee" strokeWidth={5} fill="none" opacity={.7} />
-  {Array.from({ length: 34 }, (_, i) => <path key={i} d={`M${-500 + i * 30},-300 L${-550 + i * 33},0`} stroke="#fff" strokeWidth={2} opacity={.3} />)}
-  {Array.from({ length: 10 }, (_, i) => <path key={'h' + i} d={`M-520,${-290 + i * 30} L520,${-290 + i * 30}`} stroke="#fff" strokeWidth={2} opacity={.25} />)}
-</g>);
+// ───── ворота анфас: ширина = 3 × высоты (7,32 × 2,44 м), сетка, разметка на газоне; base — линия ворот ─────
+const GoalFront: React.FC<{ cx: number; base: number; H: number; children?: React.ReactNode }> = ({ cx, base, H, children }) => {
+  const W = 3 * H, L = cx - W / 2, R = cx + W / 2, top = base - H, pw = Math.max(8, H * .045), bL = L + W * .06, bR = R - W * .06, bB = base - H * .2, bT = top + H * .1;
+  return (<g>
+    {/* сетка: задняя стенка и боковины */}
+    <path d={`M${bL},${bB} L${bL},${bT} L${bR},${bT} L${bR},${bB} Z`} fill="#dfe8f0" opacity={.08} />
+    {Array.from({ length: 30 }, (_, i) => { const x = lerp(bL, bR, i / 29); return <path key={i} d={`M${x},${bT} L${x},${bB}`} stroke="#fff" strokeWidth={2} opacity={.35} />; })}
+    {Array.from({ length: 9 }, (_, i) => { const y = lerp(bT, bB, i / 8); return <path key={'h' + i} d={`M${bL},${y} L${bR},${y}`} stroke="#fff" strokeWidth={2} opacity={.3} />; })}
+    <path d={`M${L},${top} L${bL},${bT} M${R},${top} L${bR},${bT} M${L},${base} L${bL},${bB} M${R},${base} L${bR},${bB} M${bL},${bT} L${bL},${bB} M${bR},${bT} L${bR},${bB}`} stroke="#e8eef4" strokeWidth={4} opacity={.7} />
+    {children}
+    {/* штанги и перекладина */}
+    <path d={`M${L},${base} L${L},${top} L${R},${top} L${R},${base}`} stroke="#f4f6fa" strokeWidth={pw} fill="none" strokeLinejoin="round" />
+    <path d={`M${L - pw * .2},${base} L${L - pw * .2},${top}`} stroke="#c8ccd6" strokeWidth={pw * .3} />
+  </g>); };
+// поле у ворот: трибуна за воротами, щиты, линия ворот, вратарская и штрафная площади в перспективе
+const GoalEnd: React.FC<{ t: number; base: number; H: number; cx: number }> = ({ t, base, H, cx }) => { const W = 3 * H;
+  return (<g>
+    <defs><linearGradient id="geSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#040817" /><stop offset="1" stopColor="#14275a" /></linearGradient>
+      <linearGradient id="gePitch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2f8a4a" /><stop offset="1" stopColor="#14502a" /></linearGradient></defs>
+    <rect width={1080} height={1920} fill="url(#geSky)" />
+    <Crowd t={t} y0={base - H * 1.7} y1={base - H * .38} seed={3} />
+    <Glow x={180} y={base - H * 1.9} r={500} c="#cfe8ff" o={.6} id="geF1" /><Glow x={900} y={base - H * 1.9} r={500} c="#cfe8ff" o={.6} id="geF2" />
+    <rect x={-40} y={base - H * .38} width={1160} height={H * .38 + 4} fill="#2f8a4a" />
+    <Boards y={base - H * .62} t={t} />
+    <rect y={base} width={1080} height={1920 - base} fill="url(#gePitch)" />
+    {Array.from({ length: 6 }, (_, i) => i % 2 ? <rect key={i} y={base + (i * i) * 18 + i * 40} width={1080} height={(2 * i + 1) * 18 + 40} fill="#fff" opacity={.05} /> : null)}
+    <path d={`M-40,${base} L1120,${base}`} stroke="#f4f8f4" strokeWidth={7} />
+    <path d={`M${cx - W / 2 - H * .8},${base} L${cx - W / 2 - H * 1.3},${base + H * .55} L${cx + W / 2 + H * 1.3},${base + H * .55} L${cx + W / 2 + H * .8},${base}`} stroke="#f4f8f4" strokeWidth={6} fill="none" />
+    <path d={`M${cx - W / 2 - H * 2.4},${base} L${cx - W / 2 - H * 4},${base + H * 1.6} L${cx + W / 2 + H * 4},${base + H * 1.6} L${cx + W / 2 + H * 2.4},${base}`} stroke="#f4f8f4" strokeWidth={7} fill="none" />
+  </g>); };
+const KEEPER_H = 740;   // рост фигуры при s=1 — для масштаба: ворота ≈ 1,6 × рост вратаря
 
-// ───── 3a: Вини получает пас и бежит к пустым воротам (за ним соперник) ─────
+// ───── 3a: Вини получает пас и мчится к воротам; вратарь стоит в воротах ─────
 export const ShotRun: React.FC<ShotP> = ({ t }) => {
-  const dist = t * 520, ph = dist / 70, P = runPose(ph), ballX = 560 + Math.sin(ph) * 14, ballY = 1590 - Math.abs(Math.sin(ph)) * 26;
-  const recv = clamp(t / .3), passBall = t < .3 ? [lerp(-60, ballX, recv), lerp(1500, ballY, recv)] : [ballX, ballY];
+  const k = smooth(0, 1.5, t), H = lerp(250, 330, k), base = lerp(1120, 1160, k), cx = lerp(640, 600, k), ks = H / 1.6 / KEEPER_H;
+  const ph = t * 9.5, vx = lerp(220, 470, k), P = runPose(ph), ballX = vx + 110 + Math.sin(ph) * 12, ballY = 1640 - Math.abs(Math.sin(ph)) * 24;
+  const recv = clamp(t / .3), b = t < .3 ? [lerp(-60, ballX, recv), lerp(1500, ballY, recv)] : [ballX, ballY];
   return (<Cam z={1.0} fy={1200} dy={-40}>
-    <g transform={`translate(${540 - dist * .12},960) scale(1.25) translate(-540,-960)`}><Stadium t={t + 6} /></g>
-    <Goal x={lerp(1500, 1180, smooth(0, 1.6, t))} y={1450} s={lerp(1.0, 1.25, smooth(0, 1.6, t))} />
-    <FieldExtras t={t + 8} skip={[3, 4]} />
-    {Array.from({ length: 8 }, (_, i) => { const x = ((i * 260 - dist) % 2080 + 2080) % 2080 - 300; return <path key={i} d={`M${x},1700 l220,0`} stroke="#fff" strokeWidth={5} opacity={.12} />; })}
-    <Baller who="opp" outfit="opp" x={120 + t * 60} y={1560} s={.85} t={t + 2} expr="determined" pose={runPose(ph + 1.5)} eye={[.8, .2]} />
-    <Baller who="vini" x={400} y={1610} s={1.0} t={t + 7} expr="determined" pose={P} eye={[.6, .5]} />
-    <Ball x={passBall[0]} y={passBall[1]} r={34} rot={dist * 1.2} />
+    <GoalEnd t={t + 6} base={base} H={H} cx={cx} />
+    <GoalFront cx={cx} base={base} H={H}><Baller who="opp2" outfit="gk" x={cx + Math.sin(t * 4) * 20} y={base - 4} s={ks} t={t} pose={{ armL: [-.9, .3], armR: [.9, -.3], legL: [-.3, .2], legR: [.3, -.2] }} expr="determined" shadow={.2} /></GoalFront>
+    <Baller who="opp" outfit="opp" x={880} y={base + 120} s={.3} t={t + 2} pose={runPose(ph + 1)} flip />
+    <Baller who="mate2" outfit="kit" x={150} y={base + 160} s={.32} t={t + 4} pose={runPose(ph + 2)} />
+    <Baller who="opp" outfit="opp" x={vx - 220} y={1600} s={.85} t={t + 2} expr="determined" pose={runPose(ph + 1.5)} eye={[.8, .2]} />
+    <Baller who="vini" x={vx} y={1660} s={.95} t={t + 7} expr="determined" pose={P} eye={[.6, -.3]} />
+    <Ball x={b[0]} y={b[1]} r={32} rot={t * 800} />
   </Cam>); };
 
 // ───── 3b: VIP-ложа — за стеклом только Сэди, машет (взгляд в сторону скамейки) ─────
@@ -163,22 +211,25 @@ export const ShotHearts: React.FC<ShotP> = ({ t, m = 0 }) => {
       return <path key={i} transform={`translate(${x},${y}) scale(.9)`} d="M0,14 C-6,8 -30,-4 -30,-18 C-30,-32 -12,-36 0,-22 C12,-36 30,-32 30,-18 C30,-4 6,8 0,14 Z" fill="#ff5a8a" opacity={clamp(1 - u)} />; })}
   </Cam>); };
 
-// ───── 3d: засмотрелся на ложу — соперник подкатом отбирает мяч у пустых ворот ─────
+// ───── 3d: у пустых ворот (вратарь лежит у штанги после падения) засмотрелся на ложу — соперник подкатом отбирает мяч ─────
 export const STEAL_AT = .85;
 export const ShotSteal: React.FC<ShotP> = ({ t }) => {
-  const vx = 420, vy = 1620, s = .95, ballFoot: [number, number] = [vx + 80 * s, vy - 34 * s];
-  const slide = smooth(STEAL_AT - .35, STEAL_AT, t), ox = lerp(1250, 600, slide) - (t > STEAL_AT ? (t - STEAL_AT) * 520 : 0);
+  const H = 700, base = 1330, cx = -100, ks = H / 1.6 / KEEPER_H;
+  const vx = 560, vy = 1640, s = .85, ballFoot: [number, number] = [vx + 80 * s, vy - 34 * s];
+  const slide = smooth(STEAL_AT - .35, STEAL_AT, t), ox = lerp(1250, 700, slide) - (t > STEAL_AT ? (t - STEAL_AT) * 520 : 0);
   const got = t > STEAL_AT, bx = got ? ox - 70 : ballFoot[0], by = got ? vy - 30 : ballFoot[1];
   const oPose = t < STEAL_AT ? full({ legL: [-1.35, .1], legR: [-.5, .9], armL: [-1.8, .4], armR: [1.2, .3], lean: -.5 }) : runPose((t - STEAL_AT) * 10);
   const h = spr(t, .2, { damping: 8, stiffness: 200 }), sh = shake(t, STEAL_AT, 8, .3);
-  return (<Cam z={1.05} fy={1250} dx={sh[0]} dy={sh[1] - 60}>
-    <Stadium t={t + 10} />
-    <Goal x={900} y={1500} s={1.15} />
-    <FieldExtras t={t + 9} skip={[0, 4]} />
+  return (<Cam z={1.0} fy={1250} dx={sh[0]} dy={sh[1] - 40}>
+    <GoalEnd t={t + 10} base={base} H={H} cx={cx} />
+    <GoalFront cx={cx} base={base} H={H}>
+      <Baller who="opp2" outfit="gk" x={900} y={base - 30} s={ks} t={t} rot={-88} expr="ko" pose={{ armL: [-2.4, .3], armR: [2.6, -.2], legL: [-.2, .2], legR: [.3, -.1] }} shadow={0} />
+    </GoalFront>
+    {[0, 1, 2].map(i => { const a = t * 4 + i * 2.1; return <path key={i} d={`M${560 + Math.cos(a) * 60},${base - 120 + Math.sin(a) * 20} l0,-18 l5,13 l13,5 l-13,5 z`} fill="#ffe27a" />; })}
     <Baller who="vini" x={vx} y={vy} s={s} t={t + 11} expr="happy" teeth hearts={h * .8} headTilt={-16} eye={[-.7, -.9]} pose={{ armL: [-.3, .3], armR: [wave(t, 2.4, .25), .4] }} />
-    {t > STEAL_AT - .4 && <Baller who="opp" outfit="opp" x={ox} y={vy + (t < STEAL_AT ? 30 : 0)} s={.95} t={t + 3} expr="determined" pose={oPose} flip eye={[-.8, .3]} />}
+    {t > STEAL_AT - .4 && <Baller who="opp" outfit="opp" x={ox} y={vy + (t < STEAL_AT ? 30 : 0)} s={s} t={t + 3} expr="determined" pose={oPose} flip eye={[-.8, .3]} />}
     {t > STEAL_AT - .35 && t < STEAL_AT && <path d={`M${ox + 60},${vy + 10} l260,0 M${ox + 80},${vy - 30} l200,0`} stroke="#c8e8c8" strokeWidth={8} opacity={.6} strokeLinecap="round" />}
-    <Ball x={bx} y={by} r={34 * s} rot={got ? -t * 900 : t * 60} />
+    <Ball x={bx} y={by} r={32 * s} rot={got ? -t * 900 : t * 60} />
     {got && t < STEAL_AT + .25 && <circle cx={ballFoot[0]} cy={ballFoot[1]} r={30 + (t - STEAL_AT) * 500} fill="none" stroke="#fff" strokeWidth={10} opacity={1 - (t - STEAL_AT) / .25} />}
   </Cam>); };
 
