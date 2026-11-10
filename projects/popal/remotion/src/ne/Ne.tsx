@@ -11,7 +11,7 @@ import TL_EN from './timeline.json';
 import MOUTH_EN from './mouth.json';
 import { Lang, setLang, T as tr } from './i18n';
 import { CutCtx } from './cutCtx';
-import { renderCut, useCutPreload } from './Cut';
+import { CutPreloader, renderCut } from './Cut';
 
 type Shot = { id: string; a: number; b: number; vo?: string; at?: number; voDur?: number; text?: string };
 // русская версия снята по решению пользователя (2026-11-10); экранные строки RU остаются в i18n.ts
@@ -58,7 +58,7 @@ const SubWidget: React.FC<{ t: number }> = ({ t }) => { const k = clamp((t - .15
       <div><span style={{ color: '#ff3a3a' }}>▼</span> {tr('diom')} <span style={{ color: '#9aa0b0', fontSize: 34 }}>25</span></div></div></div>); };
 
 export const NeClip: React.FC<{ audio?: boolean; lang?: Lang }> = ({ audio = true, lang = 'en' }) => {
-  setLang(lang); SHOTS = TLS[lang].shots as Shot[]; MOUTH = MOUTHS[lang]; useCutPreload();
+  setLang(lang); SHOTS = TLS[lang].shots as Shot[]; MOUTH = MOUTHS[lang];
   const f = useCurrentFrame(), { fps, width } = useVideoConfig(), T = f / fps;
   const s = SHOTS.find(x => T >= x.a && T < x.b) ?? SHOTS[SHOTS.length - 1], t = T - s.a;
   const prevFlash = s.id === 'flash' || s.id === 'hide' ? clamp(1 - t / .25) : 0;
@@ -87,4 +87,4 @@ export const NeClip: React.FC<{ audio?: boolean; lang?: Lang }> = ({ audio = tru
       {s.id === 'corridor' && t < 1.7 && <div style={{ position: 'absolute', top: 230, width: 1080, textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 52, color: '#fff', letterSpacing: 6, opacity: clamp(t / .2) * clamp((1.7 - t) / .2), textShadow: '0 4px 0 #14121c' }}>{tr('after')}</div>}
       {s.id === 'flash' && t < 1.1 && <div style={{ position: 'absolute', top: 200, width: 1080, textAlign: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 44, color: '#f4e4c0', letterSpacing: 6, opacity: .85 }}>{tr('earlier')}</div>}
       <AbsoluteFill style={{ background: '#fff', opacity: prevFlash * .3, pointerEvents: 'none' }} />
-    </div>{audio && <Audio src={staticFile('ne-mix.wav')} />}</AbsoluteFill></CutCtx.Provider>); };
+    </div><CutPreloader />{audio && <Audio src={staticFile('ne-mix.wav')} />}</AbsoluteFill></CutCtx.Provider>); };

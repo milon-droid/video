@@ -29,15 +29,17 @@ const FACE: Record<CutId, { m: [number, number, number]; br: [number, number][];
 
 // ── предзагрузка всех частей: кадр не рендерится, пока картинки не декодированы
 const ALL = [...CUT_IDS.flatMap(id => Object.keys(D[id].parts).map(k => staticFile(`ne-cut/${id}/${k}.png`))), staticFile('ne-cut/tom/gestR.png')];
-let loaded = false;
-export const useCutPreload = () => {
-  const [h] = useState(() => (loaded ? null : delayRender('ne-cut images')));
-  useEffect(() => {
-    if (h === null) return;
-    Promise.all(ALL.map(src => new Promise<void>(res => { const im = new Image(); im.onload = () => { (im.decode ? im.decode() : Promise.resolve()).then(() => res(), () => res()); }; im.onerror = () => res(); im.src = src; })))
-      .then(() => { loaded = true; continueRender(h); });
-  }, [h]);
+// Все части держим в DOM с первого кадра (невидимо, 2×2 px): SVG <image> грузится асинхронно, и без этого
+// первый кадр, где персонаж появляется впервые, мог выйти без него. Кадр ждёт onLoad всех картинок.
+export const CutPreloader: React.FC = () => {
+  const [h] = useState(() => delayRender('ne-cut images'));
+  const left = React.useRef(ALL.length), done = React.useRef(false);
+  const fin = () => { left.current -= 1; if (left.current <= 0 && !done.current) { done.current = true; continueRender(h); } };
+  useEffect(() => { const tmo = setTimeout(() => { if (!done.current) { done.current = true; continueRender(h); } }, 25000); return () => clearTimeout(tmo); }, [h]);
+  return <svg width={2} height={2} style={{ position: 'absolute', left: 0, top: 0, opacity: .004, pointerEvents: 'none' }}>
+    {ALL.map(src => <image key={src} href={src} width={2} height={2} onLoad={fin} onError={fin} />)}</svg>;
 };
+export const useCutPreload = () => {};
 
 // ── 2D-аффинные матрицы [a b c d e f] (как SVG matrix)
 type M = [number, number, number, number, number, number];
