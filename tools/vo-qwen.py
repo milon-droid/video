@@ -27,6 +27,7 @@ ap = argparse.ArgumentParser(); ap.add_argument("lines"); ap.add_argument("-o", 
 ap.add_argument("--cands", type=int, default=1, help="дублей на реплику; лучший выбирается по замеру тона (вопрос — подъём к концу, король — низкий голос)")
 ap.add_argument("--lang", default="Russian", help="English и др.: без разметки ударений, клон — базовой моделью --base")
 ap.add_argument("--base", default=os.path.expanduser("~/models/base"))
+ap.add_argument("--direct", action="store_true", help="каждая реплика — сразу VoiceDesign по описанию роли + emo реплики (живее клона, для английского)")
 ap.add_argument("--vd", default=os.path.expanduser("~/models/vd")); ap.add_argument("--rus", default=os.path.expanduser("~/models/rus"))
 a = ap.parse_args()
 cfg = json.loads(Path(a.lines).read_text(encoding="utf-8")); roles, lines = cfg["roles"], cfg["lines"]
@@ -68,7 +69,7 @@ if need:  # голоса по описанию
         w, sr = vd.generate_voice_design(text=roles[r]["ref"], language=a.lang, instruct=roles[r]["instruct"])
         sf.write(REF_DIR / f"{r}.wav", w[0], sr); (REF_DIR / f"{r}.txt").write_text(roles[r]["ref"], encoding="utf-8"); print("голос", r, round(len(w[0]) / sr, 1), "с")
     del vd
-tts = Qwen3TTSModel.from_pretrained(a.rus if a.lang == "Russian" else a.base, device_map="cpu", dtype=torch.float32)
+tts = Qwen3TTSModel.from_pretrained(a.vd if a.direct else (a.rus if a.lang == "Russian" else a.base), device_map="cpu", dtype=torch.float32)
 prompts = {}
 def f0_track(y, sr):
     """высота тона по кадрам 40 мс (автокорреляция), 0 — нет голоса"""
@@ -99,10 +100,11 @@ out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
 dfile = out / "durations.json"; durs = json.loads(dfile.read_text()) if dfile.exists() else {}
 for ln in lines:
     r = ln["role"]
-    if r not in prompts: prompts[r] = tts.create_voice_clone_prompt(ref_audio=str(REF_DIR / f"{r}.wav"), ref_text=(REF_DIR / f"{r}.txt").read_text(encoding="utf-8"))
+    if r not in prompts and not a.direct: prompts[r] = tts.create_voice_clone_prompt(ref_audio=str(REF_DIR / f"{r}.wav"), ref_text=(REF_DIR / f"{r}.txt").read_text(encoding="utf-8"))
     best, best_s, info = None, -1e9, ""
     for k in range(max(1, a.cands)):
-        w, sr = tts.generate_voice_clone(text=mark(ln["text"]), language="Russian", voice_clone_prompt=prompts[r]) if a.lang == "Russian" else tts.generate_voice_clone(text=ln["text"], language=a.lang, voice_clone_prompt=prompts[r])
+        if a.direct: w, sr = tts.generate_voice_design(text=mark(ln["text"]), language=a.lang, instruct=(roles[r]["instruct"] + " " + ln.get("emo", "")).strip(), do_sample=True, temperature=.9)
+        else: w, sr = tts.generate_voice_clone(text=mark(ln["text"]), language="Russian", voice_clone_prompt=prompts[r]) if a.lang == "Russian" else tts.generate_voice_clone(text=ln["text"], language=a.lang, voice_clone_prompt=prompts[r])
         sc, inf = score(w[0], sr, ln, roles[r])
         if sc > best_s: best, best_s, info = w[0], sc, inf
     raw, wav = out / f"{ln['id']}.raw.wav", out / f"{ln['id']}.wav"; sf.write(raw, best, sr)
