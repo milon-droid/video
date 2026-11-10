@@ -92,6 +92,22 @@
 "align": "start"
 },
 {
+"t": 1.0,
+"type": "lib",
+"id": "zip-in-hard",
+"gain": 0.7,
+"rate": 1.3,
+"align": "sync"
+},
+{
+"t": 1.0,
+"type": "lib",
+"id": "swish-hard",
+"gain": 0.6,
+"rate": 1.1,
+"align": "sync"
+},
+{
 "t": 2.4,
 "type": "lib",
 "id": "whoosh-slow-soft",
@@ -397,15 +413,7 @@
 "gain": 0.25
 },
 {
-"t": 32.85,
-"type": "lib",
-"id": "whoosh-medium-hard",
-"gain": 0.5,
-"rate": 1,
-"align": "start"
-},
-{
-"t": 32.9,
+"t": 32.7,
 "type": "lib",
 "id": "bsb-snow-steps-quick",
 "gain": 0.4,
@@ -475,7 +483,7 @@
 "gain": 0.5
 },
 {
-"t": 40.35,
+"t": 40.62,
 "type": "lib",
 "id": "click-latch-firm",
 "gain": 0.8,
@@ -483,7 +491,7 @@
 "align": "sync"
 },
 {
-"t": 40.5,
+"t": 40.75,
 "type": "lib",
 "id": "bsb-door-creak-open",
 "gain": 0.7,
@@ -511,8 +519,13 @@
 "align": "start"
 },
 {
-"t": 48.8,
+"t": 48.45,
 "type": "brush",
+"gain": 0.3
+},
+{
+"t": 49.0,
+"type": "wah",
 "gain": 0.3
 },
 {
