@@ -95,7 +95,7 @@ def profile(id, c, data):
     num = np.stack([blur(pm[..., i]) for i in range(3)], -1); den = blur(keep * 255)[..., None] / 255.0
     rgb = num / np.maximum(den, 1e-3)
     hole = arm
-    body = im.copy(); body[hole, :3] = np.clip(rgb[hole] * 0.72, 0, 255).astype(np.uint8)
+    body = im.copy(); body[hole, :3] = np.clip(rgb[hole] * 0.9, 0, 255).astype(np.uint8)
     parts, piv = {}, {}
     parts['head'] = save(im, yy < neck + 22, f'{OUT}/{id}/head.png')
     e = c['E'][1]

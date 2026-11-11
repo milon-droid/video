@@ -12,9 +12,9 @@ export type FigId = 'alik' | 'beka' | 'dias' | 'alikP' | 'bekaP' | 'diasP';
 
 // лицо (пиксели исходника): глаза [x, y, rx, ry], рот [x, y, полуширина], брови, кожа
 const FACE: Record<string, { eyes: number[][]; m: number[]; br?: number[][]; skin: string; brow: string; lip: string }> = {
-  alik: { eyes: [[406, 221, 22, 11], [485, 221, 22, 11]], m: [444, 304, 26], br: [[402, 196], [488, 196]], skin: '#e2a07a', brow: '#2a1a12', lip: '#8a4a3a' },
-  beka: { eyes: [[386, 274, 21, 10], [474, 274, 21, 10]], m: [420, 355, 26], br: [[384, 250], [476, 250]], skin: '#cf9068', brow: '#1a1210', lip: '#7a4434' },
-  dias: { eyes: [[447, 267, 18, 9], [537, 267, 18, 9]], m: [496, 330, 24], skin: '#e3ad8b', brow: '#1a1414', lip: '#a05a4e' },
+  alik: { eyes: [[403, 221, 22, 11], [489, 221, 22, 11]], m: [445, 301, 26], br: [[401, 194], [494, 194]], skin: '#e2a07a', brow: '#2a1a12', lip: '#8a4a3a' },
+  beka: { eyes: [[395, 277, 21, 10], [483, 277, 21, 10]], m: [442, 357, 26], br: [[400, 252], [487, 252]], skin: '#cf9068', brow: '#1a1210', lip: '#7a4434' },
+  dias: { eyes: [[474, 264, 19, 9], [550, 264, 19, 9]], m: [512, 334, 25], skin: '#e3ad8b', brow: '#1a1414', lip: '#a05a4e' },
 };
 // профиль (смотрит влево): глаз и рот
 const PFACE: Record<string, { eye: number[]; m: number[]; skin: string }> = {
@@ -44,6 +44,7 @@ export type FigProps = {
   opacity?: number; shadow?: number;
   phoneMid?: boolean; // телефон двумя руками перед грудью (одна держит, большой палец другой листает)
   thumb?: number;     // 0…1 — прокрутка большим пальцем
+  only?: 'body' | 'arms'; // слой: корпус с головой или только руки с предметами (доска между ними)
 };
 const REST: Arm = { u: 0, f: 0 };
 
@@ -53,7 +54,7 @@ export const figKin = (p: FigProps) => {
   const lean = p.lean ?? 0;
   const base: M = mul(rot(lean, d.cx, d.foot), tr(0, (p.bob ?? 0)));
   const torso: M = mul(base, scl(1, 1 + br * .0025, d.cx, d.foot));
-  const hn = (p.head ?? 0) + noise(p.id + 'h', t, .35) * 1.6;
+  const hn = (p.head ?? 0) + (p.look ?? 0) * 3 + noise(p.id + 'h', t, .35) * 1.6;
   const head: M = mul(mul(torso, tr(0, br * .8 + (p.nod ?? 0))), rot(hn, P.neck[0], P.neck[1]));
   const arm = (sd: 'L' | 'R') => {
     const a = (sd === 'L' ? p.L : p.R) ?? REST, sg = sd === 'L' ? -1 : 1;
@@ -108,12 +109,11 @@ export const Fig: React.FC<FigProps> = (p) => {
     const face = talk > .02 || o > .02 || worry > .02 || (p.smile ?? 0) > .02;
     const [mx, my, mw] = F.m;
     const look = (p.look ?? 0) * 6;
+    const B = p.only !== 'arms', A = p.only !== 'body';
     body = (<>
-      {img(p.id, 'torso', torso)}
-      <g transform={ms(head)}>
+      {B && img(p.id, 'torso', torso)}
+      {B && <g transform={ms(head)}>
         {img(p.id, 'head')}
-        {/* взгляд в сторону: зрачок смещается (кружок цвета радужки поверх) */}
-        {Math.abs(look) > .5 && F.eyes.map((e, i) => <g key={'lk' + i}><ellipse cx={e[0]} cy={e[1]} rx={e[2] * .5} ry={e[3] * .95} fill="#f4efe8" /><circle cx={e[0] + look} cy={e[1]} r={e[3] * .95} fill="#3b2418" /><circle cx={e[0] + look - 2} cy={e[1] - 3} r={2.4} fill="#fff" /></g>)}
         {/* веки */}
         {lid > .02 && F.eyes.map((e, i) => <rect key={i} x={e[0] - e[2] * 1.2} y={e[1] - e[3] * 1.5} width={e[2] * 2.4} height={e[3] * 3 * lid} rx={e[3]} fill={F.skin} />)}
         {lid > .5 && F.eyes.map((e, i) => <path key={'l' + i} d={`M${e[0] - e[2]},${e[1] - e[3] * 1.5 + e[3] * 3 * lid} q${e[2]},${4} ${e[2] * 2},0`} stroke={F.brow} strokeWidth={3} fill="none" opacity={.7} />)}
@@ -126,9 +126,9 @@ export const Fig: React.FC<FigProps> = (p) => {
           {o > .02 || talk > .02
             ? <ellipse cx={mx} cy={my + 3} rx={mw * (o > talk ? .42 : .62 + talk * .1)} ry={Math.max(3, mw * (o > talk ? .55 * o : .38 * talk))} fill="#4a1f1c" stroke={F.lip} strokeWidth={3} />
             : <path d={`M${mx - mw * .7},${my} Q${mx},${my + (p.smile ?? 0) * 12 - worry * 7} ${mx + mw * .7},${my}`} stroke={F.lip} strokeWidth={5} strokeLinecap="round" fill="none" />}</>}
-      </g>
+      </g>}
       {/* руки поверх корпуса: плечо, затем предплечье с кистью */}
-      {img(p.id, 'uaL', aL.u)}{img(p.id, 'faL', aL.f)}
+      {A && <>{img(p.id, 'uaL', aL.u)}{img(p.id, 'faL', aL.f)}
       <Prop kind={p.holdL ?? null} at={aL.hand} ang={aL.ang} screen={scr} side="L" />
       {img(p.id, 'uaR', aR.u)}
       {p.holdR === 'phoneEar' && <Prop kind="phoneEar" at={aR.hand} ang={aR.ang} screen={scr} side="R" />}
@@ -143,7 +143,7 @@ export const Fig: React.FC<FigProps> = (p) => {
           <path d="M-46,-10 q-14,6 -10,34 q4,16 14,12 z M-46,30 q-12,6 -8,28 q4,12 12,8 z" fill="#c98d66" stroke="#a8714e" strokeWidth={2} />
           <path d="M46,0 q14,6 10,34 q-4,16 -14,12 z M46,40 q12,6 8,26 q-4,12 -12,8 z" fill="#c98d66" stroke="#a8714e" strokeWidth={2} />
           <path d={`M44,${70 - th * 40} q-26,-8 -34,-34 q-2,-10 8,-10 q20,10 34,22 z`} fill="#d29a72" stroke="#a8714e" strokeWidth={2} />
-        </g>; })()}
+        </g>; })()}</>}
     </>);
   } else if (d.view === 'profile') {
     // сидящий профиль: бедро поворачивается вперёд (влево) на 90°, голень висит от колена
@@ -181,7 +181,7 @@ export const Fig: React.FC<FigProps> = (p) => {
       {ph && <radialGradient id={`${fid}lg`} gradientUnits="userSpaceOnUse" cx={ph[0]} cy={ph[1] - 120} r={520}><stop offset="0" stopColor="#fff" /><stop offset=".45" stopColor="#fff" stopOpacity=".55" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></radialGradient>}
       {ph && <mask id={`${fid}mk`} maskUnits="userSpaceOnUse" x={-2000} y={-2000} width={6000} height={6000}><rect x={-2000} y={-2000} width={6000} height={6000} fill={`url(#${fid}lg)`} /></mask>}
     </defs>
-    {(p.shadow ?? .25) > 0 && !(p.sit) && <ellipse cx={d.cx} cy={d.foot - 6} rx={d.W * .3} ry={34} fill="#000" opacity={p.shadow ?? .25} />}
+    {(p.shadow ?? .25) > 0 && !(p.sit) && p.only !== 'arms' && <ellipse cx={d.cx} cy={d.foot - 6} rx={d.W * .3} ry={34} fill="#000" opacity={p.shadow ?? .25} />}
     <g filter={dark > .01 ? `url(#${fid}dk)` : undefined}>{body}</g>
     {dark > .01 && ph && scr > 0 && <g mask={`url(#${fid}mk)`} opacity={dark * .85 * scr} style={{ mixBlendMode: 'screen' }}><g filter={`url(#${fid}cool)`}>{body}</g></g>}
     <defs><filter id={`${fid}cool`}><feColorMatrix type="matrix" values=".55 0 0 0 0  0 .62 0 0 .02  0 0 .8 0 .08  0 0 0 1 0" /></filter></defs>

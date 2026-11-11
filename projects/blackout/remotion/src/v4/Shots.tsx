@@ -30,7 +30,7 @@ const ironArms = (t: number, on = 1) => { const st = Math.sin(t * 5.2) * on; ret
 const DiasIron: React.FC<{ t: number; on?: number; dark?: number; p?: Partial<FigProps> }> = ({ t, on = 1, dark = 0, p = {} }) => {
   const fp: FigProps = { id: 'dias', ...ROOM.dias, t, ...ironArms(t, on), holdR: 'iron', dark, ...p } as FigProps;
   const h = handAt(fp, 'R');
-  return <g><Fig {...fp} holdR={null} R={undefined} L={undefined} opacity={0} /><Board cx={ROOM.dias.x - 40} top={h[1] + 54} w={430} dark={dark} /><Fig {...fp} /></g>;
+  return <g><Fig {...fp} only="body" /><Board cx={ROOM.dias.x - 30} top={h[1] + 86 * fp.s} w={400} dark={dark} /><Fig {...fp} only="arms" /></g>;
 };
 const phoneArms = (t: number) => ({ L: { u: 12, f: 118, ff: .62 }, R: { u: 12, f: 118 + Math.sin(t * 2) * 2, ff: .62 }, phoneMid: true, thumb: (t * 1.3) % 1 });
 const Room: React.FC<{ t: number; dark?: number; children?: React.ReactNode; front?: React.ReactNode; tv?: React.ReactNode }> = ({ t, dark = 0, children, front, tv }) => (<g>
@@ -96,7 +96,7 @@ export const Split: React.FC<S> = ({ t }) => (<Frame bgc="#0B1020">
 // ───────── 5. Алихан учится: рабочий уголок, пишет в тетради, смотрит на монитор ─────────
 const STUDY = { x: 545, y: 1556, s: .532 };
 const StudyAlik: React.FC<{ t: number }> = ({ t }) => { const w = Math.sin(t * 9) * 3;
-  return <Fig id="alikP" {...STUDY} t={t} sit={1} R={{ u: 84 + w * .5, f: 14 + w }} head={t % 4 < 2 ? 14 : 6} mouth={mouthOf(t, 'a01') * .9} />; };
+  return <Fig id="alikP" {...STUDY} t={t} sit={1} R={{ u: 45 + w * .4, f: 65 + w }} head={t % 4 < 2 ? 14 : 6} mouth={mouthOf(t, 'a01') * .9} />; };
 export const Study: React.FC<S> = ({ t }) => (<Frame><Cam z={push(t, 10.3, 14, 1.12, 1.22)} fx={500} fy={1180}>
   <BG n="study-cozy-room.jpg" />
   <ellipse cx={sp(390, 720)[0]} cy={sp(390, 720)[1]} rx={260} ry={200} fill="url(#warmGlow)" opacity={.5 * flick(t, 'deskl', .05)} />
@@ -113,7 +113,7 @@ export const IronShot: React.FC<S> = ({ t }) => (<Frame><Cam z={push(t, 14, 16, 
 </Cam></Frame>);
 const DiasClose: React.FC<{ t: number; p: Partial<FigProps>; z?: number; dark?: number; ear?: boolean }> = ({ t, p, z = 3.1, dark = 0, ear }) => (<Frame>
   <Cam z={z} fx={ROOM.dias.x} fy={ear ? 640 : 610} dx={noise('dc', t, .4) * 6}>
-    <Room t={t} dark={dark}><Fig id="dias" {...ROOM.dias} t={t} dark={dark} {...(ear ? { R: { u: -35, f: 189, fu: .55, ff: 1 }, holdR: 'phoneEar' as const } : { ...phoneArms(t) })} {...p} /></Room>
+    <Room t={t} dark={dark}><Fig id="dias" {...ROOM.dias} t={t} dark={dark} {...(ear ? { R: { u: -50, f: 203, fu: .5, ff: .95 }, holdR: 'phoneEar' as const } : { ...phoneArms(t) })} {...p} /></Room>
   </Cam></Frame>);
 export const DiasFaceSmile: React.FC<S> = ({ t }) => <DiasClose t={t} p={{ smile: .7, look: 0, head: 2 }} />;
 export const DiasFaceTyping: React.FC<S> = ({ t }) => <DiasClose t={t} p={{ worry: clamp((t - 35) / .6), head: -2 }} />;
@@ -192,7 +192,7 @@ const Watchers: React.FC<{ t: number; remote?: number; dark?: number; worry?: nu
   <Fig id="bekaP" {...ROOM.beka} t={t} head={-12} dark={dark} />
 </>);
 export const TvOn: React.FC<S> = ({ t }) => { const rm = ease(t, 44.05, 44.35) * (1 - ease(t, 45.3, 45.7));
-  return (<Frame><Cam z={push(t, 44, 46, 1.12, 1.35)} fx={380} fy={700}><Room t={t} tv={<ScreenIn t={t} kind={t > tvOn ? 'anchor' : 'off'} />}><Watchers t={t} remote={rm} /></Room></Cam></Frame>); };
+  return (<Frame><Cam z={push(t, 44, 46, 1.12, 1.3)} fx={420} fy={640}><Room t={t} tv={<ScreenIn t={t} kind={t > tvOn ? 'anchor' : 'off'} />}><Watchers t={t} remote={rm} /></Room></Cam></Frame>); };
 export const Watch: React.FC<S> = ({ t }) => (<Frame><Cam z={push(t, 57.2, 58.1, 1.3, 1.38)} fx={560} fy={760}><Room t={t} tv={<ScreenIn t={t} kind="anchor" />}><Watchers t={t} worry={1} /></Room>
   <rect x={0} y={0} width={1080} height={1920} fill="#2a3a7a" opacity={.12 + .05 * Math.sin(t * 7)} style={{ mixBlendMode: 'multiply' }} /></Cam></Frame>);
 // 21. экран просто гаснет до чёрного (современный ТВ, без точки кинескопа)
@@ -206,8 +206,8 @@ const Broadcast: React.FC<{ t: number; children: React.ReactNode; region?: strin
   <svg x={0} y={SCR.y} width={1080} height={SCR.h} viewBox={`0 0 1080 ${SCR.h}`} overflow="hidden">{children}
     {bar && <g><rect x={0} y={SCR.h - 150} width={1080} height={86} fill={C.danger} /><text x={40} y={SCR.h - 92} fontFamily={FONT} fontWeight={900} fontSize={48} fill="#fff">ЭКСТРЕННЫЙ ВЫПУСК</text>
       <rect x={830} y={SCR.h - 140} width={200} height={66} rx={8} fill="#fff" /><text x={930} y={SCR.h - 94} textAnchor="middle" fontFamily={MONO} fontWeight={800} fontSize={40} fill={C.danger}>{Math.floor(t * 1.5) % 2 ? '● LIVE' : '  LIVE'}</text></g>}
-    {region && <g opacity={fadeK(t, regionAt, .15)}><rect x={176} y={40} width={region.length * 40 + 60} height={92} rx={10} fill="#0B1020" opacity={.85} /><text x={206} y={104} fontFamily={FONT} fontWeight={900} fontSize={58} fill="#F4F1EA">{region}</text></g>}
-    {witness && <g><rect x={176} y={146} width={330} height={52} rx={8} fill={C.danger} opacity={.9} /><text x={194} y={183} fontFamily={FONT} fontWeight={800} fontSize={32} fill="#fff">ВИДЕО ОЧЕВИДЦЕВ</text></g>}
+    {region && <g opacity={fadeK(t, regionAt, .15)}><rect x={176} y={230} width={region.length * 40 + 60} height={92} rx={10} fill="#0B1020" opacity={.85} /><text x={206} y={294} fontFamily={FONT} fontWeight={900} fontSize={58} fill="#F4F1EA">{region}</text></g>}
+    {witness && <g><rect x={176} y={336} width={330} height={52} rx={8} fill={C.danger} opacity={.9} /><text x={194} y={373} fontFamily={FONT} fontWeight={800} fontSize={32} fill="#fff">ВИДЕО ОЧЕВИДЦЕВ</text></g>}
   </svg>
   {/* блик стекла */}
   <path d={`M0,${SCR.y} L420,${SCR.y} L0,${SCR.y + 520} Z`} fill="#fff" opacity={.03} />
@@ -240,9 +240,9 @@ const Footage: React.FC<{ t: number; n: string; region: string; t0: number; cars
       <rect x={x0} y={0} width={fw} height={fh} fill="#000" opacity={.06 * (1 - flick(t, n, .9))} />
     </g></g>
   </Broadcast>); };
-export const FootRussia: React.FC<S> = ({ t }) => <Footage t={t} n="tv-russia.jpg" region="РОССИЯ" t0={48.35} cars={[{ a: [380, 905], b: [1180, 840], t0: 48.2, dur: 2.2, s: .55 }]} />;
-export const FootEurope: React.FC<S> = ({ t }) => <Footage t={t} n="tv-eastern-europe.jpg" region="ВОСТОЧНАЯ ЕВРОПА" t0={49.7} cars={[{ a: [1200, 1290], b: [520, 1190], t0: 49.3, dur: 2.6, s: .7 }]} />;
-export const FootJapan: React.FC<S> = ({ t }) => <Footage t={t} n="tv-japan.jpg" region="ЯПОНИЯ" t0={50.9} cars={[{ a: [860, 640], b: [520, 760], t0: 50.4, dur: 3.2, s: .45 }]} />;
+export const FootRussia: React.FC<S> = ({ t }) => <Footage t={t} n="tv-russia.jpg" region="РОССИЯ" t0={47.6} cars={[{ a: [380, 905], b: [1180, 840], t0: 48.2, dur: 2.2, s: .55 }]} />;
+export const FootEurope: React.FC<S> = ({ t }) => <Footage t={t} n="tv-eastern-europe.jpg" region="ВОСТОЧНАЯ ЕВРОПА" t0={48.93} cars={[{ a: [1200, 1290], b: [520, 1190], t0: 49.3, dur: 2.6, s: .7 }]} />;
+export const FootJapan: React.FC<S> = ({ t }) => <Footage t={t} n="tv-japan.jpg" region="ЯПОНИЯ" t0={50.93} cars={[{ a: [860, 640], b: [520, 760], t0: 50.4, dur: 3.2, s: .45 }]} />;
 
 // карта: реальная география, подсветка регионов по порядку реплик; камера плавно ведёт к нужному месту
 const MAPS = 1.25 * 1340 / 1350; // масштаб карты 1920×1080 под высоту экрана
