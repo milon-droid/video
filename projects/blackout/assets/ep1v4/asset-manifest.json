@@ -1,0 +1,422 @@
+{
+  "source_video": "ep1-draft-720-baibol.mp4",
+  "duration_seconds": 83.8,
+  "video_size": [
+    720,
+    1280
+  ],
+  "fps": 30,
+  "canonical_character_views": 8,
+  "landmark_pairs": 6,
+  "additional_reaction_frames": 1,
+  "png_assets": 11,
+  "svg_assets": 1,
+  "images": [
+    {
+      "file": "assets/arbat-blackout.jpg",
+      "width": 992,
+      "height": 1586,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "23a202c26bc494aec346d996baf25639d8491043e137fab71c2d2b2bb4236728",
+      "original_file": "assets/arbat-blackout.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/arbat-lit.jpg",
+      "width": 992,
+      "height": 1586,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "1185fcf90d6ac1e236963961cfcfbd5ad73eb8248d888938eb325ada31a76d20",
+      "original_file": "assets/arbat-lit.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/ascension-cathedral-blackout.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "9fc75a3d0d6987dc0103cc8a1736cd8fe8adfff17e0c33b0c357975573de4ed2",
+      "original_file": "assets/ascension-cathedral-blackout.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/ascension-cathedral-lit.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "df66969b265a98faed6d5330bb104bf8aa161c59c8970d88d171b802cbb7d821",
+      "original_file": "assets/ascension-cathedral-lit.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/blue-front-v3.png",
+      "width": 887,
+      "height": 1774,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "sha256": "454c96860aa15650088afd92ff34d4373bb0a9b35aca581a6338c65bfe907d9a",
+      "original_file": "assets/blue-front-v3.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/blue-profile-v3.png",
+      "width": 887,
+      "height": 1774,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "sha256": "4b2a61f110020ad09c9e2d574e523e96933a98d021994b2cf2fef6b92aced292",
+      "original_file": "assets/blue-profile-v3.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/city-blackout.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "9b71414a2734a80b4834cc6b045344d9324500b0ddba61f30b0d1f8da1861082",
+      "original_file": "assets/city-blackout.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/city-lit.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "fe80e0cdf83b1724511209fbfccb9a408165cab260b40565c751b3d1f1f0cf3e",
+      "original_file": "assets/city-lit.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/civilians-concerned.png",
+      "width": 1536,
+      "height": 1024,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "005a0f5aac55e451230206d545b4c28d3e4336c042243fbcaa37da74ccd682c6",
+      "original_file": "assets/civilians-concerned.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/dias-robe-front-v3.png",
+      "width": 1024,
+      "height": 1536,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "baec4919613e7af1edc4759f9323414fb6d5278fe64f36aa2e0121d47ac8e076",
+      "original_file": "assets/dias-robe-front-v3.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/dias-robe-profile-v3.png",
+      "width": 1024,
+      "height": 1536,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "eae16924804e555dd77955bd9ca9b51640d4d249fab8f57ed258b733ed82fdc9",
+      "original_file": "assets/dias-robe-profile-v3.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/dias-shirt-front-v3.png",
+      "width": 1024,
+      "height": 1536,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "3e4c21942dc4f5b0b40e80a80abd8cd728fccb34d01e00ac17e9b473b0357a24",
+      "original_file": "assets/dias-shirt-front-v3.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/dias-shirt-profile-v3.png",
+      "width": 1024,
+      "height": 1536,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "b4832c2a81dc096ac7c885c722f72ae5e31a59a383304f306aa64206f98e3dbd",
+      "original_file": "assets/dias-shirt-profile-v3.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/door-flashlight.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "c067d4797093cce3af14754e4ad66c0d56bfe065bfd5f2140c2662ec8475ca61",
+      "original_file": "assets/door-flashlight.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/eurasia-map.png",
+      "width": 1920,
+      "height": 1080,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "71e9ef892a31608c38b390af84ebdb5789fc37c36dcf1db555312aaec6799233",
+      "original_file": "assets/eurasia-map.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/fighter-jet.png",
+      "width": 1536,
+      "height": 1024,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        254
+      ],
+      "sha256": "41b3fe81ed2f1d5d7e48e3fe86fd62948523f6c03d9c80aab9059f3f1e50bee3",
+      "original_file": "assets/fighter-jet.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/historic-street.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "7c30e7a2ed389e565a16c134719a1e73b8d9c73194129eaa71a77f77a2aca338",
+      "original_file": "assets/historic-street.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/hotel-kazakhstan-blackout.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "33b6f646d1514294b3a63ec27035bea92c4645b4e4770e767ecaddb139d33828",
+      "original_file": "assets/hotel-kazakhstan-blackout.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/hotel-kazakhstan-lit.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "7d9323a1db578c6e23fb679775173225d0c732dd46b4ae73edc49174ad57f75a",
+      "original_file": "assets/hotel-kazakhstan-lit.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/kbtu-blackout.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "39aac16387dde7ea13526e2da9fa2b34f88e4b4f0f75a3cf0bc7699fcbf852a9",
+      "original_file": "assets/kbtu-blackout.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/kbtu-lit.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "24cdd33334737ef1a55452cdb026ef0f5156dbb3b23101a176d9a415d5af5e1c",
+      "original_file": "assets/kbtu-lit.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/koktobe-cableway-blackout-v2.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "0dac771e76571f5be19a9f048b09c66b815d268256a0d54d0bb76b98dc6b9d64",
+      "original_file": "assets/koktobe-cableway-blackout-v2.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/koktobe-cableway-lit-v2.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "a831a754dbd2a6d32c0a3bd6db18a34da161d354bbcba03bb52e1781a9a552c2",
+      "original_file": "assets/koktobe-cableway-lit-v2.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/koktobe-cableway-reaction-v2.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "3d377dd7552a892fdfbdde14c7073db0dac3990d5cdc794ae17722f32e5c6a4c",
+      "original_file": "assets/koktobe-cableway-reaction-v2.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/koktobe-tower-blackout.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "c80f12209487d00e4eb40d102a67e5e6eb2314cd76b0633734d05cf56cb4df29",
+      "original_file": "assets/koktobe-tower-blackout.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/koktobe-tower-lit.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "82851cd31122bb6b4124a794174cc99b1278e59a9b470ddb0cbc074b63a6adb8",
+      "original_file": "assets/koktobe-tower-lit.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/room-blackout-v3.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "ab0683fa0d6b8b4b80af24f6c431174e83c1a246258affc7f1c8300d0d8e3b81",
+      "original_file": "assets/room-blackout-v3.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/room-lit-v3.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "71c794cdc9dce94d66b6ba93aad777cadfe9f061fb552c3b8ad87cc587084b8c",
+      "original_file": "assets/room-lit-v3.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/student-front-v3.png",
+      "width": 887,
+      "height": 1774,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "sha256": "c07a15ed350161fdb67bcb69def6da60999ace9f7bcfc4809b8e3e0a5e861a0c",
+      "original_file": "assets/student-front-v3.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/student-profile-v3.png",
+      "width": 887,
+      "height": 1774,
+      "transparent": true,
+      "alpha_range": [
+        0,
+        255
+      ],
+      "sha256": "d3897d635cce0377f9e01aba27c8bb1fdd9283e721a6fff51fef14951ccb1566",
+      "original_file": "assets/student-profile-v3.png",
+      "encoding": "original PNG"
+    },
+    {
+      "file": "assets/study-cozy-room.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "37a6f0ca39e802c731f534a3950793f84410a282ca499e61b07f6f9cc0cd3c9e",
+      "original_file": "assets/study-cozy-room.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/tv-anchor.jpg",
+      "width": 1672,
+      "height": 941,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "b6ce30ff495f6952cf09893b377446fc97b8782106bc089141e29a7a78d9622a",
+      "original_file": "assets/tv-anchor.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/tv-eastern-europe.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "d7321a1e386590b0f06ea15d2118ad617321f1bbd4ea9f2a0141ab77ec6b60e0",
+      "original_file": "assets/tv-eastern-europe.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/tv-japan.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "bc27b3bfcdcc5acd61fc1cea2fe8db6d13e3f4623caff8790142a1fe4cb96b69",
+      "original_file": "assets/tv-japan.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/tv-russia.jpg",
+      "width": 941,
+      "height": 1672,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "a8c13d10e131191a28f561a20c1a86d7d09ceb50d33b2ef8149f3ba551883a73",
+      "original_file": "assets/tv-russia.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/tv-substation-aftermath.jpg",
+      "width": 1672,
+      "height": 941,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "95c1a7880614fb6886984724b1b05cd5b3d2365ac72451dd70b218bff74c7526",
+      "original_file": "assets/tv-substation-aftermath.png",
+      "encoding": "JPEG quality 95, no resize"
+    },
+    {
+      "file": "assets/tv-substation-strike.jpg",
+      "width": 1672,
+      "height": 941,
+      "transparent": false,
+      "alpha_range": null,
+      "sha256": "3f2a10d2294f7792c4ffd18ea4527e8806a567d583bffeb8225b66378ec06cec",
+      "original_file": "assets/tv-substation-strike.png",
+      "encoding": "JPEG quality 95, no resize"
+    }
+  ],
+  "tv_report_frames": 6,
+  "additional_study_backgrounds": 1,
+  "jpeg_assets": 26,
+  "raster_assets": 37,
+  "delivery": "compact, under 30,000,000 bytes",
+  "excluded": "source screenshots, reference photographs, duplicate documents"
+}

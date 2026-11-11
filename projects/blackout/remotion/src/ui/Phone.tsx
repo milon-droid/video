@@ -24,7 +24,7 @@ const Bubble: React.FC<Msg> = ({ text, mine, accent, ticks = 0, clock, icon, k =
   {clock && <svg width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="13" stroke="rgba(244,241,234,.75)" strokeWidth="3.5" fill="none" /><path d="M17,17 L17,9 M17,17 L23,20" stroke="rgba(244,241,234,.75)" strokeWidth="3.5" strokeLinecap="round" /></svg>}</div>);
 
 // телефон в руке: экран крупно, ниже табло (верх y 450), пальцы по левому краю, большой палец справа
-export const PhoneBig: React.FC<{ t: number; lost?: boolean; time: string; header?: { name: string; sub: string; avatar?: 'aruzhan' | 'news' }; children: React.ReactNode; thumbAt?: number[]; thumbXY?: [number, number] }> = ({ t, lost = false, time, header, children, thumbAt = [], thumbXY = [780, 1200] }) => {
+export const PhoneBig: React.FC<{ t: number; lost?: boolean; time: string; header?: { name: string; sub: string; avatar?: 'aruzhan' | 'news' }; children: React.ReactNode; thumbAt?: number[]; thumbXY?: [number, number]; noHand?: boolean }> = ({ t, lost = false, time, header, children, thumbAt = [], noHand = false, thumbXY = [780, 1200] }) => {
   const tap = Math.max(0, ...thumbAt.map(tp => Math.sin(clamp((t - tp + .15) / .3) * Math.PI)));
   return (<AbsoluteFill>
     <div style={{ position: 'absolute', left: 172, top: 432, width: 736, height: 1380, borderRadius: 74, background: '#0d0f16', boxShadow: '0 30px 80px rgba(0,0,0,.55)' }} />
@@ -34,11 +34,11 @@ export const PhoneBig: React.FC<{ t: number; lost?: boolean; time: string; heade
         {header.avatar === 'news' ? <div style={{ width: 92, height: 92, borderRadius: 46, background: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: FONT, fontWeight: 900, fontSize: 40, color: '#fff' }}>A</div> : <AruzhanAvatar size={92} />}
         <div style={{ overflow: 'hidden' }}><div style={{ fontFamily: FONT, fontWeight: 900, fontSize: 46, color: C.text, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{header.name}</div><div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 30, color: header.sub.startsWith('Conn') ? '#9DB8E8' : '#7FD0A0' }}>{header.sub}</div></div></div>}
       <div style={{ flex: 1, position: 'relative' }}>{children}</div></div>
-    <svg viewBox="0 0 1080 1920" width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
+    {!noHand && <svg viewBox="0 0 1080 1920" width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
       {[0, 1, 2, 3].map(i => <g key={i}><rect x={120} y={1000 + i * 92} width={112} height={82} rx={40} fill="#E3AC84" /><path d={`M150,${1004 + i * 92} L150,${1078 + i * 92}`} stroke="#C68863" strokeWidth={3} opacity={.6} /></g>)}
       <g transform={`translate(${880 + (thumbXY[0] - 860) * tap},${1340 + (thumbXY[1] - 1320) * tap}) rotate(-40)`}><rect x={-46} y={-96} width={92} height={240} rx={46} fill="#E3AC84" /><rect x={-30} y={-90} width={60} height={52} rx={24} fill="#F0C8A8" /></g>
       {thumbAt.map(tp => { const r = win(t, tp, tp + .35); return r > 0 && r < 1 ? <circle key={tp} cx={thumbXY[0]} cy={thumbXY[1]} r={20 + r * 70} stroke="rgba(207,227,255,1)" strokeOpacity={1 - r} strokeWidth={5} fill="none" /> : null; })}
-    </svg></AbsoluteFill>); };
+    </svg>}</AbsoluteFill>); };
 export const ChatList: React.FC<{ msgs: Msg[]; input?: string; failAt?: number; t: number }> = ({ msgs, input, failAt, t }) => (<div style={{ display: 'flex', flexDirection: 'column', gap: 22, padding: '36px 30px' }}>
   {msgs.map((m, i) => <Bubble key={i} {...m} />)}
   {failAt !== undefined && t > failAt && <div style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: 14, fontFamily: FONT, fontWeight: 900, fontSize: 48, color: C.danger, opacity: out(win(t, failAt, failAt + .25)) }}>Не доставлено <span style={{ width: 44, height: 44, borderRadius: 22, background: C.danger, color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 34 }}>!</span></div>}
