@@ -60,6 +60,7 @@
 | prime-skills/runcomfy-agent-skills (★61), gencraft-labs/skills (★0) | генерация через платные API, мало звёзд |
 | affaan-m/ECC video-editing | опирается на платные ElevenLabs, fal.ai, Descript |
 | скрипт-скиллы (iart-ai, mebusw, aaron-he-zhu, social-media-skills) | мало звёзд/установок; наш агент scriptwriter закрывает задачу |
+| Anil-matcha/Open-Higgsfield-AI = Open-Generative-AI (MIT, проверено 2026-11-15) | один и тот же проект (переименован): веб/десктоп-приложение-оболочка над платным MuAPI (600+ моделей), скиллов внутри нет; `SamurAIGPT/muapi-skills` — тоже под платный MuAPI. Локальный режим — только с GPU (Wan2GP), у нас нет |
 | tiktok-scraper, tiktok-api | платные API сбора данных, не про производство |
 
 ## Правила добавления нового
@@ -93,3 +94,12 @@
 | Remotion 4.0.541 (`npx create-video --blank`, npm) | remotion.dev | бесплатно для частных лиц и команд ≤ 3; компаниям больше — платная | телеметрия выключена (`REMOTION_TELEMETRY=0`), браузер — наш Chromium headless shell, без облака | ТЗ заказчика требуют Remotion-проект; рендер быстрее |
 - Сравнение на «Блэкауте» с.1 (83,8 с, 2514 кадров, 720p): `tools/render.mjs` — 272 с, Remotion (`--concurrency=4`) — 106 с. Кадры совпадают (средняя разница 2/255 — шум сжатия).
 - Подводные камни: `--scale 0.6667` даёт высоту 1280.0000000064 → ошибка; делать отдельную композицию 720×1280, canvas внутри всегда 1080×1920. Скачивание своего Chrome Remotion не нужно — `--browser-executable` на `/opt/pw-browsers/.../chrome-headless-shell`.
+
+## 2026-11-15 — русский голос: ESpeech-TTS-1
+Источник выбора: независимый тест 21 русского движка github.com/meshoklv/ru-speech-bench (сент. 2026).
+ESpeech-TTS-1 RL-V2 и podcaster (HF `ESpeech/*`, Apache-2.0 заявлена; база F5-TTS MIT, вокодер vocos MIT) — 6/6 фраз без ошибок,
+автоударения RUAccent, близкий клон. Оговорка теста: базовый чекпойнт не указан (исходные веса F5 — CC-BY-NC) — для личного
+блога ок. Инструмент `tools/vo-espeech.py`, окружение `~/.venvs/espeech` (нужен `transformers<5`, иначе RUAccent падает).
+Образцы живых голосов — `assets/voices/ru-ref/` (LibriVox, общественное достояние, см. SOURCES.md).
+Отклонены для русского: XTTS-v2, F5-TTS-Russian (hotstone228), Fish open weights, Piper ruslan — некоммерческие лицензии;
+IndexTTS-2 — нет русского; Chatterbox — на CPU в 20 раз медленнее реального времени, цифры путает; Qwen3 рус — «робот» (отзыв).
