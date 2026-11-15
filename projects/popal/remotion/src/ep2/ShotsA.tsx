@@ -6,8 +6,8 @@ import MOUTH1 from '../data/mouth.json';
 import { VO, SHOT, WORD_AT, VO_AT, CARD } from './timeline.mjs';
 import { clamp, lerp, out, io, spr, win, shake, noise } from '../anim';
 import { C, FONT } from '../theme';
-import { Person, POSES, blendPose, Face } from '../chars/Person';
-import { Imp, NetTrap, Cage } from '../chars/Cast2';
+import { Person, POSES, blendPose, Face, Pan } from '../chars/Person';
+import { Imp, NetTrap, Cage, Pic } from '../chars/Cast2';
 import { ElfForest, ImpCamp, Cauldron } from '../bg/Bg2';
 import { Glow, Motes } from '../bg/Bg';
 import { Frame, Cam, InfoStand, Tag, Onomato } from '../ui/Ui';
@@ -38,10 +38,11 @@ const Hearts: React.FC<{ t: number; x: number; y: number; n?: number; k?: number
   return <path key={i} transform={`translate(${x + Math.sin(i * 2.3 + t * 2) * 90},${y - q * 260}) scale(${.6 + q * .6})`} d="M0,12 C-30,-10 -24,-34 0,-22 C24,-34 30,-10 0,12 Z" fill="#ff4a8a" opacity={1 - q} />; })}</g>;
 
 // ───────────── 1. Хук: Макс входит в лес эльфиек, в мечтах — три эльфийки ─────────────
-export const Hook: React.FC<P> = ({ t, T }) => { const walk = clamp(t / 2.2), x = lerp(150, 430, io(walk)), ph = (x - 150) / 110 * Math.PI, moving = t < 2.2;
+export const Hook: React.FC<P> = ({ t, T }) => { const walk = clamp(t / 2.2), x = lerp(-40, 430, walk < .8 ? walk * 1.06 : lerp(.848, 1, out((walk - .8) / .2))), ph = (x + 40) / 190 * Math.PI, moving = t < 2.2, w0 = walkPose(ph);
+  const step = { ...w0, legL: [w0.legL[0] * .62, w0.legL[1] * .8] as [number, number], legR: [w0.legR[0] * .62, w0.legR[1] * .8] as [number, number] }; /* шаг 190 px = ход опорной ноги */
   const dk = spr(t, 1.3, { damping: 11 });
   return (<Frame bg="#7a5ad0"><Cam z={lerp(1.0, 1.08, io(win(t, 0, dur('hook'))))} fy={1100}><ElfForest t={T} />
-    <Person x={x} y={1620 - (moving ? Math.abs(Math.sin(ph)) * 10 : 0)} s={1.05} t={T} pose={moving ? walkPose(ph) : blendPose(POSES.stand, POSES.armsUp, spr(t, 2.6, { damping: 9 }))} hold={moving ? 'pan' : null} expr={t > 1.2 ? 'happy' : 'neutral'} mouth={mouth('max', T)} blush={t > 1.2 ? .8 : 0} eye={[.3, -.4]} />
+    <Person x={x} y={1620 - (moving ? Math.abs(Math.cos(ph)) * 9 : 0)} s={1.05} t={T} pose={moving ? step : blendPose(POSES.stand, POSES.armsUp, spr(t, 2.6, { damping: 9 }))} hold="pan" expr={t > 1.2 ? 'happy' : 'neutral'} mouth={mouth('max', T)} blush={t > 1.2 ? .8 : 0} eye={[.3, -.4]} />
     <Hearts t={T} x={x} y={820} k={clamp((t - 1.2) * 2)} />
     <Dream x={720} y={560} k={dk} t={T}>{[['elf2', -170], ['lira', 0], ['elf3', 170]].map(([lk, dx], i) => <Person key={i} x={dx as number} y={330} s={.42} t={T + i} look={lk as any} expr="happy" pose={{ armL: [-.2, .2], armR: [2.6 + Math.sin(T * 6 + i) * .3, -.3] }} blush={.6} />)}</Dream>
   </Cam></Frame>); };
@@ -66,9 +67,9 @@ export const Card: React.FC<P> = ({ t, T }) => { const k = spr(t, 0, { damping: 
           <div style={{ fontSize: 96, fontWeight: 900, lineHeight: 1 }}>МАКС</div>
           <div style={{ fontSize: 38, fontWeight: 800, color: C.teal, marginTop: 6 }}>{CARD.cls} · ур. {CARD.lvl}</div></div></div>
       <div style={{ marginTop: 24 }}>
-        <Bar t={t} t0={W(id, 1, 'card') - .1} label="СИЛА" icon="⚔" val={CARD.str} max={10} col="#ff8a5a" />
-        <Bar t={t} t0={.5} label="ЗДОРОВЬЕ" icon="❤" val={CARD.hp} max={10} col="#ff4a6a" />
-        <Bar t={t} t0={W(id, 3, 'card') - .1} label="АУРА" icon="✦" val={CARD.aura} max={1000} col={C.gold} /></div>
+        <Bar t={t} t0={.1} label="СИЛА" icon="⚔" val={CARD.str} max={10} col="#ff8a5a" />
+        <Bar t={t} t0={.2} label="ЗДОРОВЬЕ" icon="❤" val={CARD.hp} max={10} col="#ff4a6a" />
+        <Bar t={t} t0={.3} label="АУРА" icon="✦" val={CARD.aura} max={1000} col={C.gold} /></div>
       <div style={{ marginTop: 26, fontSize: 38, fontWeight: 800 }}>Предмет: <span style={{ color: C.yellow }}>{CARD.item}</span></div>
       <div style={{ marginTop: 16, fontSize: 38, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 18 }}><span>Статус:</span>
         {t > st - .05 && <span style={{ display: 'inline-block', background: C.red, color: '#fff', padding: '6px 22px', borderRadius: 10, fontWeight: 900, fontSize: 44, transformOrigin: '0 50%', transform: `rotate(-4deg) scale(${lerp(1.8, 1, out(win(t, st - .05, st + .15)))})` }}>{CARD.status.toUpperCase()}</span>}</div>
@@ -86,67 +87,91 @@ export const Net: React.FC<P> = ({ t, T }) => { const z = lerp(1.0, 1.1, io(win(
   </Cam></Frame>); };
 
 // ───────────── 4. Крупно Лира + ярлык ─────────────
-export const Lira: React.FC<P> = ({ t, T }) => (<><Frame bg="#7a5ad0"><Cam z={lerp(1.75, 1.85, t / dur('lira'))} fx={720} fy={760} dy={-120}><ElfForest t={T} />
+export const Lira: React.FC<P> = ({ t, T }) => (<><Frame bg="#7a5ad0"><Cam z={lerp(1.55, 1.65, t / dur('lira'))} fx={720} fy={760} dy={130}><ElfForest t={T} />
   <NetTrap x={720} y={360} t={T} w={190} h={560} />
   <g transform={`rotate(${Math.sin(T * 1.6) * 3} 720 360)`}><Person x={720} y={380} s={.78} t={T} look="lira" rot={180} hang pose={HANG} expr="deadpan" eye={[-.6, .4]} bowBack /></g>
   <NetTrap x={720} y={360} t={T} w={190} h={560} front /></Cam></Frame>
-  <Tag t={t} t0={.3} x={70} y={1000} title="ЛИРА" sub="ЛУЧШАЯ ЛУЧНИЦА ЛЕСА" col="#7dffb0" w={520} /></>);
+  <Tag t={t} t0={.3} x={60} y={1440} title="ЛИРА" sub="ЛУЧШАЯ ЛУЧНИЦА ЛЕСА" col="#7dffb0" w={520} k2={1.5} /></>);
 
 // ───────────── 5. Бросок: сковорода перерубает верёвку ─────────────
-export const Throw: React.FC<P> = ({ t, T }) => { const rel = 1.0, hit = 1.45, k = clamp((t - rel) / (hit - rel)), cut = t > hit;
+// сеть, упавшая на землю
+export const NetHeap: React.FC<{ x: number; y: number; s?: number }> = ({ x, y, s = 1 }) => (<g transform={`translate(${x},${y}) scale(${s})`}>
+  <clipPath id={`nh${Math.round(x)}`}><path d="M-190,0 C-170,-70 -90,-104 -10,-84 C60,-120 160,-70 190,0 Z" /></clipPath>
+  <path d="M-190,0 C-170,-70 -90,-104 -10,-84 C60,-120 160,-70 190,0 Z" fill="#3a2a14" opacity={.3} />
+  <g clipPath={`url(#nh${Math.round(x)})`}>{Array.from({ length: 12 }, (_, i) => <g key={i}><path d={`M${-260 + i * 44},10 l150,-150`} stroke="#6a4a22" strokeWidth={6} /><path d={`M${-110 + i * 44},10 l-150,-150`} stroke="#6a4a22" strokeWidth={6} /></g>)}</g>
+  <path d="M-190,0 C-170,-70 -90,-104 -10,-84 C60,-120 160,-70 190,0" fill="none" stroke="#5a3a1a" strokeWidth={9} strokeLinecap="round" /><path d="M186,-4 q50,-30 80,6 q20,26 54,10" fill="none" stroke="#8a6a3a" strokeWidth={11} strokeLinecap="round" /></g>);
+// 5. Бросок: удар по узлу → обрыв → сеть раскрывается, Лира вываливается, Макс подставляет руки (рисунок r01)
+export const Throw: React.FC<P> = ({ t, T }) => { const rel = 1.0, hit = 1.45, sw = hit + .32, k = clamp((t - rel) / (hit - rel)), cut = t > hit, pic = t >= sw, MX = 197;
   const pose = t < .6 ? POSES.stand : t < rel ? blendPose(POSES.stand, POSES.throwBack, out(win(t, .6, rel))) : blendPose(POSES.throwBack, POSES.throwFwd, out(win(t, rel, rel + .15)));
-  const px = lerp(420, 720, k), py = lerp(1000, 300, k) - Math.sin(k * Math.PI) * 120, s = shake(t, hit, 10, .3);
+  const px = lerp(MX + 90, 720, k), py = lerp(1000, 345, k) - Math.sin(k * Math.PI) * 120, s = shake(t, hit, 10, .3);
+  const drop = cut ? Math.min(160, (t - hit) ** 2 * 1600) : 0, q = clamp((t - hit) / .8), pop = pic ? 1 + .05 * clamp(1 - (t - sw) / .15) : 1, sink = pic ? (t - sw) * 30 : 0;
   return (<Frame bg="#7a5ad0"><Cam z={1.02} dx={s[0]} dy={s[1] + 60} fy={1100}><ElfForest t={T} />
     <rect x={380} y={330} width={700} height={40} rx={20} fill="#5a3a2e" />
-    {!cut ? <NetTrap x={720} y={360} t={T} w={190} h={560} /> : <path d={`M720,370 L720,${300 - (t - hit) * 200}`} stroke="#8a6a3a" strokeWidth={14} />}
-    <g transform={cut ? `translate(0,${Math.min(500, (t - hit) ** 2 * 2400)})` : undefined}>
-      <Person x={720} y={380} s={.78} t={T} look="lira" rot={180} hang pose={HANG} expr={cut ? 'shock' : 'deadpan'} bowBack />
-      <NetTrap x={720} y={360} t={T} w={190} h={560} front /></g>
-    <Person x={330} y={1640} s={.92} t={T} pose={pose} hold={t < rel ? 'pan' : null} expr="determined" mouth={mouth('max', T)} eye={[.7, -.8]} />
-    {t >= rel && t < hit + .05 && <FlyPan x={px} y={py} r={t * 1400} s={.6} />}
-    {t >= hit && <FlyPan x={720 + (t - hit) * 700} y={300 + (t - hit) * 300} r={t * 1400} s={.6} />}
-    <Onomato t={t} t0={hit} x={860} y={520} text="ДЗЫНЬ!" col={C.yellow} size={120} rot={8} />
+    {!cut ? <NetTrap x={720} y={360} t={T} w={190} h={560} /> : <g><path d="M720,-200 L720,350" stroke="#8a6a3a" strokeWidth={14} /><path d={`M720,372 q${Math.sin(t * 18) * 14},26 ${Math.sin(t * 14) * 10},54`} stroke="#8a6a3a" strokeWidth={12} fill="none" strokeLinecap="round" /></g>}
+    {!pic && <g transform={`translate(0,${drop}) rotate(${cut ? Math.sin((t - hit) * 20) * 5 : 0} 720 380)`}>
+      <Person x={720} y={380} s={.78} t={T} look="lira" rot={180} hang pose={HANG} expr={cut ? 'shock' : 'deadpan'} mouth={cut ? .6 : 0} bowBack />
+      <NetTrap x={720} y={360} t={T} w={190} h={560} front /></g>}
+    {!pic && <Person x={MX} y={1640} s={.92} t={T} pose={pose} hold={t < rel ? 'pan' : null} expr={cut ? 'shock' : 'determined'} mouth={cut ? .5 : mouth('max', T)} eye={[.7, -.8]} />}
+    {pic && <Pic id="r01" x={720} y={470 + sink} s={.89} ax={840} ay={31} sx={pop} sy={pop} />}
+    {pic && [0, 1, 2].map(i => <path key={i} d={`M${520 + i * 70},${640 - ((t * 500 + i * 90) % 260)} l0,-90`} stroke="#fff" strokeWidth={7} strokeLinecap="round" opacity={.45} />)}
+    {t >= rel && t < hit && <FlyPan x={px} y={py} r={t * 1400} s={.6} />}
+    {t >= hit && (q < 1 ? <FlyPan x={lerp(720, 430, q)} y={lerp(345, 1590, q * q) - Math.sin(q * Math.PI) * 90} r={t * 1100} s={.6} glow={1 - q} />
+      : <g transform="translate(430,1650) rotate(-82) scale(.62)"><Pan /></g>)}
+    <Puffs t={t} t0={hit} x={720} y={360} n={6} col="#ffe27a" spread={120} up={40} size={36} id="knotP" />
+    <Onomato t={t} t0={hit} x={860} y={520} text="ДЗЫНЬ!" col={C.yellow} size={120} rot={8} dur={.7} />
   </Cam></Frame>); };
 
 // ───────────── 6. Мягкая посадка: Лира падает на Макса ─────────────
 export const SIT = { armL: [-.5, .9] as [number, number], armR: [.5, -.9] as [number, number], legL: [1.45, -1.4] as [number, number], legR: [1.35, -1.25] as [number, number], hip: 0 };
-export const Land: React.FC<P> = ({ t, T }) => { const hit = .5, s = shake(t, hit, 20, .4), fall = clamp(t / hit);
+export const Land: React.FC<P> = ({ t, T }) => { const cat = .45, hit = .85, s = shake(t, hit, 20, .4), tip = io(win(t, cat, hit)), sq = 1 - .1 * clamp(1 - t / .18);
   return (<Frame bg="#7a5ad0"><Cam z={lerp(1.0, 1.1, io(win(t, hit, dur('land'))))} dx={s[0]} dy={s[1] - 160} fy={1400}><ElfForest t={T} />
-    <Person x={760} y={1600} s={.95} t={T} rot={-90} pose={{ armL: [-2.4, .3], armR: [2.6, -.4], legL: [-.1, .1], legR: [.1, -.1] }} expr={t < hit ? 'shock' : 'happy'} mouth={mouth('max', T)} blush={t > hit ? 1 : 0} shadow={false} />
-    {t < hit ? <Person x={460} y={lerp(-200, 1250, fall * fall)} s={.9} t={T} look="lira" rot={lerp(180, 360, fall)} pose={POSES.fall} expr="shock" />
-      : <Person x={430} y={1748} s={.9} t={T} look="lira" pose={SIT} expr="shock" blush={1} squash={Math.max(0, .5 - (t - hit)) * 1.5} shadow={false} />}
+    <NetHeap x={930} y={1590} s={.75} /><g transform="translate(150,1700) rotate(-80) scale(.7)"><Pan /></g>
+    {t < hit ? <Pic id="r02" x={700} y={1640} s={.6} ax={343} ay={1185} rot={-tip * 72} sx={2 - sq} sy={sq} />
+      : <><Person x={760} y={1600} s={.95} t={T} rot={-90} pose={{ armL: [-2.4, .3], armR: [2.6, -.4], legL: [-.1, .1], legR: [.1, -.1] }} expr="happy" mouth={mouth('max', T)} blush={1} shadow={false} />
+        <Person x={430} y={1748} s={.9} t={T} look="lira" pose={SIT} expr="shock" blush={1} squash={Math.max(0, .5 - (t - hit)) * 1.5} shadow={false} /></>}
     <Puffs t={t} t0={hit} x={480} y={1600} n={10} col="#e8ffe8" spread={340} up={120} size={70} id="landP" />
+    <Onomato t={t} t0={0} x={300} y={760} text="ПОЙМАЛ!" col="#7dffb0" size={110} rot={-6} dur={.45} />
     <Onomato t={t} t0={hit} x={760} y={760} text="БУХ!" col={C.yellow} size={150} rot={-8} />
   </Cam></Frame>); };
 
 // ───────────── 7. Пощёчина ─────────────
-export const Slap: React.FC<P> = ({ t, T }) => { const hit = .15, hx = t < hit ? lerp(1200, 640, out(clamp(t / hit))) : lerp(640, 1300, out(win(t, hit, hit + .25))), s = shake(t, hit, 26, .35);
+export const Slap: React.FC<P> = ({ t, T }) => { const hit = .5, s = shake(t, hit, 26, .35); /* рука Лиры видна до удара: вход слева, замах, шлепок по той же щеке, где останется след */
+  const hx = t < .3 ? lerp(-260, 150, out(t / .3)) : t < .38 ? lerp(150, 70, (t - .3) / .08) : t < hit ? lerp(70, 430, ((t - .38) / .12) ** 2) : lerp(430, 1400, out(win(t, hit, hit + .3)));
   return (<Frame bg="#7a5ad0"><Cam z={1.0} dx={s[0]} dy={s[1]}><ElfForest t={T} dim={.1} />
-    <Person x={540 + (t > hit ? -40 : 0)} y={2300} s={2.3} t={T} expr={t < hit ? 'happy' : 'pain'} slap={t > hit ? 1 : 0} headTilt={t > hit ? -14 + Math.sin((t - hit) * 30) * 4 * clamp(1 - (t - hit) * 2) : 0} blush={1} />
-    <g transform={`translate(${hx},880) rotate(-80) scale(3.2)`}><ellipse cx={0} cy={12} rx={22} ry={24} fill="#f6d8c2" /><path d="M-16,22 Q-14,44 -8,44 Q-4,44 -4,26 M0,26 Q0,48 6,48 Q11,48 10,26 M10,24 Q14,40 18,38 Q22,36 18,20" fill="#f6d8c2" stroke="#e0b49a" strokeWidth={2} /><rect x={-26} y={-60} width={52} height={64} fill="#e8f0d8" /></g>
-    <Onomato t={t} t0={hit} x={300} y={620} text="ШЛЁП!" col="#ff7a9a" size={150} rot={-10} />
+    <Person x={540 + (t > hit ? 40 : 0)} y={2300} s={2.3} t={T} expr={t < .3 ? 'happy' : t < hit ? 'shock' : 'pain'} slap={t > hit ? 1 : 0} eye={t < hit ? [-.8, 0] : [0, 0]} headTilt={t > hit ? 14 - Math.sin((t - hit) * 30) * 4 * clamp(1 - (t - hit) * 2) : 0} blush={1} />
+    <g transform={`translate(${hx},${t < hit ? 900 - (t < .38 ? clamp(t / .38) * 60 : 60) : 840}) rotate(80) scale(-3.2,3.2)`}><ellipse cx={0} cy={12} rx={22} ry={24} fill="#f6d8c2" /><path d="M-16,22 Q-14,44 -8,44 Q-4,44 -4,26 M0,26 Q0,48 6,48 Q11,48 10,26 M10,24 Q14,40 18,38 Q22,36 18,20" fill="#f6d8c2" stroke="#e0b49a" strokeWidth={2} /><rect x={-26} y={-60} width={52} height={64} fill="#e8f0d8" /></g>
+    <Onomato t={t} t0={hit} x={780} y={620} text="ШЛЁП!" col="#ff7a9a" size={150} rot={10} />
   </Cam></Frame>); };
 
 // ───────────── 8. Лира встаёт: «Человек. Ещё и с кухонной утварью» ─────────────
 export const Stand: React.FC<P> = ({ t, T }) => (<Frame bg="#7a5ad0"><Cam z={lerp(1.04, 1.1, t / dur('stand'))} fy={1100} dy={-120}><ElfForest t={T} />
+  <NetHeap x={960} y={1660} s={.8} />
   <Person x={300} y={1720} s={.85} t={T} pose={POSES.lotus} hold="pan" expr="shock" slap={1} eye={[.8, -.9]} headTilt={-8} />
   <Person x={700} y={1640} s={1.1} t={T} look="lira" bowBack pose={blendPose(SIT as any, { armL: [-.55, 1.6], armR: [.55, -1.6], legL: [-.08, .04], legR: [.08, -.04] }, out(win(t, 0, .45)))} expr="smug" mouth={mouth('lira', T)} eye={[-.8, .5]} headTilt={6} flip />
 </Cam></Frame>);
 
 // ───────────── 9. «А уши настоящие?» — «Не трогай уши!» ─────────────
-export const Ears: React.FC<P> = ({ t, T }) => { const reach = out(win(t, .5, 1.2)), flinch = out(win(t, W('g2', 0, 'ears') - .2, W('g2', 0, 'ears'))), sx = shake(t, W('g2', 0, 'ears'), 6, .3);
+export const Ears: React.FC<P> = ({ t, T }) => { const g2 = W('g2', 0, 'ears'), put = io(win(t, .05, .5)), reach = out(win(t, .6, 1.25)), flinch = out(win(t, g2 - .2, g2)), back = out(win(t, g2 - .05, g2 + .3)), sx = shake(t, g2, 6, .3), down = Math.sin(put * Math.PI), touch = reach > .9 && back < .2;
+  /* Макс кладёт сковороду, пальцы видны у кончика уха (рука рисуется поверх Лиры), после «Не трогай» убирает руку */
   return (<Frame bg="#7a5ad0"><Cam z={lerp(1.1, 1.18, t / dur('ears'))} fy={900} dy={-60 + sx[1]} dx={sx[0]}><ElfForest t={T} />
-    <Person x={350} y={1640} s={1.1} t={T} slap={1} pose={{ ...POSES.stand, armR: [lerp(.12, 2.3, reach * (1 - flinch * .5)), lerp(-.15, -.5, reach)] }} expr={flinch > .5 ? 'shock' : 'happy'} mouth={mouth('max', T)} eye={[.8, -.3]} />
-    <Person x={760 + flinch * 40} y={1640} s={1.08} t={T} look="lira" bowBack pose={{ ...POSES.stand, lean: -flinch * .14, armL: [-.12 + flinch * .8, .15 + flinch * 1.6] }} expr={flinch > .5 ? 'determined' : 'deadpan'} mouth={mouth('lira', T)} blush={flinch} flip eye={[-.8, 0]} />
+    <Person x={760 + flinch * 40} y={1640} s={1.08} t={T} look="lira" bowBack pose={{ ...POSES.stand, lean: -flinch * .14, armL: [-.12 + flinch * .8, .15 + flinch * 1.6] }} expr={flinch > .5 ? 'determined' : 'deadpan'} mouth={mouth('lira', T)} blush={Math.max(flinch, touch ? .6 : 0)} flip eye={[-.8, 0]} />
+    {put > .55 && <g transform="translate(470,1668) rotate(82) scale(.9)"><Pan /></g>}
+    <Person x={350} y={1640} s={1.1} t={T} slap={1} hold={put > .55 ? null : 'pan'} pose={{ ...POSES.stand, lean: down * .3, legL: [-.06 - down * .25, .04 + down * .5], legR: [.06 + down * .25, -.04 - down * .5], armR: put < 1 ? [.12 + down * .35, -.15] : [lerp(.12, 2.27, reach * (1 - back)), lerp(-.15, .04, reach * (1 - back))] }} expr={back > .3 ? 'shock' : 'happy'} mouth={mouth('max', T)} eye={[.8, -.3]} />
+    {touch && [0, 1, 2].map(i => <path key={i} d={`M${590 + i * 16},${930 - i * 14} q${-10 - Math.sin(T * 30 + i) * 6},-22 6,-40`} stroke="#ff4a8a" strokeWidth={7} fill="none" strokeLinecap="round" />)}
   </Cam></Frame>); };
 
 // ───────────── 10. «…Ладно. Ещё раз тронь» ─────────────
-export const EarsYes: React.FC<P> = ({ t, T }) => { const sh = out(win(t, .3, 1.0));
-  return (<Frame bg="#7a5ad0"><Cam z={lerp(1.9, 2.0, t / dur('earsYes'))} fx={720} fy={820} dy={-80}><ElfForest t={T} />
-    <rect width={1080} height={1920} fill="#ff7ab0" opacity={sh * .15} />
+export const EarsYes: React.FC<P> = ({ t, T }) => { const sh = out(win(t, .3, 1.0)), rk = spr(t, 1.9, { damping: 13 });
+  return (<><Frame bg="#7a5ad0"><Cam z={lerp(1.9, 2.0, t / dur('earsYes'))} fx={720} fy={820} dy={40}><ElfForest t={T} />
+    <rect x={-200} y={-200} width={1500} height={2400} fill="#ff7ab0" opacity={sh * .15} />
     <Person x={720} y={1640} s={1.08} t={T} look="lira" bowBack expr={t < .9 ? 'deadpan' : 'smug'} mouth={mouth('lira', T)} blush={sh} eye={[lerp(-.8, .7, sh), lerp(0, .5, sh)]} headTilt={lerp(0, -10, sh)} flip />
     <Hearts t={T} x={600} y={760} n={5} k={clamp((t - 1.1) * 2)} />
-  </Cam></Frame>); };
+  </Cam></Frame>
+    {/* закон мира №4 — короткой плашкой поверх реакции, без отдельного стенда */}
+    {t > 1.9 && <div style={html({ left: 60, top: 370, width: 960, boxSizing: 'border-box', transform: `scale(${lerp(.7, 1, rk)})`, opacity: clamp(rk * 2), background: 'rgba(20,18,28,.92)', border: '5px solid #ff7ab0', borderRadius: 26, padding: '16px 28px 20px', color: '#fff', textAlign: 'center' })}>
+      <div style={{ fontSize: 30, fontWeight: 800, letterSpacing: 4, color: '#ff7ab0' }}>ЗАКОН МИРА №4</div>
+      <div style={{ fontSize: 60, fontWeight: 900, lineHeight: 1.1 }}>УШИ ЭЛЬФИЕК: <span style={{ color: '#ff4a8a' }}>×100</span></div>
+      <div style={{ fontSize: 46, fontWeight: 900, color: '#ffd23f', marginTop: 4, opacity: out(win(t, 2.5, 2.8)) }}>ТРОГАТЬ — ТОЛЬКО С СОГЛАСИЯ</div></div>}</>); };
 
 // ───────────── 11. Инфографика: закон №4 ─────────────
 const EarArt: React.FC<{ t: number }> = ({ t }) => { const k = out(win(t, .3, 1.2)), wig = Math.sin(t * 14) * 4 * k;
@@ -166,8 +191,8 @@ const Flashback: React.FC<{ t: number; k: number }> = ({ t, k }) => k <= 0 ? nul
   <ellipse cx={0} cy={0} rx={420} ry={300} fill="none" stroke="#fff" strokeWidth={10} /></g>);
 export const Sisters: React.FC<P> = ({ t, T }) => (<Frame bg="#5a4a90"><Cam z={lerp(1.02, 1.08, t / dur('sisters'))} fy={1100} dy={-60}><ElfForest t={T} dim={.35} />
   <Flashback t={T} k={out(win(t, .4, .9))} />
-  <Person x={330} y={1680} s={1.0} t={T} look="lira" bowBack expr="sad" mouth={mouth('lira', T)} eye={[.6, .4]} />
-  <Person x={760} y={1680} s={1.0} t={T} slap={1} hold="pan" expr={t > W('i2', 0, 'sisters') ? 'shock' : 'sad'} mouth={mouth('max', T)} eye={[-.7, 0]} flip />
+  <Person x={330} y={1680} s={1.0} t={T} look="lira" bowBack expr="sad" mouth={mouth('lira', T) * .55} eye={[.6, .4]} headTilt={6} />
+  <Person x={760} y={1680} s={1.0} t={T} slap={1} hold="pan" pose={{ ...POSES.stand, lean: (1 - out(win(t, 0, .5))) * .3, armR: [lerp(.5, .12, out(win(t, 0, .5))), -.15] }} expr={t > W('i2', 0, 'sisters') ? 'shock' : 'sad'} mouth={mouth('max', T)} eye={[-.7, 0]} />
 </Cam></Frame>);
 
 // ───────────── 13. Мотивация +1000% ─────────────

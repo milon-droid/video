@@ -31,22 +31,21 @@ const SPEC = [
   ['card', 3.6, [['b1', .25]], [[0, 'whoosh-medium-soft', .5], [.15, 'digital-power-up', .4], [.6, 'pop-small-in', .5], [1.2, 'pop-small-in', .5], [2.4, 'notification-failure-low', .45]]],
   ['net', 4.4, [['d1', .3], ['d2', AF('d1', .25)]], [[0, 'brush', .5, { dur: .8 }], [.4, 'oc-CLOTHFlp_FlagFlapping_LOOP_01', .3, { dur: .8 }], [.8, 'whoosh-slow-medium', .4]]],
   ['lira', 2.6, [['d3', .2]], [[0, 'shimmer-short-sparkle', .5], [.3, 'pop-medium-in', .5]]],
-  ['throw', 2.3, [['e1', .1]], [[1.0, 'whoosh-medium-hard', .7], [1.45, 'cinematic-metal-big', .5, { bright: 2 }], [1.47, 'tone-ding-high', .5]]],
-  ['land', 2.4, [['e2', 1.0]], [[0, 'whoosh-slow-medium', .5], [.5, 'impact-heavy-soft', .9, { bright: 2 }], [.55, 'oc-CLOTHFlp_FlagFlapping_LOOP_01', .3, { dur: .4 }]]],
-  ['slap', 2.2, [['e3', .7]], [[.15, 'impact-light-firm', .9], [.15, 'oc-GORESqsh_BloodSquishSlimy_OS_02', .15], [.65, 'data-decrease-short', .6]]],
+  ['throw', 2.75, [['e1', .1]], [[1.0, 'whoosh-medium-hard', .7], [1.45, 'cinematic-metal-big', .5, { bright: 2 }], [1.47, 'tone-ding-high', .5], [1.5, 'click-snap-firm', .8], [1.6, 'oc-CLOTHFlp_FlagFlapping_LOOP_01', .4, { dur: .6 }], [1.8, 'whoosh-slow-medium', .5], [2.25, 'impact-light-soft', .5]]],
+  ['land', 2.9, [['e2', 1.4]], [[0, 'impact-light-soft', .6], [.05, 'foley-fabric-slide', .5], [.45, 'whoosh-slow-medium', .5], [.85, 'impact-heavy-soft', .9, { bright: 2 }], [.9, 'oc-CLOTHFlp_FlagFlapping_LOOP_01', .3, { dur: .4 }]]],
+  ['slap', 2.5, [['e3', 1.0]], [[.05, 'foley-fabric-slide', .4], [.4, 'whoosh-fast-soft', .5], [.5, 'impact-light-firm', .9], [.5, 'oc-GORESqsh_BloodSquishSlimy_OS_02', .15], [1.0, 'data-decrease-short', .6]]],
   ['stand', 3.0, [['f1', .3]], [[0, 'foley-fabric-slide', .5], [.3, 'foley-fabric-slide', .3]]],
-  ['ears', 2.9, [['g1', .2], ['g2', AF('g1', .1)]], [[1.3, 'whoosh-fast-soft', .5], [1.35, 'pop-medium-out', .5]]],
-  ['earsYes', 3.0, [['g3', .95]], [[0, 'bsb-wind-foley', .15, { dur: 1 }], [.95, 'shimmer-medium-soft', .4], [1.0, 'heartbeat', .5, { dur: 1.2 }]]],
-  ['lore4', 4.6, [['h1', .3]], [[0, 'whoosh-medium-soft', .5], [.4, 'pop-small-in', .5], [1.5, 'pop-small-in', .5], [2.8, 'notification-alert-clear', .45]]],
+  ['ears', 3.0, [['g1', .3], ['g2', AF('g1', .15)]], [[.3, 'impact-light-soft', .5], [1.2, 'pop-small-bubble', .5], [1.6, 'whoosh-fast-soft', .5], [1.65, 'pop-medium-out', .5]]],
+  ['earsYes', 3.7, [['g3', .95]], [[0, 'bsb-wind-foley', .15, { dur: 1 }], [.95, 'shimmer-medium-soft', .4], [1.0, 'heartbeat', .5, { dur: 1.2 }], [1.9, 'whoosh-medium-soft', .4], [2.0, 'pop-small-in', .5], [2.5, 'notification-alert-clear', .4]]],
   ['sisters', 4.5, [['i1', .3], ['i2', AF('i1', .25)]], [[0, 'bass-rumble-medium', .3], [.4, 'bsb-heavy-chain', .3]]],
   ['motiv', 2.2, [], [[0, 'riser-1s-strong', .5], [.9, 'data-countup-medium', .5], [1.5, 'impact-medium-firm', .7], [1.5, 'shimmer-long-bright', .4]]],
   ['camp', 3.6, [['j1', .4]], [[0, 'crackle', .35, { dur: 3.8 }], [0, 'thud', .55], [.5, 'thud', .55], [1.0, 'thud', .55], [1.5, 'thud', .55], [2.0, 'thud', .55], [2.5, 'thud', .55], [3.0, 'thud', .55]]],
   ['plan', 5.4, [['k1', .3], ['k2', AF('k1', .2)], ['k3', AF('k2', .2)]], [[0, 'crackle', .2, { dur: 5.6 }], [0, 'brush', .3, { dur: .8 }]]],
-  ['oops', 3.0, [['k4', 1.3]], [[.2, 'click-snap-firm', .9], [.2, 'foley-wood-touch', .6], [.55, 'whoosh-fast-soft', .5], [.85, 'cinematic-metal-big', .8, { bright: 2 }], [.9, 'props-splash', .6], [1.15, 'boom-drop-strong', .4]]],
+  ['oops', 3.9, [['k4', 1.3]], [[.2, 'click-snap-firm', .9], [.2, 'foley-wood-touch', .6], [.55, 'whoosh-fast-soft', .5], [.85, 'cinematic-metal-big', .8, { bright: 2 }], [.9, 'props-splash', .6], [1.15, 'boom-drop-strong', .4], [2.75, 'props-splash', .5], [2.8, 'whoosh-fast-soft', .5], [3.25, 'impact-light-soft', .5]]],
   ['backs', 3.2, [['l1', .3]], [[0, 'riser-2s-soft', .4], [.5, 'sting-bold-short', .45]]],
-  ['fight', 3.6, [['l2', .2]], [[.4, 'swish-hard', .6], [.55, 'impact-light-firm', .5], [.9, 'bonk', .8], [1.25, 'swish-hard', .6], [1.6, 'bonk', .8], [2.0, 'impact-light-firm', .6], [2.3, 'bonk', .9], [2.9, 'swish-hard', .5], [3.0, 'bonk', .9]]],
+  ['fight', 4.0, [['l2', .15]], [[.2, 'foley-wood-touch', .5], [.6, 'swish-hard', .7], [.62, 'whoosh-fast-soft', .5], [.86, 'impact-light-firm', .8], [1.75, 'swish-hard', .6], [1.95, 'bonk', .9], [1.96, 'impact-medium-firm', .5], [2.55, 'swish-hard', .6], [2.75, 'bonk', .9], [2.76, 'impact-medium-firm', .5], [3.25, 'swish-hard', .7], [3.36, 'impact-light-firm', .8]]],
   ['boss', 4.2, [['m1', .2], ['m2', AF('m1', .3)]], [[0, 'bass-rumble-long', .4], [.3, 'impact-heavy-hard', .7, { bright: 2 }], [1.0, 'impact-heavy-hard', .6, { bright: 2 }]]],
-  ['rico', 3.0, [['m3', .1]], [[.4, 'whoosh-slow-hard', .45], [.75, 'bonk', .7], [1.0, 'bonk', .7], [1.25, 'bonk', .7], [1.5, 'bonk', .7], [1.95, 'cinematic-metal-massive', .6], [1.97, 'bonk', 1], [1.98, 'impact-heavy-hard', .9], [2.5, 'impact-deep-soft', .7]]],
+  ['rico', 3.6, [['m3', .1]], [[.4, 'whoosh-slow-hard', .45], [.7, 'bonk', .7], [1.0, 'bonk', .7], [1.35, 'oc-GORESqsh_BloodSquishSlimy_OS_02', .5], [1.37, 'pop-large-in', .6], [1.75, 'bonk', .6], [2.0, 'cinematic-metal-massive', .6], [2.02, 'bonk', 1], [2.03, 'impact-heavy-hard', .9], [2.4, 'pop-medium-out', .6], [2.45, 'whoosh-medium-soft', .5], [2.6, 'impact-deep-soft', .7], [3.05, 'impact-light-soft', .6]]],
   ['levelup', 3.2, [['n1', .5]], [[0, 'oc-MUSCStngr_LevelUpOrchestral_OS_01', .7], [.3, 'data-countup-medium', .5], [.2, 'shimmer-long-bright', .5], [-1.0, 'notification-success-fanfare', .45]]],
   ['freed', 3.6, [['o1', .5], ['o2', AF('o1', .3)]], [[0, 'mechanical-latch-heavy', .6], [.2, 'bsb-heavy-chain', .3], [1.2, 'pop-small-bubble', .55], [1.6, 'pop-small-bubble', .55], [2.0, 'pop-small-bubble', .55]]],
   ['jealous', 2.4, [['o3', .35]], [[.1, 'foley-fabric-slide', .5], [.2, 'transform-stretch', .4]]],
@@ -55,7 +54,7 @@ const SPEC = [
   ['offer', 2.4, [['q3', .3]], [[0, 'shimmer-medium-soft', .4], [.1, 'foley-fabric-slide', .3]]],
   ['trap', 4.0, [['q4', .25], ['q5', AF('q4', .2)], ['q6', AF('q5', .3)]], [[0, 'crackle', .25, { dur: 4.2 }], [2.0, 'pop-small-bubble', .4]]],
   ['ask', 3.4, [['r1', .35]], [[0, 'whoosh-medium-soft', .4], [.5, 'move-bounce', .5], [1.7, 'move-bounce', .4], [2.9, 'move-bounce', .4]]],
-  ['split', 2.8, [], [[0, 'whoosh-medium-medium', .5], [.15, 'pop-large-in', .5], [.4, 'pop-large-in', .5], [.7, 'impact-medium-firm', .5], [1.2, 'sting-bright-long', .45]]],
+  ['split', 4.6, [], [[0, 'whoosh-medium-medium', .5], [.15, 'pop-large-in', .5], [.4, 'pop-large-in', .5], [.7, 'impact-medium-firm', .5], [1.2, 'sting-bright-long', .45], [2.2, 'pop-medium-in', .5]]],
 ];
 
 export const SHOTS = []; export const VO = []; let at = 0;
@@ -79,6 +78,7 @@ for (const v of VO) {
   const chunks = []; for (const s of sents) { const n = s.length; if (n <= 5) { chunks.push(s); continue; } const k = Math.ceil(n / Math.ceil(n / 4)); for (let i = 0; i < n; i += k) chunks.push(s.slice(i, i + k)); }
   const merged = []; for (const c of chunks) { const l = merged[merged.length - 1]; if (l && (c.length === 1 || l.length === 1) && l.length + c.length <= 4) l.push(...c); else merged.push([...c]); }
   merged.forEach((c, i) => CAPS.push({ who: v.who, vo: v.id, a: c[0].t - .05, b: i < merged.length - 1 ? merged[i + 1][0].t - .06 : v.t + v.d + .3, words: c })); }
+for (const c of CAPS) { const sh = SHOTS.find(q => c.a + .06 >= q.a && c.a + .06 < q.b); if (sh) c.b = Math.min(c.b, sh.b - .02); }
 for (let i = 0; i < CAPS.length - 1; i++) CAPS[i].b = Math.min(CAPS[i].b, CAPS[i + 1].a - .02);
 
 // звук: голос, музыка по частям серии, эффекты из SPEC
@@ -103,14 +103,11 @@ CUES.push({ t: DUR - 2.5, type: 'wind', gain: .22, dur: 2.5 });          // хв
 
 // табло героя: начало — итог серии 1, конец — 5 · 3 · 1 000 (план сериала)
 export const STATS_EP2 = { start: STATS_EP1.end, end: { str: 5, hp: 3, aura: 1000 } };
-const EV = () => [{ t: S('slap') + .65, aura: 90 }, { t: S('levelup') + .55, str: 5 }, { t: S('levelup') + .75, hp: 3 }, { t: S('levelup') + .95, aura: 1000 }];
-export function statsAt(t) { const s = { ...STATS_EP2.start, hit: -9, gain: -9, loss: -9, hpBar: 1 }; let prev = 0;
-  for (const e of EV()) { if (t < e.t) break; if (e.str) { s.str = e.str; s.gain = e.t; } if (e.hp) { s.hp = e.hp; s.gain = e.t; } if (e.aura != null) { prev = s.aura; s.aura = e.aura; if (e.aura > prev) s.gain = e.t; else s.loss = e.t; s.auraFrom = prev; s.auraAt = e.t; } }
-  const hits = [S('land') + .5, S('oops') + .85, S('fight') + .55, S('fight') + 2.0];
-  for (const h of hits) if (t >= h) s.hit = h;
-  s.hpBar = t >= S('levelup') + .75 ? 1 : t < hits[0] ? 1 : t < hits[1] ? .8 : t < hits[2] ? .6 : t < hits[3] ? .4 : .25;
+const EV = () => [{ t: S('slap') + 1.0, aura: 90 }, { t: S('levelup') + .55, str: 5 }, { t: S('levelup') + .75, hp: 3 }, { t: S('levelup') + .95, aura: 1000 }];
+export function statsAt(t) { const s = { ...STATS_EP2.start, hit: -9, gain: -9, loss: -9 }; let prev = 0;
+  for (const e of EV()) { if (t < e.t) break; if (e.str) { s.strGain = e.str - s.str; s.strAt = e.t; s.str = e.str; s.gain = e.t; } if (e.hp) { s.hpGain = e.hp - s.hp; s.hpAt = e.t; s.hp = e.hp; s.gain = e.t; } if (e.aura != null) { prev = s.aura; s.aura = e.aura; if (e.aura > prev) s.gain = e.t; else s.loss = e.t; s.auraFrom = prev; s.auraAt = e.t; } }
   return s; }
 export const HUD_FROM = E('card') - .2;
-export const HUD_HIDE = [[S('lore4'), E('lore4')], [S('motiv'), E('motiv')], [S('throne'), S('campfire')], [S('ask'), DUR + 1]];
+export const HUD_HIDE = [[S('motiv'), E('motiv')], [S('throne'), S('campfire')], [S('ask'), DUR + 1]];
 // карточка героя — цифры итога серии 1
 export const CARD = { ...STATS_EP1.end, item: 'Сковорода Судьбы', status: 'девственник', cls: 'Попаданец', lvl: 2 };

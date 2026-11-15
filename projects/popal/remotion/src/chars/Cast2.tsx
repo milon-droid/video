@@ -118,8 +118,12 @@ export const Liliana: React.FC<{ x: number; y: number; s?: number; t: number; mo
       <path d="M424,306 Q455,318 486,304 M514,306 Q548,320 584,304" stroke="#2a0f3a" strokeWidth={5} fill="none" strokeLinecap="round" /></g>}
     {m > .08 && <g><ellipse cx={497} cy={368} rx={30} ry={13} fill={SKIN_L} /><ellipse cx={497} cy={368} rx={lerp(20, 15, m)} ry={3 + m * 13} fill="#6a1240" /><path d={`M${497 - 14},${368 + 2 + m * 6} Q497,${368 + 6 + m * 12} ${497 + 14},${368 + 2 + m * 6}`} stroke="#e0468a" strokeWidth={4} fill="none" /></g>}
   </g>); };
+// ключевые позы — рисунки пользователя (public/popal/rNN.png): якорь (ax,ay) картинки ставится в точку (x,y) сцены
+export const PICS: Record<string, [number, number]> = { r01: [1086, 1448], r02: [1199, 1312], r05: [1478, 1064], r06: [1190, 887] };
+export const Pic: React.FC<{ id: string; x: number; y: number; s?: number; ax: number; ay: number; rot?: number; sx?: number; sy?: number }> = ({ id, x, y, s = 1, ax, ay, rot = 0, sx = 1, sy = 1 }) =>
+  <g transform={`translate(${x},${y}) rotate(${rot}) scale(${s * sx},${s * sy}) translate(${-ax},${-ay})`}><image href={staticFile(`popal/${id}.png`)} x={0} y={0} width={PICS[id][0]} height={PICS[id][1]} /></g>;
 // картинки сериала держим в DOM с первого кадра: кадр ждёт, пока они загрузятся (SVG <image> грузится асинхронно)
-export const PopalPreload: React.FC = () => { const [h] = useState(() => delayRender('popal images')); const done = React.useRef(false);
-  const fin = () => { if (!done.current) { done.current = true; continueRender(h); } };
-  useEffect(() => { const tmo = setTimeout(fin, 25000); return () => clearTimeout(tmo); }, [h]);
-  return <svg width={2} height={2} style={{ position: 'absolute', left: 0, top: 0, opacity: .004, pointerEvents: 'none' }}><image href={staticFile(LIL)} width={2} height={2} onLoad={fin} onError={fin} /></svg>; };
+export const PopalPreload: React.FC = () => { const [h] = useState(() => delayRender('popal images')); const done = React.useRef(false), left = React.useRef(1 + Object.keys(PICS).length);
+  const fin0 = () => { if (!done.current) { done.current = true; continueRender(h); } }, fin = () => { left.current -= 1; if (left.current <= 0) fin0(); };
+  useEffect(() => { const tmo = setTimeout(fin0, 25000); return () => clearTimeout(tmo); }, [h]);
+  return <svg width={2} height={2} style={{ position: 'absolute', left: 0, top: 0, opacity: .004, pointerEvents: 'none' }}><image href={staticFile(LIL)} width={2} height={2} onLoad={fin} onError={fin} />{Object.keys(PICS).map(k => <image key={k} href={staticFile(`popal/${k}.png`)} width={2} height={2} onLoad={fin} onError={fin} />)}</svg>; };

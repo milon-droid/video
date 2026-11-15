@@ -25,7 +25,7 @@ export const Captions: React.FC<{ t: number; caps: Phrase[]; names: Record<strin
 export const BottomShade: React.FC = () => <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(10,8,20,.42) 78%, rgba(10,8,20,.55) 100%)' }} />;
 
 // ───── табло героя ─────
-export type Stats = { str: number; hp: number; aura: number; hit: number; gain: number; loss: number; hpBar?: number; auraFrom?: number; auraAt?: number };
+export type Stats = { str: number; hp: number; aura: number; hit: number; gain: number; loss: number; hpBar?: number; strGain?: number; strAt?: number; hpGain?: number; hpAt?: number; auraFrom?: number; auraAt?: number };
 export const Hud: React.FC<{ t: number; st: Stats; t0: number }> = ({ t, st, t0 }) => {
   const plate = (i: number, icon: string, label: string, val: string, col: string, extra?: React.ReactNode, flashCol?: string, flashK = 0, shakeK = 0) => {
     const k = spr(t, t0 + i * .95, { damping: 11, stiffness: 140 }); const sx = Math.sin(t * 70) * 10 * shakeK;
@@ -36,8 +36,8 @@ export const Hud: React.FC<{ t: number; st: Stats; t0: number }> = ({ t, st, t0 
   const aK = st.auraAt != null ? clamp((t - st.auraAt) / .45) : 1, auraShow = Math.round(lerp(st.auraFrom ?? st.aura, st.aura, aK));
   const gainK = clamp(1 - (t - st.gain) / .7), lossK = clamp(1 - (t - st.loss) / .7), hitK = clamp(1 - (t - st.hit) / .5);
   const pop = (txt: string, col: string, t1: number) => { const k = (t - t1) / 1.1; if (k < 0 || k > 1) return null; return <div style={{ position: 'absolute', right: 6, top: 60 - k * 70, fontSize: 44, fontWeight: 900, color: col, opacity: 1 - k * k, WebkitTextStroke: stroke(6), paintOrder: 'stroke fill', fontFamily: FONT }}>{txt}</div>; };
-  return (<>{plate(0, '⚔', 'СИЛА', String(st.str), '#ff8a5a', pop('+1', C.green, st.gain), C.green, st.str > 1 ? gainK : 0)}
-    {plate(1, '❤', 'ЗДОРОВЬЕ', String(st.hp), '#ff4a6a', st.hpBar != null && <div style={{ position: 'absolute', left: 120, right: 18, top: 78, height: 18, borderRadius: 9, background: 'rgba(255,255,255,.15)' }}><div style={{ width: `${(st.hpBar ?? 1) * 100}%`, height: '100%', borderRadius: 9, background: (st.hpBar ?? 1) < .35 ? C.red : '#ff4a6a' }} /></div>, C.red, hitK, hitK)}
+  return (<>{plate(0, '⚔', 'СИЛА', String(st.str), '#ff8a5a', pop(`+${st.strGain ?? 1}`, C.green, st.strAt ?? st.gain), C.green, st.str > 1 ? clamp(1 - (t - (st.strAt ?? st.gain)) / .7) : 0)}
+    {plate(1, '❤', 'ЗДОРОВЬЕ', String(st.hp), '#ff4a6a', st.hpAt != null ? pop(`+${st.hpGain}`, C.green, st.hpAt) : st.hpBar != null && <div style={{ position: 'absolute', left: 120, right: 18, top: 78, height: 18, borderRadius: 9, background: 'rgba(255,255,255,.15)' }}><div style={{ width: `${(st.hpBar ?? 1) * 100}%`, height: '100%', borderRadius: 9, background: (st.hpBar ?? 1) < .35 ? C.red : '#ff4a6a' }} /></div>, st.hpAt != null ? C.green : C.red, st.hpAt != null ? clamp(1 - (t - st.hpAt) / .7) : hitK, st.hpAt != null ? 0 : hitK)}
     {plate(2, '✦', 'АУРА', String(auraShow), C.gold, <>{st.auraAt != null && st.aura > (st.auraFrom ?? 0) && pop(`+${st.aura - (st.auraFrom ?? 0)}`, C.gold, st.auraAt)}{st.auraAt != null && st.aura < (st.auraFrom ?? 0) && pop(`${st.aura - (st.auraFrom ?? 0)}`, C.red, st.auraAt)}</>, st.aura >= (st.auraFrom ?? 0) ? C.gold : C.red, Math.max(st.aura > 0 ? gainK * (st.gain === st.auraAt || st.gain > -1 ? 1 : 0) : 0, lossK), lossK)}</>); };
 
 // ───── окно «системы» (голограмма) ─────
@@ -62,10 +62,10 @@ export const InfoStand: React.FC<{ t: number; num: string; title: string; lines:
         {l.icon && <div style={{ fontSize: 46, width: 64, textAlign: 'center', color: l.col || col }}>{l.icon}</div>}<div style={{ fontSize: l.big ? 50 : 42, fontWeight: l.big ? 900 : 800, lineHeight: 1.15, color: l.col || C.text }}>{l.text}</div></div>); })}</div></div></AbsoluteFill>); };
 
 // ───── бирка-ярлык ─────
-export const Tag: React.FC<{ t: number; t0: number; x: number; y: number; title: string; sub?: string; col?: string; tx?: number; ty?: number; w?: number }> = ({ t, t0, x, y, title, sub, col = C.red, tx, ty, w = 560 }) => {
+export const Tag: React.FC<{ t: number; t0: number; x: number; y: number; title: string; sub?: string; col?: string; tx?: number; ty?: number; w?: number; k2?: number }> = ({ t, t0, x, y, title, sub, col = C.red, tx, ty, w = 560, k2 = 1 }) => {
   const k = out(win(t, t0, t0 + .3)); if (t < t0) return null;
   return (<>{tx != null && <svg width="1080" height="1920" style={{ position: 'absolute', inset: 0 }}><path d={`M${x + 20},${y + 40} L${tx},${ty}`} stroke={col} strokeWidth={5} strokeDasharray={`${k * 600} 600`} /><circle cx={tx} cy={ty} r={10 * k} fill={col} /></svg>}
-    <div style={{ position: 'absolute', left: x, top: y, width: w, transform: `translateX(${(1 - k) * -40}px)`, opacity: k, background: 'rgba(20,18,28,.88)', borderLeft: `10px solid ${col}`, borderRadius: 12, padding: '12px 20px', fontFamily: FONT, color: C.text }}>
+    <div style={{ position: 'absolute', left: x, top: y, width: w, transformOrigin: '0 0', transform: `translateX(${(1 - k) * -40}px) scale(${k2})`, opacity: k, background: 'rgba(20,18,28,.88)', borderLeft: `10px solid ${col}`, borderRadius: 12, padding: '12px 20px', fontFamily: FONT, color: C.text }}>
       <div style={{ fontSize: 44, fontWeight: 900, lineHeight: 1.05 }}>{title}</div>{sub && <div style={{ fontSize: 30, fontWeight: 800, color: col, marginTop: 4 }}>{sub}</div>}</div></>); };
 
 // ───── звуковое слово и штамп ─────

@@ -3,12 +3,13 @@ import React from 'react';
 import { AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import '../fonts';
 import { SHOTS, CAPS, NAME, DUR, statsAt, HUD_FROM, HUD_HIDE } from './timeline.mjs';
+import { PopalPreload } from '../chars/Cast2';
 import * as A from './ShotsA';
 import * as B from './ShotsB';
 import { Captions, Hud, Post, BottomShade } from '../ui/Ui';
 
 const MAP: Record<string, React.FC<{ t: number; T: number }>> = {
-  hook: A.Hook, card: A.Card, net: A.Net, lira: A.Lira, throw: A.Throw, land: A.Land, slap: A.Slap, stand: A.Stand, ears: A.Ears, earsYes: A.EarsYes, lore4: A.Lore4,
+  hook: A.Hook, card: A.Card, net: A.Net, lira: A.Lira, throw: A.Throw, land: A.Land, slap: A.Slap, stand: A.Stand, ears: A.Ears, earsYes: A.EarsYes,
   sisters: A.Sisters, motiv: A.Motiv, camp: A.Camp, plan: B.Plan, oops: B.Oops, backs: B.Backs, fight: B.Fight, boss: B.Boss, rico: B.Rico, levelup: B.LevelUp,
   freed: B.Freed, jealous: B.Jealous, throne: B.ThroneEp2, campfire: B.Campfire2, offer: B.Offer, trap: B.Trap, ask: B.Ask, split: B.Split,
 };
@@ -22,5 +23,5 @@ const Overlay: React.FC = () => { const f = useCurrentFrame(), { fps } = useVide
 export const Ep2: React.FC<{ audio?: boolean }> = ({ audio = true }) => { const { fps, width } = useVideoConfig();
   return (<AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}><div style={{ position: 'absolute', width: 1080, height: 1920, transform: `scale(${width / 1080})`, transformOrigin: '0 0', overflow: 'hidden' }}>
     {(SHOTS as any[]).map(s => <Sequence key={s.id} name={s.id} from={Math.round(s.a * fps)} durationInFrames={Math.max(1, Math.round((s.b - s.a) * fps))}><ShotAt id={s.id} a={Math.round(s.a * fps) / fps} /></Sequence>)}
-    <Overlay /></div>{audio && <Audio src={staticFile('ep2-mix.wav')} />}</AbsoluteFill>); };
+    <Overlay /><PopalPreload /></div>{audio && <Audio src={staticFile('ep2-mix.wav')} />}</AbsoluteFill>); };
 export const EP2_FRAMES = Math.round(DUR * 30);

@@ -205,7 +205,7 @@ export const Person: React.FC<PersonProps> = (p) => {
           <path d="M-70,58 C-56,86 -30,98 0,100 C30,98 56,86 70,58" stroke="#8a6a5a" strokeWidth={10} fill="none" opacity={.13} strokeDasharray="2 7" strokeLinecap="round" />
           <Face t={t} expr={p.expr ?? 'neutral'} mouth={p.mouth} eye={p.eye} lid={p.lid} noBlink={p.noBlink} L={L} seed={Math.round(p.x)} sweat={p.sweat} blush={p.blush} />
           <Hair L={L} t={t} />
-          {(p.slap ?? 0) > 0 && <g opacity={p.slap} transform="translate(-58,40) rotate(-14)"><ellipse cx={0} cy={0} rx={24} ry={28} fill="#ff4a5a" opacity={.55} />{[-18, -6, 6, 18].map((fx, i) => <rect key={i} x={fx - 5} y={-62 + Math.abs(fx) * .6} width={11} height={44} rx={5} fill="#ff4a5a" opacity={.5} />)}</g>}
+          {(p.slap ?? 0) > 0 && <g opacity={p.slap} transform={`translate(${p.flip ? 58 : -58},40) scale(${p.flip ? -1 : 1},1) rotate(-14)`}><ellipse cx={0} cy={0} rx={24} ry={28} fill="#ff4a5a" opacity={.55} />{[-18, -6, 6, 18].map((fx, i) => <rect key={i} x={fx - 5} y={-62 + Math.abs(fx) * .6} width={11} height={44} rx={5} fill="#ff4a5a" opacity={.5} />)}</g>}
           {(p.kisses ?? 0) > 0 && [[60, 34, 12], [-62, 20, -18], [20, -70, 8], [-30, 84, -6], [84, -20, 20]].slice(0, p.kisses).map(([kx, ky, kr], i) => <g key={i} transform={`translate(${kx},${ky}) rotate(${kr})`}><path d="M-16,0 Q-8,-10 0,-3 Q8,-10 16,0 Q8,12 0,10 Q-8,12 -16,0 Z" fill="#ff3a8a" opacity={.85} /><path d="M-14,0 Q0,4 14,0" stroke="#b0105a" strokeWidth={2} /></g>)}
         </> : <>
           <path d="M-112,10 C-118,-96 -60,-140 0,-140 C60,-140 118,-96 112,10 C110,60 80,96 0,100 C-80,96 -110,60 -112,10 Z" fill="#5a2fd4" />
