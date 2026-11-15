@@ -2,7 +2,7 @@
 // гусь из пруда, земли демонов, Король-бык, развилка с чиби-Желе. Остальные планы — в Shots.tsx.
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { SHOT, HIT_AT } from './timeline.mjs';
+import { SHOT, HIT_AT, SLOT_H2, SLOT_STOP } from './timeline.mjs';
 import { clamp, lerp, out, io, spr, win, shake, noise, handheld } from '../anim';
 import { C, FONT } from '../theme';
 import { Person, POSES, blendPose, Pan, Doner, Cola } from '../chars/Person';
@@ -18,21 +18,21 @@ const hash = (n: number) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453
 const Speed: React.FC<{ t: number; o?: number }> = ({ t, o = .5 }) => <g>{Array.from({ length: 18 }, (_, i) => { const a = i / 18 * 6.283 + hash(i) * .3, r0 = 420 + hash(i * 3) * 200 + ((t * 900 + i * 90) % 300);
   return <path key={i} d={`M${540 + Math.cos(a) * r0},${960 + Math.sin(a) * r0} L${540 + Math.cos(a) * (r0 + 500)},${960 + Math.sin(a) * (r0 + 500)}`} stroke="#fff" strokeWidth={6 + hash(i) * 10} opacity={o} />; })}</g>;
 const PhoneUI: React.FC<{ t: number; t0: number; x: number; y: number; lines: [string, string][] }> = ({ t, t0, x, y, lines }) => { const k = spr(t, t0, { damping: 12 }); if (t < t0) return null;
-  return (<div style={html({ left: x, top: y, width: 420, transform: `scale(${k}) rotate(-3deg)`, transformOrigin: '0 100%', background: '#111', borderRadius: 46, padding: 18, boxShadow: '0 30px 60px rgba(0,0,0,.5)' })}>
+  return (<div style={html({ left: x, top: y, width: 520, transform: `scale(${k}) rotate(-3deg)`, transformOrigin: '0 100%', background: '#111', borderRadius: 46, padding: 18, boxShadow: '0 30px 60px rgba(0,0,0,.5)' })}>
     <div style={{ background: 'linear-gradient(180deg,#ff7a3a,#e5383b)', borderRadius: 32, padding: '26px 24px', color: '#fff' }}>
       <div style={{ fontSize: 28, fontWeight: 800, opacity: .9 }}>ДОСТАВКА ЕДЫ</div>
       <div style={{ fontSize: 120, lineHeight: 1.1, textAlign: 'center' }}>🌯</div>
-      {lines.map(([a, b], i) => <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 34, fontWeight: 900, marginTop: 8, opacity: clamp((t - t0 - .3 - i * .35) / .2) }}><span>{a}</span><span style={{ color: '#ffe27a' }}>{b}</span></div>)}
+      {lines.map(([a, b], i) => <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 46, fontWeight: 900, marginTop: 8, whiteSpace: 'nowrap', opacity: clamp((t - t0 - .3 - i * .35) / .2) }}><span>{a}</span><span style={{ color: '#ffe27a' }}>{b}</span></div>)}
     </div></div>); };
 
 // ───────────────────────── 1. КВАРТИРА: голодный Макс заказывает донер ─────────────────────────
 export const Room: React.FC<P> = ({ t, T }) => { const growl = t > 1.6 && t < 2.5, s = growl ? [Math.sin(t * 60) * 4, 0] : [0, 0], order = t > 2.8;
-  return (<><Frame bg="#2a2a48"><Cam z={lerp(1.0, 1.1, io(win(t, 0, dur('room'))))} fy={1200} dx={s[0]}><Apartment t={T} />
+  return (<><Frame bg="#2a2a48"><Cam z={lerp(1.0, 1.1, io(win(t, 0, dur('room'))))} fy={1200} dx={s[0]}><Apartment t={T} /><Glow x={545} y={900} r={250} c="#9fc0ff" o={.5} id="hairRim" />
     <Person x={540} y={1610} s={1.15} t={T} hold="phone" pose={{ armR: [.3, -2.0], armL: [-.2, 1.9], legL: [-1.4, 1.5], legR: [-1.3, 1.4], hip: 40 }} expr={growl ? 'pain' : order ? 'happy' : 'deadpan'} eye={[-.2, .6]} headTilt={-4} />
     <Glow x={600} y={1080} r={260} c="#4ad0ff" o={.35} id="phG" />
   </Cam></Frame>
     {growl && <Onomato t={t} t0={1.6} x={800} y={800} text="УРРР…" col="#ffb04a" size={110} rot={8} dur={1.0} />}
-    <PhoneUI t={t} t0={2.8} x={600} y={330} lines={[['ДОНЕР XXL', '✓'], ['ЗАКАЗ', 'ПРИНЯТ'], ['КУРЬЕР', '15 МИН']]} /></>); };
+    <PhoneUI t={t} t0={2.8} x={500} y={300} lines={[['ДОНЕР XXL', '✓'], ['ЗАКАЗ', 'ПРИНЯТ'], ['КУРЬЕР', '15 МИН']]} /></>); };
 
 // ───────────────────────── 2. ХОЛОДИЛЬНИК: колы нет ─────────────────────────
 export const FridgeShot: React.FC<P> = ({ t, T }) => { const open = t < 3.2 ? out(win(t, .1, .5)) : 1 - out(win(t, 3.2, 3.6));
@@ -41,15 +41,28 @@ export const FridgeShot: React.FC<P> = ({ t, T }) => { const open = t < 3.2 ? ou
     <Glow x={700} y={1200} r={500} c="#e6f4ff" o={open * .35} id="frF" />
   </Cam></Frame>); };
 
+// курьер на самокате анфас (едет на камеру): начало координат — точка касания колеса с землёй
+const CourierRide: React.FC<{ x: number; y: number; s: number; t: number }> = ({ x, y, s, t }) => (<g transform={`translate(${x},${y}) scale(${s}) rotate(${Math.sin(t * 9) * 2})`}>
+  <ellipse cx={0} cy={4} rx={120} ry={16} fill="#000" opacity={.3} />
+  <rect x={-150} y={-560} width={300} height={250} rx={26} fill="#5a2fd4" /><rect x={-150} y={-560} width={300} height={60} rx={26} fill="#7a55ff" />
+  <path transform="translate(0,-415) scale(2.6)" d="M0,-26 L8,-8 L28,-8 L12,4 L18,24 L0,12 L-18,24 L-12,4 L-28,-8 L-8,-8 Z" fill="#ffd23f" />
+  <rect x={-22} y={-130} width={44} height={130} rx={20} fill="#15131f" /><rect x={-9} y={-250} width={18} height={150} fill="#8a8ea0" />
+  <path d="M-78,-330 Q0,-380 78,-330 L92,-150 Q0,-120 -92,-150 Z" fill="#43209f" />
+  <path d="M-70,-320 L-150,-240 M70,-320 L150,-240" stroke="#43209f" strokeWidth={40} strokeLinecap="round" />
+  <rect x={-170} y={-256} width={340} height={20} rx={10} fill="#2a2c33" /><circle cx={-160} cy={-246} r={24} fill="#f0c4a0" /><circle cx={160} cy={-246} r={24} fill="#f0c4a0" />
+  <circle cx={0} cy={-250} r={34} fill="#fffbe0" /><circle cx={0} cy={-250} r={34} fill="none" stroke="#2a2c33" strokeWidth={8} />
+  <circle cx={0} cy={-430} r={86} fill="#5a2fd4" /><path d="M-74,-470 Q0,-520 74,-470" stroke="#7a55ff" strokeWidth={14} fill="none" strokeLinecap="round" />
+  <rect x={-66} y={-452} width={132} height={62} rx={28} fill="#0d0b1a" /><circle cx={-26} cy={-420} r={9} fill="#fff" /><circle cx={26} cy={-420} r={9} fill="#fff" />
+</g>);
 // ───────────────────────── 3. УЛИЦА: Макс с колой, курьер с его донером ─────────────────────────
 export const StreetHit: React.FC<P> = ({ t, T }) => { const d = HIT_AT, hl = win(t, d - 1.6, d) ** 2.2, turn = t > d - 1.0;
   return (<><Frame bg="#0b1430"><Cam z={lerp(1, 1.08, io(win(t, 0, d)))} fy={1300}><Street t={T} />
-    <Glow x={lerp(820, 700, hl)} y={lerp(1080, 1150, hl)} r={lerp(70, 1100, hl)} c="#fff6d0" o={lerp(.5, 1, hl)} id="head2" />
-    <circle cx={lerp(820, 700, hl)} cy={lerp(1080, 1150, hl)} r={lerp(12, 260, hl)} fill="#ffffff" opacity={clamp((t - (d - 1.7)) * 3)} />
+    {(() => { const ap = win(t, d - 2.4, d - .05) ** 2, cs = lerp(.1, 1.75, ap), cx = lerp(880, 690, ap), cy = lerp(1200, 1560, ap); /* курьер на самокате едет на камеру: фара, шлем, фиолетовый короб со звездой */
+      return t > d - 2.4 ? <g><Glow x={cx} y={cy - 250 * cs} r={lerp(90, 520, ap)} c="#fff6d0" o={lerp(.45, .75, ap)} id="head2" /><CourierRide x={cx} y={cy} s={cs} t={T} /></g> : null; })()}
     <Person x={lerp(380, 560, clamp(t / (d - 1)))} y={1760} s={1.2} t={T} hold="cola" pose={turn ? blendPose(POSES.stand, POSES.shrug, out(win(t, d - 1, d - .8))) : { armL: [-.2, .2], armR: [.5, -1.3] }}
       expr={turn ? 'happy' : 'neutral'} eye={turn ? [.8, -.1] : [.4, 0]} headTilt={turn ? 6 : 0} />
   </Cam><rect width={1080} height={1920} fill="#fffbe8" opacity={clamp((t - (d - .3)) / .3)} /></Frame>
-    <div style={html({ left: 300, top: 600, transform: `scale(${spr(t, d - 1.3, { damping: 10 })})`, opacity: clamp(1.6 - hl * 2), background: '#fff', borderRadius: 26, padding: '12px 26px', fontSize: 36, fontWeight: 900, color: '#14121c', boxShadow: '0 10px 30px rgba(0,0,0,.4)' })}>🛵 ВАШ ДОНЕР РЯДОМ</div></>); };
+    <div style={html({ left: 90, top: 470, width: 900, boxSizing: 'border-box', textAlign: 'center', transform: `scale(${spr(t, d - 2.3, { damping: 10 })})`, opacity: t < d - 2.3 ? 0 : clamp((d - .1 - t) / .2), background: '#fff', borderRadius: 34, padding: '20px 30px', fontSize: 64, fontWeight: 900, color: '#14121c', boxShadow: '0 10px 30px rgba(0,0,0,.4)', whiteSpace: 'nowrap' })}>🛵 ВАШ ДОНЕР <span style={{ color: '#e5383b' }}>РЯДОМ</span></div></>); };
 
 // ───────────────────────── 4. СТОП-КАДР + НАЗВАНИЕ ─────────────────────────
 export const FreezeTitle: React.FC<P> = ({ t, T }) => { const dd = Math.min(t, 1.35) * 18, grey = clamp((t - 1.3) / .2), s = shake(t, 1.35, 16, .35);
@@ -101,22 +114,22 @@ const Reels: React.FC<{ t: number; T: number; stopAt: number[] }> = ({ t, T, sto
   return (<g key={i}><clipPath id={`reelc${i}`}><rect x={x - 70} y={-250} width={140} height={280} /></clipPath><rect x={x - 70} y={-250} width={140} height={280} fill="#fffdf2" />
     <g clipPath={`url(#reelc${i})`}>{spinning ? [0, 1, 2, 3].map(j => <text key={j} x={x} y={-200 + j * 120 - off + 120} fontSize={90} textAnchor="middle">{REEL[(j + i + Math.floor(t * 8)) % 4]}</text>)
       : <g transform={`translate(${x},-110) scale(.42) translate(0,170)`}><Pan glow={1} t={T} /></g>}</g></g>); })}</g>);
-export const SlotShot: React.FC<P> = ({ t, T }) => { const lv = out(win(t, 1.4, 1.6)) - out(win(t, 1.8, 2.2)), stop = [3.1, 3.25, 3.4], zoom = io(win(t, 2.0, 2.8)), won = t > 3.4;
-  return (<><Frame bg="#2a1f45"><Cam z={lerp(1.0, 1.45, zoom)} fx={400} fy={860}><rect width={1080} height={1920} fill="#2a1f45" /><Glow x={400} y={900} r={700} c="#ff5aa8" o={.4} id="slg2" />
+export const SlotShot: React.FC<P> = ({ t, T }) => { const lv = out(win(t, 1.4, 1.6)) - out(win(t, 1.8, 2.2)), st = SLOT_STOP, stop = [st, st + .18, st + .36], zoom = io(win(t, 1.9, 2.7)), won = t > st + .36;
+  /* компактные шансы: три редких дара по 1% и сковородка 97% — пока барабаны крутятся */
+  const chips: [string, string, string][] = [['⚔', 'Меч', '#9fe3ff'], ['🔮', 'Посох', '#c9a2ff'], ['🩸', 'Кровь дракона', '#ff8a8a']];
+  const ck = out(win(t, SLOT_H2, SLOT_H2 + .35)), pk = out(win(t, st - .25, st + .45));
+  return (<><Frame bg="#2a1f45"><Cam z={lerp(1.0, 1.2, zoom)} fx={350} fy={600}><rect x={-300} y={-300} width={1700} height={2600} fill="#2a1f45" /><Glow x={400} y={900} r={700} c="#ff5aa8" o={.4} id="slg2" />
     <g transform="translate(400,950)"><SlotBody t={T} lever={lv} lights={won ? 1 : 0} /><Reels t={t} T={T} stopAt={stop} />
       {won && <rect x={-240} y={-260} width={480} height={300} rx={20} fill="none" stroke="#ffd23f" strokeWidth={10} opacity={.5 + .5 * Math.sin(t * 20)} />}</g>
-    <Person x={870} y={1720} s={1.05} t={T} pose={{ armL: [-2.4 + lv * 1.0, .3], armR: [.12, -.15] }} expr={won ? 'shock' : t > 1.4 ? 'determined' : 'neutral'} eye={[-.7, -.3]} flip />
-    {won && Array.from({ length: 22 }, (_, i) => { const k = t - 3.45, x = 400 + (hash(i) - .5) * 900 * k, y = 1200 - 900 * k * (.5 + hash(i * 3)) + 1200 * k * k; return <circle key={i} cx={x} cy={y} r={20} fill="#ffd23f" stroke="#b8860b" strokeWidth={5} />; })}
-  </Cam></Frame></>); };
-
-// ───────────────────────── 12. ИНФОГРАФИКА: ШАНСЫ АВТОМАТА ─────────────────────────
-export const Odds: React.FC<P> = ({ t }) => { const rows: [string, string, number, string, number][] = [['⚔', 'Меч героя', 1, '#9fe3ff', .5], ['🔮', 'Посох архимага', 1, '#c9a2ff', 1.0], ['🩸', 'Кровь дракона', 1, '#ff8a8a', 1.5], ['🍳', 'Сковородка', 97, '#ffd23f', 3.0]];
-  const art = (<g>{rows.map(([ic, nm, pc, col, t0], i) => { const k = out(win(t, t0, t0 + .6)), big = pc > 50, y = i * 92 + 10;
-    return (<g key={i} opacity={clamp(k * 2)} transform={`translate(0,${y})`}><text x={0} y={52} fontSize={52}>{ic}</text><text x={74} y={46} fontSize={big ? 40 : 34} fontWeight={900} fill={big ? '#ffd23f' : '#fff'} fontFamily="Mont">{nm}</text>
-      <rect x={410} y={16} width={360} height={40} rx={20} fill="rgba(255,255,255,.12)" /><rect x={410} y={16} width={Math.max(14, 360 * pc / 100 * k)} height={40} rx={20} fill={col} />
-      <text x={860} y={50} fontSize={40} fontWeight={900} textAnchor="end" fill={col} fontFamily="Mont">{Math.round(pc * k)}%</text></g>); })}</g>);
-  return <InfoStand t={t} num="АВТОМАТ «ДАР»" title="Шансы выпадения" art={art} col="#ffd23f" top={360}
-    lines={[{ t: .6, icon: '🎰', text: 'Прокрутка — только одна' }, { t: 3.3, icon: '😐', text: 'Почти всегда — сковородка', col: '#ffd23f', big: true }]} />; };
+    <Person x={840} y={1720} s={1.05} t={T} pose={{ armL: [-2.4 + lv * 1.0, .3], armR: [.12, -.15] }} expr={won ? 'shock' : t > 1.4 ? 'determined' : 'neutral'} eye={[-.7, -.3]} flip />
+    {won && Array.from({ length: 22 }, (_, i) => { const k = t - st - .4, x = 400 + (hash(i) - .5) * 900 * k, y = 1200 - 900 * k * (.5 + hash(i * 3)) + 1200 * k * k; return <circle key={i} cx={x} cy={y} r={20} fill="#ffd23f" stroke="#b8860b" strokeWidth={5} />; })}
+  </Cam></Frame>
+    {t >= SLOT_H2 && <div style={html({ left: 60, top: 1090, width: 700, opacity: ck, transform: `translateY(${(1 - ck) * 40}px)`, background: 'rgba(20,18,28,.93)', border: '5px solid #ffd23f', borderRadius: 26, padding: '18px 24px 22px', color: '#fff', boxSizing: 'border-box' })}>
+      <div style={{ display: 'flex', gap: 12 }}>{chips.map(([ic, nm, col], i) => { const k = out(win(t, SLOT_H2 + .1 + i * .18, SLOT_H2 + .4 + i * .18)); return (<div key={i} style={{ flex: i === 2 ? 1.5 : 1, opacity: k, background: 'rgba(255,255,255,.1)', borderRadius: 16, padding: '8px 10px', textAlign: 'center' }}>
+        <div style={{ fontSize: 26, fontWeight: 800, whiteSpace: 'nowrap' }}>{ic} {nm}</div><div style={{ fontSize: 46, fontWeight: 900, color: col, lineHeight: 1.05 }}>1%</div></div>); })}</div>
+      <div style={{ marginTop: 14, opacity: clamp(pk * 3), display: 'flex', alignItems: 'center', gap: 16 }}><div style={{ fontSize: 44, fontWeight: 900, color: '#ffd23f', whiteSpace: 'nowrap' }}>🍳 СКОВОРОДКА</div>
+        <div style={{ flex: 1, textAlign: 'right', fontSize: 76, fontWeight: 900, color: '#ffd23f', lineHeight: 1 }}>{Math.round(97 * pk)}%</div></div>
+      <div style={{ marginTop: 10, height: 26, borderRadius: 13, background: 'rgba(255,255,255,.14)' }}><div style={{ width: `${97 * pk}%`, height: '100%', borderRadius: 13, background: '#ffd23f' }} /></div></div>}</>); };
 
 // ───────────────────────── 13. ПРЕДМЕТ: СКОВОРОДА СУДЬБЫ ─────────────────────────
 export const Item: React.FC<P> = ({ t, T }) => { const k = spr(t, .1, { damping: 10 });
@@ -140,7 +153,7 @@ export const Dodep: React.FC<P> = ({ t, T }) => { const hh = handheld(T, 4), dd 
 
 // ───────────────────────── 15. «ПОШЁЛ НАХЕР» → портал ─────────────────────────
 export const Nah: React.FC<P> = ({ t, T }) => {
-  if (t < 1.1) return (<Frame bg="#d7ecff"><Cam z={lerp(1.15, 1.2, t)} fy={800}><Counter t={T} /><Lumina x={540} y={1430} s={1.75} t={T} mouth={mouth('lumina', T)} expr="deadpan" overGlasses={1} swipe={clamp((t - .75) / .3)} /></Cam></Frame>);
+  if (t < 1.1) return (<Frame bg="#d7ecff"><Cam z={lerp(1.15, 1.2, t)} fy={800} dy={70}><rect x={0} y={-200} width={1080} height={600} fill="#d7ecff" /><Counter t={T} /><Lumina x={540} y={1430} s={1.75} t={T} mouth={mouth('lumina', T)} expr="deadpan" overGlasses={1} swipe={clamp((t - .75) / .3)} /></Cam></Frame>);
   const k = t - 1.1, fall = clamp((k - .25) / .9), pk = out(win(k, 0, .25));
   return (<Frame bg="#d7ecff"><Counter t={T} />
     <g transform="translate(540,1560)"><Glow x={0} y={0} r={520 * pk} c="#ffd23f" o={.9} id="portY2" /><ellipse cx={0} cy={0} rx={380 * pk} ry={110 * pk} fill="#4a2a9a" /><ellipse cx={0} cy={0} rx={300 * pk} ry={80 * pk} fill="#1a0a3a" /></g>

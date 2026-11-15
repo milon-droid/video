@@ -1,6 +1,7 @@
 // Персонажи серии 2: бесы, главный бес, сеть-ловушка, клетка. Начало координат — между ступнями на земле.
-import React from 'react';
-import { blink, clamp, noise } from '../anim';
+import React, { useEffect, useState } from 'react';
+import { continueRender, delayRender, staticFile } from 'remotion';
+import { blink, clamp, lerp, noise } from '../anim';
 
 const IMP_COL = [['#e0403a', '#b02a28', '#ff7a5a'], ['#d8503a', '#a8342a', '#ff8a6a'], ['#c83a52', '#962a3e', '#ff7a8a'], ['#e85a2a', '#b23e1a', '#ff9a5a']];
 export type ImpState = 'stand' | 'dance' | 'attack' | 'ko' | 'turn' | 'run';
@@ -105,3 +106,20 @@ export const Cage: React.FC<{ x: number; y: number; s?: number; t: number; open?
     {open > 0 && <g transform={`translate(-60,-40) rotate(${-open * 100})`}>{[0, 1, 2].map(i => <rect key={i} x={i * 56.6 - 8 - 4} y={-520} width={16} height={520} rx={6} fill="#8a6a3a" />)}</g>}
     <rect x={-20} y={-330} width={40} height={50} rx={6} fill="#9aa0aa" opacity={open > 0 ? 0 : 1} />
   </g>);
+
+// ───── Лилиана (суккуба-генерал): рисунок пользователя целиком (public/popal/liliana.png, 1024×1536) + живое лицо поверх.
+// Начало координат — между ступнями; s=1 ≈ рост 800 px. Моргание и рот по голосу нарисованы поверх картинки, фигура парит и дышит.
+const LIL = 'popal/liliana.png', LK = .6, SKIN_L = '#e9a2b8';
+export const Liliana: React.FC<{ x: number; y: number; s?: number; t: number; mouth?: number }> = ({ x, y, s = 1, t, mouth = 0 }) => {
+  const b = blink(t, 9), fy = Math.sin(t * 1.6) * 8, sw = Math.sin(t * .9) * 1.2, m = clamp(mouth);
+  return (<g transform={`translate(${x},${y + fy}) rotate(${sw}) scale(${s * LK}) translate(-512,-1490)`}>
+    <image href={staticFile(LIL)} x={0} y={0} width={1024} height={1536} />
+    {b < .5 && <g><ellipse cx={455} cy={309} rx={33} ry={15} fill={SKIN_L} /><ellipse cx={548} cy={311} rx={36} ry={16} fill={SKIN_L} />
+      <path d="M424,306 Q455,318 486,304 M514,306 Q548,320 584,304" stroke="#2a0f3a" strokeWidth={5} fill="none" strokeLinecap="round" /></g>}
+    {m > .08 && <g><ellipse cx={497} cy={368} rx={30} ry={13} fill={SKIN_L} /><ellipse cx={497} cy={368} rx={lerp(20, 15, m)} ry={3 + m * 13} fill="#6a1240" /><path d={`M${497 - 14},${368 + 2 + m * 6} Q497,${368 + 6 + m * 12} ${497 + 14},${368 + 2 + m * 6}`} stroke="#e0468a" strokeWidth={4} fill="none" /></g>}
+  </g>); };
+// картинки сериала держим в DOM с первого кадра: кадр ждёт, пока они загрузятся (SVG <image> грузится асинхронно)
+export const PopalPreload: React.FC = () => { const [h] = useState(() => delayRender('popal images')); const done = React.useRef(false);
+  const fin = () => { if (!done.current) { done.current = true; continueRender(h); } };
+  useEffect(() => { const tmo = setTimeout(fin, 25000); return () => clearTimeout(tmo); }, [h]);
+  return <svg width={2} height={2} style={{ position: 'absolute', left: 0, top: 0, opacity: .004, pointerEvents: 'none' }}><image href={staticFile(LIL)} width={2} height={2} onLoad={fin} onError={fin} /></svg>; };

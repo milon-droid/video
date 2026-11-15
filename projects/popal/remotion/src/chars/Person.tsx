@@ -39,7 +39,9 @@ export const blendPose = (a: Pose, b: Pose, k: number): Pose => ({
   lean: lerp(a.lean ?? 0, b.lean ?? 0, k), hip: lerp(a.hip ?? 0, b.hip ?? 0, k) });
 // бег: фаза из пройденного пути (ноги не скользят), руки в противофазе
 export const runPose = (ph: number): Pose => { const s = Math.sin(ph), c = Math.cos(ph);
-  return { armL: [-s * .9, -.9 - c * .2], armR: [s * .9, .9 + c * .2], legL: [s * .75, -Math.max(0, -c) * 1.3 - .15], legR: [-s * .75, Math.max(0, c) * 1.3 + .15], lean: .18 }; };
+  /* нога: вынос вперёд — колено сильно согнуто (пятка к бедру), опора — почти прямая; колени гнутся только назад */
+  const leg = (f: number): Limb => { const sw = Math.max(0, Math.cos(f)); return [.18 + Math.sin(f) * .8, -(.12 + sw * 1.45 + Math.max(0, -Math.cos(f)) * .22)]; };
+  return { armL: [-s * .9, -.9 - c * .2], armR: [s * .9, .9 + c * .2], legL: leg(ph), legR: leg(ph + Math.PI), lean: .2 + Math.sin(ph * 2) * .03 }; };
 
 type LookT = { skin: string; skinSh: string; top: string; topSh: string; topHi: string; pants: string; pantsSh: string; shoe: string; shoeSole: string; hair: string; hairHi: string; iris: string; fem?: boolean; cloak?: string; trim?: string; gem?: string; brow?: string; browFlat?: boolean };
 // эльфийки (серия 2): Лира — золотая коса, зелёный плащ; сёстры — розовая, серебряная, рыжая

@@ -16,7 +16,7 @@ export type Word = { text: string; t: number; accent: boolean };
 export type Phrase = { who: string; a: number; b: number; words: Word[] };
 export const Captions: React.FC<{ t: number; caps: Phrase[]; names: Record<string, string>; top?: number }> = ({ t, caps, names, top = 1290 }) => {
   const p = caps.find(q => t >= q.a && t < q.b); if (!p) return null; const fa = out(win(t, p.a - .02, p.a + .12)); const col = WHO_COL[p.who] || C.text;
-  const name = p.who !== 'zk' && p.who !== 'max' ? names[p.who] : null;
+  const name = p.who !== 'zk' && p.who !== 'max' && !(p as any).noName ? names[p.who] : null;
   return (<div style={{ position: 'absolute', left: 60, width: 860, top, transform: `translate(0,-50%) translateY(${(1 - fa) * 16}px)`, opacity: fa, textAlign: 'center' }}>
     {name && <div style={{ display: 'inline-block', marginBottom: 10, padding: '6px 20px', borderRadius: 12, background: col, color: '#14121c', fontFamily: FONT, fontWeight: 900, fontSize: 34, letterSpacing: 1 }}>{name}</div>}
     <div style={{ fontFamily: FONT, fontWeight: 900, fontSize: 70, lineHeight: 1.12, textTransform: 'uppercase', letterSpacing: .5, wordSpacing: 10 }}>
@@ -25,7 +25,7 @@ export const Captions: React.FC<{ t: number; caps: Phrase[]; names: Record<strin
 export const BottomShade: React.FC = () => <AbsoluteFill style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(10,8,20,.42) 78%, rgba(10,8,20,.55) 100%)' }} />;
 
 // ───── табло героя ─────
-export type Stats = { str: number; hp: number; aura: number; hit: number; gain: number; loss: number; hpBar: number; auraFrom?: number; auraAt?: number };
+export type Stats = { str: number; hp: number; aura: number; hit: number; gain: number; loss: number; hpBar?: number; auraFrom?: number; auraAt?: number };
 export const Hud: React.FC<{ t: number; st: Stats; t0: number }> = ({ t, st, t0 }) => {
   const plate = (i: number, icon: string, label: string, val: string, col: string, extra?: React.ReactNode, flashCol?: string, flashK = 0, shakeK = 0) => {
     const k = spr(t, t0 + i * .95, { damping: 11, stiffness: 140 }); const sx = Math.sin(t * 70) * 10 * shakeK;
@@ -37,7 +37,7 @@ export const Hud: React.FC<{ t: number; st: Stats; t0: number }> = ({ t, st, t0 
   const gainK = clamp(1 - (t - st.gain) / .7), lossK = clamp(1 - (t - st.loss) / .7), hitK = clamp(1 - (t - st.hit) / .5);
   const pop = (txt: string, col: string, t1: number) => { const k = (t - t1) / 1.1; if (k < 0 || k > 1) return null; return <div style={{ position: 'absolute', right: 6, top: 60 - k * 70, fontSize: 44, fontWeight: 900, color: col, opacity: 1 - k * k, WebkitTextStroke: stroke(6), paintOrder: 'stroke fill', fontFamily: FONT }}>{txt}</div>; };
   return (<>{plate(0, '⚔', 'СИЛА', String(st.str), '#ff8a5a', pop('+1', C.green, st.gain), C.green, st.str > 1 ? gainK : 0)}
-    {plate(1, '❤', 'ЗДОРОВЬЕ', String(st.hp), '#ff4a6a', <div style={{ position: 'absolute', left: 120, right: 18, top: 78, height: 18, borderRadius: 9, background: 'rgba(255,255,255,.15)' }}><div style={{ width: `${st.hpBar * 100}%`, height: '100%', borderRadius: 9, background: st.hpBar < .35 ? C.red : '#ff4a6a' }} /></div>, C.red, hitK, hitK)}
+    {plate(1, '❤', 'ЗДОРОВЬЕ', String(st.hp), '#ff4a6a', st.hpBar != null && <div style={{ position: 'absolute', left: 120, right: 18, top: 78, height: 18, borderRadius: 9, background: 'rgba(255,255,255,.15)' }}><div style={{ width: `${(st.hpBar ?? 1) * 100}%`, height: '100%', borderRadius: 9, background: (st.hpBar ?? 1) < .35 ? C.red : '#ff4a6a' }} /></div>, C.red, hitK, hitK)}
     {plate(2, '✦', 'АУРА', String(auraShow), C.gold, <>{st.auraAt != null && st.aura > (st.auraFrom ?? 0) && pop(`+${st.aura - (st.auraFrom ?? 0)}`, C.gold, st.auraAt)}{st.auraAt != null && st.aura < (st.auraFrom ?? 0) && pop(`${st.aura - (st.auraFrom ?? 0)}`, C.red, st.auraAt)}</>, st.aura >= (st.auraFrom ?? 0) ? C.gold : C.red, Math.max(st.aura > 0 ? gainK * (st.gain === st.auraAt || st.gain > -1 ? 1 : 0) : 0, lossK), lossK)}</>); };
 
 // ───── окно «системы» (голограмма) ─────

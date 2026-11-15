@@ -6,7 +6,7 @@ import { SHOT, VO_AT, WORD_AT } from './timeline.mjs';
 import { clamp, lerp, out, io, spr, win, shake, noise } from '../anim';
 import { C, FONT } from '../theme';
 import { Person, POSES, blendPose, runPose } from '../chars/Person';
-import { Slime, KingBull, ChibiSlime, Elf, DragonFront, Goose } from '../chars/Cast';
+import { Slime, KingBull, ChibiSlime, Elf, Dragon, DragonFront, Goose } from '../chars/Cast';
 import { Street, Hall, Pond, Throne, Glow, Fork, Motes } from '../bg/Bg';
 import { Frame, Cam, InfoStand, Choice } from '../ui/Ui';
 import { mouth } from './Shots';
@@ -40,11 +40,12 @@ export const HallGold: React.FC<P> = ({ t, T }) => { const g0 = WORD_AT('e1', 6)
     {Array.from({ length: 11 }, (_, i) => <Soulie key={i} x={100 + i * 50} y={1230 + i * 3} s={.36 - i * .012} t={T + i} look={t > g0 ? 1 : 0} />)}
     <Soulie x={170} y={1520} s={.85} t={T} look={t > g0 ? 1 : 0} /><Soulie x={330} y={1545} s={.9} t={T + 1} look={t > g0 ? 1 : 0} />
     <Person x={720} y={1780} s={1.1} t={T} pose={cheer ? blendPose(POSES.stand, POSES.armsUp, spr(t, SHOT.hall.b - SHOT.hall.a - 1.2, { damping: 9 })) : { armL: [-1.2, -.3], armR: [.12, -.15] }} expr={cheer ? 'happy' : t > g0 ? 'shock' : 'neutral'} mouth={mouth('max', T)} eye={[-.6, .1]} />
+    <rect x={160} y={340} width={760} height={190} rx={24} fill="#eef7ff" opacity={board * .72} />
   </Cam><rect width={1080} height={1920} fill="#fff" opacity={fadeIn} /></Frame>
     {t > g0 && t < b0 + .1 && <div style={html({ left: 250, top: 560, width: 580, transform: `rotate(-5deg) scale(${tk})`, background: 'linear-gradient(135deg,#fff3b0,#ffc94d)', border: '6px solid #b8860b', borderRadius: 18, boxShadow: '0 0 60px #ffd23f', textAlign: 'center', padding: '22px 10px' })}>
       <div style={{ fontSize: 34, fontWeight: 900, color: '#7a5200' }}>ТАЛОН</div><div style={{ fontSize: 52, fontWeight: 900, color: '#5a3a00', lineHeight: 1.1 }}>★ ИЗБРАННЫЙ ★</div>
       <div style={{ fontSize: 30, fontWeight: 800, color: '#7a5200', marginTop: 6 }}>ОДИН НА ТЫСЯЧУ ЛЕТ</div></div>}
-    {t > b0 && <div style={html({ left: 140, top: 500, width: 800, transform: `scale(${lerp(.6, 1, board)})`, opacity: board, background: '#111a2e', border: '14px solid #2a3a5a', borderRadius: 28, textAlign: 'center', padding: '22px 0' })}>
+    {t > b0 && <div style={html({ left: 140, top: 600, width: 800, transform: `scale(${lerp(.6, 1, board)})`, opacity: board, background: '#111a2e', border: '14px solid #2a3a5a', borderRadius: 28, textAlign: 'center', padding: '22px 0' })}>
       <div style={{ fontSize: 46, fontWeight: 900, color: '#9fe3ff' }}>ВНЕ ОЧЕРЕДИ</div><div style={{ fontSize: 96, fontWeight: 900, color: '#ffd23f', lineHeight: 1.1 }}>★ → ОКНО 3</div></div>}</>); };
 
 // ───────────── Простая инфографика «Система героя» ─────────────
@@ -76,20 +77,21 @@ export const ThroneSeated: React.FC<P> = ({ t, T }) => { const bx = 540, by = 13
 
 // ───────────── Прогулка: Макс и Желе идут по лесной тропе ─────────────
 export const walkPose = (ph: number) => { const r = runPose(ph); return { armL: [r.armL[0] * .5, -.3] as [number, number], armR: [r.armR[0] * .5, .3] as [number, number], legL: [r.legL[0] * .7, r.legL[1] * .55] as [number, number], legR: [r.legR[0] * .7, r.legR[1] * .55] as [number, number], lean: .03 }; };
-export const Walk: React.FC<P> = ({ t, T }) => { const sp = 160, off = (t * sp * 2.2) % 2160, ph = t * sp / 120 * Math.PI;
+export const Walk: React.FC<P> = ({ t, T }) => { const sp = 160, V = 420, off = (t * V) % 2160, ph = t * V / 300 * Math.PI; /* шаг 300 px = ход опорной ноги: стопа стоит на земле */
   return (<Frame bg="#9c7ad8"><Cam z={1.04}><Pond t={T} />
     {[0, 1].map(k => <g key={k} transform={`translate(${-off + k * 2160},0)`}>{Array.from({ length: 9 }, (_, i) => <g key={i} transform={`translate(${i * 240 + 60},1480)`}><rect x={-30} y={-460} width={60} height={460} fill="#6a4a3a" /><circle cx={0} cy={-480} r={150} fill={i % 2 ? '#3f8a5e' : '#2f7a52'} /></g>)}</g>)}
     <rect x={0} y={1460} width={1080} height={460} fill="#5aa86a" /><rect x={0} y={1600} width={1080} height={120} fill="#c9a77a" />
-    <Person x={470} y={1690 - Math.abs(Math.sin(ph)) * 10} s={1.05} t={T} pose={walkPose(ph)} hold="pan" expr="neutral" mouth={mouth('max', T)} eye={[.8, 0]} />
+    <Person x={470} y={1690 - Math.abs(Math.cos(ph)) * 12} s={1.05} t={T} pose={walkPose(ph)} hold="pan" expr="neutral" mouth={mouth('max', T)} eye={[.8, 0]} />
     <Slime x={720} y={1690 - Math.abs(Math.sin(t * 5)) * 70} s={1.05} t={T} mouth={mouth('slime', T)} squish={1 - Math.abs(Math.sin(t * 5))} look={[-.8, -.3]} />
-    {Array.from({ length: 6 }, (_, i) => { const fx = ((1300 - t * sp * 4 + i * 400) % 2400 + 2400) % 2400 - 200; return <path key={i} d={`M${fx},1920 Q${fx - 20},1640 ${fx + 30},1480`} stroke="#1f4a2a" strokeWidth={40} fill="none" strokeLinecap="round" />; })}
+    {Array.from({ length: 6 }, (_, i) => { const fx = ((1300 - t * V * 1.8 + i * 400) % 2400 + 2400) % 2400 - 200; return <path key={i} d={`M${fx},1920 Q${fx - 20},1640 ${fx + 30},1480`} stroke="#1f4a2a" strokeWidth={40} fill="none" strokeLinecap="round" />; })}
   </Cam></Frame>); };
 
 // ───────────── Развилка: Макс и Желе, чиби-Желе спрашивает зрителей ─────────────
-export const ForkAsk: React.FC<P> = ({ t, T }) => { const look = t < 1.6 ? -1 : t < 2.6 ? 1 : Math.sin(t * 3), point = clamp((t - .6) / .3);
+export const ForkAsk: React.FC<P> = ({ t, T }) => { const look = t < 1.6 ? -1 : t < 2.6 ? 1 : Math.sin(t * 3), point = clamp((t - .75) / .3), hop = io(win(t, .05, .6)); /* Желе прыгает с земли к камере — поэтому крупнее */
   return (<Frame bg="#ff9a7a"><Cam z={lerp(1.0, 1.05, t / dur('forkAsk'))}><Fork t={T} />
     <Person x={300} y={1520} s={.8} t={T} pose={POSES.stand} hold="pan" expr="neutral" eye={[look * .8, -.5]} headTilt={look * 5} />
-    <ChibiSlime x={690} y={1160} s={.7} t={T} mouth={mouth('slime', T)} point={point} look={look} />
+    <ellipse cx={lerp(450, 690, hop)} cy={1530} rx={lerp(50, 110, hop)} ry={14} fill="#000" opacity={.18} />
+    <ChibiSlime x={lerp(450, 690, hop)} y={lerp(1500, 1160, hop) - Math.sin(hop * Math.PI) * 170} s={lerp(.24, .7, hop)} t={T} mouth={mouth('slime', T)} point={point} look={look} />
   </Cam></Frame>); };
 
 // ───────────── Сплит-экран выбора: эльфийка или дракон ─────────────
@@ -99,7 +101,10 @@ const ElfSide: React.FC<{ t: number }> = ({ t }) => (<g><rect width={540} height
   <Motes n={26} t={t} c="#bfffd8" seed={61} area={[0, 300, 540, 1100]} vy={-30} size={8} /></g>);
 const DragonSide: React.FC<{ t: number }> = ({ t }) => (<g><rect width={540} height={1920} fill="#2a1010" /><Glow x={270} y={760} r={520} c="#ff6a2a" o={.4} id="drS" />
   <path d="M-60,1920 L-60,560 Q270,260 600,560 L600,1920 Z" fill="#140606" />
-  <DragonFront x={270} y={820} s={1.1} t={t} roar={Math.max(0, Math.sin(t * 2.2)) * .5} />
+  {[-1, 1].map(sd => <path key={sd} d={`M${270 + sd * 40},900 L${270 + sd * 300},${470 + Math.sin(t * 1.4) * 14} L${270 + sd * 250},700 L${270 + sd * 330},740 L${270 + sd * 240},880 L${270 + sd * 310},960 L${270 + sd * 120},1010 Z`} fill="#5a1210" stroke="#8a2a1c" strokeWidth={6} strokeLinejoin="round" />)}
+  {(() => { const r = Math.max(0, Math.sin(t * 2.2)), f = Math.max(0, r - .45) / .55; return <g transform="translate(330,900) scale(-1,1)"><Dragon x={0} y={0} s={.98} t={t} roar={r * .8} />
+    {f > 0 && <g opacity={f}><path d={`M230,-40 Q${330 + f * 60},${-90 - f * 20} ${400 + f * 120},${-30 + Math.sin(t * 30) * 10} Q${330 + f * 60},40 235,0 Z`} fill="#ff8a1a" /><path d={`M235,-28 Q${310 + f * 40},-60 ${350 + f * 80},-24 Q${310 + f * 40},16 238,-8 Z`} fill="#ffe27a" /></g>}</g>; })()}
   <Motes n={20} t={t} c="#ffb04a" seed={63} area={[0, 500, 540, 900]} vy={-60} size={6} /></g>);
 export const Split: React.FC<P> = ({ t, T }) => (<Choice t={t} left={{ title: 'ЭЛЬФИЙКИ', sub: 'ЛЕС ЭЛЬФИЕК', col: '#7dffb0', art: <ElfSide t={T} /> }} right={{ title: 'ДРАКОН', sub: 'ЛОГОВО ДРАКОНА', col: '#ff9a5a', art: <DragonSide t={T} /> }}
-  center={<div style={html({ left: 0, width: 1080, top: 1480, textAlign: 'center', opacity: out(win(t, 1.2, 1.5)) })}><span style={{ background: '#ffd23f', color: '#14121c', fontWeight: 900, fontSize: 38, padding: '8px 24px', borderRadius: 12 }}>СЕРИЯ 2 — ПО ВАШЕМУ ВЫБОРУ</span></div>} />);
+  center={<div style={html({ left: 0, width: 1080, top: 1330, textAlign: 'center', opacity: out(win(t, 1.2, 1.4)) })}><div style={{ transform: `scale(${spr(t, 1.2, { damping: 10 })})`, fontWeight: 900, fontSize: 70, lineHeight: 1.08, color: '#ffd23f', WebkitTextStroke: '13px #14121c', paintOrder: 'stroke fill' }}>ПИШИТЕ В КОММЕНТАХ:<br /><span style={{ color: '#7dffb0' }}>А</span><span style={{ color: '#fff' }}> или </span><span style={{ color: '#ff9a5a' }}>Б</span><span style={{ color: '#fff' }}>?</span></div>
+    <div style={{ marginTop: 26, opacity: out(win(t, 2.2, 2.5)) }}><span style={{ background: '#ffd23f', color: '#14121c', fontWeight: 900, fontSize: 40, padding: '8px 24px', borderRadius: 12 }}>СЕРИЯ 2 — ПО ВАШЕМУ ВЫБОРУ</span></div></div>} />);

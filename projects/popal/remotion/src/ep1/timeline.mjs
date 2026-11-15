@@ -28,11 +28,12 @@ const wt = (id, i) => (WORDS[id] || [])[i] ?? i * D[id] / 8;
 const HIT = .3 + wt('b1', 9) - .12; // удар — перед «С его же донером»
 // [id плана, мин. длительность, [[реплика, сдвиг от начала плана]], [[сдвиг, звук, громкость, доп.]]]
 // звук: строка с дефисом/oc-/bsb- — библиотека (tools/sfx-find.py), иначе — синтез tools/sfx.py
+export const SLOT_H2 = 2.0, SLOT_STOP = +(SLOT_H2 + wt('h2', 6) + .1).toFixed(2); /* барабаны встают на словах «девяносто семь» */
 const AF = (id, gap = .25) => ['after', id, gap]; // реплика сразу после другой реплики этого же плана
 const SPEC = [
   ['room', 4.6, [['a1', .3]], [[0, 'hum', .15, { dur: 7 }], [1.6, 'wah', .45, { dur: .9, pitch: .6 }], [2.8, 'notification-message-in-clear', .6], [3.4, 'click-tap-soft', .5], [3.8, 'notification-success-chime', .55]]],
   ['fridge', 4.6, [['a3', .5], ['a4', AF('a3', .2)]], [[0, 'foley-wood-slide', .4], [.25, 'mechanical-latch-light', .6], [.3, 'hum50', .2, { dur: 3 }], [3.4, 'bsb-door-creak-close', .4]]],
-  ['street', HIT, [['b1', .3, true]], [[0, 'engine', .45, { dur: HIT }], [.1, 'bsb-wind-foley', .25, { dur: HIT }], [HIT - 1.3, 'notification-message-in-clear', .5], [HIT - .9, 'riser-1s-strong', .55], [HIT - .35, 'horn', .7]]],
+  ['street', HIT, [['b1', .3, true]], [[0, 'engine', .45, { dur: HIT }], [.1, 'bsb-wind-foley', .25, { dur: HIT }], [HIT - 2.3, 'notification-message-in-clear', .5], [HIT - 2.3, 'whoosh-slow-medium', .25], [HIT - .9, 'riser-1s-strong', .55], [HIT - .35, 'horn', .7]]],
   ['freeze', 2.9, [], [[0, 'impact-heavy-hard', 1, { bright: 2 }], [0, 'oc-GLASBrk_GlassBottleBreak_OS_01', .4], [.05, 'whoosh-slow-medium', .6], [1.35, 'cinematic-slam-big', .8, { bright: 2 }], [1.4, 'sting-bold-short', .5]]],
   ['courier', 2.8, [['c1', .3]], [[0, 'foley-paper-slide', .6], [.1, 'siren', .1, { dur: 2.9 }]]],
   ['visor', 3.7, [['c2', .8]], [[0, 'digital-scan-clear', .5], [.6, 'digital-radio', .3], [2.6, 'appear-materialise', .7], [3.3, 'whoosh-medium-hard', .6]]],
@@ -42,9 +43,7 @@ const SPEC = [
   ['catsAsk', 2.0, [['f2', .15]], [[0, 'foley-fabric-slide', .4]]],
   ['catsNo', 2.0, [['f3', .5]], [[1.9, 'click-snap-medium', .4]]],
   ['system', 4.0, [['g1', .4]], [[.15, 'impact-medium-firm', .8], [.4, 'digital-power-up', .5], [.7, 'pop-medium-in', .6], [1.65, 'pop-medium-in', .6], [2.6, 'pop-medium-in', .6]]],
-  ['lore2', 3.4, [['g2', .3]], [[0, 'whoosh-medium-soft', .5], [.3, 'pop-small-in', .5], [1.0, 'pop-small-in', .5], [2.2, 'shimmer-medium-sparkle', .5], [3.2, 'notification-failure-low', .4]]],
-  ['slot', 3.7, [['h1', .2]], [[1.6, 'mechanical-latch-heavy', .8], [1.75, 'rattle', .35, { dur: 1.4 }], [1.75, 'time-clock-fast', .5], [3.1, 'mechanical-switch-heavy', .6], [3.25, 'mechanical-switch-heavy', .6], [3.4, 'mechanical-switch-heavy', .6], [3.5, 'money-coins-pour', .5], [3.5, 'notification-success-fanfare', .45]]],
-  ['odds', 4.6, [['h2', .25]], [[0, 'whoosh-medium-soft', .5], [.4, 'data-chart-reveal', .5], [1.2, 'data-bar-grow', .4], [3.0, 'data-countup-medium', .5], [4.2, 'notification-failure-wobble', .4]]],
+  ['slot', 6.0, [['h1', .2], ['h2', SLOT_H2]], [[1.6, 'mechanical-latch-heavy', .8], [1.75, 'rattle', .3, { dur: SLOT_STOP - 1.75 }], [1.75, 'time-clock-fast', .4], [SLOT_H2, 'data-chart-reveal', .4], [SLOT_STOP - .1, 'data-bar-grow', .4], [SLOT_STOP, 'mechanical-switch-heavy', .6], [SLOT_STOP + .18, 'mechanical-switch-heavy', .6], [SLOT_STOP + .36, 'mechanical-switch-heavy', .6], [SLOT_STOP + .45, 'money-coins-pour', .45], [SLOT_STOP + .45, 'notification-failure-wobble', .4]]],
   ['item', 2.6, [['h3', .25]], [[0, 'shimmer-long-bright', .55], [.1, 'cinematic-metal-big', .25, { bright: 2 }]]],
   ['dodep', 3.8, [['h4', .2]], [[.1, 'foley-fabric-slide', .4], [2.4, 'impact-light-firm', .6]]],
   ['nah', 2.2, [['h5', .3]], [[1.15, 'swipe-medium-firm', .7], [1.25, 'reverse-whoosh-medium-strong', .6], [1.45, 'faller-2s-strong', .6]]],
@@ -52,18 +51,18 @@ const SPEC = [
   ['splash', 1.6, [['i2', .55]], [[.12, 'props-splash', 1], [.2, 'impact-medium-soft', .6, { bright: 2 }], [.7, 'props-drip', .4]]],
   ['slime', 4.7, [['j1', .3], ['j2', AF('j1', .2)]], [[0, 'oc-GORESqsh_BloodSquishSlimy_OS_02', .4], [.4, 'pop-small-bubble', .5], [1.7, 'props-drip', .3]]],
   ['gooseUp', 3.8, [['k1', .3]], [[0, 'props-drip', .3], [1.8, 'bass-rumble-medium', .4], [2.4, 'oc-CLOTHFlp_FlagFlapping_LOOP_01', .5, { dur: 1 }], [3.0, 'honk', 1], [3.0, 'impact-heavy-soft', .7, { bright: 2 }]]],
-  ['chase', 3.4, [['k2', .2]], [[0, 'honk', .6], [1.4, 'honk', .5], [1.5, 'impact-light-firm', .6], [2.9, 'honk', .6], [3.0, 'impact-light-firm', .6]]],
+  ['chase', 3.4, [['k2', .2]], [[0, 'honk', .6], [1.0, 'click-snap-medium', .7], [1.05, 'whoosh-medium-soft', .4], [1.9, 'honk', .5], [2.55, 'click-snap-medium', .7], [2.6, 'whoosh-medium-soft', .4]]],
   ['lore3', 4.1, [['k3', .3]], [[0, 'props-book-close', .5], [.4, 'props-page-turn', .5], [3.2, 'notification-alert-clear', .5]]],
-  ['corner', 2.1, [['k4', .25]], [[0, 'impact-light-firm', .5], [1.1, 'shimmer-short-sparkle', .6]]],
+  ['corner', 2.75, [['k4', .25]], [[0, 'impact-light-firm', .5], [.8, 'shimmer-short-sparkle', .6], [2.2, 'foley-fabric-slide', .5], [2.36, 'whoosh-medium-hard', .8]]],
   ['throw', 2.5, [], [[0, 'whoosh-slow-hard', .8], [.55, 'cinematic-metal-big', .5, { bright: 2 }], [.55, 'tone-ding-high', .5], [.95, 'cinematic-metal-big', .45, { bright: 2 }], [.95, 'tone-ding-mid', .5], [1.4, 'bonk', 1], [1.42, 'impact-heavy-hard', .9], [2.0, 'impact-deep-soft', .7], [2.35, 'impact-light-soft', .5]]],
   ['levelup', 2.0, [['l1', .45]], [[0, 'oc-MUSCStngr_LevelUpOrchestral_OS_01', .7], [.3, 'data-countup-medium', .5], [.2, 'shimmer-long-bright', .5]]],
-  ['groin', 2.8, [['l2', .6], ['l3', AF('l2', .15)]], [[0, 'whoosh-medium-hard', .6], [.55, 'cinematic-metal-massive', .45], [.58, 'bonk', .6], [1.7, 'data-decrease-short', .6]]],
+  ['groin', 2.8, [['l2', .6], ['l3', AF('l2', .15)]], [[0, 'whoosh-medium-hard', .6], [.55, 'cinematic-metal-massive', .45], [.58, 'bonk', .6], [1.05, 'cinematic-metal-big', .3, { bright: 2 }], [1.7, 'data-decrease-short', .6]]],
   ['throne', 4.5, [['m1', .3], ['m2', AF('m1', .35)]], [[0, 'bass-rumble-long', .5], [0, 'crackle', .3, { dur: 4.5 }], [.2, 'cinematic-thunder-big', .3]]],
   ['succ', 2.2, [['m3', .2]], [[0, 'shimmer-medium-soft', .4], [.1, 'foley-fabric-slide', .3]]],
   ['eyes', 3.2, [['m4', .2]], [[.15, 'boom-drop-strong', .7], [1.9, 'cinematic-thunder-massive', .5], [1.9, 'cinematic-drum-massive', .6]]],
   ['walk', 3.4, [['w1', .3], ['w2', AF('w1', .2)]], [[0, 'bsb-wind-foley', .25, { dur: 4.5 }], [.2, 'move-bounce', .3], [1.4, 'move-bounce', .3], [2.6, 'move-bounce', .3]]],
   ['forkAsk', 3.4, [['n2', .4]], [[0, 'whoosh-medium-soft', .4], [.5, 'move-bounce', .5], [1.7, 'move-bounce', .4], [2.9, 'move-bounce', .4]]],
-  ['split', 2.8, [], [[0, 'whoosh-medium-medium', .5], [.15, 'pop-large-in', .5], [.4, 'pop-large-in', .5], [.7, 'impact-medium-firm', .5], [1.2, 'sting-bright-long', .45]]],
+  ['split', 4.6, [], [[0, 'whoosh-medium-medium', .5], [.15, 'pop-large-in', .5], [.4, 'pop-large-in', .5], [.7, 'impact-medium-firm', .5], [1.2, 'sting-bright-long', .45], [2.2, 'pop-medium-in', .5]]],
 ];
 
 export const SHOTS = []; export const VO = []; let at = 0;
@@ -88,7 +87,8 @@ for (const v of VO) {
   const sents = []; let cur = []; all.forEach((w, i) => { cur.push(w); if (/[.?!…]$/.test(w.text) || i === all.length - 1) { sents.push(cur); cur = []; } });
   const chunks = []; for (const s of sents) { const n = s.length; if (n <= 5) { chunks.push(s); continue; } const k = Math.ceil(n / Math.ceil(n / 4)); for (let i = 0; i < n; i += k) chunks.push(s.slice(i, i + k)); }
   const merged = []; for (const c of chunks) { const l = merged[merged.length - 1]; if (l && (c.length === 1 || l.length === 1) && l.length + c.length <= 4) l.push(...c); else merged.push([...c]); }
-  merged.forEach((c, i) => CAPS.push({ who: v.who, vo: v.id, a: c[0].t - .05, b: i < merged.length - 1 ? merged[i + 1][0].t - .06 : v.t + v.d + .3, words: c })); }
+  merged.forEach((c, i) => CAPS.push({ who: v.who, vo: v.id, noName: v.id === 'f1' || v.id === 'm3', /* имя уже на плашке знакомства */ a: c[0].t - .05, b: i < merged.length - 1 ? merged[i + 1][0].t - .06 : v.t + v.d + .3, words: c })); }
+for (const c of CAPS) { const sh = SHOTS.find(q => c.a + .06 >= q.a && c.a + .06 < q.b); if (sh && c.vo !== 'b1') c.b = Math.min(c.b, sh.b - .02); }
 for (let i = 0; i < CAPS.length - 1; i++) CAPS[i].b = Math.min(CAPS[i].b, CAPS[i + 1].a - .02);
 
 // звук: голос, музыка по частям серии, эффекты из SPEC
@@ -113,11 +113,8 @@ CUES.push({ t: DUR - 2.5, type: 'wind', gain: .22, dur: 2.5 });          // хв
 // табло героя (одна функция на весь сериал): серии 2–5 начинаются с итога этой
 export const STATS_EP1 = { start: { str: 1, hp: 1, aura: 0 }, end: { str: 2, hp: 1, aura: 100 } };
 const EV = () => [{ t: SHOT.levelup.a + .35, str: 2 }, { t: SHOT.levelup.a + .45, aura: 120 }, { t: SHOT.groin.a + 1.7, aura: 100 }];
-export function statsAt(t) { const s = { ...STATS_EP1.start, hit: -9, gain: -9, loss: -9, hpBar: 1 }; let prev = 0;
+export function statsAt(t) { const s = { ...STATS_EP1.start, hit: -9, gain: -9, loss: -9 }; let prev = 0;
   for (const e of EV()) { if (t < e.t) break; if (e.str) { s.str = e.str; s.gain = e.t; } if (e.aura != null) { prev = s.aura; s.aura = e.aura; if (e.aura > prev) s.gain = e.t; else s.loss = e.t; s.auraFrom = prev; s.auraAt = e.t; } }
-  const hits = [SHOT.splash.a + .12, SHOT.chase.a + 1.5, SHOT.chase.a + 3.0, SHOT.groin.a + .55];
-  for (const h of hits) if (t >= h) s.hit = h;
-  s.hpBar = t < hits[0] ? 1 : t < hits[1] ? .7 : t < hits[2] ? .45 : t < hits[3] ? .3 : .15;
   return s; }
 export const HUD_FROM = SHOT.system.a + .55; // табло появляется у богини («СИСТЕМА ПОДКЛЮЧЕНА»)
 export const HUD_HIDE = [[SHOT.throne.a, SHOT.walk.a], [SHOT.split.a, DUR + 1]]; // в землях демонов табло Макса нет
