@@ -61,6 +61,7 @@
 | affaan-m/ECC video-editing | опирается на платные ElevenLabs, fal.ai, Descript |
 | скрипт-скиллы (iart-ai, mebusw, aaron-he-zhu, social-media-skills) | мало звёзд/установок; наш агент scriptwriter закрывает задачу |
 | Anil-matcha/Open-Higgsfield-AI = Open-Generative-AI (MIT, проверено 2026-11-15) | один и тот же проект (переименован): веб/десктоп-приложение-оболочка над платным MuAPI (600+ моделей), скиллов внутри нет; `SamurAIGPT/muapi-skills` — тоже под платный MuAPI. Локальный режим — только с GPU (Wan2GP), у нас нет |
+| wide-trace/open-higgsfield (★~860, 1 коммит, **без лицензии**, проверено 2026-11-15) | сайт-оболочка (Next.js) над платным API Higgsfield: нужен ключ платформы `id:secret`, генерации за кредиты Higgsfield. Скиллов нет; ничего не добавляет к уже подключённому Higgsfield MCP |
 | tiktok-scraper, tiktok-api | платные API сбора данных, не про производство |
 
 ## Правила добавления нового
