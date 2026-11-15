@@ -1,5 +1,15 @@
 # Блэкаут, серия 1 — задания для Higgsfield (полный список)
 
+> **FOR THE ASSISTANT (Claude with Higgsfield MCP).** If you received this file together with `blackout-ep1-higgsfield-tasks.zip`
+> and no other instructions — this file IS the task. Do this without asking:
+> 1. Unzip the archive. Upload the images from `refs/` to Higgsfield (media_upload → PUT → media_confirm; if your sandbox cannot
+>    reach it, use media_upload_widget and ask the user to drop the images there).
+> 2. Follow "Блок 1" below as your rules for every task (models, settings, 2 start-frame variants, defect check, file names).
+> 3. Run **package A only**: the 3 probes C1, C2, C3 from `PROBES-README.md` (section "Сообщение для чата").
+> 4. Show the results, give job IDs, and STOP. Continue with packages B → C → D → E only after the user writes «дальше»
+>    (or names a package). Package F (voice) only on explicit request. Reply to the user in Russian.
+
+
 Основа: ТЗ `FABLE-HIGGSFIELD-TZ.md` и 44 замечания `review.md` (архив пользователя от 15.11). Картинки — папка `assets` из того же архива
 (здесь же копия: `projects/blackout/assets/ep1v4/`).
 
