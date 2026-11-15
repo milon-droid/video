@@ -2,7 +2,7 @@
 // Запуск: node scripts/map.mjs (после добавления персонажей/фонов/планов).
 import fs from 'node:fs'; import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '..'), out = [];
-const files = ['src/chars/Person.tsx', 'src/chars/Cast.tsx', 'src/chars/Cast2.tsx', 'src/bg/Bg.tsx', 'src/bg/Bg2.tsx', 'src/ui/Ui.tsx', 'src/anim.ts', 'src/theme.ts', 'src/ep1/Shots.tsx', 'src/ep1/Shots3.tsx', 'src/ep2/ShotsA.tsx'];
+const files = ['src/chars/Person.tsx', 'src/chars/Cast.tsx', 'src/chars/Cast2.tsx', 'src/chars/Cast3.tsx', 'src/bg/Bg.tsx', 'src/bg/Bg2.tsx', 'src/ui/Ui.tsx', 'src/anim.ts', 'src/theme.ts', 'src/ep1/Shots.tsx', 'src/ep1/Shots3.tsx', 'src/ep2/ShotsA.tsx', 'src/ep3/common.tsx', 'src/ep3/ShotsA.tsx', 'src/ep3/ShotsB.tsx', 'src/ep3/ShotsC.tsx'];
 out.push('# Карта кода «ПОПАЛ» (Remotion)\n\nСгенерировано `node remotion/scripts/map.mjs`. Читать вместо исходников; в файл лезть только за нужными строками (`grep -n`).\n');
 out.push('Серия = модуль `src/epN/timeline.mjs` (SPEC планов: id, мин. длительность, реплики, звуки; CAP субтитры; statsAt табло) + планы `src/epN/Shots*.tsx` + `EpN.tsx` (MAP id → компонент) + композиции в `src/Root.tsx`.');
 out.push('Конвейер серии: `vo/epN.json` → `tools/vo-qwen.py` → `scripts/post-vo-ep2.sh` (длительности, слова, рот) → `scripts/export-ep2.mjs` (sfx-epN.json) → `tools/sfx.py` → `public/epN-mix.wav` → `npx remotion render EpN-720` → `tools/master.py`.\n');

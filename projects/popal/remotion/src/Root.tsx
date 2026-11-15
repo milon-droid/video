@@ -5,6 +5,8 @@ import { Test } from './Test';
 import { Ep1, EP1_FRAMES } from './ep1/Ep1';
 import { Sheet } from './ep2/Sheet';
 import { Ep2, EP2_FRAMES } from './ep2/Ep2';
+import { Sheet3 } from './ep3/Sheet';
+import { Ep3, EP3_FRAMES } from './ep3/Ep3';
 import { StarsClip, STARS_FRAMES } from './stars/Clip';
 import { NeSheet } from './ne/Sheet';
 import { NeCutTest } from './ne/CutTest';
@@ -17,6 +19,8 @@ export const RemotionRoot: React.FC = () => (<>
   <Composition id="Ep1-mute" component={Ep1} durationInFrames={EP1_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: false }} />
   <Composition id="Ep2-720" component={Ep2} durationInFrames={EP2_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: true }} />
   <Composition id="Ep2-mute" component={Ep2} durationInFrames={EP2_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: false }} />
+  <Composition id="Ep3-720" component={Ep3} durationInFrames={EP3_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: true }} />
+  <Composition id="Ep3-mute" component={Ep3} durationInFrames={EP3_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: false }} />
   {/* «Звёзды 2026» (projects/stars-2026): Сэди Синк и Винисиус Жуниор, 10 с, 720p */}
   <Composition id="Stars-720" component={StarsClip} durationInFrames={STARS_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: true }} />
   <Composition id="Stars-mute" component={StarsClip} durationInFrames={STARS_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: false }} />
@@ -26,6 +30,7 @@ export const RemotionRoot: React.FC = () => (<>
   <Composition id="Ne-tv" component={NeTv} durationInFrames={170} fps={30} width={720} height={1280} />
   <Still id="NeSheet" component={NeSheet} width={1440} height={1280} />
   <Still id="NeCutTest" component={NeCutTest} width={1600} height={1200} />
+  <Still id="Sheet3" component={Sheet3} width={2160} height={3300} />
   <Still id="Sheet2" component={Sheet} width={1080} height={1920} />
   <Still id="Test" component={Test} width={1080} height={1920} />
 </>);

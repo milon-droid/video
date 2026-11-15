@@ -7,4 +7,4 @@ export const C = {
 };
 export const FONT = 'Mont', MONO = 'JBM';
 // цвет говорящего в субтитрах и бирках
-export const WHO_COL: Record<string, string> = { zk: '#fbf8f2', max: '#fbf8f2', lumina: '#ffd0f0', courier: '#9ee8ff', slime: '#a8ffb8', king: '#ff9a7a', succ: '#ff9ce6' };
+export const WHO_COL: Record<string, string> = { zk: '#fbf8f2', max: '#fbf8f2', lumina: '#ffd0f0', courier: '#9ee8ff', slime: '#a8ffb8', king: '#ff9a7a', succ: '#ff9ce6', lira: '#b8ffd0', knight: '#7dffe6' };

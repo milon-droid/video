@@ -9,7 +9,7 @@ export type Limb = [number, number];
 export type Pose = { armL: Limb; armR: Limb; legL: Limb; legR: Limb; lean?: number; hip?: number };
 export type Look = 'max' | 'courier' | 'lira' | 'elf2' | 'elf3' | 'elf4';
 export type PersonProps = { x: number; y: number; s?: number; t: number; look?: Look; pose?: Partial<Pose>; expr?: Expr; mouth?: number; eye?: [number, number];
-  headTilt?: number; rot?: number; hold?: 'pan' | 'phone' | 'burger' | 'cola' | 'doner' | 'bow' | null; bowBack?: boolean; hang?: boolean; slap?: number; kisses?: number; draw?: number; panGlow?: number; squash?: number; lid?: number; noBlink?: boolean; sweat?: number; blush?: number; flip?: boolean; shadow?: boolean };
+  headTilt?: number; rot?: number; hold?: 'pan' | 'phone' | 'burger' | 'cola' | 'doner' | 'bow' | null; bowBack?: boolean; hang?: boolean; slap?: number; kisses?: number; draw?: number; panGlow?: number; squash?: number; lid?: number; noBlink?: boolean; sweat?: number; blush?: number; flip?: boolean; shadow?: boolean; noArrow?: boolean };
 
 const pt = (x: number, y: number, a: number, l: number): [number, number] => [x + Math.sin(a) * l, y + Math.cos(a) * l];
 // трапеция-звено с круглыми концами (рукав, штанина)
@@ -166,7 +166,7 @@ export const Person: React.FC<PersonProps> = (p) => {
     return (<g key={'a' + side}>{seg(sp, el, 54, 46, L.top, 'u')}{seg(el, wr, 46, 40, L.top, 'f')}
       <path d={`M${el[0]},${el[1]} L${wr[0]},${wr[1]}`} stroke={L.topSh} strokeWidth={8} opacity={.35} />
       {holdIt && <g transform={`translate(${wr[0] + Math.sin(fa) * 26},${wr[1] + Math.cos(fa) * 26}) rotate(${-fa * 180 / Math.PI + 180})`}>
-        {p.hold === 'bow' ? <BowProp draw={p.draw ?? 0} /> : p.hold === 'pan' ? <Pan glow={p.panGlow} t={t} /> : p.hold === 'phone' ? <g transform="translate(0,-40)"><PhoneProp /></g> : p.hold === 'cola' ? <g transform="translate(0,-50)"><Cola /></g> : p.hold === 'doner' ? <g transform="translate(0,-60)"><Doner /></g> : <g transform="translate(0,-40)"><Burger /></g>}</g>}
+        {p.hold === 'bow' ? <BowProp draw={p.draw ?? 0} arrow={!p.noArrow} /> : p.hold === 'pan' ? <Pan glow={p.panGlow} t={t} /> : p.hold === 'phone' ? <g transform="translate(0,-40)"><PhoneProp /></g> : p.hold === 'cola' ? <g transform="translate(0,-50)"><Cola /></g> : p.hold === 'doner' ? <g transform="translate(0,-60)"><Doner /></g> : <g transform="translate(0,-40)"><Burger /></g>}</g>}
       <Hand x={wr[0]} y={wr[1]} a={fa} skin={L.skin} sh={L.skinSh} fist={!!holdIt} /></g>); };
   const headY = shY - 128, ht = (p.headTilt ?? 0) + noise('ht' + p.x, t, .3) * 2.5;
   const isCourier = p.look === 'courier';

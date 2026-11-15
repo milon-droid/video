@@ -110,13 +110,22 @@ export const Cage: React.FC<{ x: number; y: number; s?: number; t: number; open?
 // ───── Лилиана (суккуба-генерал): рисунок пользователя целиком (public/popal/liliana.png, 1024×1536) + живое лицо поверх.
 // Начало координат — между ступнями; s=1 ≈ рост 800 px. Моргание и рот по голосу нарисованы поверх картинки, фигура парит и дышит.
 const LIL = 'popal/liliana.png', LK = .6, SKIN_L = '#e9a2b8';
-export const Liliana: React.FC<{ x: number; y: number; s?: number; t: number; mouth?: number }> = ({ x, y, s = 1, t, mouth = 0 }) => {
-  const b = blink(t, 9), fy = Math.sin(t * 1.6) * 8, sw = Math.sin(t * .9) * 1.2, m = clamp(mouth);
+export const Liliana: React.FC<{ x: number; y: number; s?: number; t: number; mouth?: number; rot?: number; angry?: number; sad?: number; tears?: number; blush?: number; dizzy?: number; still?: boolean; children?: React.ReactNode }> = ({ x, y, s = 1, t, mouth = 0, rot = 0, angry = 0, sad = 0, tears = 0, blush = 0, dizzy = 0, still, children }) => {
+  const b = dizzy > 0 ? 0 : blink(t, 9), fy = still ? 0 : Math.sin(t * 1.6) * 8, sw = (still ? 0 : Math.sin(t * .9) * 1.2) + rot, m = clamp(mouth);
   return (<g transform={`translate(${x},${y + fy}) rotate(${sw}) scale(${s * LK}) translate(-512,-1490)`}>
     <image href={staticFile(LIL)} x={0} y={0} width={1024} height={1536} />
     {b < .5 && <g><ellipse cx={455} cy={309} rx={33} ry={15} fill={SKIN_L} /><ellipse cx={548} cy={311} rx={36} ry={16} fill={SKIN_L} />
       <path d="M424,306 Q455,318 486,304 M514,306 Q548,320 584,304" stroke="#2a0f3a" strokeWidth={5} fill="none" strokeLinecap="round" /></g>}
     {m > .08 && <g><ellipse cx={497} cy={368} rx={30} ry={13} fill={SKIN_L} /><ellipse cx={497} cy={368} rx={lerp(20, 15, m)} ry={3 + m * 13} fill="#6a1240" /><path d={`M${497 - 14},${368 + 2 + m * 6} Q497,${368 + 6 + m * 12} ${497 + 14},${368 + 2 + m * 6}`} stroke="#e0468a" strokeWidth={4} fill="none" /></g>}
+    {/* эмоции поверх рисунка (серия 3): брови, румянец, слёзы, «звёздочки» */}
+    {angry > 0 && <path d={`M418,${262 - angry * 14} L492,${282 + angry * 10} M586,${264 - angry * 14} L510,${284 + angry * 10}`} stroke="#2a0f3a" strokeWidth={13} strokeLinecap="round" opacity={clamp(angry * 2)} />}
+    {sad > 0 && <path d={`M418,${284 + sad * 8} L490,${266 - sad * 6} M586,${286 + sad * 8} L512,${268 - sad * 6}`} stroke="#2a0f3a" strokeWidth={12} strokeLinecap="round" opacity={clamp(sad * 2)} />}
+    {blush > 0 && <g opacity={blush * .6}><ellipse cx={430} cy={345} rx={30} ry={15} fill="#ff5a9a" /><ellipse cx={574} cy={347} rx={30} ry={15} fill="#ff5a9a" /></g>}
+    {tears > 0 && [455, 548].map((cx, i) => { const q = (t * .9 + i * .5) % 1; return <g key={i} opacity={clamp(tears)}><path d={`M${cx},324 Q${cx + (i ? 10 : -10)},372 ${cx + (i ? 6 : -6)},420`} stroke="#9fe4ff" strokeWidth={11} fill="none" strokeLinecap="round" opacity={.85} />
+      <path transform={`translate(${cx + (i ? 6 : -6)},${420 + q * 150})`} d="M0,-18 C12,0 12,14 0,14 C-12,14 -12,0 0,-18 Z" fill="#bff0ff" opacity={1 - q} /></g>; })}
+    {dizzy > 0 && <g opacity={dizzy}>{[455, 548].map((cx, i) => <path key={i} d={`M${cx - 20},294 L${cx + 20},326 M${cx + 20},294 L${cx - 20},326`} stroke="#2a0f3a" strokeWidth={9} strokeLinecap="round" />)}
+      {[0, 1, 2].map(i => { const a = t * 4 + i * 2.1; return <path key={i} transform={`translate(${500 + Math.cos(a) * 130},${120 + Math.sin(a) * 34}) scale(1.5)`} d="M0,-16 L5,-5 L17,-5 L7,3 L11,15 L0,8 L-11,15 L-7,3 L-17,-5 L-5,-5 Z" fill="#ffd23f" />; })}</g>}
+    {children}
   </g>); };
 // ключевые позы — рисунки пользователя (public/popal/rNN.png): якорь (ax,ay) картинки ставится в точку (x,y) сцены
 export const PICS: Record<string, [number, number]> = { r01: [1086, 1448], r02: [1199, 1312], r05: [1478, 1064], r06: [1190, 887] };
