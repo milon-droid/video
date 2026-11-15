@@ -300,7 +300,7 @@ export const Chase: React.FC<P> = ({ t, T }) => { const V = 1300, ph = t * V / 3
     {Array.from({ length: 6 }, (_, i) => <path key={i} d={`M${1200 - fg + i * 420},1920 Q${1180 - fg + i * 420},1500 ${1230 - fg + i * 420},1300`} stroke="#1f4a2a" strokeWidth={44} fill="none" strokeLinecap="round" />)}
   </Cam></Frame>
     <Onomato t={t} t0={m1} x={330} y={1120} text="КЛАЦ!" col="#ffffff" size={100} rot={-8} dur={.55} /><Onomato t={t} t0={m1 + .12} x={760} y={900} text="МИМО!" col={C.yellow} size={110} rot={6} dur={.7} />
-    <Onomato t={t} t0={m2} x={330} y={1080} text="КЛАЦ!" col="#ffffff" size={100} rot={8} dur={.55} /><Onomato t={t} t0={m2 + .12} x={780} y={880} text="ЕЩЁ МИМО!" col={C.yellow} size={96} rot={-6} dur={.7} /></>); };
+    <Onomato t={t} t0={m2} x={330} y={1080} text="КЛАЦ!" col="#ffffff" size={100} rot={8} dur={.55} /><Onomato t={t} t0={m2 + .12} x={690} y={880} text="ЕЩЁ МИМО!" col={C.yellow} size={84} rot={-6} dur={.7} /></>); };
 
 // ───────────────────────── 22. ПРИЖАТ К ДЕРЕВУ ─────────────────────────
 export const Corner: React.FC<P> = ({ t, T }) => { const D = dur('corner'), rel = D - .34, up = out(win(t, .7, 1.05)), sw = io(win(t, rel - .2, rel + .1)), gone = t >= rel, z = lerp(1.0, 1.12, io(win(t, 0, 2.1)));
@@ -328,7 +328,7 @@ export const Throw: React.FC<P> = ({ t, T }) => {
     {flying && Array.from({ length: 14 }, (_, i) => { const tt = t - i * .03; let qx = px, qy = py; for (let j = 0; j < 3; j++) { const [x0, y0, t0] = pts[j], [x1, y1, t1] = pts[j + 1]; if (tt >= t0 && tt < t1) { const k = (tt - t0) / (t1 - t0); qx = lerp(x0, x1, k); qy = lerp(y0, y1, k) - Math.sin(k * Math.PI) * 120; } }
       return <circle key={i} cx={qx} cy={qy} r={60 - i * 4} fill="#ffd23f" opacity={.5 - i * .035} />; })}
     {flying ? <g transform={`translate(${px},${py}) rotate(${t * 1400}) scale(.9) translate(0,120)`}><Pan glow={1} t={T} /></g>
-      : <g transform={`translate(${300 + after * 500},${1000 - after * 900 + after * after * 1400}) rotate(${t * 900}) scale(.8) translate(0,120)`}><Pan glow={.6} t={T} /></g>}
+      : <g transform={`translate(${300 + after * 260},${1000 - after * 1500}) rotate(${t * 900}) scale(.8) translate(0,120)`}><Pan glow={.6} t={T} /></g>}
     <Puffs t={t} t0={1.5} x={330} y={1790} col="#e8e0f0" n={9} spread={320} size={70} id="tdust" /><Puffs t={t} t0={.55} x={180} y={560} col="#ffe27a" n={6} spread={140} size={40} id="sp1" /><Puffs t={t} t0={.95} x={560} y={1480} col="#ffe27a" n={6} spread={140} size={40} id="sp2" />
   </Cam></Frame>
     {flying && <AbsoluteFill style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 50%, rgba(40,20,60,.55) 100%)' }} />}
@@ -340,8 +340,8 @@ export const LevelUp: React.FC<P> = ({ t, T }) => { const k = out(win(t, .3, 1.0
   return (<><Frame bg="#3a2a4a"><Cam z={lerp(1.0, 1.1, io(win(t, 0, 3.1)))} fy={1300}><Pond t={T} dark={.2 - k * .2} />
     <Goose x={190} y={1740} s={.8} t={T} state="ko" rot={90} />
     <AuraFlame t={T} x={600} y={1820} k={k} />
-    {(() => { const q = clamp(t / dur('levelup')), a = lerp(-2.5, -.35, q), cx = 620 + Math.cos(a) * 520, cy = 1500 + Math.sin(a) * 1150; /* бумеранг: дуга над головой, на следующем плане прилетит обратно */
-      return <g>{[1, 2, 3, 4, 5].map(i => { const aa = a - i * .05; return <circle key={i} cx={620 + Math.cos(aa) * 520} cy={1500 + Math.sin(aa) * 1150} r={34 - i * 5} fill="#ffd23f" opacity={.35 - i * .06} />; })}
+    {(() => { const q = clamp(t / dur('levelup')), a = lerp(-2.0, -.35, q), cx = 620 + Math.cos(a) * 520, cy = 1500 + Math.sin(a) * 1500; /* бумеранг: дуга над головой, на следующем плане прилетит обратно */
+      return <g>{[1, 2, 3, 4, 5].map(i => { const aa = a - i * .05; return <circle key={i} cx={620 + Math.cos(aa) * 520} cy={1500 + Math.sin(aa) * 1500} r={34 - i * 5} fill="#ffd23f" opacity={.35 - i * .06} />; })}
         <g transform={`translate(${cx},${cy}) rotate(${t * 1300}) scale(.6) translate(0,120)`}><Pan glow={.8} t={T} /></g></g>; })()}
     <Person x={600} y={1820} s={1.35} t={T} pose={blendPose(POSES.stand, POSES.heroic, spr(t, .2, { damping: 9 }))} expr="cool" eye={[.2, -.2]} />
     <Slime x={900} y={1830} s={.9} t={T} look={[-.3 + clamp(t / dur('levelup')) * .9, -1]} />
