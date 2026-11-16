@@ -145,7 +145,7 @@ const poseOf = (p: CutProps) => { const g = p.walk ? gait(p.id, p.walk) : null;
 
 // веко по форме глаза: край идёт от уголка до уголка (дуга верхней границы → нижней), ресничная линия
 // утончается к уголкам, на веке лёгкая тень к краю, над ним складка, на белке тень от века; закрытый глаз — одна дуга
-type Ch = { X: (u: number) => number; T: (u: number) => number; B: (u: number) => number };
+type Ch = { X: (u: number) => number; T: (u: number) => number; B: (u: number) => number; O?: (u: number) => number };
 const hullCh = (hull: number[][]): Ch => { const n = hull.length; let li = 0, ri = 0;
   hull.forEach((q, i) => { if (q[0] < hull[li][0]) li = i; if (q[0] > hull[ri][0]) ri = i; });
   const walk = (a: number, b: number, d: number) => { const o: number[][] = []; for (let i = a; ; i = (i + d + n) % n) { o.push(hull[i]); if (i === b) break; } return o; };
@@ -155,31 +155,38 @@ const hullCh = (hull: number[][]): Ch => { const n = hull.length; let li = 0, ri
     for (let i = 1; i < s.length; i++) if (x <= s[i][0]) { const f = (x - s[i - 1][0]) / Math.max(1e-3, s[i][0] - s[i - 1][0]); return s[i - 1][1] + (s[i][1] - s[i - 1][1]) * f; }
     return s[s.length - 1][1]; };
   const X = (u: number) => x0 + (x1 - x0) * u; return { X, T: u => at(top, X(u)), B: u => at(bot, X(u)) }; };
+// верх глаза по низу обводки/стрелки (eyelids.py), низ — по контуру белка; O — верх обводки
+const topCh = (E: { hull: number[][]; top?: number[][] }): Ch => { const h = hullCh(E.hull); if (!E.top) return h;
+  const tp = E.top, x0 = tp[0][0], x1 = tp[tp.length - 1][0], X = (u: number) => x0 + (x1 - x0) * u;
+  const at = (k: number) => (u: number) => { const x = X(u); let i = 1; while (i < tp.length - 1 && tp[i][0] < x) i++; const a = tp[i - 1], b = tp[i], f = clamp((x - a[0]) / Math.max(1e-3, b[0] - a[0])); return a[k] + (b[k] - a[k]) * f; };
+  const hx0 = h.X(0), hx1 = h.X(1);
+  return { X, T: at(1), O: at(2), B: u => Math.max(at(1)(u), h.B(clamp((X(u) - hx0) / (hx1 - hx0)))) }; };
 const ellCh = (e: number[]): Ch => { const X = (u: number) => e[0] - e[2] + 2 * e[2] * u, h = (u: number) => e[3] * Math.sqrt(Math.max(0, 1 - (2 * u - 1) ** 2));
   return { X, T: u => e[1] - h(u), B: u => e[1] + h(u) }; };
-const lidNode = (C: Ch, lt: number, lb: number, skin: string, key: string, pad: number, lash: number, clipHull?: string, skinLo?: string) => {
-  const N = 18, us = Array.from({ length: N + 1 }, (_, j) => j / N), H = (u: number) => C.B(u) - C.T(u);
-  const ed = (u: number) => C.T(u) + H(u) * lt, sw = (u: number) => Math.sin(Math.PI * u);
+// веко из самого рисунка: полоски над глазом сдвигаются вниз (в уголках сдвиг 0, в центре — до нижней границы),
+// поэтому кожа, обводка и стрелки — родные, ничего не закрашивается; на белке тень от века
+const DBG = false;
+const lidNode = (C: Ch, lt: number, lb: number, id: CutId, key: string, pad: number, clipHull?: string) => {
+  const [hx, hy, hw, hh] = D[id].parts.head, href = staticFile(`ne-cut/${id}/head.png`), N = 56, H = (u: number) => C.B(u) - C.T(u);
   const P = (pts: number[][]) => pts.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ');
   const o: React.ReactNode[] = [];
-  if (lt > .02) {
-    const cover = [...us.map(u => [C.X(u) + (u - .5) * lash * 2.4, C.T(u) - pad * (.6 + .4 * sw(u))]), ...us.slice().reverse().map(u => [C.X(u) + (u - .5) * lash * 1.2, ed(u)])];
-    const soft = [...us.map(u => [C.X(u) + (u - .5) * lash * 4, C.T(u) - pad * (1.1 + .6 * sw(u))]), ...us.slice().reverse().map(u => [C.X(u) + (u - .5) * lash * 2, ed(u) - lash])];
-    o.push(<filter key={key + 'q'} id={key + 'q'} x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation={pad * .35} /></filter>,
-      <polygon key={key + 'p'} points={P(soft)} fill={skin} opacity={clamp(lt * 3) * .9} filter={`url(#${key}q)`} />,
-      <polygon key={key + 'c'} points={P(cover)} fill={skin} />,
-      <filter key={key + 'f'} id={key + 'f'} x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation={lash * .45} /></filter>,
-      <g key={key + 's'} clipPath={undefined}><polygon points={P([...us.map(u => [C.X(u), ed(u) - (pad * .3 + H(u) * lt * .25) * sw(u)]), ...us.slice().reverse().map(u => [C.X(u), ed(u)])])} fill="#000" opacity={.13} filter={`url(#${key}f)`} /></g>);
-    if (lt < .97 && clipHull) o.push(<g key={key + 'w'} clipPath={clipHull}><polygon points={P([...us.map(u => [C.X(u), ed(u)]), ...us.slice().reverse().map(u => [C.X(u), ed(u) + 4 + H(u) * .22])])} fill="#2a1a14" opacity={.22} /></g>);
-    const cr = clamp((lt - .12) / .3) * clamp((.92 - lt) / .3) * .22;   // складка века над краем
-    if (cr > .01) o.push(<path key={key + 'k'} d={'M' + us.filter(u => u > .2 && u < .8).map(u => `${C.X(u).toFixed(1)},${(C.T(u) - pad * .3 * sw(u) - 2).toFixed(1)}`).join(' L')} stroke="#1a0e0a" strokeWidth={lash * .35} strokeLinecap="round" fill="none" opacity={cr} />);
-    const th = (u: number) => lash * (1 - .3 * lt) * (.3 + .7 * sw(u) ** .6);
-    o.push(<polygon key={key + 'l'} points={P([...us.map(u => [C.X(u), ed(u) - th(u) * .55]), ...us.slice().reverse().map(u => [C.X(u), ed(u) + th(u) * .45])])} fill="#140c0a" />);
-  }
-  if (lb > .02) { const eb = (u: number) => C.B(u) - H(u) * lb * .45;
-    o.push(<polygon key={key + 'b'} points={P([...us.map(u => [C.X(u), eb(u)]), ...us.slice().reverse().map(u => [C.X(u), C.B(u) + pad * .5 * sw(u)])])} fill={skinLo ?? skin} />,
-      <path key={key + 'bl'} d={'M' + us.filter(u => u > .1 && u < .9).map(u => `${C.X(u).toFixed(1)},${eb(u).toFixed(1)}`).join(' L')} stroke="#1a0e0a" strokeWidth={lash * .3} fill="none" opacity={.45} strokeLinecap="round" />);
-  }
+  // полоска: обводка века (ширина ob) сдвигается на d, кожа над ней (sb) растягивается до нового края — брови и волосы не затягиваются
+  const sb = pad * .18;
+  const strips = (dir: 1 | -1, k: number, tag: string) => { const oS: React.ReactNode[] = [], oO: React.ReactNode[] = []; for (let j = 0; j < N; j++) { const u0 = j / N, u1 = (j + 1) / N, um = (u0 + u1) / 2;
+    const d = H(um) * k + Math.max(0, k - .9) * 25, xa = C.X(u0) - (j === 0 ? 3 : .4), xb = C.X(u1) + (j === N - 1 ? 3 : .4); if (d < .3) continue;
+    const ob = dir > 0 && C.O ? C.T(um) - C.O(um) + 3 : pad * .45, E0 = dir > 0 ? C.T(um) : C.B(um), Y0 = E0 - dir * (ob + sb), Y1 = E0 - dir * ob;         // кожа: Y0..Y1, обводка: Y1..E0
+    const ks = (sb + d) / sb, id1 = key + tag + j, ya = Math.min(Y1 + dir * d, E0 + dir * d), yb = Math.max(Y1 + dir * d, E0 + dir * d);
+    oS.push(<g key={id1 + 's'}><clipPath id={id1 + 's'}><rect x={xa} y={Math.min(Y0, Y1 + dir * d)} width={xb - xa} height={Math.abs(Y1 + dir * d - Y0) + .5} /></clipPath>
+      <g clipPath={`url(#${id1}s)`}><image href={href} x={hx} y={hy} width={hw} height={hh} transform={`translate(0,${Y0}) scale(1,${ks}) translate(0,${-Y0})`} /></g></g>);
+    oO.push(<g key={id1 + 'o'}><clipPath id={id1 + 'o'}><rect x={xa} y={ya} width={xb - xa} height={yb - ya} /></clipPath>
+      <g clipPath={`url(#${id1}o)`}><image href={href} x={hx} y={hy + dir * d} width={hw} height={hh} /></g></g>); }
+    // кожа века без полосок: размытие по горизонтали; обводка — поверх, резкая
+    o.push(<filter key={key + tag + 'f'} id={key + tag + 'f'} x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation={`${pad * .14} ${pad * .03}`} /></filter>,
+      <g key={key + tag + 'R'}>{oS}</g>, <g key={key + tag + 'S'} filter={`url(#${key + tag}f)`}>{oS.map((n: any) => React.cloneElement(n, { key: n.key + 'b' }))}</g>, <g key={key + tag + 'O'}>{oO}</g>); };
+  if (lt > .01) { strips(1, lt, 't');
+    if (lt < .97 && clipHull) { const us = Array.from({ length: 19 }, (_, j) => j / 18), ed = (u: number) => C.T(u) + H(u) * lt;
+      o.push(<g key={key + 'w'} clipPath={clipHull}><polygon points={P([...us.map(u => [C.X(u), ed(u)]), ...us.slice().reverse().map(u => [C.X(u), ed(u) + 3 + H(u) * .18])])} fill="#2a1a14" opacity={.2} /></g>); } }
+  if (lb > .01) strips(-1, lb * .45, 'b');
   return <g key={key}>{o}</g>;
 };
 
@@ -189,13 +196,16 @@ const faceNew = (id: CutId, d0: CD, em: Emo, look: number[], bc: number, fid: st
     const xs = E.hull.map(q => q[0]), ys = E.hull.map(q => q[1]), x0 = Math.min(...xs) - 14, x1 = Math.max(...xs) + 14, y0 = Math.min(...ys) - 14, y1 = Math.max(...ys) + 14, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
     const ox = clamp(look[0], -1, 1) * Math.max((x1 - x0) / 2 - 14 - E.r, 9) * .9, oy = clamp(look[1], -1, 1) * Math.max((y1 - y0) / 2 - 14 - E.r, 7);
     const H = y1 - y0, lt = Math.max(bc, em.lidT);
-    out.push(<g key={'e' + i}><clipPath id={`${fid}h${i}`}><polygon points={E.hull.map(q => q.join(',')).join(' ')} /></clipPath>
+    const C = topCh(E as any), us = Array.from({ length: 33 }, (_, j) => j / 32), hl = (E as any).hl as number[] | undefined;
+    const eyeP = (E as any).top ? [...us.map(u => `${C.X(u)},${C.T(u)}`), ...us.slice().reverse().map(u => `${C.X(u)},${C.B(u)}`)].join(' ') : E.hull.map(q => q.join(',')).join(' ');
+    out.push(<g key={'e' + i}><clipPath id={`${fid}h${i}`}><polygon points={eyeP} /></clipPath>
       <g clipPath={`url(#${fid}h${i})`}>
         <rect x={x0} y={y0} width={x1 - x0} height={H} fill="#fff" />
         <image href={staticFile(`ne-cut/${id}/iris${'LR'[i]}.png`)} x={ib[0] + ox} y={ib[1] + oy} width={ib[2]} height={ib[3]} />
+        {hl && <circle cx={E.c[0] + ox + hl[0]} cy={E.c[1] + oy + hl[1]} r={hl[2] * 1.12} fill="#fff" />}
         <rect x={x0} y={y0} width={x1 - x0} height={H * .3} fill="#000" opacity={.07} />
       </g>
-      {lidNode(hullCh(E.hull), lt, Math.max(em.lidB, bc * .18), (E as any).lid ?? skin, `${fid}l${i}`, ry * .42, ry * .3, `url(#${fid}h${i})`, (E as any).lidLo)}
+      {lidNode(C, lt, Math.max(em.lidB, bc * .18), id, `${fid}l${i}`, ry * .9, `url(#${fid}h${i})`)}
 </g>); });
   FX.brows.forEach((B, i) => { const k = 'brow' + 'LR'[i], up = em.by + (i ? em.bR : em.bL);
     out.push(<g key={k} transform={`translate(0,${-up}) rotate(${(i ? 1 : -1) * em.brow} ${B.c[0]} ${B.c[1]})`}>{part(id, k, I)}</g>); });
@@ -286,7 +296,7 @@ export const kin = (p: CutProps) => {
 export const cutHand = (p: CutProps, side: 'L' | 'R' = 'R') => { const k = kin(p); return ap(k.root, (side === 'L' ? k.aL : k.aR).hand); };
 
 export const Cut: React.FC<CutProps> = (p0) => {
-  const LF = useContext(LifeCtx); let p = p0;
+  const LF = useContext(LifeCtx), uid = React.useId().replace(/[^a-zA-Z0-9]/g, ''); let p = p0;
   if (LF) { const n = LF.n[p0.id] = (LF.n[p0.id] ?? 0) + 1, key = p0.id + '#' + n;
     if (LF.mode === 'rec') { (LF.store[key] = LF.store[key] || [])[LF.k] = p0; return null; }
     const prev = (LF.store[key] || []).filter(Boolean); if (prev.length) p = { ...p0, prev }; }
@@ -302,7 +312,7 @@ export const Cut: React.FC<CutProps> = (p0) => {
   const face = p.face ?? null, cry = p.face === 'cry' ? (p.cry ?? 1) : 0;
   const lidK = Math.max(bc, p.lid ?? 0, cry * .22);
   const skin = d0.skin, [mx, my, mw] = F.m;
-  const fid = 'cf' + id.replace(/[^a-z]/g, '');
+  const fid = 'cf' + id.replace(/[^a-z]/g, '') + uid;
   const talk = clamp(p.mouth ?? 0);
   const flip = p.flip ? -1 : 1;
   const root = ms(rootM);
@@ -329,7 +339,7 @@ export const Cut: React.FC<CutProps> = (p0) => {
       {part(id, 'head', I)}
       {/* веки: моргание / полуприкрытые при плаче */}
       {FX && faceNew(id, d0, em!, look, bc, fid)}
-      {!FX && lidK > .02 && eyes.map((e, i) => lidNode(ellCh(e), lidK, 0, skin, `${fid}o${i}`, e[3] * .3, e[3] * .22))}
+      {!FX && lidK > .02 && eyes.map((e, i) => lidNode(ellCh(e), lidK, 0, id, `${fid}o${i}`, e[3] * .6))}
       {/* мимика поверх картинки: рот закрашивается цветом кожи, рисуется новый */}
       {!FX?.mouth && (face || talk > .05) && patch(mx, my + 2, mw * 1.25, face ? 44 : 32)}
       {!FX?.mouth && face === 'o' && <ellipse cx={mx} cy={my + 6} rx={mw * .32} ry={mw * .45} fill="#3a1418" />}

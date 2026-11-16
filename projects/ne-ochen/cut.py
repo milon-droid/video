@@ -185,7 +185,10 @@ def face_parts(cid, c, img, A, eyes, parts):
         wm = np.zeros_like(A)
         for m in comps((np.abs(rgb - skin).sum(-1) > 45) & mid & ~bm):
             if m.sum() < 900 and np.where(m)[0].min() > ey - 90: wm |= m
-        wr = ndi.binary_dilation(wm, iterations=5); kill |= wr; bm |= wr
+        eyeP = np.zeros_like(A)           # обводку и стрелки глаз не трогать (иначе над радужкой кожа на обводке)
+        for E in F['eyes']: ImageDraw.Draw(im_ := Image.new('L', (W, H), 0)).polygon([tuple(map(int, q)) for q in E['hull']], fill=255); eyeP |= np.array(im_) > 0
+        eyeP = ndi.binary_dilation(eyeP, iterations=18)
+        wr = ndi.binary_dilation(wm & ~eyeP, iterations=5) & ~eyeP; kill |= wr; bm |= wr
     keep = (np.abs(rgb - skin).sum(-1) > 60) & ~bm        # ресницы, волосы — не трогаем и не размазываем
     inpaint(img, kill & A & ~keep, ndi.binary_dilation(keep, iterations=3) | ~A)
     kill = np.zeros_like(A)
