@@ -9,6 +9,7 @@ import { Sheet3 } from './ep3/Sheet';
 import { Ep3, EP3_FRAMES } from './ep3/Ep3';
 import { StarsClip, STARS_FRAMES } from './stars/Clip';
 import { NeSheet } from './ne/Sheet';
+import { Banner, Avatar } from './brand/Brand';
 import { NeEyeTest } from './ne/CutTest';
 import { NeCutTest } from './ne/CutTest';
 import { NeTv } from './ne/TvTest';
@@ -30,6 +31,8 @@ export const RemotionRoot: React.FC = () => (<>
   <Composition id="Ne-1080" component={NeClip} durationInFrames={NE_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ audio: true }} />
   <Composition id="Ne-mute" component={NeClip} durationInFrames={NE_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: false }} />
   <Composition id="Ne-tv" component={NeTv} durationInFrames={170} fps={30} width={720} height={1280} />
+  <Still id="Banner" component={Banner} width={2560} height={1440} />
+  <Still id="Avatar" component={Avatar} width={1080} height={1080} />
   <Still id="NeSheet" component={NeSheet} width={1440} height={1280} />
   <Still id="NeEyeTest" component={NeEyeTest} width={1600} height={1200} />
   <Still id="NeCutTest" component={NeCutTest} width={1600} height={1200} />
