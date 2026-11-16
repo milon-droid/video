@@ -1,13 +1,11 @@
-// Лист проверки перекладных персонажей: позы, шаг, посадка, мимика (Still NeCutTest).
+// Лист проверки перекладных персонажей: мимика на лицах из картинок, взгляд, шаг, посадка (Still NeCutTest).
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { Cut, CUT_IDS, CutPreloader, CutId } from './Cut';
-export const NeCutTest: React.FC = () => {
-  const F = ['o', 'cry', null, 'frown', 'cry', 'flat', 'o', null] as const;
-  return (<AbsoluteFill style={{ background: '#7a9a7a' }}><svg viewBox="0 0 3200 2400" width="100%" height="100%">
-    {Array.from({ length: 8 }, (_, i) => <Cut key={'w' + i} id={'vini-kit'} x={200 + i * 400} y={780} s={.95} t={1 + i} walk={{ d: i * 14, run: true }} />)}
-    {Array.from({ length: 8 }, (_, i) => <Cut key={'v' + i} id={'diom-track' as CutId} x={200 + i * 400} y={1560} s={.95} t={1 + i} walk={{ d: i * 10, dir: -1 }} />)}
-    {CUT_IDS.map((id, i) => <Cut key={id + 'p'} id={id} x={200 + i * 400} y={2360} s={.95} t={2 + i} flip={i === 0 || i === 2}
-      sit={i === 5} face={F[i]} cry={.85} mouth={i === 7 ? .7 : 0}
-      hold={i === 1 ? 'phone' : i === 4 ? 'flowers' : null} pose={i % 3 === 1 ? { armR: [2.4, .4], armL: [-1.2, -.8] } : undefined} />)}
-  </svg><CutPreloader /></AbsoluteFill>); };
+import { Cut, CutPreloader, CutId } from './Cut';
+const EX = ['neutral', 'happy', 'smug', 'sad', 'shock', 'deadpan', 'cry', 'talk'];
+const ROW: CutId[] = ['vini-kit', 'vini-home', 'sadie-vip', 'diom-track'];
+export const NeCutTest: React.FC = () => (<AbsoluteFill style={{ background: '#7a9a7a' }}><svg viewBox="0 0 3200 2400" width="100%" height="100%">
+  {ROW.map((id, r) => EX.map((e, i) => <Cut key={id + e} id={id} x={200 + i * 400} y={1000 + r * 560} s={1.9} t={1.37 + i * .9} noBlink
+    expr={e === 'cry' || e === 'talk' ? undefined : e} face={e === 'cry' ? 'cry' : null} cry={1} mouth={e === 'talk' ? .8 : 0}
+    eye={[[0, 0], [0, 0], [.9, 0], [-.3, .8], [0, -.4], [-.9, 0], [0, .5], [.5, 0]][i] as [number, number]} />))}
+</svg><CutPreloader /></AbsoluteFill>);

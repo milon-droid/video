@@ -17,14 +17,14 @@ DEBUG = '--debug' in sys.argv
 
 # ручные ориентиры (пиксели исходника): шея (линия среза головы), подмышка, ось плеча, локоть, промежность, ось бедра, колено
 CH = {
-  'vini-kit':   dict(f='vinicius-kit',   neck=646, armpit=880, sh=765, el=980, crotch=1222, hip=1140, knee=1325, num=True),
-  'vini-home':  dict(f='vinicius-home',  neck=640, armpit=890, sh=770, el=985, crotch=1219, hip=1140, knee=1345),
+  'vini-kit':   dict(f='vinicius-kit',   neck=646, armpit=880, sh=765, el=980, crotch=1222, hip=1140, knee=1325, num=True, mouth=(476, 486, 541, 68, 508)),
+  'vini-home':  dict(f='vinicius-home',  neck=640, armpit=890, sh=770, el=985, crotch=1219, hip=1140, knee=1345, mouth=(476, 486, 541, 68, 508)),
   'diom-kit':   dict(f='diomande-kit',   neck=556, armpit=776, sh=665, el=900, crotch=1140, hip=1060, knee=1285, num=True, locs=592),
   'diom-track': dict(f='diomande-casual', neck=548, armpit=804, sh=690, el=920, crotch=1144, hip=1060, knee=1295, locs=592),
-  'sadie-vip':  dict(f='sadie-vip',      neck=612, armpit=852, sh=730, el=935, crotch=1238, hip=1060, knee=1400, hair=True),
-  'sadie-jkt':  dict(f='sadie-casual',   neck=622, armpit=852, sh=730, el=945, crotch=1176, hip=1090, knee=1370, hair=True),
+  'sadie-vip':  dict(f='sadie-vip',      neck=612, armpit=852, sh=730, el=935, crotch=1238, hip=1060, knee=1400, hair=True, browOut=4, browT=200, irisCol='blue', mouth=(474, 486, 527, 54, 506)),
+  'sadie-jkt':  dict(f='sadie-casual',   neck=622, armpit=852, sh=730, el=945, crotch=1176, hip=1090, knee=1370, hair=True, browOut=4, browT=200, irisCol='blue', mouth=(474, 486, 527, 54, 506)),
   'tom':        dict(f='tom-holland',    neck=640, armpit=896, sh=760, el=985, crotch=1204, hip=1120, knee=1365),
-  'coach':      dict(f='jose-mourinho-coach-v2', neck=612, armpit=868, sh=720, el=950, crotch=1220, hip=1130, knee=1380),
+  'coach':      dict(f='jose-mourinho-coach-v2', neck=612, armpit=868, sh=720, el=950, crotch=1220, hip=1130, knee=1380, noface=True),
 }
 
 def disk(shape, c, r):
@@ -106,6 +106,95 @@ def eyes_of(img, A, neck):
         res.append([float(xs.mean()), float(ys.mean()), float((xs.max() - xs.min()) / 2), float((ys.max() - ys.min()) / 2)])
     res = sorted(res, key=lambda e: -e[2] * e[3])[:2]
     return sorted(res, key=lambda e: e[0])
+
+
+REF = {}
+def inpaint(img, M, bad=None):
+    """закрасить область M цветом окружения (нормированная свёртка, от мелкого радиуса к крупному)"""
+    rgb = img[..., :3].astype(float); known = (~M) & (img[..., 3] > 200)
+    if bad is not None: known &= ~bad
+    out = rgb.copy(); todo = M.copy()
+    for sg in (4, 8, 16, 32):
+        w = ndi.gaussian_filter(known.astype(float), sg)
+        est = np.stack([ndi.gaussian_filter(rgb[..., k] * known, sg) for k in range(3)], -1) / np.maximum(w, 1e-6)[..., None]
+        ok = todo & (w > .08); out[ok] = est[ok]; todo &= ~ok
+    sm = np.stack([ndi.gaussian_filter(out[..., k], 2.5) for k in range(3)], -1)
+    Md = ndi.binary_dilation(M, iterations=2); out[Md] = sm[Md]
+    img[..., :3] = np.clip(out, 0, 255).astype(np.uint8)
+
+def sprite(src, mask, path, feather=1.5):
+    ys, xs = np.where(mask); p = 6
+    x0, x1, y0, y1 = xs.min() - p, xs.max() + 1 + p, ys.min() - p, ys.max() + 1 + p
+    a = src[y0:y1, x0:x1].copy(); al = ndi.gaussian_filter(mask[y0:y1, x0:x1].astype(float), feather)
+    a[..., 3] = np.clip(al * 255 * 1.15, 0, 255).astype(np.uint8)
+    Image.fromarray(a).save(path, optimize=True)
+    return [int(x0), int(y0), int(x1 - x0), int(y1 - y0)]
+
+def face_parts(cid, c, img, A, eyes, parts):
+    """подвижное лицо: брови и рот — отдельные спрайты (под ними кожа дорисована), радужки — спрайты, белок — контур"""
+    from scipy.spatial import ConvexHull
+    src = img.copy(); rgb = src[..., :3].astype(int); H, W = A.shape; F = dict(brows=[], eyes=[])
+    out = os.path.join(OUT, cid)
+    # глаза
+    for i, e in enumerate(eyes):
+        ex, ey, rx, ry = e; side = 'LR'[i]
+        box = np.zeros_like(A); box[int(ey - ry - 6):int(ey + ry + 6), int(ex - rx - 6):int(ex + rx + 6)] = True
+        white = (rgb.min(-1) > 225) & box
+        Wc = comps(white)[0]
+        pts = np.argwhere(Wc)[:, ::-1]; hull = pts[ConvexHull(pts).vertices]
+        hm = Image.new('L', (W, H), 0); ImageDraw.Draw(hm).polygon([tuple(map(int, p)) for p in hull], fill=255); hm = np.array(hm) > 0
+        ic = comps(hm & ~Wc)
+        if not ic or ic[0].sum() < 400: continue
+        I0 = ic[0]
+        if c.get('irisCol') == 'blue':   # радужка по цвету (у Сэди её режет веко)
+            bl = comps((rgb[..., 2] > rgb[..., 0] + 15) & box & hm); I0 = ndi.binary_fill_holes(bl[0]) if bl else I0
+        ys, xs = np.where(I0); r = (xs.max() - xs.min() + 1) / 2; cx = (xs.max() + xs.min()) / 2; cy = ys.max() - r
+        if c.get('irisRef'):
+            R = REF[c['irisRef']]['eyes'][i]; r = R['r']; cx = R['c'][0] + ex - R['e'][0]; cy = R['c'][1] + ey - R['e'][1]
+        yy, xx = np.mgrid[:H, :W]; circ = (xx - cx) ** 2 + (yy - cy) ** 2 <= r * r
+        vis = ndi.binary_fill_holes(I0) & circ
+        spr = src.copy(); mean = np.median(src[..., :3][vis & (rgb.max(-1) < 200)], 0)
+        miss = circ & ~vis; my, mx = np.where(miss); ry2 = np.clip((2 * cy - my).round().astype(int), 0, H - 1)
+        okm = vis[ry2, mx]; spr[my, mx, :3] = np.where(okm[:, None], src[ry2, mx, :3], mean); spr[..., 3] = 255
+        parts['iris' + side] = sprite(spr, circ, os.path.join(out, 'iris' + side + '.png'), 1.0)
+        hl = hull.astype(float); cen = hl.mean(0); hl = cen + (hl - cen) * 1.03
+        F['eyes'].append(dict(hull=[[round(float(x), 1), round(float(y), 1)] for x, y in hl], c=[float(cx), float(cy)], r=float(r), e=[float(v) for v in e]))
+    skin = np.median(rgb[int(eyes[0][1] + eyes[0][3] + 30):int(eyes[0][1] + eyes[0][3] + 45), int(eyes[0][0] - 10):int(eyes[0][0] + 10)].reshape(-1, 3), 0)
+    # брови: самое крупное тёмное пятно над глазом
+    kill = np.zeros_like(A); bm = np.zeros_like(A)
+    for i, e in enumerate(eyes):
+        ex, ey, rx, ry = e; side = 'LR'[i]
+        box = np.zeros_like(A); po = c.get('browOut', 45); box[int(ey - ry - 95):int(ey - ry - 4), int(ex - rx - (po if i == 0 else 45)):int(ex + rx + (45 if i == 0 else po))] = True
+        d = np.abs(rgb - skin).sum(-1); dark = (d > c.get('browT', 110)) & box & A & (rgb.sum(-1) < skin.sum() - 60)
+        cs = [m for m in comps(dark, split=4 if 'browOut' in c else 0) if np.where(m)[0].max() < ey - ry - 6 and m.sum() > 500]
+        cs.sort(key=lambda m: -np.where(m)[0].mean())   # ближайшее к глазу (не прядь волос)
+        if not cs: continue
+        m = ndi.binary_dilation(cs[0], iterations=2)
+        parts['brow' + side] = sprite(src, m, os.path.join(out, 'brow' + side + '.png'))
+        ys, xs = np.where(m); F['brows'].append(dict(c=[float(xs.mean()), float(ys.mean())], w=float(xs.max() - xs.min())))
+        km = ndi.binary_dilation(m, iterations=8)
+        if 'browOut' in c:      # хвост брови лежит на волосах — его не стираем
+            if i == 0: km[:, :int(ex - rx - c['browOut'] + 8)] = False
+            else: km[:, int(ex + rx + c['browOut'] - 8):] = False
+        kill |= km; bm |= ndi.binary_dilation(m, iterations=2)
+    if len(F['brows']) == 2:   # морщинки между бровями
+        ey = eyes[0][1] - eyes[0][3]; mid = np.zeros_like(A); mid[int(ey - 95):int(ey - 8), int(eyes[0][0] + 20):int(eyes[1][0] - 20)] = True
+        wm = np.zeros_like(A)
+        for m in comps((np.abs(rgb - skin).sum(-1) > 45) & mid & ~bm):
+            if m.sum() < 900 and np.where(m)[0].min() > ey - 90: wm |= m
+        wr = ndi.binary_dilation(wm, iterations=5); kill |= wr; bm |= wr
+    keep = (np.abs(rgb - skin).sum(-1) > 60) & ~bm        # ресницы, волосы — не трогаем и не размазываем
+    inpaint(img, kill & A & ~keep, ndi.binary_dilation(keep, iterations=3) | ~A)
+    kill = np.zeros_like(A)
+    # рот: линза вокруг губ
+    if c.get('mouth'):
+        cx, y0, y1, hw, line = c['mouth']; cy = (y0 + y1) / 2; ry = (y1 - y0) / 2 + 5
+        yy, xx = np.mgrid[:H, :W]; m = ((xx - cx) / (hw + 6)) ** 2 + ((yy - cy) / ry) ** 2 <= 1
+        parts['mouth'] = sprite(src, m, os.path.join(out, 'mouth.png'), 2.5)
+        F['mouth'] = dict(c=[cx, cy], hw=hw, ry=ry, line=line)
+        kill |= ndi.binary_dilation(m, iterations=3)
+    inpaint(img, kill & A)
+    return F
 
 def run(cid, c):
     img = np.array(Image.open(os.path.join(SRC, c['f'] + '-transparent.png')).convert('RGBA'))
@@ -202,6 +291,9 @@ def run(cid, c):
         parts['sh' + side] = save(img, sh, os.path.join(OUT, cid, 'sh' + side + '.png'))
         piv['P' + side], piv['K' + side], piv['A' + side] = Hp, K, An
 
+    eyes = eyes_of(img, A, c['neck'])
+    fc = face_parts(cid, c, img, A, eyes, parts) if not c.get('noface') else None
+    rgb = img[..., :3].astype(int)
     parts['head'] = save(img, head, os.path.join(OUT, cid, 'head.png'))
     parts['torso'] = save(img, torso, os.path.join(OUT, cid, 'torso.png'))
     if c.get('num'):
@@ -214,11 +306,11 @@ def run(cid, c):
         x0, x1, y0, y1 = xs_n.min() - 8, xs_n.max() + 9, ys_n.min() - 6, ys_n.max() + 7
         tf = img.copy(); tf[y0:y1, x0:x1] = img[y0:y1, x0:x1][:, ::-1]
         parts['torsoF'] = save(tf, torso, os.path.join(OUT, cid, 'torsoF.png'))
-    eyes = eyes_of(img, A, c['neck'])
     # цвет кожи: под глазами
     skin = [int(v) for v in np.median(rgb[int(eyes[0][1] + eyes[0][3] + 30):int(eyes[0][1] + eyes[0][3] + 45), int(eyes[0][0] - 10):int(eyes[0][0] + 10)].reshape(-1, 3), 0)] if eyes else [200, 160, 130]
     knee = [int(v) for v in np.median(rgb[int(piv['KL'][1]) - 6:int(piv['KL'][1]) + 6, int(piv['KL'][0]) - 8:int(piv['KL'][0]) + 8].reshape(-1, 3), 0)]
     data = dict(W=W, H=H, top=top, foot=foot, cx=cx, parts=parts, piv=piv, eyes=eyes, skin='#%02x%02x%02x' % tuple(skin), knee='#%02x%02x%02x' % tuple(knee))
+    if fc: data['face'] = fc; REF[cid] = fc
     if DEBUG:
         dbg = Image.new('RGBA', (W, H), (40, 40, 40, 255))
         cols = {'head': (255, 80, 80), 'torso': (80, 80, 255), 'uaL': (80, 255, 80), 'faL': (255, 255, 80), 'uaR': (80, 255, 80), 'faR': (255, 255, 80),
@@ -228,7 +320,7 @@ def run(cid, c):
             if k in cols: d.rectangle([x, y, x + w, y + h], outline=cols[k] + (255,), width=3)
         for k, (x, y) in piv.items(): d.ellipse([x - 9, y - 9, x + 9, y + 9], fill=(255, 0, 0, 255)); d.text((x + 10, y - 6), k, fill=(255, 255, 255, 255))
         for e in eyes: d.ellipse([e[0] - e[2], e[1] - e[3], e[0] + e[2], e[1] + e[3]], outline=(0, 255, 0, 255), width=3)
-        Image.alpha_composite(dbg, Image.fromarray(img).copy().convert('RGBA').point(lambda v: v)).save(f'/tmp/claude-0/-home-user-video/bbcf9cf3-88fe-57c6-80a8-19b94be442cd/scratchpad/dbg-{cid}.png')
+        Image.alpha_composite(dbg, Image.fromarray(img).copy().convert('RGBA').point(lambda v: v)).save(os.path.join(os.environ.get('DBG_DIR', '/tmp'), f'dbg-{cid}.png'))
     return data
 
 if __name__ == '__main__':

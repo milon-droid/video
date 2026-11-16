@@ -2,14 +2,16 @@
 // Внешность — пиксель в пиксель из PNG; двигаются части: голова, плечо, предплечье с кистью, бедро, голень со стопой.
 // API совпадает с Baller/Sadie (поза в тех же углах: от вертикали вниз, плюс — к +x экрана), плюс:
 //   walk — шаг/бег без скольжения (опорная стопа стоит на газоне, колено вперёд по ходу), face — мимика поверх картинки.
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { LAG, LifeCtx } from './life';
 import { continueRender, delayRender, staticFile } from 'remotion';
 import { clamp, noise } from '../anim';
 import { POSES, Pose } from '../chars/Person';
 import { Bouquet, Phone } from '../stars/Stars';
 import DATA from './cutData.json';
 
-type CD = { W: number; H: number; top: number; foot: number; cx: number; parts: Record<string, number[]>; piv: Record<string, number[]>; eyes: number[][]; skin: string; knee: string };
+type FaceD = { brows: { c: number[]; w: number }[]; eyes: { hull: number[][]; c: number[]; r: number; e: number[] }[]; mouth?: { c: number[]; hw: number; ry: number; line: number } };
+type CD = { face?: FaceD; W: number; H: number; top: number; foot: number; cx: number; parts: Record<string, number[]>; piv: Record<string, number[]>; eyes: number[][]; skin: string; knee: string };
 const D = DATA as unknown as Record<CutId, CD>;
 export type CutId = 'vini-kit' | 'vini-home' | 'diom-kit' | 'diom-track' | 'sadie-vip' | 'sadie-jkt' | 'tom' | 'coach';
 export const UNIT = .475; // пиксель картинки → единица сцены (рост ≈ 750 ед., как у Baller)
@@ -101,16 +103,95 @@ export type CutProps = {
   headTilt?: number; mouth?: number; hearts?: number; tears?: number; face?: Face; cry?: number; sit?: boolean; seat?: number;
   hold?: 'phone' | 'flowers' | null; walk?: Walk; lid?: number; blush?: number; opacity?: number; noBlink?: boolean;
   armRBack?: boolean; slump?: number; // правая рука (с предметом) за корпусом; плечи опущены (0…1)
+  expr?: string; eye?: [number, number]; teeth?: boolean; oMouth?: boolean; emo?: Partial<Emo>; prev?: CutProps[];
   gest?: number; web?: number; webLen?: number; // Том: кисть «паутинный жест» (1 — пальцы сложены) и нить (0…1 — вытягивается)
 };
 
 const part = (id: CutId, k: string, m: M) => { const [x, y, w, h] = D[id].parts[k]; return <image key={k} href={staticFile(`ne-cut/${id}/${k}.png`)} x={x} y={y} width={w} height={h} transform={ms(m)} />; };
 
+// ── мимика: брови (угол «внутренний край вверх», подъём), рот (улыбка −1…1, открытие, ширина, зубы), веки
+export type Emo = { brow: number; by: number; bL: number; bR: number; smile: number; open: number; w: number; lidT: number; lidB: number; teeth: number };
+const E0: Emo = { brow: NaN, by: 0, bL: 0, bR: 0, smile: 0, open: 0, w: 1, lidT: 0, lidB: 0, teeth: 0 };
+const EXPR: Record<string, Partial<Emo>> = {
+  neutral: {}, determined: {},
+  happy: { brow: 4, by: 12, smile: 1, open: .42, lidB: .3, teeth: 1 },
+  love: { brow: 8, by: 14, smile: 1, open: .3, lidB: .2, teeth: 1 },
+  smug: { brow: 0, by: 2, bR: 16, smile: .8, lidT: .26 },
+  cool: { brow: 0, smile: .5, lidT: .2 },
+  sad: { brow: 20, by: 2, smile: -.9, lidT: .3 },
+  shock: { brow: 8, by: 26, smile: -.15, open: .85, w: .62 },
+  scared: { brow: 16, by: 22, smile: -.3, open: .8, w: .62 },
+  pain: { brow: 18, smile: -.6, open: .4, lidT: .5 }, ko: { brow: 18, smile: -.6, open: .4, lidT: .8 },
+  deadpan: { brow: 0, by: -6, smile: -.25, lidT: .38 },
+  cry: { brow: 24, by: 2, smile: -1, open: .22, lidT: .25 },
+};
+const BROW0: Partial<Record<CutId, number>> = { 'vini-kit': -16, 'vini-home': -16 };   // брови на рисунке: у Вини — сдвинуты (сердитые)
+const emoOf = (p: CutProps): Emo => {
+  const name = p.face === 'cry' ? 'cry' : (p.hearts ?? 0) > .3 ? 'love' : p.oMouth || p.face === 'o' ? 'shock' : p.expr && EXPR[p.expr] ? p.expr : p.face === 'flat' ? 'deadpan' : p.face === 'frown' ? 'sad' : 'neutral';
+  let e = { ...E0, ...EXPR[name], ...(p.emo || {}) } as Emo;
+  if (name === 'cry') { const k = p.cry ?? 1, sd = { ...E0, ...EXPR.sad } as Emo; (Object.keys(e) as (keyof Emo)[]).forEach(q => { if (q !== 'brow') e[q] = sd[q] + (e[q] - sd[q]) * k; }); }
+  if (p.teeth) { e.teeth = 1; e.open = Math.max(e.open, .4); e.smile = Math.max(e.smile, .8); }
+  e.open = Math.min(1, e.open + clamp(p.mouth ?? 0) * .7);
+  e.lidT = Math.max(e.lidT, p.lid ?? 0);
+  e.brow = Number.isNaN(e.brow) ? 0 : e.brow - (BROW0[p.id] ?? 0);          // поворот от нарисованного положения
+  return e;
+};
+const emoMix = (p: CutProps): Emo => { const a = emoOf(p), pv = (p.prev ?? []).map(emoOf); if (!pv.length) return a;
+  const w = pv.length > 1 ? [.45, .3, .25] : [.6, .4], all = [a, ...pv], o = { ...a };
+  (Object.keys(a) as (keyof Emo)[]).forEach(q => { o[q] = all.reduce((acc, e, i) => acc + e[q] * w[i], 0); }); return o; };
+const poseOf = (p: CutProps) => { const g = p.walk ? gait(p.id, p.walk) : null;
+  return { ...POSES.stand, ...(g ? { armL: g.armL, armR: g.armR, lean: g.lean } : {}), ...(p.pose || {}) } as Pose; };
+
+// лицо из частей рисунка: белок по контуру, радужка-спрайт (взгляд), веки, брови-спрайты, рот — полосками (изгиб, открытие)
+const faceNew = (id: CutId, d0: CD, em: Emo, look: number[], bc: number, fid: string) => { const FX = d0.face!, skin = d0.skin, out: React.ReactNode[] = [];
+  FX.eyes.forEach((E, i) => { const [ex, ey, rx, ry] = E.e, ib = d0.parts['iris' + 'LR'[i]];
+    const ox = clamp(look[0], -1, 1) * Math.max(rx - E.r, 9) * .95, oy = clamp(look[1], -1, 1) * Math.max(ry - E.r, 7);
+    const top = ey - ry * 1.1, H = ry * 2.2, lt = Math.max(bc, em.lidT), yl = top + H * lt, yb = ey + ry * 1.05 - em.lidB * ry * .9;
+    out.push(<g key={'e' + i}><clipPath id={`${fid}h${i}`}><polygon points={E.hull.map(q => q.join(',')).join(' ')} /></clipPath>
+      <g clipPath={`url(#${fid}h${i})`}>
+        <rect x={ex - rx - 8} y={ey - ry - 8} width={rx * 2 + 16} height={ry * 2 + 16} fill="#fff" />
+        <image href={staticFile(`ne-cut/${id}/iris${'LR'[i]}.png`)} x={ib[0] + ox} y={ib[1] + oy} width={ib[2]} height={ib[3]} />
+        <rect x={ex - rx - 8} y={ey - ry - 8} width={rx * 2 + 16} height={ry * .45} fill="#000" opacity={.07} />
+        {lt > .02 && <><rect x={ex - rx - 8} y={top - 12} width={rx * 2 + 16} height={yl - top + 12} fill={skin} />
+          <path d={`M${ex - rx - 4},${yl - 3} Q${ex},${yl + 5} ${ex + rx + 4},${yl - 3}`} stroke="#140c0a" strokeWidth={8} fill="none" /></>}
+        {em.lidB > .02 && <path d={`M${ex - rx - 8},${ey + ry + 12} L${ex - rx - 8},${yb + 6} Q${ex},${yb - 10} ${ex + rx + 8},${yb + 6} L${ex + rx + 8},${ey + ry + 12} Z`} fill={skin} />}
+      </g></g>); });
+  FX.brows.forEach((B, i) => { const k = 'brow' + 'LR'[i], up = em.by + (i ? em.bR : em.bL);
+    out.push(<g key={k} transform={`translate(0,${-up}) rotate(${(i ? 1 : -1) * em.brow} ${B.c[0]} ${B.c[1]})`}>{part(id, k, I)}</g>); });
+  const Mo = FX.mouth;
+  if (Mo) { const mb = d0.parts.mouth, href = staticFile(`ne-cut/${id}/mouth.png`), s = em.smile, o = em.open, ws = em.w * (1 + .1 * Math.max(0, s));
+    if (Math.abs(s) < .02 && o < .02 && Math.abs(ws - 1) < .01) out.push(part(id, 'mouth', I));
+    else { const N = 16, sw = mb[2] / N, hw = mb[2] / 2, cx = Mo.c[0], A = Mo.ry * .55, R = Mo.ry * 1.15 * o, up = o * Mo.ry * .22;
+      const dy = (u: number) => -s * A * (u * u - .3), dn = (u: number) => R * Math.max(0, 1 - (u / .9) ** 2);
+      const X = (u: number) => cx + u * hw * ws, line = Mo.line;
+      if (o > .03) { const us = Array.from({ length: 13 }, (_, j) => -.9 + j * .15);
+        const topP = us.map(u => `${X(u)},${line + dy(u) - up - 1}`), botP = us.slice().reverse().map(u => `${X(u)},${line + dy(u) + dn(u) + 1}`);
+        out.push(<polygon key="mi" points={[...topP, ...botP].join(' ')} fill="#3a1216" />);
+        if (em.teeth > .3) out.push(<polygon key="mt" points={[...topP, ...us.slice().reverse().map(u => `${X(u)},${line + dy(u) - up + Math.min(dn(u) * .55, 15)}`)].join(' ')} fill="#fbfaf6" />);
+        else out.push(<ellipse key="mg" cx={cx} cy={line + dy(0) + dn(0) * .8} rx={hw * ws * .45} ry={dn(0) * .3} fill="#b84a52" opacity={.8} />); }
+      for (let half = 0; half < 2; half++) for (let i = 0; i < N; i++) { const x0 = mb[0] + i * sw, xc = x0 + sw / 2, u = (xc - cx) / hw;
+        const k = -s * A * 2 * u / hw + (half ? -R * 2 * u / .81 / hw * (Math.abs(u) < .9 ? 1 : 0) : 0), d = dy(u) + (half ? dn(u) : -up);
+        const ya = half ? line : mb[1], hh = half ? mb[1] + mb[3] - line : line - mb[1];
+        out.push(<g key={'m' + half + i} transform={`matrix(${ws} ${k} 0 1 ${cx * (1 - ws)} ${d - k * xc})`}>
+          <svg x={x0 - .5} y={ya} width={sw + 1} height={hh} viewBox={`${x0 - .5} ${ya} ${sw + 1} ${hh}`}><image href={href} x={mb[0]} y={mb[1]} width={mb[2]} height={mb[3]} /></svg></g>); } } }
+  return out; };
+
 // кинематика: матрицы частей в пикселях картинки + матрица корня (в координаты сцены)
 export const kin = (p: CutProps) => {
   const id = p.id, d0 = D[id], P = d0.piv, F = FACE[id], s = (p.s ?? 1) * UNIT, t = p.t;
   const g = p.walk ? gait(id, p.walk) : null;
-  const pose = { ...POSES.stand, ...(g ? { armL: g.armL, armR: g.armR, lean: g.lean } : {}), ...(p.pose || {}) } as Pose;
+  const pose = poseOf(p);
+  // инерция: позы 1/15 и 2/15 с назад → сглаживание рук, «хвост» предплечья и головы, растяжение по вертикали
+  const pv = p.prev ?? [], p1 = pv[0], p2 = pv[1] ?? pv[0], S0 = p.s ?? 1;
+  const dyn = { faL: 0, faR: 0, head: 0, lean: 0, st: 0 };
+  if (p1) { const q1 = poseOf(p1), q2 = poseOf(p2), same = !!p.sit === !!p1.sit;
+    (['armL', 'armR'] as const).forEach(k => { const d = pose[k][0] - q1[k][0]; dyn[k === 'armL' ? 'faL' : 'faR'] = clamp(-d * 1.1, -.55, .55);
+      if (!g && same) pose[k] = [pose[k][0] * .5 + q1[k][0] * .3 + q2[k][0] * .2, pose[k][1] * .5 + q1[k][1] * .3 + q2[k][1] * .2]; });
+    if (!g && same && !p.sit) (['legL', 'legR'] as const).forEach(k => { pose[k] = [pose[k][0] * .6 + q1[k][0] * .4, pose[k][1] * .6 + q1[k][1] * .4]; });
+    const fl = p.flip ? -1 : 1, vx = (p.x - p1.x) / LAG / S0 * fl, ax = (p.x - 2 * p1.x + p2.x) / (LAG * LAG) / S0 * fl, vy = (p.y - p1.y) / LAG / S0;
+    dyn.head = clamp(vx * .012, -7, 7) + clamp(((p.headTilt ?? 0) - (p1.headTilt ?? 0)) * -.5, -5, 5);
+    dyn.lean = clamp(ax * .00006, -.07, .07); dyn.st = clamp(Math.abs(vy) * .00008, 0, .07); }
+  const idle = !g && !p.rot;
   const rest = {
     thL: ang(P.PL, P.KL), thR: ang(P.PR, P.KR), shL: ang(P.KL, P.AL), shR: ang(P.KR, P.AR),
     uaL: ang(P.SL, P.EL), uaR: ang(P.SR, P.ER), faL: ang(P.EL, P.WL), faR: ang(P.ER, P.WR),
@@ -120,15 +201,15 @@ export const kin = (p: CutProps) => {
   const sitDrop = p.sit ? -legLen * (1 - sitF) : 0;
   const drop = g ? -g.bob : 0;
   // корпус: дыхание, наклон вокруг таза
-  const br = Math.sin(t * 2.3 + id.length) * 3;
-  const lean = pose.lean ?? 0;
+  const br = Math.sin(t * 2.3 + id.length) * 3.4;
+  const lean = (pose.lean ?? 0) + dyn.lean + (idle ? noise(id + 'ln', t, .22) * .012 : 0);
   const body: M = mul(rotB(-lean, hipC[0], hipC[1]), tr(0, -(pose.hip ?? 0) / UNIT));
-  const torsoM: M = mul(body, sc(1 + (p.slump ?? 0) * .02, 1 + br * .0015 - (p.slump ?? 0) * .05, hipC[0], hipC[1]));
+  const torsoM: M = mul(body, sc(1 + (p.slump ?? 0) * .02 - br * .001, 1 + br * .003 - (p.slump ?? 0) * .05, hipC[0], hipC[1]));
   const shUp = br * .6;
-  const headM: M = mul(mul(torsoM, tr(0, shUp * .3 + (p.slump ?? 0) * 22)), (() => { const ht = (p.headTilt ?? 0) + noise(id + 'ht', t, .3) * 2.2; return rotB(-ht * Math.PI / 180, P.head[0], P.head[1]); })());
+  const headM: M = mul(mul(torsoM, tr(0, shUp * .3 + (p.slump ?? 0) * 22)), (() => { const ht = (p.headTilt ?? 0) + noise(id + 'ht', t, .3) * 2.4 + dyn.head; return rotB(-ht * Math.PI / 180, P.head[0], P.head[1]); })());
   // руки
   const arm = (side: 'L' | 'R') => {
-    const l = side === 'L' ? pose.armL : pose.armR;
+    const l0 = side === 'L' ? pose.armL : pose.armR, l: [number, number] = [l0[0] + noise(id + side + 'u', t, .45) * .035, l0[1] + noise(id + side + 'f', t, .6) * .05 + dyn['fa' + side as 'faL']];
     const u: M = mul(mul(torsoM, tr(0, shUp * .2)), rotB(l[0] - rest['ua' + side as 'uaL'], P['S' + side][0], P['S' + side][1]));
     const f: M = mul(u, rotB((l[0] + l[1]) - l[0] - (rest['fa' + side as 'faL'] - rest['ua' + side as 'uaL']), P['E' + side][0], P['E' + side][1]));
     return { u, f, abs: l[0] + l[1], hand: ap(f, [(P['W' + side][0] + P['H' + side][0]) / 2, (P['W' + side][1] * .4 + P['H' + side][1] * .6)]) };
@@ -157,14 +238,22 @@ export const kin = (p: CutProps) => {
   };
   const lL = leg('L'), lR = leg('R');
   const flip = p.flip ? -1 : 1;
-  const root: M = mul(mul(mul(tr(p.x, p.y), rotB(-(p.rot ?? 0) * Math.PI / 180)), sc(flip * s, s)), tr(-d0.cx, -d0.foot + drop - sitDrop));
+  const root: M = mul(mul(mul(tr(p.x, p.y), rotB(-(p.rot ?? 0) * Math.PI / 180)), sc(flip * s * (1 - dyn.st * .6), s * (1 + dyn.st))), tr(-d0.cx, -d0.foot + drop - sitDrop));
   return { id, d0, P, F, s, t, g, pose, rest, hipC, sitF, sitDrop, drop, torsoM, headM, aL, aR, lL, lR, root };
 };
 // кисть в координатах сцены (для предметов: бросок телефона, букет)
 export const cutHand = (p: CutProps, side: 'L' | 'R' = 'R') => { const k = kin(p); return ap(k.root, (side === 'L' ? k.aL : k.aR).hand); };
 
-export const Cut: React.FC<CutProps> = (p) => {
-  const { id, d0, P, F, s, t, g, rest, sitF, sitDrop, drop, torsoM, headM, aL, aR, lL, lR } = kin(p);
+export const Cut: React.FC<CutProps> = (p0) => {
+  const LF = useContext(LifeCtx); let p = p0;
+  if (LF) { const n = LF.n[p0.id] = (LF.n[p0.id] ?? 0) + 1, key = p0.id + '#' + n;
+    if (LF.mode === 'rec') { (LF.store[key] = LF.store[key] || [])[LF.k] = p0; return null; }
+    const prev = (LF.store[key] || []).filter(Boolean); if (prev.length) p = { ...p0, prev }; }
+  const { id, d0, P, F, s, t, g, rest, sitF, sitDrop, drop, torsoM, headM, aL, aR, lL, lR, root: rootM } = kin(p);
+  const FX = d0.face, em = FX ? emoMix(p) : null;
+  // взгляд: заданное направление + мелкие скачки зрачков (саккады)
+  const look = (() => { const e = p.eye ?? [0, 0], q = t * .9 + id.length, n = Math.floor(q), f = clamp((q - n) / .08), h = (k: number) => { const v = Math.sin(k * 127.1 + 311.7) * 43758.5453; return (v - Math.floor(v)) - .5; };
+    return [e[0] + (h(n - 1) + (h(n) - h(n - 1)) * f) * .22, e[1] + (h(n + 40) + (h(n + 41) - h(n + 40)) * f) * .12]; })();
   // моргание
   const bc = (() => { if (p.noBlink) return 0; const ph = (t * .31 + id.length * .17) % 1, ph2 = (t * .53 + .4) % 1; const k = Math.max(ph < .045 ? 1 - Math.abs(ph / .045 * 2 - 1) : 0, ph2 < .03 && Math.floor(t * .53) % 3 === 0 ? 1 - Math.abs(ph2 / .03 * 2 - 1) : 0); return k; })();
   const eyes = F.eyes ?? d0.eyes;
@@ -174,7 +263,7 @@ export const Cut: React.FC<CutProps> = (p) => {
   const fid = 'cf' + id.replace(/[^a-z]/g, '');
   const talk = clamp(p.mouth ?? 0);
   const flip = p.flip ? -1 : 1;
-  const root = `translate(${p.x},${p.y}) rotate(${p.rot ?? 0}) scale(${flip * s},${s}) translate(${-d0.cx},${-d0.foot + drop - sitDrop})`;
+  const root = ms(rootM);
   const holdM = p.hold ? (() => { const h = aR.hand; return `translate(${h[0]},${h[1]}) rotate(${-aR.abs * 180 / Math.PI + 180}) scale(${(p.hold === 'flowers' ? (p.armRBack ? .58 : .78) : 1) / UNIT})`; })() : '';
   const torsoK = p.flip && d0.parts.torsoF ? 'torsoF' : 'torso';
   const patch = (cx: number, cy: number, rx: number, ry: number) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={skin} filter={`url(#${fid}b)`} />;
@@ -197,19 +286,20 @@ export const Cut: React.FC<CutProps> = (p) => {
     <g transform={ms(headM)}>
       {part(id, 'head', I)}
       {/* веки: моргание / полуприкрытые при плаче */}
-      {lidK > .02 && eyes.map((e, i) => <g key={i} clipPath={`url(#${fid}e${i})`}>
+      {FX && faceNew(id, d0, em!, look, bc, fid)}
+      {!FX && lidK > .02 && eyes.map((e, i) => <g key={i} clipPath={`url(#${fid}e${i})`}>
         <rect x={e[0] - e[2] * 1.3} y={e[1] - e[3] * 1.4} width={e[2] * 2.6} height={e[3] * 2.8 * lidK} fill={skin} />
         <path d={`M${e[0] - e[2] * 1.1},${e[1] - e[3] * 1.4 + e[3] * 2.8 * lidK} Q${e[0]},${e[1] - e[3] * 1.4 + e[3] * 2.8 * lidK + 8} ${e[0] + e[2] * 1.1},${e[1] - e[3] * 1.4 + e[3] * 2.8 * lidK}`} stroke="#1a1010" strokeWidth={7} fill="none" /></g>)}
       {/* мимика поверх картинки: рот закрашивается цветом кожи, рисуется новый */}
-      {(face || talk > .05) && patch(mx, my + 2, mw * 1.25, face ? 44 : 32)}
-      {face === 'o' && <ellipse cx={mx} cy={my + 6} rx={mw * .32} ry={mw * .45} fill="#3a1418" />}
-      {face === 'flat' && <path d={`M${mx - mw * .55},${my + 6} Q${mx},${my + 2} ${mx + mw * .55},${my + 8}`} stroke="#3a1a18" strokeWidth={7} fill="none" strokeLinecap="round" />}
-      {face === 'frown' && <path d={`M${mx - mw * .6},${my + 14} Q${mx},${my - 8} ${mx + mw * .6},${my + 14}`} stroke="#3a1a18" strokeWidth={7} fill="none" strokeLinecap="round" />}
-      {face === 'cry' && (() => { const wob = Math.sin(t * 26) * 3 * cry; return <><path d={`M${mx - mw * .62},${my + 18} Q${mx - mw * .3},${my - 6 + wob} ${mx},${my - 4} Q${mx + mw * .3},${my - 6 - wob} ${mx + mw * .62},${my + 18}`} stroke="#3a1a18" strokeWidth={8} fill="none" strokeLinecap="round" />
+      {!FX?.mouth && (face || talk > .05) && patch(mx, my + 2, mw * 1.25, face ? 44 : 32)}
+      {!FX?.mouth && face === 'o' && <ellipse cx={mx} cy={my + 6} rx={mw * .32} ry={mw * .45} fill="#3a1418" />}
+      {!FX?.mouth && face === 'flat' && <path d={`M${mx - mw * .55},${my + 6} Q${mx},${my + 2} ${mx + mw * .55},${my + 8}`} stroke="#3a1a18" strokeWidth={7} fill="none" strokeLinecap="round" />}
+      {!FX?.mouth && face === 'frown' && <path d={`M${mx - mw * .6},${my + 14} Q${mx},${my - 8} ${mx + mw * .6},${my + 14}`} stroke="#3a1a18" strokeWidth={7} fill="none" strokeLinecap="round" />}
+      {!FX?.mouth && face === 'cry' && (() => { const wob = Math.sin(t * 26) * 3 * cry; return <><path d={`M${mx - mw * .62},${my + 18} Q${mx - mw * .3},${my - 6 + wob} ${mx},${my - 4} Q${mx + mw * .3},${my - 6 - wob} ${mx + mw * .62},${my + 18}`} stroke="#3a1a18" strokeWidth={8} fill="none" strokeLinecap="round" />
         <path d={`M${mx - mw * .35},${my + 22 + wob} Q${mx},${my + 30 + wob * 1.5} ${mx + mw * .35},${my + 22 - wob}`} stroke="#5a2a28" strokeWidth={5} fill="none" strokeLinecap="round" opacity={.7 * cry} /></>; })()}
-      {!face && talk > .05 && <><ellipse cx={mx} cy={my + 8} rx={mw * (.45 + talk * .15)} ry={8 + talk * 26} fill="#3a1418" /><path d={`M${mx - mw * .38},${my + 2 - talk * 10} Q${mx},${my - 4 - talk * 10} ${mx + mw * .38},${my + 2 - talk * 10} L${mx + mw * .3},${my + 8 - talk * 8} Q${mx},${my + 4 - talk * 8} ${mx - mw * .3},${my + 8 - talk * 8} Z`} fill="#fbf8f2" /></>}
+      {!FX?.mouth && !face && talk > .05 && <><ellipse cx={mx} cy={my + 8} rx={mw * (.45 + talk * .15)} ry={8 + talk * 26} fill="#3a1418" /><path d={`M${mx - mw * .38},${my + 2 - talk * 10} Q${mx},${my - 4 - talk * 10} ${mx + mw * .38},${my + 2 - talk * 10} L${mx + mw * .3},${my + 8 - talk * 8} Q${mx},${my + 4 - talk * 8} ${mx - mw * .3},${my + 8 - talk * 8} Z`} fill="#fbf8f2" /></>}
       {/* брови домиком (грусть/плач) */}
-      {(face === 'cry' || face === 'frown') && F.br.map(([bx, by], i) => { const k = face === 'cry' ? cry : .6, sd = i ? 1 : -1;
+      {!FX && (face === 'cry' || face === 'frown') && F.br.map(([bx, by], i) => { const k = face === 'cry' ? cry : .6, sd = i ? 1 : -1;
         return <g key={i}>{patch(bx, by, 72, 24)}<path d={`M${bx + sd * 56},${by + 6} Q${bx},${by - 2 - 4 * k} ${bx - sd * 48},${by - 22 * k - 4}`} stroke={F.brow} strokeWidth={17} fill="none" strokeLinecap="round" /></g>; })}
       {/* слёзы: капли стекают по щекам до подбородка, обе стороны */}
       {(cry > 0 || (p.tears ?? 0) > 0) && eyes.map((e, i) => { const k = Math.max(cry, p.tears ?? 0), sd = i ? 1 : -1, x0 = e[0] + sd * e[2] * .3, y0 = e[1] + e[3] * .9;
