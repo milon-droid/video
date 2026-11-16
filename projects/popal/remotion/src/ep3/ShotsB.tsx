@@ -61,8 +61,8 @@ export const MapShot: React.FC<P> = ({ t, T }) => { const b = V('i2', 'map') - .
     </Cam></Frame>); }
   if (t < c) { const q = t - b, W2 = W('i2', 5, 'map'), wow = spr(t, W2, { damping: 9 });
     return (<Frame bg="#0e1636"><Cam z={lerp(1.0, 1.08, q / (c - b))} fy={950}><ElfNight t={T} pink={.2} /><Glow x={540} y={1500} r={700} c="#ff8a3a" o={.3} id="mpG" />
+      <Liliana x={850} y={2330} s={1.9} t={T} mouth={mouth('succ', T)} rot={-7} blush={.3} still />
       <Person x={300} y={2120} s={1.75} t={T} look="lira" bowBack expr={wow > .5 ? 'shock' : 'deadpan'} blush={wow} eye={[wow > .5 ? 0 : .9, 0]} />
-      <Liliana x={790} y={2330} s={1.9} t={T} mouth={mouth('succ', T)} rot={-7} blush={.3} still />
       {wow > .2 && <Heart x={540} y={640 - (t - W2) * 60} s={2.4 * wow} o={clamp(2 - (t - W2))} />}
     </Cam></Frame>); }
   const q = t - c, s = shake(q, 0, 12, .3);
@@ -83,15 +83,17 @@ export const LevelUp: React.FC<P> = ({ t, T }) => { const k = out(win(t, .3, 1.0
 // ───────────── 15. «За мной!» → застрял в плаще Лиры → «Вылезай. Из. Моего. Плаща» ─────────────
 const CLOAK = '#2f7a52';
 export const Cloak: React.FC<P> = ({ t, T }) => { const c = V('k3', 'cloak') - .15, trip = 1.75;
-  if (t < c) { const walk = io(win(t, 1.0, trip)), st = out(win(t, trip, trip + .25)), mx = lerp(330, 520, walk), wig = t > trip ? Math.sin(t * 16) * clamp(1.4 - (t - trip) * .12) : 0, s = shake(t, trip + .15, 14, .35);
-    const hx = mx + 150 * st, hy = 1730 - 590 + 150 * st;
+  if (t < c) { const walk = io(win(t, 1.0, trip)), st = out(win(t, trip, trip + .25)), mx = lerp(260, 400, walk), wig = t > trip ? Math.sin(t * 16) * clamp(1.4 - (t - trip) * .12) : 0, s = shake(t, trip + .15, 14, .35);
+    const hx = mx + 202 * st, hy = 1730 - 590 + 36 * st;
     return (<><Frame bg="#2a1440"><Cam z={lerp(1.0, 1.22, io(win(t, trip - .1, trip + .6)))} fx={620} fy={1250} dy={-130 + s[1]} dx={s[0]} rot={5 * st}><ElfNight t={T} pink={0} /><rect width={1080} height={1920} fill="#ffb86a" opacity={.12} />
       <Slime x={150} y={1740} s={.5} t={T} look={[.8, -.3]} />
       <Person x={760} y={1730} s={1.0} t={T} look="lira" bowBack expr={st > .5 ? 'deadpan' : 'neutral'} eye={[st > .5 ? -.7 : -.3, .3]} flip />
-      <Person x={mx} y={1730} s={1.0} t={T} rot={24 * st} hold="pan" pose={st > 0 ? { armL: [-1.2 + wig * .5, .6], armR: [1.9 - wig * .5, -.8], legL: [-.3 + wig * .15, .2], legR: [.35 - wig * .15, -.3] } as any : blendPose(POSES.heroic, POSES.point, walk)} expr="cool" mouth={mouth('max', T)} kisses={3} eye={[.8, -.2]} />
+      <Person x={mx} y={1730} s={1.0} t={T} rot={20 * st} hold="pan" pose={st > 0 ? { armL: [-1.2 + wig * .5, .6], armR: [1.9 - wig * .5, -.8], legL: [-.3 + wig * .15, .2], legR: [.35 - wig * .15, -.3] } as any : blendPose(POSES.heroic, POSES.point, walk)} expr="cool" mouth={mouth('max', T)} kisses={3} eye={[.8, -.2]} />
       {/* плащ Лиры: от её плеч — мешком на голову Макса */}
-      {st > 0 && <g opacity={clamp(st * 3)}><path d={`M${700},${1250} Q${(hx + 700) / 2},${1180 + wig * 16} ${hx - 150},${hy - 120 + wig * 10} Q${hx - 210},${hy + 60} ${hx - 110 + wig * 12},${hy + 190} L${hx + 120},${hy + 170 + wig * 10} Q${740},${1500} ${800},${1300} Z`} fill={CLOAK} />
-        <path d={`M${hx - 110 + wig * 12},${hy + 190} L${hx + 120},${hy + 170 + wig * 10}`} stroke="#c9a040" strokeWidth={10} strokeLinecap="round" /><path d={`M${hx - 90},${hy - 60} q40,60 10,150 M${hx + 10},${hy - 70} q40,70 20,170`} stroke="#22593c" strokeWidth={8} fill="none" strokeLinecap="round" /></g>}
+      {st > 0 && <g opacity={clamp(st * 3)}><path d={`M${hx + 60},${hy - 150} L740,1235 L800,1330 L${hx + 120},${hy + 150} Z`} fill={CLOAK} />
+        <ellipse cx={hx + wig * 8} cy={hy + 10} rx={165} ry={175 + wig * 8} fill={CLOAK} /><path d={`M${hx - 130 + wig * 10},${hy + 150} Q${hx},${hy + 215} ${hx + 140},${hy + 140}`} stroke="#c9a040" strokeWidth={11} fill="none" strokeLinecap="round" />
+        <path d={`M${hx - 70},${hy - 110} q40,90 0,210 M${hx + 40},${hy - 130} q50,110 20,240`} stroke="#22593c" strokeWidth={9} fill="none" strokeLinecap="round" />
+        <text x={hx + 20} y={hy - 210} textAnchor="middle" fontFamily="Inter" fontWeight={900} fontSize={90} fill="#fff" stroke="#14121c" strokeWidth={14} paintOrder="stroke" opacity={clamp((t - trip - .4) * 3)}>?!</text></g>}
     </Cam></Frame><Tag t={t} t0={3.5} x={90} y={380} title="−50 АУРЫ" sub="ПРИЧИНА: ПЛАЩ" col="#ff4a6a" w={460} /></>); }
   const q = t - c, wig = Math.sin(t * 15);
   return (<Frame bg="#2a1440"><Cam z={lerp(1.0, 1.07, q / 2.6)} fy={900} rot={-3}><ElfNight t={T} pink={0} /><rect width={1080} height={1920} fill="#ffb86a" opacity={.12} />

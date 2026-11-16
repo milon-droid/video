@@ -68,7 +68,7 @@ export const Dilemma: React.FC<P> = ({ t, T }) => { const D = dur('dilemma'), k 
         <DeathKnight x={lerp(330, 290, k)} y={lerp(1500, 1440, k)} s={lerp(.5, .4, k)} t={T} reach={.45} step={Math.max(0, Math.sin(T * 6))} /></g></g>
     <g clipPath="url(#dlR)"><rect x={540} y={-100} width={640} height={2200} fill="#3a0a0c" /><g transform="translate(405,-720) scale(.75)"><GateWorld t={T} open={lerp(.7, .12, k)} /></g></g>
     <rect x={532} y={-100} width={16} height={2200} fill="#ffd23f" /><Glow x={540} y={900} r={520} c="#000" o={.5} id="dlS" />
-    <Person x={540} y={2000} s={1.9} t={T} hold="pan" expr="scared" sweat={1} eye={[eye, 0]} mouth={0} pose={{ ...POSES.stand, armL: [-.5, 1.9] } as any} />
+    <Person x={540} y={2000} s={1.9} t={T} hold="pan" expr="sad" sweat={1} eye={[eye, 0]} mouth={0} pose={{ ...POSES.stand, armL: [-.5, 1.9] } as any} />
   </Cam></Frame>
     <div style={html({ left: 590, top: 390, width: 430, textAlign: 'center', background: 'rgba(20,18,28,.85)', border: '4px solid #ff4a6a', borderRadius: 14, padding: '8px 0', fontWeight: 900, fontSize: 40, color: '#fff', opacity: out(win(t, .3, .6)) })}>ВОРОТА: <span style={{ color: '#ff4a6a' }}>0:0{sec}</span></div>
     <div style={html({ left: 60, top: 390, width: 430, textAlign: 'center', background: 'rgba(20,18,28,.85)', border: '4px solid #5affd9', borderRadius: 14, padding: '8px 0', fontWeight: 900, fontSize: 40, color: '#fff', opacity: out(win(t, .3, .6)) })}>ЛИРА: <span style={{ color: '#5affd9' }}>В ПЛЕНУ</span></div></>); };
