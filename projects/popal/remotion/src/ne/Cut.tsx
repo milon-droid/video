@@ -103,6 +103,7 @@ export type CutProps = {
   headTilt?: number; mouth?: number; hearts?: number; tears?: number; face?: Face; cry?: number; sit?: boolean; seat?: number;
   hold?: 'phone' | 'flowers' | null; walk?: Walk; lid?: number; blush?: number; opacity?: number; noBlink?: boolean;
   armRBack?: boolean; slump?: number; // правая рука (с предметом) за корпусом; плечи опущены (0…1)
+  squash?: number; raw?: boolean;   // сжатие по вертикали (замах перед прыжком, приземление); raw — без сглаживания поз (точные броски)
   expr?: string; eye?: [number, number]; teeth?: boolean; oMouth?: boolean; emo?: Partial<Emo>; prev?: CutProps[];
   gest?: number; web?: number; webLen?: number; // Том: кисть «паутинный жест» (1 — пальцы сложены) и нить (0…1 — вытягивается)
 };
@@ -116,13 +117,13 @@ const EXPR: Record<string, Partial<Emo>> = {
   neutral: {}, determined: {},
   happy: { brow: 4, by: 12, smile: 1, open: .42, lidB: .3, teeth: 1 },
   love: { brow: 8, by: 14, smile: 1, open: .3, lidB: .2, teeth: 1 },
-  smug: { brow: 0, by: 2, bR: 16, smile: .8, lidT: .26 },
-  cool: { brow: 0, smile: .5, lidT: .2 },
-  sad: { brow: 20, by: 2, smile: -.9, lidT: .3 },
+  smug: { brow: 0, by: 2, bR: 16, smile: .8, lidT: .13 },
+  cool: { brow: 0, smile: .5, lidT: .1 },
+  sad: { brow: 20, by: 2, smile: -.9, lidT: .2 },
   shock: { brow: 8, by: 26, smile: -.15, open: .85, w: .62 },
   scared: { brow: 16, by: 22, smile: -.3, open: .8, w: .62 },
   pain: { brow: 18, smile: -.6, open: .4, lidT: .5 }, ko: { brow: 18, smile: -.6, open: .4, lidT: .8 },
-  deadpan: { brow: 0, by: -6, smile: -.25, lidT: .38 },
+  deadpan: { brow: 0, by: -6, smile: -.25, lidT: .24 },
   cry: { brow: 24, by: 2, smile: -1, open: .22, lidT: .25 },
 };
 const BROW0: Partial<Record<CutId, number>> = { 'vini-kit': -16, 'vini-home': -16 };   // брови на рисунке: у Вини — сдвинуты (сердитые)
@@ -144,17 +145,22 @@ const poseOf = (p: CutProps) => { const g = p.walk ? gait(p.id, p.walk) : null;
 
 // лицо из частей рисунка: белок по контуру, радужка-спрайт (взгляд), веки, брови-спрайты, рот — полосками (изгиб, открытие)
 const faceNew = (id: CutId, d0: CD, em: Emo, look: number[], bc: number, fid: string) => { const FX = d0.face!, skin = d0.skin, out: React.ReactNode[] = [];
-  FX.eyes.forEach((E, i) => { const [ex, ey, rx, ry] = E.e, ib = d0.parts['iris' + 'LR'[i]];
-    const ox = clamp(look[0], -1, 1) * Math.max(rx - E.r, 9) * .95, oy = clamp(look[1], -1, 1) * Math.max(ry - E.r, 7);
-    const top = ey - ry * 1.1, H = ry * 2.2, lt = Math.max(bc, em.lidT), yl = top + H * lt, yb = ey + ry * 1.05 - em.lidB * ry * .9;
+  FX.eyes.forEach((E, i) => { const [ex, ey, , ry] = E.e, ib = d0.parts['iris' + 'LR'[i]];
+    const xs = E.hull.map(q => q[0]), ys = E.hull.map(q => q[1]), x0 = Math.min(...xs) - 14, x1 = Math.max(...xs) + 14, y0 = Math.min(...ys) - 14, y1 = Math.max(...ys) + 14, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    const ox = clamp(look[0], -1, 1) * Math.max((x1 - x0) / 2 - 14 - E.r, 9) * .9, oy = clamp(look[1], -1, 1) * Math.max((y1 - y0) / 2 - 14 - E.r, 7);
+    const H = y1 - y0, lt = Math.max(bc, em.lidT), yl = y0 + 6 + (H - 12) * lt, yb = y1 - 10 - em.lidB * ry * .9;
     out.push(<g key={'e' + i}><clipPath id={`${fid}h${i}`}><polygon points={E.hull.map(q => q.join(',')).join(' ')} /></clipPath>
       <g clipPath={`url(#${fid}h${i})`}>
-        <rect x={ex - rx - 8} y={ey - ry - 8} width={rx * 2 + 16} height={ry * 2 + 16} fill="#fff" />
+        <rect x={x0} y={y0} width={x1 - x0} height={H} fill="#fff" />
         <image href={staticFile(`ne-cut/${id}/iris${'LR'[i]}.png`)} x={ib[0] + ox} y={ib[1] + oy} width={ib[2]} height={ib[3]} />
-        <rect x={ex - rx - 8} y={ey - ry - 8} width={rx * 2 + 16} height={ry * .45} fill="#000" opacity={.07} />
-        {lt > .02 && <><rect x={ex - rx - 8} y={top - 12} width={rx * 2 + 16} height={yl - top + 12} fill={skin} />
-          <path d={`M${ex - rx - 4},${yl - 3} Q${ex},${yl + 5} ${ex + rx + 4},${yl - 3}`} stroke="#140c0a" strokeWidth={8} fill="none" /></>}
-        {em.lidB > .02 && <path d={`M${ex - rx - 8},${ey + ry + 12} L${ex - rx - 8},${yb + 6} Q${ex},${yb - 10} ${ex + rx + 8},${yb + 6} L${ex + rx + 8},${ey + ry + 12} Z`} fill={skin} />}
+        <rect x={x0} y={y0} width={x1 - x0} height={H * .3} fill="#000" opacity={.07} />
+      </g>
+      {/* веки — по контуру чуть шире белка, чтобы не оставалось светлой каймы */}
+      <clipPath id={`${fid}w${i}`}><polygon points={E.hull.map(q => `${cx + (q[0] - cx) * 1.1},${cy + (q[1] - cy) * 1.14}`).join(' ')} /></clipPath>
+      <g clipPath={`url(#${fid}w${i})`}>
+        {lt > .02 && <><rect x={x0 - 10} y={y0 - 10} width={x1 - x0 + 20} height={yl - y0 + 10} fill={skin} />
+          <path d={`M${x0 - 4},${yl - 3} Q${cx},${yl + 5} ${x1 + 4},${yl - 3}`} stroke="#140c0a" strokeWidth={8} fill="none" /></>}
+        {em.lidB > .02 && <path d={`M${x0 - 10},${y1 + 10} L${x0 - 10},${yb + 6} Q${cx},${yb - 10} ${x1 + 10},${yb + 6} L${x1 + 10},${y1 + 10} Z`} fill={skin} />}
       </g></g>); });
   FX.brows.forEach((B, i) => { const k = 'brow' + 'LR'[i], up = em.by + (i ? em.bR : em.bL);
     out.push(<g key={k} transform={`translate(0,${-up}) rotate(${(i ? 1 : -1) * em.brow} ${B.c[0]} ${B.c[1]})`}>{part(id, k, I)}</g>); });
@@ -184,7 +190,7 @@ export const kin = (p: CutProps) => {
   // инерция: позы 1/15 и 2/15 с назад → сглаживание рук, «хвост» предплечья и головы, растяжение по вертикали
   const pv = p.prev ?? [], p1 = pv[0], p2 = pv[1] ?? pv[0], S0 = p.s ?? 1;
   const dyn = { faL: 0, faR: 0, head: 0, lean: 0, st: 0 };
-  if (p1) { const q1 = poseOf(p1), q2 = poseOf(p2), same = !!p.sit === !!p1.sit;
+  if (p1 && !p.raw) { const q1 = poseOf(p1), q2 = poseOf(p2), same = !!p.sit === !!p1.sit;
     (['armL', 'armR'] as const).forEach(k => { const d = pose[k][0] - q1[k][0]; dyn[k === 'armL' ? 'faL' : 'faR'] = clamp(-d * 1.1, -.55, .55);
       if (!g && same) pose[k] = [pose[k][0] * .5 + q1[k][0] * .3 + q2[k][0] * .2, pose[k][1] * .5 + q1[k][1] * .3 + q2[k][1] * .2]; });
     if (!g && same && !p.sit) (['legL', 'legR'] as const).forEach(k => { pose[k] = [pose[k][0] * .6 + q1[k][0] * .4, pose[k][1] * .6 + q1[k][1] * .4]; });
@@ -238,7 +244,7 @@ export const kin = (p: CutProps) => {
   };
   const lL = leg('L'), lR = leg('R');
   const flip = p.flip ? -1 : 1;
-  const root: M = mul(mul(mul(tr(p.x, p.y), rotB(-(p.rot ?? 0) * Math.PI / 180)), sc(flip * s * (1 - dyn.st * .6), s * (1 + dyn.st))), tr(-d0.cx, -d0.foot + drop - sitDrop));
+  const root: M = mul(mul(mul(tr(p.x, p.y), rotB(-(p.rot ?? 0) * Math.PI / 180)), sc(flip * s * (1 - dyn.st * .6 + (p.squash ?? 0) * .5), s * (1 + dyn.st - (p.squash ?? 0)))), tr(-d0.cx, -d0.foot + drop - sitDrop));
   return { id, d0, P, F, s, t, g, pose, rest, hipC, sitF, sitDrop, drop, torsoM, headM, aL, aR, lL, lR, root };
 };
 // кисть в координатах сцены (для предметов: бросок телефона, букет)

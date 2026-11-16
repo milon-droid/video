@@ -9,6 +9,7 @@ import { T } from './i18n';
 import { Stadium } from '../stars/Clip';
 import { Baller, Bouquet, Sadie, smooth } from '../stars/Stars';
 import { DugoutFront, SitPose, VipBox } from './Stadium';
+import { K, PK } from './act';
 import { Cut } from './Cut';
 import { ShotP } from './Stadium';
 
@@ -41,8 +42,10 @@ export const ShotLounge: React.FC<ShotP & { reveal: number }> = ({ t, reveal }) 
     <Lounge t={t} />
     <SofaBase />
     {[400, 650].map(x => <ellipse key={x} cx={x} cy={SIT_Y + 4} rx={80} ry={12} fill="#000" opacity={.3} />)}
-    <Baller who="diom" outfit="track" sit x={400} y={SIT_Y} s={SEAT_S} t={t + 2} expr="happy" teeth headTilt={8 + laugh * 6} eye={[.6, 0]} pose={{ armR: [1.55, .65], armL: [-.2, .5], legL: [-.5, 0], legR: [.5, 0] }} />
-    <Sadie sit x={650} y={SIT_Y} s={SEAT_S} t={t + 4} expr="happy" headTilt={-12 - laugh * 5} eye={[-.6, 0]} pose={{ armL: [-.6, .9], armR: [.4, -1.5], lean: -.08, legL: [.4, 0], legR: [.4, 0] }} />
+    {/* смеются: плечи подпрыгивают в такт, головы склоняются друг к другу, Сэди прикрывает рот ладонью */}
+    <Baller who="diom" outfit="track" sit x={400} y={SIT_Y - Math.abs(Math.sin(t * 9)) * 7} s={SEAT_S} t={t + 2} expr="happy" teeth headTilt={8 + laugh * 8} eye={[.7, .1]} pose={{ armR: [1.55, .65 + Math.sin(t * 9) * .06], armL: [-.2, .5], legL: [-.5, 0], legR: [.5, 0], lean: .03 }} />
+    <Sadie sit x={650} y={SIT_Y - Math.abs(Math.sin(t * 9 + .8)) * 7} s={SEAT_S} t={t + 4} expr="happy" mouth={.25 + .3 * Math.abs(Math.sin(t * 9 + .8))} headTilt={-12 - laugh * 8} eye={[-.7, .1]}
+      pose={{ armL: [-.6, .9], armR: [.4, -1.5 - .9 * smooth(1.6, 2.0, t)], lean: -.08 - .03 * Math.sin(t * 4.5), legL: [.4, 0], legR: [.4, 0] }} />
   </Cam>); };
 
 // ───── 5a / 5c: Вини в дверях с букетом; потом медленно прячет его за спину ─────
@@ -58,7 +61,12 @@ export const ShotFrozen: React.FC<ShotP & { hide?: number }> = ({ t, hide }) => 
     // 5a: застыл в дверях: короткое «О» → улыбка пропала, осознание (рот ровной линией, без улыбки)
     return (<Cam z={1.3 + .04 * t} fy={1080} dy={-40}>
       <Doorway t={t} />
-      <Cut id="vini-kit" x={540} y={1650} s={1.05} t={30 + t} face={t < .55 ? 'o' : 'flat'} pose={full({ armL: [-.2, .2], armR: [.35, -2.3] })} hold="flowers" lid={t > .55 ? .12 : 0} />
+      {/* входит с улыбкой → замер («О») → улыбка сползла, букет опускается, мелкая дрожь */}
+      <Cut id="vini-kit" x={K(t, [[0, 470], [.28, 540]]) + (t > .3 && t < .9 ? Math.sin(t * 46) * 2.2 : 0)} y={1650} s={1.05} t={30 + t} hold="flowers"
+        expr={t < .26 ? 'happy' : t < .75 ? 'shock' : 'sad'} teeth={t < .26} emo={t > .75 ? { smile: -.5, brow: 12, lidT: .1 } : undefined}
+        walk={t < .28 ? { d: (K(t, [[0, 470], [.28, 540]]) - 470) / 1.05, dir: 1 } : undefined} squash={K(t, [[.26, 0], [.32, .06], [.42, 0]])}
+        pose={t < .28 ? { armR: [.35, -2.3] } : PK(t, [[.3, { armL: [-.2, .2], armR: [.35, -2.3] }], [.5, { armL: [-.35, .3], armR: [.42, -2.45] }], [.8, { armL: [-.35, .3], armR: [.42, -2.45] }], [1.4, { armL: [-.12, .15], armR: [.32, -1.75] }]], false)}
+        headTilt={K(t, [[.26, -4], [.36, 3], [.8, 3], [1.4, 7]])} />
       <path d={`M${720 + Math.sin(petal * 4) * 30},${1060 + petal * 260} c-10,-14 -24,-4 -10,10 c14,6 20,-6 10,-10z`} fill="#ff4a6a" opacity={clamp(1 - petal / 2.2)} />
     </Cam>); }
   // 5c: прячет букет — кисть с цветами уходит за боковой контур тела, потом за спину (цветы перекрывает корпус);
@@ -68,7 +76,7 @@ export const ShotFrozen: React.FC<ShotP & { hide?: number }> = ({ t, hide }) => 
   const cry = smooth(.45, 1.15, t), slump = smooth(.8, 1.3, t);
   return (<Cam z={lerp(1.35, 1.75, smooth(.5, 1.8, t))} fy={lerp(1080, 960, smooth(.5, 1.8, t))} dy={-40}>
     <Doorway t={t} />
-    <Cut id="vini-kit" x={540} y={1650} s={1.05} t={30 + t} face={t < .4 ? 'flat' : 'cry'} cry={cry} slump={slump} headTilt={6 * slump}
+    <Cut id="vini-kit" x={540} y={1650 + Math.abs(Math.sin(t * 15)) * 5 * cry * slump} s={1.05} t={30 + t} face={t < .4 ? 'frown' : 'cry'} cry={cry} slump={slump + Math.sin(t * 15) * .08 * cry} headTilt={6 * slump} eye={[0, .7 * slump]}
       pose={full({ armL: [lerp(-.2, -.06, slump), lerp(.2, .08, slump)], armR })} hold="flowers" armRBack={back} />
   </Cam>); };
 

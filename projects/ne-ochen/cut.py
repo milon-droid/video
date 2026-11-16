@@ -138,9 +138,12 @@ def face_parts(cid, c, img, A, eyes, parts):
     # глаза
     for i, e in enumerate(eyes):
         ex, ey, rx, ry = e; side = 'LR'[i]
-        box = np.zeros_like(A); box[int(ey - ry - 6):int(ey + ry + 6), int(ex - rx - 6):int(ex + rx + 6)] = True
+        box = np.zeros_like(A); box[int(ey - ry - 8):int(ey + ry + 8), int(ex - rx - 34):int(ex + rx + 34)] = True
         white = (rgb.min(-1) > 225) & box
-        Wc = comps(white)[0]
+        Wc = np.zeros_like(A)
+        for m in comps(white):          # все светлые части глаза (белок по обе стороны радужки), блик — мелкий, не в счёт
+            if m.sum() > 60 and not (m.sum() < 500 and np.hypot(np.where(m)[1].mean() - ex, np.where(m)[0].mean() - ey) < rx * .75 and m.sum() < 450): Wc |= m
+        Wc |= comps(white)[0]
         pts = np.argwhere(Wc)[:, ::-1]; hull = pts[ConvexHull(pts).vertices]
         hm = Image.new('L', (W, H), 0); ImageDraw.Draw(hm).polygon([tuple(map(int, p)) for p in hull], fill=255); hm = np.array(hm) > 0
         ic = comps(hm & ~Wc)

@@ -26,6 +26,7 @@ export const RemotionRoot: React.FC = () => (<>
   <Composition id="Stars-mute" component={StarsClip} durationInFrames={STARS_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: false }} />
   {/* «Didn't Want To Anyway» (projects/ne-ochen) */}
   <Composition id="Ne-720" component={NeClip} durationInFrames={NE_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: true }} />
+  <Composition id="Ne-1080" component={NeClip} durationInFrames={NE_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ audio: true }} />
   <Composition id="Ne-mute" component={NeClip} durationInFrames={NE_FRAMES} fps={30} width={720} height={1280} defaultProps={{ audio: false }} />
   <Composition id="Ne-tv" component={NeTv} durationInFrames={170} fps={30} width={720} height={1280} />
   <Still id="NeSheet" component={NeSheet} width={1440} height={1280} />

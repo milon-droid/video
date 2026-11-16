@@ -12,6 +12,7 @@ import MOUTH_EN from './mouth.json';
 import { Lang, setLang, T as tr } from './i18n';
 import { CutCtx } from './cutCtx';
 import { CutPreloader, renderCut } from './Cut';
+import { LAG, Life, LifeCtx } from './life';
 
 type Shot = { id: string; a: number; b: number; vo?: string; at?: number; voDur?: number; text?: string };
 // русская версия снята по решению пользователя (2026-11-10); экранные строки RU остаются в i18n.ts
@@ -61,12 +62,16 @@ export const NeClip: React.FC<{ audio?: boolean; lang?: Lang }> = ({ audio = tru
   setLang(lang); SHOTS = TLS[lang].shots as Shot[]; MOUTH = MOUTHS[lang];
   const f = useCurrentFrame(), { fps, width } = useVideoConfig(), T = f / fps;
   const s = SHOTS.find(x => T >= x.a && T < x.b) ?? SHOTS[SHOTS.length - 1], t = T - s.a;
+  // «живость»: два невидимых прохода сцены записывают позы персонажей 1/15 и 2/15 с назад (инерция, плавная мимика)
+  const store: Record<string, any[]> = {}, life = (mode: 'rec' | 'play', k: number): Life => ({ mode, k, store, n: {} });
   const prevFlash = s.id === 'flash' || s.id === 'hide' ? clamp(1 - t / .25) : 0;
   return (<CutCtx.Provider value={renderCut}><AbsoluteFill style={{ background: '#000', overflow: 'hidden' }}>
     <div style={{ position: 'absolute', width: 1080, height: 1920, transform: `scale(${width / 1080})`, transformOrigin: '0 0', overflow: 'hidden' }}>
       {s.id === 'phone' ? <PhoneUI t={t} msg={tr('msg')} reply={tr('reply')} tSend={2.0} tReply={3.3} />
         : <svg viewBox="0 0 1080 1920" width={1080} height={1920} style={{ position: 'absolute', inset: 0 }}>
-          <Scene s={s} t={t} />
+          <g style={{ display: 'none' }}><LifeCtx.Provider value={life('rec', 0)}><Scene s={s} t={t - LAG} /></LifeCtx.Provider>
+            <LifeCtx.Provider value={life('rec', 1)}><Scene s={s} t={t - 2 * LAG} /></LifeCtx.Provider></g>
+          <LifeCtx.Provider value={life('play', 0)}><Scene s={s} t={t} /></LifeCtx.Provider>
           {s.id !== 'black' && <><defs><radialGradient id="neVig" cx=".5" cy=".45" r=".78"><stop offset=".62" stopColor="#000" stopOpacity="0" /><stop offset="1" stopColor="#000" stopOpacity=".5" /></radialGradient></defs>
             <rect width={1080} height={1920} fill="url(#neVig)" /></>}
         </svg>}
