@@ -160,17 +160,10 @@
    "text": "Стоп. Я что, умер?! А шавуха?!",
    "parts": [
     {
-     "t": "Стоп. Я что, умер?!",
-     "emo": "terrified, panicking, voice shaking",
+     "t": "Стоп. Я что, умер?!... А шав+уха?!",
+     "emo": "terrified panic, voice shaking, then a desperate hysterical scream about the food",
      "acc": [
-      "умер"
-     ],
-     "pause": 0.4
-    },
-    {
-     "t": "А шав+уха?!",
-     "emo": "desperate hysterical scream, more upset about the food than about death",
-     "acc": [
+      "умер",
       "шавуха"
      ]
     }
@@ -212,13 +205,8 @@
    "text": "О... быстро!",
    "parts": [
     {
-     "t": "О...",
-     "emo": "surprised gasp",
-     "pause": 0.35
-    },
-    {
-     "t": "Быстро!",
-     "emo": "pleasantly surprised, delighted",
+     "t": "О... быстро!",
+     "emo": "surprised gasp, then delighted",
      "acc": [
       "быстро"
      ]
@@ -370,17 +358,10 @@
      "pause": 0.2
     },
     {
-     "t": "Дод+еп!",
-     "emo": "excited greedy gambling addict wanting more, loud, raised voice",
+     "t": "Дод+еп! Дай ещё прокрутку!",
+     "emo": "excited greedy gambling addict wanting more, loud raised voice, eager",
      "acc": [
-      "додеп"
-     ],
-     "pause": 0.15
-    },
-    {
-     "t": "Дай ещё прокрутку!",
-     "emo": "eager, begging excitedly",
-     "acc": [
+      "додеп",
       "ещё"
      ]
     }
@@ -455,17 +436,12 @@
      "pause": 0.3
     },
     {
-     "t": "Всё.",
-     "emo": "resigned",
-     "pause": 0.35
-    },
-    {
-     "t": "Пиздец.",
-     "emo": "emphatic swearing, despair",
+     "t": "Всё... пиздец.",
+     "emo": "resigned, then emphatic swearing in despair",
      "acc": [
       "пиздец"
      ],
-     "pause": 0.3
+     "pause": 0.35
     },
     {
      "t": "Кукуха поехала.",
@@ -526,13 +502,8 @@
      "pause": 0.35
     },
     {
-     "t": "Один щипок —",
-     "emo": "tense, slow",
-     "pause": 0.4
-    },
-    {
-     "t": "и конец.",
-     "emo": "dark grim punchline",
+     "t": "Один щипок... и конец.",
+     "emo": "tense slow build, then dark grim punchline",
      "acc": [
       "конец"
      ]
@@ -654,17 +625,10 @@
    "text": "Найти. Привести.",
    "parts": [
     {
-     "t": "Найти!",
-     "emo": "furious command",
+     "t": "Найти!... Привести!",
+     "emo": "furious menacing commands, roaring",
      "acc": [
-      "найти"
-     ],
-     "pause": 0.4
-    },
-    {
-     "t": "Привести!",
-     "emo": "furious menacing command",
-     "acc": [
+      "найти",
       "привести"
      ]
     }

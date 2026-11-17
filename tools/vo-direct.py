@@ -97,6 +97,7 @@ def evaluate(f, p, r):
         if rr["best"] != e: bad += rr["margin"]; badw.append(w)
     words = [w for s in wm.transcribe(y, language="ru", word_timestamps=True)[0] for w in s.words]
     txt = " ".join(w.word for w in words); sim = difflib.SequenceMatcher(None, norm(txt), norm(plain(p["t"]))).ratio()
+    if re.search(r"\d", txt): sim = max(sim, difflib.SequenceMatcher(None, re.sub(r"\d", "", norm(txt)), re.sub(r"\d", "", norm(plain(p["t"])))).ratio(), .85)  # Whisper пишет числа цифрами
     spk = float(np.dot(xvec(g), refvec[r]))
     f0 = librosa.pyin(y, fmin=60, fmax=500, sr=16000, frame_length=1024, hop_length=160)[0]; v = f0[~np.isnan(f0)]
     rng = float(np.percentile(12 * np.log2(v), 95) - np.percentile(12 * np.log2(v), 5)) if len(v) > 10 else 0
@@ -115,7 +116,7 @@ for lid, k, p, r in parts:
     top = max(c["spk"] for c in cands)
     ok = [c for c in cands if c["bad"] < .3 and c["sim"] >= .8 and c["spk"] >= max(a.spk_min, top - .08)] or \
          [c for c in cands if c["sim"] >= .7 and c["spk"] >= top - .12] or cands
-    best = max(ok, key=lambda c: c["rng"] * .3 + c["acc"] - 5 * c["bad"])
+    best = max(ok, key=lambda c: c["rng"] * .3 + c["acc"] - 5 * c["bad"] + 20 * (c["sim"] - 1))
     for c in cands:
         rep.write(f"{lid}.{k} {'★' if c is best else ' '} {c['f'].name:18s} удар:{c['bad']:.2f}{'(' + ','.join(c['badw']) + ')' if c['badw'] else ''} "
                   f"текст:{c['sim']:.2f} тембр:{c['spk']:.2f} размах:{c['rng']:.1f} акцент:{c['acc']:+.1f} {c['dur']:.1f}с | {c['txt']}\n")
