@@ -23,4 +23,5 @@ import json; s = open("$SP/ep1-mouth.js").read(); s = s[s.index("{"):s.rindex("}
 json.dump({k: v["v"] if isinstance(v, dict) else v for k, v in m.items()}, open("$DATA/mouth.json","w"))
 print("mouth", len(m))
 PY
-METER2_HEAD=~/models/rus/meter/head.pt $PY tools/vo-stress-check.py $P/vo/ep1-v10.json $VO 2>&1 | grep -v -i "warn" | tail -15
+python3 -c "import json;d=json.load(open('$P/vo/ep1-v10.json'));[l.update(text=' '.join(p['t'] for p in l['parts'])) for l in d['lines'] if l.get('parts')];json.dump(d,open('$SP/ep1-stress.json','w'),ensure_ascii=False)"  # ударения — по размеченным кускам, не по субтитрам
+METER2_HEAD=~/models/rus/meter/head.pt $PY tools/vo-stress-check.py $SP/ep1-stress.json $VO 2>&1 | grep -v -i "warn" | tail -15
