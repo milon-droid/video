@@ -6,7 +6,8 @@
   },
   "max": {
    "instruct": "Young Russian man, about 27, casual and ironic, a bit tired, expressive and emotional, natural everyday speech, medium-fast pace.",
-   "ref": "Слушай, ну я же просто хотел поесть. Почему всегда я?"
+   "ref": "Слушай, ну я же просто хотел поесть. Почему всегда я?",
+   "f0": 119
   },
   "lumina": {
    "instruct": "Young woman, bored and sarcastic goddess working at an office desk, sultry low voice, lazy drawl, deadpan humor.",
@@ -29,41 +30,43 @@
    "instruct": "Seductive breathy female voice, soft and playful, half-whisper, sly.",
    "ref": "Ну здравствуй, красавчик. Скучал по мне?"
   },
-  "nar2": {
-   "instruct": "Cocky, cheeky young Russian male narrator in his late twenties, bold sarcastic stand-up comedian roasting the hero, smirking mocking tone, punchy energetic delivery with sharp emphasis on punchlines, raspy edgy voice, fast pace, very expressive.",
-   "ref": "Ну что, народ, держитесь. Сейчас я вам расскажу про самого тупого героя в истории. Ржать будете до слёз, клянусь."
+  "nar3": {
+   "instruct": "Deep low bass-baritone adult male narrator, around 35, cocky and cheeky, sarcastic stand-up comedian roasting the hero, smirking mocking tone, punchy confident delivery with sharp emphasis on punchlines, low husky chesty voice, medium-fast pace, very expressive.",
+   "ref": "Ну что, народ, держитесь. Сейчас я вам расскажу про самого тупого героя в истории. Ржать будете до слёз, клянусь.",
+   "f0": 105,
+   "low": true
   }
  },
  "lines": [
   {
    "id": "a1",
-   "role": "nar2",
-   "text": "Знакомьтесь, это Б+обик. Мама хотела собаку — получился он.",
+   "role": "nar3",
+   "text": "Это Б+обик. Ч+ерез минуту он умрёт. Из-за шав+ухи.",
    "speed": 1.12
   },
   {
    "id": "a2",
-   "role": "nar2",
-   "text": "Двадцать семь лет, ипотека и ноль баб. Ч+ерез минуту он сдохнет. Из-за д+онера.",
+   "role": "nar3",
+   "text": "Мама хотела собаку — получился он. Двадцать семь лет, ипотека и ноль баб.",
    "speed": 1.12
   },
   {
    "id": "a3",
    "role": "max",
-   "text": "К+олы нет. Всухомятку я его жрать не буду, бл*ть.",
+   "text": "К+олы нет. Всухомятку я её жрать не буду, бл*ть.",
    "speed": 1.05,
-   "say": "К+олы нет. Всухомятку я его жрать не буду, блять."
+   "say": "К+олы нет. Всухомятку я её жрать не буду, блять."
   },
   {
    "id": "a4",
-   "role": "nar2",
+   "role": "nar3",
    "text": "И этот гений попёрся за колой. В три часа ночи.",
    "speed": 1.12
   },
   {
    "id": "b1",
-   "role": "nar2",
-   "text": "А навстречу летел курьер. На самокате. С его же д+онером.",
+   "role": "nar3",
+   "text": "А навстречу летел курьер. На самокате. С его же шав+ухой.",
    "speed": 1.12
   },
   {
@@ -81,19 +84,19 @@
   },
   {
    "id": "d1",
-   "role": "nar2",
-   "text": "Так Б+обик и сдох. Девственником. Зато с д+онером.",
+   "role": "nar3",
+   "text": "Так Б+обик и сдох. Девственником. Зато с шав+ухой.",
    "speed": 1.12
   },
   {
    "id": "s1",
    "role": "max",
-   "text": "Стоп. Я что, умер?! А донер?!",
+   "text": "Стоп. Я что, умер?! А шав+уха?!",
    "speed": 1.05
   },
   {
    "id": "e1",
-   "role": "nar2",
+   "role": "nar3",
    "text": "На том свете — очередь. Но Б+обик — избранный. Один на тысячу лет. Небеса, видимо, бухали.",
    "speed": 1.12
   },
@@ -123,7 +126,7 @@
   },
   {
    "id": "g1",
-   "role": "nar2",
+   "role": "nar3",
    "text": "Сила — один. Здоровье — один. Аура — ноль. Как у дохлого хомяка.",
    "speed": 1.12
   },
@@ -135,7 +138,7 @@
   },
   {
    "id": "h2",
-   "role": "nar2",
+   "role": "nar3",
    "text": "Меч выпадает раз из ста. Сковородка — девяносто семь раз из ста.",
    "speed": 1.12
   },
@@ -159,13 +162,13 @@
   },
   {
    "id": "i1",
-   "role": "nar2",
+   "role": "nar3",
    "text": "Так Б+обик попал в Эльд+орию. Две луны, летающие остров+а...",
    "speed": 1.12
   },
   {
    "id": "i2",
-   "role": "nar2",
+   "role": "nar3",
    "text": "...и жопой в пруд.",
    "speed": 1.12
   },
@@ -184,7 +187,7 @@
   },
   {
    "id": "k1",
-   "role": "nar2",
+   "role": "nar3",
    "text": "А в пруду жил гусь. Злой, как бывшая. Которой у Б+обика никогда не было.",
    "speed": 1.12
   },
@@ -196,7 +199,7 @@
   },
   {
    "id": "k3",
-   "role": "nar2",
+   "role": "nar3",
    "text": "Адский гусь, разведчик Короля демонов. Один щипок — и Б+обик сдохнет дважды за ночь.",
    "speed": 1.12
   },
@@ -209,7 +212,7 @@
   },
   {
    "id": "l1",
-   "role": "nar2",
+   "role": "nar3",
    "text": "Первая победа! Ну, почти.",
    "speed": 1.12
   },
@@ -227,7 +230,7 @@
   },
   {
    "id": "m1",
-   "role": "nar2",
+   "role": "nar3",
    "text": "А тем временем в землях демонов...",
    "speed": 1.12
   },

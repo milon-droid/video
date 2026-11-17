@@ -11,7 +11,7 @@ lines.json: {"roles": {"narrator": {"instruct": "Deep warm male narrator...", "r
 Ударения: ставятся автоматически по словарю Vosk на каждое слово (модель обучена на полностью размеченном тексте);
 свою — знаком «+» перед ударной гласной («д+онера»), он главнее словаря. --check печатает размеченный текст без синтеза.
 Дубли (--cands 4): у вопросов берётся дубль с самым заметным подъёмом тона к «?», у роли с "low": true — с самым низким голосом
-(особенно в начале фразы). Длинные паузы между фразами (модель любит драматичные 1–1,5 с) ужимаются до 0,3 с.
+(особенно в начале фразы), у роли с "f0": N — с медианой тона ближе к N Гц (голос героя не «уплывает»). Длинные паузы между фразами (модель любит драматичные 1–1,5 с) ужимаются до 0,3 с.
 Скорость: ≈ 5–6 с счёта на 1 с речи (4 ядра). Установка (отдельное окружение, ≈ 1 ГБ + модели 9 ГБ):
   python3 -m venv ~/.venvs/qwentts && ~/.venvs/qwentts/bin/pip install "torch==2.11.0+cpu" "torchaudio==2.11.0+cpu" --index-url https://download.pytorch.org/whl/cpu
   ~/.venvs/qwentts/bin/pip install qwen-tts soundfile "huggingface_hub[cli]"
@@ -96,6 +96,8 @@ def score(y, sr, ln, role):
         head = f[:int(len(f) * .3)]; hv = head[head > 0]
         hi = np.percentile(hv, 90) if len(hv) else np.median(v)
         sc -= .08 * hi + .04 * np.median(v); inf += f"начало {hi:.0f} Гц, медиана {np.median(v):.0f} Гц "
+    if role.get("f0"):  # держать высоту голоса героя одинаковой между дублями и сериями: ближе к целевой медиане (Гц)
+        d = abs(st(np.median(v), role["f0"])); sc -= 3 * d; inf += f"медиана {np.median(v):.0f} Гц (цель {role['f0']}) "
     return sc, inf
 out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
 dfile = out / "durations.json"; durs = json.loads(dfile.read_text()) if dfile.exists() else {}

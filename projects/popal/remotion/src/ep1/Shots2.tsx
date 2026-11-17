@@ -32,7 +32,7 @@ export const Room: React.FC<P> = ({ t, T }) => { const growl = t > 1.6 && t < 2.
     <Glow x={600} y={1080} r={260} c="#4ad0ff" o={.35} id="phG" />
   </Cam></Frame>
     {growl && <Onomato t={t} t0={1.6} x={800} y={800} text="УРРР…" col="#ffb04a" size={110} rot={8} dur={1.0} />}
-    <PhoneUI t={t} t0={2.8} x={500} y={300} lines={[['ДОНЕР XXL', '✓'], ['ЗАКАЗ', 'ПРИНЯТ'], ['КУРЬЕР', '15 МИН']]} /></>); };
+    <PhoneUI t={t} t0={2.8} x={500} y={300} lines={[['ШАВУХА XXL', '✓'], ['ЗАКАЗ', 'ПРИНЯТ'], ['КУРЬЕР', '15 МИН']]} /></>); };
 
 // ───────────────────────── 2. ХОЛОДИЛЬНИК: колы нет ─────────────────────────
 export const FridgeShot: React.FC<P> = ({ t, T }) => { const open = t < 3.2 ? out(win(t, .1, .5)) : 1 - out(win(t, 3.2, 3.6));
@@ -62,7 +62,7 @@ export const StreetHit: React.FC<P> = ({ t, T }) => { const d = HIT_AT, hl = win
     <Person x={lerp(380, 560, clamp(t / (d - 1)))} y={1760} s={1.2} t={T} hold="cola" pose={turn ? blendPose(POSES.stand, POSES.shrug, out(win(t, d - 1, d - .8))) : { armL: [-.2, .2], armR: [.5, -1.3] }}
       expr={turn ? 'happy' : 'neutral'} eye={turn ? [.8, -.1] : [.4, 0]} headTilt={turn ? 6 : 0} />
   </Cam><rect width={1080} height={1920} fill="#fffbe8" opacity={clamp((t - (d - .3)) / .3)} /></Frame>
-    <div style={html({ left: 90, top: 470, width: 900, boxSizing: 'border-box', textAlign: 'center', transform: `scale(${spr(t, d - 2.3, { damping: 10 })})`, opacity: t < d - 2.3 ? 0 : clamp((d - .1 - t) / .2), background: '#fff', borderRadius: 34, padding: '20px 30px', fontSize: 64, fontWeight: 900, color: '#14121c', boxShadow: '0 10px 30px rgba(0,0,0,.4)', whiteSpace: 'nowrap' })}>🛵 ВАШ ДОНЕР <span style={{ color: '#e5383b' }}>РЯДОМ</span></div></>); };
+    <div style={html({ left: 90, top: 470, width: 900, boxSizing: 'border-box', textAlign: 'center', transform: `scale(${spr(t, d - 2.3, { damping: 10 })})`, opacity: t < d - 2.3 ? 0 : clamp((d - .1 - t) / .2), background: '#fff', borderRadius: 34, padding: '20px 30px', fontSize: 56, fontWeight: 900, color: '#14121c', boxShadow: '0 10px 30px rgba(0,0,0,.4)', whiteSpace: 'nowrap' })}>🛵 ВАША ШАВУХА <span style={{ color: '#e5383b' }}>РЯДОМ</span></div></>); };
 
 // ───────────────────────── 4. СТОП-КАДР + НАЗВАНИЕ ─────────────────────────
 export const FreezeTitle: React.FC<P> = ({ t, T }) => { const dd = Math.min(t, 1.35) * 18, grey = clamp((t - 1.3) / .2), s = shake(t, 1.35, 16, .35);
