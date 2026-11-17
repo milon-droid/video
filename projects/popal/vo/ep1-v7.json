@@ -7,7 +7,8 @@
   "max": {
    "instruct": "Young Russian man, about 27, casual and ironic, a bit tired, expressive and emotional, natural everyday speech, medium-fast pace.",
    "ref": "Слушай, ну я же просто хотел поесть. Почему всегда я?",
-   "f0": 119
+   "f0": 119,
+   "fit": true
   },
   "lumina": {
    "instruct": "Young woman, bored and sarcastic goddess working at an office desk, sultry low voice, lazy drawl, deadpan humor.",
@@ -33,8 +34,9 @@
   "nar3": {
    "instruct": "Deep low bass-baritone adult male narrator, around 35, cocky and cheeky, sarcastic stand-up comedian roasting the hero, smirking mocking tone, punchy confident delivery with sharp emphasis on punchlines, low husky chesty voice, medium-fast pace, very expressive.",
    "ref": "Ну что, народ, держитесь. Сейчас я вам расскажу про самого тупого героя в истории. Ржать будете до слёз, клянусь.",
-   "f0": 105,
-   "low": true
+   "f0": 108,
+   "low": true,
+   "fit": true
   }
  },
  "lines": [

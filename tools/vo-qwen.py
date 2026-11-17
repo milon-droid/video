@@ -11,7 +11,7 @@ lines.json: {"roles": {"narrator": {"instruct": "Deep warm male narrator...", "r
 Ударения: ставятся автоматически по словарю Vosk на каждое слово (модель обучена на полностью размеченном тексте);
 свою — знаком «+» перед ударной гласной («д+онера»), он главнее словаря. --check печатает размеченный текст без синтеза.
 Дубли (--cands 4): у вопросов берётся дубль с самым заметным подъёмом тона к «?», у роли с "low": true — с самым низким голосом
-(особенно в начале фразы), у роли с "f0": N — с медианой тона ближе к N Гц (голос героя не «уплывает»). Длинные паузы между фразами (модель любит драматичные 1–1,5 с) ужимаются до 0,3 с.
+(особенно в начале фразы), у роли с "f0": N — с медианой тона ближе к N Гц (голос героя не «уплывает»); с "fit": true дубль ещё и сдвигается по высоте к этой медиане. Длинные паузы между фразами (модель любит драматичные 1–1,5 с) ужимаются до 0,3 с.
 Скорость: ≈ 5–6 с счёта на 1 с речи (4 ядра). Установка (отдельное окружение, ≈ 1 ГБ + модели 9 ГБ):
   python3 -m venv ~/.venvs/qwentts && ~/.venvs/qwentts/bin/pip install "torch==2.11.0+cpu" "torchaudio==2.11.0+cpu" --index-url https://download.pytorch.org/whl/cpu
   ~/.venvs/qwentts/bin/pip install qwen-tts soundfile "huggingface_hub[cli]"
@@ -113,6 +113,9 @@ for ln in lines:
     raw, wav = out / f"{ln['id']}.raw.wav", out / f"{ln['id']}.wav"; sf.write(raw, best, sr)
     af = "highpass=f=70,lowpass=f=12000,acompressor=threshold=-20dB:ratio=2:attack=8:release=120"
     p = ln.get("pitch", 1.0)
+    if roles[r].get("fit") and roles[r].get("f0"):  # подогнать медиану тона дубля к цели роли (±2 тона), чтобы голос не «плавал»
+        fv = f0_track(best, sr); fv = fv[fv > 0]
+        if len(fv) > 6: p *= min(1.26, max(.79, roles[r]["f0"] / np.median(fv)))
     if p != 1.0: af = f"aresample=48000,asetrate={int(48000 * p)},aresample=48000,atempo={1 / p:.4f}," + af
     sp = ln.get("speed", 1.0)
     if sp != 1.0: af += f",atempo={sp}"
