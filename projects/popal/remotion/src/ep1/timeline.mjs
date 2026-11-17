@@ -60,9 +60,9 @@ const SPEC = [
   ['room', 4.6, [['a1', .3], ['a2', AF('a1', .2)]], [[0, 'hum', .15, { dur: 7 }], [1.6, 'wah', .45, { dur: .9, pitch: .6 }], [2.8, 'notification-message-in-clear', .6], [3.4, 'click-tap-soft', .5], [3.8, 'notification-success-chime', .55]]],
   ['fridge', 4.6, [['a3', .5]], [[0, 'foley-wood-slide', .4], [.25, 'mechanical-latch-light', .6], [.3, 'hum50', .2, { dur: 3 }], [3.4, 'bsb-door-creak-close', .4]]],
   ['street', HIT, [['b1', .3, true]], [[0, 'engine', .45, { dur: HIT }], [.1, 'bsb-wind-foley', .25, { dur: HIT }], [HIT - 2.3, 'notification-message-in-clear', .5], [HIT - 2.3, 'whoosh-slow-medium', .25], [HIT - .9, 'riser-1s-strong', .55], [HIT - .35, 'horn', .7]]],
-  ['freeze', 2.5, [], [[0, 'impact-heavy-hard', 1, { bright: 2 }], [0, 'oc-GLASBrk_GlassBottleBreak_OS_01', .4], [.05, 'whoosh-slow-medium', .6], [1.35, 'cinematic-slam-big', .8, { bright: 2 }], [1.4, 'sting-bold-short', .5]]],
+  ['freeze', 2.9, [], [[0, 'impact-heavy-hard', 1, { bright: 2 }], [0, 'oc-GLASBrk_GlassBottleBreak_OS_01', .4], [.05, 'whoosh-slow-medium', .6], [1.35, 'cinematic-slam-big', .8, { bright: 2 }], [1.4, 'sting-bold-short', .5]]],
   ['courier', 2.8, [['c1', .3]], [[0, 'foley-paper-slide', .6], [.1, 'siren', .1, { dur: 2.9 }]]],
-  ['visor', 3.3, [['c2', .8]], [[0, 'digital-scan-clear', .5], [.6, 'digital-radio', .3], [2.6, 'appear-materialise', .7], [3.3, 'whoosh-medium-hard', .6]]],
+  ['visor', 3.7, [['c2', .8]], [[0, 'digital-scan-clear', .5], [.6, 'digital-radio', .3], [2.6, 'appear-materialise', .7], [3.3, 'whoosh-medium-hard', .6]]],
   ['soul', 4.9, [['d1', .3], ['s1', AF('d1', .25)]], [[0, 'shimmer-long-soft', .45], [.2, 'reverse-whoosh-long-soft', .35], [-1.1, 'riser-2s-soft', .5], [-1.0, 'shimmer-long-bright', .5]]],
   ['hall', 5.6, [['e1', .3], ['e2', AF('e1', .2)]], [[0, 'murmur', .2, { dur: 6 }], [1.1, 'shimmer-medium-bright', .5], [3.6, 'notification-success-ding-ding', .7]]],
   ['window', 3.6, [['f1', .3]], [[0, 'keyboard-typing-quick-medium', .3], [1.6, 'swipe-fast-soft', .5], [2.2, 'swipe-fast-firm', .5]]],
@@ -88,7 +88,7 @@ const SPEC = [
   ['eyes', 3.2, [['m4', .2]], [[.15, 'boom-drop-strong', .7], [1.9, 'cinematic-thunder-massive', .5], [1.9, 'cinematic-drum-massive', .6]]],
   ['walk', 3.4, [['w1', .3], ['w2', AF('w1', .2)]], [[0, 'bsb-wind-foley', .25, { dur: 4.5 }], [.2, 'move-bounce', .3], [1.4, 'move-bounce', .3], [2.6, 'move-bounce', .3]]],
   ['forkAsk', 3.4, [['n2', .4]], [[0, 'whoosh-medium-soft', .4], [.5, 'move-bounce', .5], [1.7, 'move-bounce', .4], [2.9, 'move-bounce', .4]]],
-  ['split', 4.0, [], [[0, 'whoosh-medium-medium', .5], [.15, 'pop-large-in', .5], [.4, 'pop-large-in', .5], [.7, 'impact-medium-firm', .5], [1.2, 'sting-bright-long', .45], [2.2, 'pop-medium-in', .5]]],
+  ['split', 4.6, [], [[0, 'whoosh-medium-medium', .5], [.15, 'pop-large-in', .5], [.4, 'pop-large-in', .5], [.7, 'impact-medium-firm', .5], [1.2, 'sting-bright-long', .45], [2.2, 'pop-medium-in', .5]]],
 ];
 
 export const SHOTS = []; export const VO = []; let at = 0;
