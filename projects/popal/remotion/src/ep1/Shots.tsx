@@ -170,7 +170,7 @@ export const CatsNo: React.FC<P> = ({ t, T }) => (<><Frame bg="#d7ecff"><Cam z={
 export const SystemShot: React.FC<P> = ({ t, T }) => { const AURA_T = WORD_AT('g1', 4) - SHOT.system.a; const s = shake(t, .15, 12, .3), stamp = out(win(t, 0, .15));
   return (<><div style={{ position: 'absolute', inset: 0, transform: `translate(${s[0]}px,${s[1]}px)` }}><Frame bg="#d7ecff"><Cam z={lerp(1, 1.06, io(win(t, 0, 3.9)))} dy={60}><rect x={0} y={-200} width={1080} height={600} fill="#d7ecff" /><Counter t={T} />
     <Glow x={540} y={900} r={700} c="#37c2d8" o={clamp((t - .35) / .4) * .6} id="sysG" />
-    <Person x={540} y={1960} s={1.55} t={T} pose={blendPose(POSES.stand, POSES.shrug, out(win(t, .4, .7)))} expr={t > .4 ? 'shock' : 'neutral'} eye={[0, -.8]} />
+    <Person x={540} y={1830} s={1.55} t={T} pose={blendPose(POSES.stand, POSES.shrug, out(win(t, .4, .7)))} expr={t > .4 ? 'shock' : 'neutral'} eye={[0, -.8]} />
     <g transform={`translate(540,${lerp(900, 1560, stamp)}) rotate(-8)`} opacity={t < .9 ? 1 : clamp(1 - (t - .9) / .3)}><rect x={-160} y={-60} width={320} height={120} rx={14} fill="none" stroke={C.red} strokeWidth={12} /><text x={0} y={24} fontSize={64} fontWeight={900} textAnchor="middle" fill={C.red} fontFamily="Mont">ОДОБРЕНО</text></g>
   </Cam></Frame></div><SysWindow t={t} t0={.4} title="ПОДКЛЮЧЕНА" sub={t < AURA_T ? "Игрок: БОБИК · Класс: ПОПАДАНЕЦ" : "АУРА: + за победы и эпик · − за кринж"} y={560} /></>); };
 export const Monday: React.FC<P> = ({ t, T }) => (<Frame bg="#b9d4ef"><Cam z={lerp(1, 1.04, t / 1.5)}><rect width={1080} height={1920} fill="#b9d4ef" /><Glow x={540} y={800} r={700} c="#ffffff" o={.6} id="monG" />
