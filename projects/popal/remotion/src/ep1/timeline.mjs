@@ -6,24 +6,22 @@ import D from '../data/durations.json' with { type: 'json' };
 import WORDS from '../data/words.json' with { type: 'json' };
 
 // n — нарратор (за кадром, рот закрыт), остальные — в кадре (рот по голосу)
-export const SPEAKER = { a1: 'n', a2: 'n', a3: 'max', b1: 'n', c1: 'courier', c2: 'courier', d1: 'n', s1: 'max', e1: 'n', e2: 'max', f1: 'lumina', f2: 'max', f3: 'lumina', g1: 'n', g2: 'n',
+export const SPEAKER = { a1: 'n', a3: 'max', b1: 'n', c1: 'courier', c2: 'courier', d1: 'n', s1: 'max', e1: 'n', f1: 'lumina', f2: 'max', f3: 'lumina', g1: 'n', g2: 'n',
   h1: 'lumina', h2: 'n', h3: 'lumina', h4: 'max', h5: 'lumina', i1: 'n', i2: 'n', j1: 'slime', j2: 'max', k1: 'n', k2: 'slime', k3: 'n', k4: 'slime',
   l1: 'n', l2: 'max', l3: 'slime', m1: 'n', m2: 'king', m3: 'succ', m4: 'king', w1: 'max', w2: 'slime', n2: 'slime' };
 export const NAME = { courier: 'КУРЬЕР', lumina: 'БОГИНЯ ЛЮМИНА', slime: 'ЖЕЛЕ', king: 'КОРОЛЬ ДЕМОНОВ', succ: 'ЛИЛИАНА', max: 'БОБИК' };
 // субтитры: {слово} — акцент (жёлтым), мат со звёздочкой; число слов = числу слов реплики (тире не считается)
 const CAP = { a1: 'Это {Бобик}. Через минуту он {умрёт}. Из-за {шавухи!}',
-  a2: 'Двадцать семь лет. {Девственник}.',
   a3: 'Колы нет. {Всухомятку} я её есть не буду.',
-  b1: 'А навстречу летел {курьер}. На самокате. С его же {шавухой}.',
+  b1: 'А навстречу летел {курьер}. С его же {шавухой}.',
   c1: 'Ваш заказ {прибыл}.',
   c2: '{Избранный} доставлен.',
-  d1: 'Так Бобик и {сдох}. {Девственником}.',
+  d1: 'Так Бобик и сдох {девственником}.',
   s1: 'Стоп. Я что, {умер?!} А {шавуха?!}',
   e1: 'На том свете — {очередь}. Но Бобик — {избранный}. Небеса, видимо, {ё*нулись}.',
-  e2: 'О... {быстро!}',
   f1: 'Перерождение. Мир — {Эльдория}. Вопросы?',
   f2: 'А можно мир, где {кошки-девушки}?',
-  f3: 'Кошки — {по подписке}. Девственникам — {двойной тариф}.',
+  f3: 'Кошки — {по подписке}.',
   g1: 'Сила — {один}. Здоровье — {один}. {Аура} — {ноль}.',
   g2: 'Сила и здоровье растут с {опытом}. Аура — только от {побед}.',
   h1: 'Теперь — {дар!} Крути.',
@@ -34,12 +32,12 @@ const CAP = { a1: 'Это {Бобик}. Через минуту он {умрёт
   i1: 'Так Бобик попал в {Эльдорию}. Две луны, летающие острова...',
   i2: '...и {пруд}.',
   j1: 'Ты как сюда {упал}?',
-  j2: 'Желе разговаривает. Всё. {П*здец}. {Кукуха} поехала.',
+  j2: 'Желе разговаривает. Всё, {п*здец}. {Кукуха} поехала.',
   k1: 'А в пруду жил {гусь}.',
   k2: 'Это не простой гусь. Это {вражеский моб!}',
   k3: '{Адский гусь}. Разведчик {Короля демонов}. Один щипок — и {конец}.',
   k4: 'Используй {сковородку!}',
-  l1: 'Первая {победа!} Ну... почти.',
+  l1: 'Первая {победа!} Ну, почти.',
   l2: 'А-а-а! Мои {яйца!}',
   l3: '{Минус} аура. И {минус дети}.',
   m1: 'А тем временем в {землях демонов}...',
@@ -51,7 +49,7 @@ const CAP = { a1: 'Это {Бобик}. Через минуту он {умрёт
   n2: '{Эльфийки} или {дракон}? Пишите в комментах!' };
 
 const wt = (id, i) => (WORDS[id] || [])[i] ?? i * D[id] / 8;
-const HIT = .3 + wt('b1', 6) - .12; // удар — перед «С его же шавухой»
+const HIT = .3 + wt('b1', 4) - .12; // удар — перед «С его же шавухой»
 // [id плана, мин. длительность, [[реплика, сдвиг от начала плана]], [[сдвиг, звук, громкость, доп.]]]
 // звук: строка с дефисом/oc-/bsb- — библиотека (tools/sfx-find.py), иначе — синтез tools/sfx.py
 export const SLIME_K = .9, SLIME_GROUND = 1.3; /* на земле — крупнее и перед травой, иначе незаметен */
@@ -60,21 +58,21 @@ export const NAH_T = +(.8 + (D.h5 ?? .8) + .15).toFixed(2); /* портал по
 export const SLOT_H2 = 2.0, SLOT_STOP = +(SLOT_H2 + wt('h2', 6) + .1).toFixed(2); /* барабаны встают на словах «девяносто семь» */
 const AF = (id, gap = .25) => ['after', id, gap]; // реплика сразу после другой реплики этого же плана
 const SPEC = [
-  ['room', 4.6, [['a1', .3], ['a2', AF('a1', .2)]], [[0, 'hum', .15, { dur: 7 }], [1.6, 'wah', .45, { dur: .9, pitch: .6 }], [2.8, 'notification-message-in-clear', .6], [3.4, 'click-tap-soft', .5], [3.8, 'notification-success-chime', .55]]],
-  ['fridge', 4.6, [['a3', .5]], [[0, 'foley-wood-slide', .4], [.25, 'mechanical-latch-light', .6], [.3, 'hum50', .2, { dur: 3 }], [3.4, 'bsb-door-creak-close', .4]]],
+  ['room', 3.9, [['a1', .2]], [[0, 'hum', .15, { dur: 7 }], [1.6, 'wah', .45, { dur: .9, pitch: .6 }], [2.8, 'notification-message-in-clear', .6], [3.4, 'click-tap-soft', .5], [3.8, 'notification-success-chime', .55]]],
+  ['fridge', 3.6, [['a3', .3]], [[0, 'foley-wood-slide', .4], [.25, 'mechanical-latch-light', .6], [.3, 'hum50', .2, { dur: 3 }], [3.4, 'bsb-door-creak-close', .4]]],
   ['street', HIT, [['b1', .3, true]], [[0, 'engine', .45, { dur: HIT }], [.1, 'bsb-wind-foley', .25, { dur: HIT }], [HIT - 2.3, 'notification-message-in-clear', .5], [HIT - 2.3, 'whoosh-slow-medium', .25], [HIT - .9, 'riser-1s-strong', .55], [HIT - .35, 'horn', .7]]],
   ['freeze', 2.9, [], [[0, 'impact-heavy-hard', 1, { bright: 2 }], [0, 'oc-GLASBrk_GlassBottleBreak_OS_01', .4], [.05, 'whoosh-slow-medium', .6], [1.35, 'cinematic-slam-big', .8, { bright: 2 }], [1.4, 'sting-bold-short', .5]]],
   ['courier', 2.8, [['c1', .3]], [[0, 'foley-paper-slide', .6], [.1, 'siren', .1, { dur: 2.9 }]]],
   ['visor', 3.7, [['c2', .8]], [[0, 'digital-scan-clear', .5], [.6, 'digital-radio', .3], [2.6, 'appear-materialise', .7], [3.3, 'whoosh-medium-hard', .6]]],
-  ['soul', 4.9, [['d1', .3], ['s1', AF('d1', .25)]], [[0, 'shimmer-long-soft', .45], [.2, 'reverse-whoosh-long-soft', .35], [-1.1, 'riser-2s-soft', .5], [-1.0, 'shimmer-long-bright', .5]]],
-  ['hall', 5.6, [['e1', .3], ['e2', AF('e1', .2)]], [[0, 'murmur', .2, { dur: 6 }], [1.1, 'shimmer-medium-bright', .5], [3.6, 'notification-success-ding-ding', .7]]],
-  ['window', 3.6, [['f1', .3]], [[0, 'keyboard-typing-quick-medium', .3], [1.6, 'swipe-fast-soft', .5], [2.2, 'swipe-fast-firm', .5]]],
+  ['soul', 4.4, [['d1', .2], ['s1', AF('d1', .2)]], [[0, 'shimmer-long-soft', .45], [.2, 'reverse-whoosh-long-soft', .35], [-1.1, 'riser-2s-soft', .5], [-1.0, 'shimmer-long-bright', .5]]],
+  ['hall', 4.4, [['e1', .2]], [[0, 'murmur', .2, { dur: 6 }], [1.1, 'shimmer-medium-bright', .5], [3.6, 'notification-success-ding-ding', .7]]],
+  ['window', 3.2, [['f1', .2]], [[0, 'keyboard-typing-quick-medium', .3], [1.6, 'swipe-fast-soft', .5], [2.2, 'swipe-fast-firm', .5]]],
   ['catsAsk', 2.0, [['f2', .15]], [[0, 'foley-fabric-slide', .4]]],
-  ['catsNo', 2.0, [['f3', .3]], [[1.9, 'click-snap-medium', .4]]],
-  ['system', 4.0, [['g1', .4]], [[.15, 'impact-medium-firm', .8], [.4, 'digital-power-up', .5], [.7, 'pop-medium-in', .6], [1.65, 'pop-medium-in', .6], [2.6, 'pop-medium-in', .6]]],
+  ['catsNo', 2.0, [['f3', .2]], [[1.9, 'click-snap-medium', .4]]],
+  ['system', 3.4, [['g1', .3]], [[.15, 'impact-medium-firm', .8], [.4, 'digital-power-up', .5], [.7, 'pop-medium-in', .6], [1.65, 'pop-medium-in', .6], [2.6, 'pop-medium-in', .6]]],
   ['slot', 6.0, [['h1', .2], ['h2', SLOT_H2]], [[1.6, 'mechanical-latch-heavy', .8], [1.75, 'rattle', .3, { dur: SLOT_STOP - 1.75 }], [1.75, 'time-clock-fast', .4], [SLOT_H2, 'data-chart-reveal', .4], [SLOT_STOP - .1, 'data-bar-grow', .4], [SLOT_STOP, 'mechanical-switch-heavy', .6], [SLOT_STOP + .18, 'mechanical-switch-heavy', .6], [SLOT_STOP + .36, 'mechanical-switch-heavy', .6], [SLOT_STOP + .45, 'money-coins-pour', .45], [SLOT_STOP + .45, 'notification-failure-wobble', .4]]],
   ['item', 2.6, [['h3', .25]], [[0, 'shimmer-long-bright', .55], [.1, 'cinematic-metal-big', .25, { bright: 2 }]]],
-  ['dodep', 3.8, [['h4', .2]], [[.1, 'foley-fabric-slide', .4], [2.4, 'impact-light-firm', .6]]],
+  ['dodep', 3.2, [['h4', .15]], [[.1, 'foley-fabric-slide', .4], [2.4, 'impact-light-firm', .6]]],
   ['nah', NAH_T + 1.1, [['h5', .8]], [[NAH_T + .05, 'swipe-medium-firm', .7], [NAH_T + .15, 'reverse-whoosh-medium-strong', .6], [NAH_T + .35, 'faller-2s-strong', .6]]],
   ['fall', 3.9, [['i1', .2]], [[0, 'bsb-wind-strong-outside', .5, { dur: 4.5 }], [3.4, 'cinematic-thunder-big', .2], [-2.0, 'faller-2s-strong', .75], [-1.0, 'whoosh-slow-hard', .6]]],
   ['splash', 1.6, [['i2', .7]], [[.1, 'impact-heavy-soft', .9, { bright: 2 }], [.12, 'props-splash', 1, { rate: .7 }], [.16, 'props-splash', .9], [.3, 'oc-WATRBubl_WaterBubbles_LOOP_01', .45, { dur: 1.3 }], [.8, 'props-drip', .5]]],

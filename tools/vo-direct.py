@@ -85,17 +85,22 @@ def clean(f, mp=None):
     """края тишины и длинные паузы внутри — ffmpeg, 48 кГц (mp — свой предел паузы куска, "maxpause")"""
     g = f.with_suffix(".c.wav"); mp = a.pause if mp is None else mp
     af = ("highpass=f=70,lowpass=f=12000,acompressor=threshold=-20dB:ratio=2:attack=8:release=120,"
-          f"silenceremove=start_periods=1:start_threshold=-42dB:stop_periods=-1:stop_duration={mp + .1}:stop_threshold=-42dB:stop_silence={mp},"
-          "areverse,silenceremove=start_periods=1:start_threshold=-42dB,areverse,aresample=48000")
+          f"silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.06:stop_periods=-1:stop_duration={mp + .1}:stop_threshold=-50dB:stop_silence={mp},"
+          "areverse,silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.08,areverse,aresample=48000")  # мягкий порог и запас: тихие начала/концы слов не срезаются
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(f), "-af", af, str(g)], check=True); return g
 def evaluate(f, p, r):
     g = clean(f, p.get("maxpause")); y48, _ = sf.read(g); y = librosa.resample(np.asarray(y48, np.float32), orig_sr=48000, target_sr=16000)
     if len(y) < 1600: return None
-    marked = mark(p["t"]); bad, badw = 0.0, []
+    marked = mark(p["t"]); bad, badw, good = 0.0, [], []
+    forced = {plain(w).lower() for w in re.findall(r"[А-Яа-яЁё+]+", p["t"]) if "+" in w}  # ударение задано вручную — ошибка тут вдвое хуже
     for w, rr in zip(re.findall(r"[А-Яа-яЁё́+]+(?:-[А-Яа-яЁё́+]+)*", marked), judge(y, 16000, marked)):
         e = marked_index(w)
         if e is None or rr["best"] is None or len(rr["vowel_scores"] or []) < 2: continue
-        if rr["best"] != e: bad += rr["margin"]; badw.append(w)
+        if rr["best"] != e: bad += rr["margin"] * (2 if w.replace("́", "").lower() in forced else 1); badw.append(w)
+        else: good.append(rr["margin"])
+    good = float(np.mean(good)) if good else 0.0
+    raw, rs = sf.read(f); raw = np.asarray(raw, float).ravel(); tail = raw[-int(rs * .04):]  # модель оборвала последний слог: в конце файла ещё громко
+    cut = 20 * np.log10((np.sqrt((tail ** 2).mean()) + 1e-9) / (np.abs(raw).max() + 1e-9)) > -30
     words = [w for s in wm.transcribe(y, language="ru", word_timestamps=True)[0] for w in s.words]
     txt = " ".join(w.word for w in words); sim = difflib.SequenceMatcher(None, norm(txt), norm(plain(p["t"]))).ratio()
     if re.search(r"\d", txt): sim = max(sim, difflib.SequenceMatcher(None, re.sub(r"\d", "", norm(txt)), re.sub(r"\d", "", norm(plain(p["t"])))).ratio(), .85)  # Whisper пишет числа цифрами
@@ -110,7 +115,7 @@ def evaluate(f, p, r):
         de = 20 * np.log10((rms[fr].mean() + 1e-9) / (rms.mean() + 1e-9)); wv = f0[fr]; wv = wv[~np.isnan(wv)]
         dp = 12 * np.log2(np.percentile(wv, 85) / med) if len(wv) > 1 else 0; acc += min(de, 6) + min(dp, 6)
     if p.get("acc"): acc /= len(p["acc"])
-    return dict(f=g, bad=bad, badw=badw, sim=sim, spk=spk, rng=rng, acc=acc, spans=spans, dur=len(y) / 16000, txt=txt)
+    return dict(f=g, bad=bad, badw=badw, good=good, cut=cut, sim=sim, spk=spk, rng=rng, acc=acc, spans=spans, dur=len(y) / 16000, txt=txt)
 res = {}
 for lid, k, p, r in parts:
     cands = [c for c in (evaluate(f, p, r) for f in sorted(tmp.glob(f"{lid}_{k}_*.wav")) if not f.name.endswith(".c.wav")) if c]
@@ -122,9 +127,9 @@ for lid, k, p, r in parts:
     top = max(c["spk"] for c in cands)
     ok = [c for c in cands if c["bad"] < .3 and c["sim"] >= .8 and c["spk"] >= max(a.spk_min, top - .08)] or \
          [c for c in cands if c["sim"] >= .7 and c["spk"] >= top - .12] or cands
-    best = max(ok, key=lambda c: c["rng"] * .3 + c["acc"] - 5 * c["bad"] + 20 * (c["sim"] - 1))
+    best = max(ok, key=lambda c: c["rng"] * .3 + c["acc"] - 5 * c["bad"] + 20 * (c["sim"] - 1) + 3 * c["good"] - 6 * c["cut"])
     for c in cands:
-        rep.write(f"{lid}.{k} {'★' if c is best else ' '} {c['f'].name:18s} удар:{c['bad']:.2f}{'(' + ','.join(c['badw']) + ')' if c['badw'] else ''} "
+        rep.write(f"{lid}.{k} {'★' if c is best else ' '} {c['f'].name:18s} удар:{c['bad']:.2f}/{c['good']:.2f}{' ОБРЫВ' if c['cut'] else ''}{'(' + ','.join(c['badw']) + ')' if c['badw'] else ''} "
                   f"текст:{c['sim']:.2f} тембр:{c['spk']:.2f} размах:{c['rng']:.1f} акцент:{c['acc']:+.1f} {c['dur']:.1f}с | {c['txt']}\n")
     res[(lid, k)] = best; print(lid, k, "→", best["f"].name, f"акцент {best['acc']:+.1f} размах {best['rng']:.1f} тембр {best['spk']:.2f}", flush=True)
 rep.close()

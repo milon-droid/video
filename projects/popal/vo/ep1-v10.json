@@ -34,11 +34,11 @@
   {
    "id": "a1",
    "role": "nar4",
-   "text": "Это Бобик. Через минуту он умрёт. Из-за шавухи.",
+   "text": "Это Бобик. Через минуту он умрёт. Из-за шавухи!",
    "parts": [
     {
      "t": "Это Б+обик.",
-     "emo": "energetic, punchy, mocking introduction",
+     "emo": "punchy, fast, mocking introduction",
      "acc": [
       "Бобик"
      ],
@@ -46,31 +46,12 @@
     },
     {
      "t": "Ч+ерез минуту он умрёт. Из-за шав+ухи!",
-     "emo": "dramatic and fast, one flowing phrase, the word shawarma stressed by tone as an absurd punchline",
+     "emo": "fast and dynamic, one flowing phrase, shawarma stressed by tone as an absurd punchline",
      "acc": [
       "умрёт",
       "шавухи"
      ],
-     "maxpause": 0.15
-    }
-   ]
-  },
-  {
-   "id": "a2",
-   "role": "nar4",
-   "text": "Двадцать семь лет. Девственник.",
-   "parts": [
-    {
-     "t": "Двадцать семь лет.",
-     "emo": "pitying, mocking sigh about a loser",
-     "pause": 0.15
-    },
-    {
-     "t": "Девственник.",
-     "emo": "contemptuous pity, mocking the loser, drawn out",
-     "acc": [
-      "девственник"
-     ]
+     "maxpause": 0.12
     }
    ]
   },
@@ -91,16 +72,16 @@
   {
    "id": "b1",
    "role": "nar4",
-   "text": "А навстречу летел курьер. На самокате. С его же шавухой.",
+   "text": "А навстречу летел курьер. С его же шавухой.",
    "parts": [
     {
-     "t": "А навстречу летел курьер. На самокате. С его же шав+ухой.",
-     "emo": "fast excited storytelling, building tension, punchy emphasis, few pauses",
+     "t": "А навстречу летел курьер. С его же шав+ухой.",
+     "emo": "fast dynamic storytelling, building to the punchline, no long pauses",
      "acc": [
       "курьер",
-      "самокате",
       "шавухой"
-     ]
+     ],
+     "maxpause": 0.15
     }
    ]
   },
@@ -129,22 +110,15 @@
   {
    "id": "d1",
    "role": "nar4",
-   "text": "Так Бобик и сдох. Девственником.",
+   "text": "Так Бобик и сдох девственником.",
    "parts": [
     {
-     "t": "Так Б+обик и сдох.",
-     "emo": "mocking, dark humor",
-     "acc": [
-      "сдох"
-     ],
-     "pause": 0.15
-    },
-    {
-     "t": "Девственником.",
-     "emo": "sarcastic pity, savoring the punchline, strong emphasis",
+     "t": "Так Б+обик и сдох девственником.",
+     "emo": "mocking dark humor, one phrase without pause, strong tone emphasis on the last word",
      "acc": [
       "девственником"
-     ]
+     ],
+     "maxpause": 0.08
     }
    ]
   },
@@ -155,7 +129,7 @@
    "parts": [
     {
      "t": "Стоп. Я что, умер?!... А шав+уха?!",
-     "emo": "terrified panic, voice shaking, then a desperate hysterical scream about the food",
+     "emo": "panicking, then heartbroken and sad, almost crying about the lost shawarma",
      "acc": [
       "умер",
       "шавуха"
@@ -169,41 +143,13 @@
    "text": "На том свете — очередь. Но Бобик — избранный. Небеса, видимо, ё*нулись.",
    "parts": [
     {
-     "t": "На том свете — очередь.",
-     "emo": "lively, sarcastic, fast",
+     "t": "На том свете — очередь. Но Б+обик — избранный. Небеса, видимо, +ёбнулись.",
+     "emo": "fast lively sarcastic, no pauses, last word hit hard",
      "acc": [
-      "очередь"
-     ],
-     "pause": 0.1
-    },
-    {
-     "t": "Но Б+обик — избранный.",
-     "emo": "mock grandiose, big emphasis on chosen one",
-     "acc": [
-      "избранный"
-     ],
-     "pause": 0.15
-    },
-    {
-     "t": "Небеса, видимо, ёбнулись.",
-     "emo": "cheeky dark humor, the last word hit hard and loud with strong emphasis, punchline",
-     "acc": [
+      "избранный",
       "ёбнулись"
-     ]
-    }
-   ]
-  },
-  {
-   "id": "e2",
-   "role": "bobik",
-   "text": "О... быстро!",
-   "parts": [
-    {
-     "t": "О... быстро!",
-     "emo": "surprised gasp, then delighted",
-     "acc": [
-      "быстро"
-     ]
+     ],
+     "maxpause": 0.1
     }
    ]
   },
@@ -218,19 +164,13 @@
      "pause": 0.1
     },
     {
-     "t": "Мир — Эльд+ория.",
-     "emo": "bored but clear",
+     "t": "Мир — Эльд+ория. Вопросы?",
+     "emo": "bored but clear, no pause, natural rising question at the end",
      "acc": [
-      "Эльдория"
-     ],
-     "pause": 0.1
-    },
-    {
-     "t": "Вопросы?",
-     "emo": "lazy but clearly questioning, natural rising intonation",
-     "acc": [
+      "Эльдория",
       "вопросы"
-     ]
+     ],
+     "maxpause": 0.12
     }
    ]
   },
@@ -251,21 +191,13 @@
   {
    "id": "f3",
    "role": "lumina",
-   "text": "Кошки — по подписке. Девственникам — двойной тариф.",
+   "text": "Кошки — по подписке.",
    "parts": [
     {
      "t": "Кошки — по подписке.",
      "emo": "sarcastic, smug",
      "acc": [
       "подписке"
-     ],
-     "pause": 0.15
-    },
-    {
-     "t": "Девственникам — двойной тариф.",
-     "emo": "mocking, teasing, savoring it",
-     "acc": [
-      "девственникам"
      ]
     }
    ]
@@ -324,17 +256,12 @@
    "text": "Сковорода Судьбы. Не промахивается.",
    "parts": [
     {
-     "t": "Сковорода Судьбы.",
-     "emo": "solemn grand announcement",
+     "t": "Сковорода Судьбы. Не промахивается.",
+     "emo": "solemn grand announcement, then dry, no long pause",
      "acc": [
-      "сковорода",
-      "судьбы"
+      "сковорода"
      ],
-     "pause": 0.6
-    },
-    {
-     "t": "Не промахивается.",
-     "emo": "dry, deadpan"
+     "maxpause": 0.12
     }
    ]
   },
@@ -382,7 +309,7 @@
    "parts": [
     {
      "t": "Так Б+обик попал в Эльд+орию.",
-     "emo": "grand, expressive, wonder",
+     "emo": "grand, expressive",
      "acc": [
       "Эльдорию"
      ],
@@ -390,7 +317,8 @@
     },
     {
      "t": "Две луны, летающие остров+а...",
-     "emo": "dreamy wonder, building up"
+     "emo": "dreamy wonder, flowing without pauses",
+     "maxpause": 0.06
     }
    ]
   },
@@ -401,10 +329,7 @@
    "parts": [
     {
      "t": "...и пруд.",
-     "emo": "abrupt comic letdown",
-     "acc": [
-      "пруд"
-     ]
+     "emo": "plain, ordinary matter-of-fact tone"
     }
    ]
   },
@@ -415,27 +340,26 @@
    "parts": [
     {
      "t": "Ты как сюда упал?",
-     "emo": "curious, surprised question"
+     "emo": "curious surprised question, emphasis on the word fell",
+     "acc": [
+      "упал"
+     ]
     }
    ]
   },
   {
    "id": "j2",
    "role": "bobik",
-   "text": "Желе разговаривает. Всё. П*здец. Кукуха поехала.",
+   "text": "Желе разговаривает. Всё, п*здец. Кукуха поехала.",
    "parts": [
     {
-     "t": "Желе разговаривает.",
-     "emo": "shocked, confused",
-     "pause": 0.3
-    },
-    {
-     "t": "Всё... пиздец.",
-     "emo": "resigned, then emphatic swearing in despair",
+     "t": "Желе разговаривает. Всё, пиздец.",
+     "emo": "shocked, then emphatic swearing in despair, no pause before swearing",
      "acc": [
       "пиздец"
      ],
-     "pause": 0.35
+     "pause": 0.15,
+     "maxpause": 0.12
     },
     {
      "t": "Кукуха поехала.",
@@ -521,7 +445,7 @@
   {
    "id": "l1",
    "role": "nar4",
-   "text": "Первая победа! Ну... почти.",
+   "text": "Первая победа! Ну, почти.",
    "parts": [
     {
      "t": "Первая победа!",
@@ -532,8 +456,9 @@
      "pause": 0.6
     },
     {
-     "t": "Ну... почти.",
-     "emo": "dry sarcastic deadpan, mocking"
+     "t": "Ну, почти.",
+     "emo": "plain ordinary tone, no emotion at all",
+     "maxpause": 0.05
     }
    ]
   },
@@ -590,8 +515,8 @@
    "text": "Это что за людишка посмел убить моего гуся?!",
    "parts": [
     {
-     "t": "Это что за л+юдишка посмел убить моего гуся?!",
-     "emo": "furious, roaring with rage, menacing",
+     "t": "Это что за л+юдишка посмел убить моего г+уся?!",
+     "emo": "furious, roaring with rage, menacing, pronounce every syllable to the end",
      "acc": [
       "людишка",
       "гуся"
@@ -655,7 +580,7 @@
    "parts": [
     {
      "t": "Впереди развилка.",
-     "emo": "cheerful"
+     "emo": "cheerful, cute"
     }
    ]
   },
@@ -666,7 +591,7 @@
    "parts": [
     {
      "t": "Эльф+ийки или дракон?",
-     "emo": "excited playful question with rising intonation",
+     "emo": "cheerful, cute, playful question with rising intonation",
      "acc": [
       "дракон"
      ],
@@ -674,7 +599,7 @@
     },
     {
      "t": "Пишите в комм+ентах!",
-     "emo": "energetic enthusiastic exclamation",
+     "emo": "cheerful, cute, enthusiastic",
      "acc": [
       "комментах"
      ]
