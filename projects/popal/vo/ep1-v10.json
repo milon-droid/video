@@ -2,7 +2,7 @@
  "roles": {
   "nar4": {
    "voice": "Deep low bass-baritone Russian male narrator, about 35, cocky sarcastic stand-up comedian roasting the hero, very expressive and dynamic, lively fast pace, strong emphasis on key words.",
-   "ref": "nar4"
+   "ref": "narF"
   },
   "bobik": {
    "voice": "Young Russian man, 27, goofy loser with a high-pitched slightly nasal voice, a bit dumb and whiny, very expressive and emotional, cartoonish.",
@@ -186,7 +186,7 @@
     },
     {
      "t": "Небеса, видимо, ёбнулись.",
-     "emo": "cheeky, punchy, dark humor",
+     "emo": "cheeky dark humor, the last word hit hard and loud with strong emphasis, punchline",
      "acc": [
       "ёбнулись"
      ]
