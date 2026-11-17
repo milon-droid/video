@@ -140,6 +140,7 @@ for l in lines:
         segs.append(g)
         if k < len(ps) - 1:
             s = tmp / f"{l['id']}_{k}.sil.wav"; subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"anullsrc=r=48000:cl=mono", "-t", str(p.get("pause", .3)), str(s)], check=True); segs.append(s)
+    if not segs or res.get((l["id"], len(ps) - 1)) is None: print("ПРОПУСК", l["id"], "— не все куски вышли", flush=True); continue
     lst = tmp / f"{l['id']}.txt"; lst.write_text("".join(f"file '{s.resolve()}'\n" for s in segs))
     dst = out / f"{l['id']}.wav"
     pt = roles[l["role"]].get("pitch", 1.0)  # низкий злодей: тон и тембр ниже (как "pitch" в vo-qwen.py)
