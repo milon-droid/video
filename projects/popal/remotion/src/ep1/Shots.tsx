@@ -2,7 +2,7 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
 import MOUTH from '../data/mouth.json';
-import { VO, SHOT, WORD_AT } from './timeline.mjs';
+import { VO, SHOT, WORD_AT , SLIME_K } from './timeline.mjs';
 import { clamp, lerp, out, io, spr, win, shake, shakeMany, noise, handheld } from '../anim';
 import { C, FONT } from '../theme';
 import { Person, POSES, blendPose, runPose, Pan, Burger, Face } from '../chars/Person';
@@ -261,7 +261,7 @@ export const SlimeShot: React.FC<P> = ({ t, T }) => { const maxT = t > 2.2, panU
     <g clipPath="url(#waist)"><Person x={540} y={1800} s={1.35} t={T} hold="pan" pose={{ armL: [-.7, .6], armR: [lerp(.7, 1.25, panUp), lerp(-.6, 1.45, panUp)] }} expr={maxT ? 'deadpan' : 'shock'} mouth={mouth('max', T)} eye={[0, -1]} sweat={.5} /></g>
     <ellipse cx={540} cy={1470} rx={330} ry={46} fill="#bff3ff" opacity={.5} />
     <g transform={`translate(${170 + Math.sin(t * .6) * 30},1300)`}><clipPath id="gswim"><rect x={-200} y={-400} width={400} height={400} /></clipPath><g clipPath="url(#gswim)"><Goose x={0} y={60} s={.55} t={T} evil={0} flip /></g></g>
-    <Slime x={540} y={1800 - 1.35 * 600 - 50} s={1.2} t={T} mouth={mouth('slime', T)} squish={t < .4 ? 1 - t / .4 : 0} look={[0, .8]} />
+    <Slime x={540} y={1800 - 1.35 * 742} s={1.35 * SLIME_K} t={T} mouth={mouth('slime', T)} squish={t < .4 ? 1 - t / .4 : 0} look={[0, .8]} />
     {Array.from({ length: 4 }, (_, i) => <ellipse key={i} cx={430 + i * 70} cy={1000 + ((t * 300 + i * 90) % 400)} rx={7} ry={11} fill="#bff3ff" opacity={.8} />)}
   </Cam></Frame>); };
 
@@ -294,7 +294,7 @@ export const Chase: React.FC<P> = ({ t, T }) => { const V = 1300, ph = t * V / 3
   const rp = runPose(ph), pose = { ...rp, armR: [.75 + Math.sin(ph) * .2, 1.9] as [number, number], legL: [lerp(rp.legL[0], .9, hop), lerp(rp.legL[1], -2.0, hop)] as [number, number], legR: [lerp(rp.legR[0], .5, hop), lerp(rp.legR[1], -1.9, hop)] as [number, number], lean: (rp.lean ?? 0) + duck * .32 };
   const fg = (t * 2600) % 2400;
   return (<><Frame bg="#9c7ad8"><Cam z={1.05} rot={-3}><Strip t={T} speed={1300} />
-    <Person x={640 + duck * 70} y={1760 - Math.abs(Math.cos(ph)) * 26 - hop * 190} s={1.05} t={T} hold="pan" pose={pose} expr="scared" mouth={.45 + dodge * .35} sweat={1} eye={[-.9, .3]} headTilt={-6 - dodge * 8} hat={<Slime x={0} y={0} s={.62} t={T} mouth={mouth('slime', T)} look={[-.9, .2]} />} />
+    <Person x={640 + duck * 70} y={1760 - Math.abs(Math.cos(ph)) * 26 - hop * 190} s={1.05} t={T} hold="pan" pose={pose} expr="scared" mouth={.45 + dodge * .35} sweat={1} eye={[-.9, .3]} headTilt={-6 - dodge * 8} hat={<Slime x={0} y={0} s={SLIME_K} t={T} mouth={mouth('slime', T)} look={[-.9, .2]} />} />
     <Goose x={250 + Math.sin(t * 6) * 20 + dodge * 60} y={1780} s={1.1} t={T} state="attack" neck={Math.max(bell(m1 - .06, .14), bell(m2 - .06, .14))} honk={.4 + .4 * Math.sin(t * 9)} flap={.5 + .5 * Math.sin(t * 14)} />
     {[m1, m2].map((m, i) => { const k = (t - m) / .35; return k > 0 && k < 1 ? <g key={i} opacity={1 - k}>{[0, 1, 2, 3, 4].map(j => { const a = -1.2 + j * .6; return <path key={j} d={`M${470 + Math.cos(a) * (30 + k * 30)},${(i ? 1500 : 1640) + Math.sin(a) * (30 + k * 30)} l${Math.cos(a) * 36},${Math.sin(a) * 36}`} stroke="#fff" strokeWidth={9} strokeLinecap="round" />; })}</g> : null; })}
     {Array.from({ length: 6 }, (_, i) => <path key={i} d={`M${1200 - fg + i * 420},1920 Q${1180 - fg + i * 420},1500 ${1230 - fg + i * 420},1300`} stroke="#1f4a2a" strokeWidth={44} fill="none" strokeLinecap="round" />)}
@@ -309,7 +309,7 @@ export const Corner: React.FC<P> = ({ t, T }) => { const D = dur('corner'), rel 
   return (<Frame bg="#3a2a4a"><Cam z={z} fx={760} fy={1100} dy={-300}><Pond t={T} dark={.35} />
     <rect x={820} y={300} width={200} height={1500} fill="#5a3a2a" /><rect x={820} y={300} width={50} height={1500} fill="#6e4a36" />
     <Goose x={180 + clamp(t / D) * 70} y={1800} s={1.5} t={T} state="attack" honk={.3 + .3 * Math.sin(t * 8)} neck={.3 + .25 * Math.max(0, Math.sin(t * 5))} />
-    <Person x={760} y={1800} s={1.2} t={T} hold={gone ? null : 'pan'} panGlow={up} pose={pose} expr="scared" mouth={up > .5 ? mouth('max', T) * .5 : Math.max(.5, mouth('max', T))} eye={[-.9, .1]} sweat={1} headTilt={up > .5 ? -4 : 5} hat={<Slime x={0} y={0} s={.62} t={T} mouth={mouth('slime', T)} look={[-.9, .1]} />} />
+    <Person x={760} y={1800} s={1.2} t={T} hold={gone ? null : 'pan'} panGlow={up} pose={pose} expr="scared" mouth={up > .5 ? mouth('max', T) * .5 : Math.max(.5, mouth('max', T))} eye={[-.9, .1]} sweat={1} headTilt={up > .5 ? -4 : 5} hat={<Slime x={0} y={0} s={SLIME_K} t={T} mouth={mouth('slime', T)} look={[-.9, .1]} />} />
     <Glow x={700} y={900} r={400} c="#ffd23f" o={up * .5 * (1 - fk)} id="cornG" />
     {gone && <g>{[0, 1, 2, 3, 4, 5].map(i => { const q = clamp(fk - i * .05); return <circle key={i} cx={lerp(540, -120, q)} cy={lerp(1230, 1000, q) - Math.sin(q * Math.PI) * 60} r={56 - i * 7} fill="#ffd23f" opacity={.4 - i * .06} />; })}
       <g transform={`translate(${lerp(540, -120, fk)},${lerp(1230, 1000, fk) - Math.sin(fk * Math.PI) * 60}) rotate(${-90 - fk * 700}) scale(1.05) translate(0,120)`}><Pan glow={1} t={T} /></g></g>}
@@ -343,14 +343,14 @@ export const LevelUp: React.FC<P> = ({ t, T }) => { const k = out(win(t, .3, 1.0
     {(() => { const q = clamp(t / dur('levelup')), a = lerp(-2.0, -.35, q), cx = 620 + Math.cos(a) * 520, cy = 1500 + Math.sin(a) * 1500; /* бумеранг: дуга над головой, на следующем плане прилетит обратно */
       return <g>{[1, 2, 3, 4, 5].map(i => { const aa = a - i * .05; return <circle key={i} cx={620 + Math.cos(aa) * 520} cy={1500 + Math.sin(aa) * 1500} r={34 - i * 5} fill="#ffd23f" opacity={.35 - i * .06} />; })}
         <g transform={`translate(${cx},${cy}) rotate(${t * 1300}) scale(.6) translate(0,120)`}><Pan glow={.8} t={T} /></g></g>; })()}
-    <Person x={600} y={1820} s={1.35} t={T} pose={blendPose(POSES.stand, POSES.heroic, spr(t, .2, { damping: 9 }))} expr="cool" eye={[.2, -.2]} hat={<Slime x={0} y={0} s={.62} t={T} mouth={mouth('slime', T)} look={[-.3 + clamp(t / dur('levelup')) * .9, -1]} />} />
+    <Person x={600} y={1820} s={1.35} t={T} pose={blendPose(POSES.stand, POSES.heroic, spr(t, .2, { damping: 9 }))} expr="cool" eye={[.2, -.2]} hat={<Slime x={0} y={0} s={SLIME_K} t={T} mouth={mouth('slime', T)} look={[-.3 + clamp(t / dur('levelup')) * .9, -1]} />} />
   </Cam></Frame><SysWindow t={t} t0={.35} title="ПЕРВАЯ ПОБЕДА" sub="+1 СИЛА · +120 АУРЫ" y={1420} col={C.gold} /></>); };
 
 // ───────────────────────── 25. БУМЕРАНГ В ПАХ ─────────────────────────
 export const Groin: React.FC<P> = ({ t, T }) => { const hit = .55, s = shake(t, hit, 26, .4), back = clamp(t / hit), aura = clamp(1 - (t - hit) / .3);
   return (<><Frame bg="#3a2a4a"><Cam z={lerp(1.0, 1.15, out(win(t, hit, hit + .2)))} fy={1300} dx={s[0]} dy={s[1]}><Pond t={T} />
     <AuraFlame t={T} x={560} y={1820} k={aura} />
-    <Person x={560} y={1820} s={1.35} t={T} pose={t < hit ? POSES.heroic : POSES.cover} expr={t < hit ? 'cool' : 'pain'} mouth={mouth('max', T)} squash={t > hit ? .3 * Math.exp(-(t - hit) * 4) : 0} sweat={t > hit ? 1 : 0} hat={<Slime x={0} y={0} s={.62} t={T} mouth={mouth('slime', T)} look={[0, .6]} />} />
+    <Person x={560} y={1820} s={1.35} t={T} pose={t < hit ? POSES.heroic : POSES.cover} expr={t < hit ? 'cool' : 'pain'} mouth={mouth('max', T)} squash={t > hit ? .3 * Math.exp(-(t - hit) * 4) : 0} sweat={t > hit ? 1 : 0} hat={<Slime x={0} y={0} s={SLIME_K} t={T} mouth={mouth('slime', T)} look={[0, .6]} />} />
     {t < hit ? <g>{[1, 2, 3, 4].map(i => { const q = clamp(back - i * .06); return <circle key={i} cx={lerp(1250, 560, q)} cy={lerp(620, 1540, q * q)} r={40 - i * 7} fill="#ffd23f" opacity={.35 - i * .07} />; })}
       <g transform={`translate(${lerp(1250, 560, back)},${lerp(620, 1540, back * back)}) rotate(${t * 1500}) scale(.75) translate(0,120)`}><Pan glow={.5} t={T} /></g></g>
       : (() => { const q = t - hit, dx = Math.min(q, .9) * 190, gy = Math.min(1830, 1540 - 260 * q + 1500 * q * q), land = gy >= 1830; /* отскок от героя и на землю */

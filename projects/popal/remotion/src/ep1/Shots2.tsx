@@ -2,7 +2,7 @@
 // гусь из пруда, земли демонов, Король-бык, развилка с чиби-Желе. Остальные планы — в Shots.tsx.
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { SHOT, HIT_AT, SLOT_H2, SLOT_STOP, NAH_T } from './timeline.mjs';
+import { SHOT, HIT_AT, SLOT_H2, SLOT_STOP, NAH_T , SLIME_K } from './timeline.mjs';
 import { clamp, lerp, out, io, spr, win, shake, noise, handheld } from '../anim';
 import { C, FONT } from '../theme';
 import { Person, POSES, blendPose, Pan, Doner, Cola } from '../chars/Person';
@@ -169,7 +169,7 @@ export const GooseUp: React.FC<P> = ({ t, T }) => { const evil = out(win(t, 1.2,
     {evil > .1 && Array.from({ length: 3 }, (_, i) => { const k = (t * 1.2 + i * .33) % 1; return <circle key={i} cx={780 + i * 30} cy={1200 - k * 220} r={20 + k * 30} fill="#e0d0d8" opacity={.5 * (1 - k) * evil} />; })}
     <clipPath id="maxWater2"><rect x={0} y={0} width={1080} height={1470} /></clipPath>
     <g clipPath="url(#maxWater2)"><Person x={300} y={1800} s={1.2} t={T} pose={rise > .3 ? POSES.shrug : { armL: [-.5, .5], armR: [.5, -.5] }} expr={evil > .3 ? 'scared' : 'deadpan'} eye={[.9, -.2]} sweat={evil} /></g>
-    <Slime x={300} y={1800 - 1.2 * 600 - 40} s={.9} t={T} look={[.9, -.2]} />
+    <Slime x={300} y={1800 - 1.2 * 742} s={1.2 * SLIME_K} t={T} look={[.9, -.2]} />
   </Cam></Frame>{t > 3.0 && <Onomato t={t} t0={3.0} x={520} y={560} text="ГА-А-А!" col={C.red} size={125} rot={-6} dur={1.2} />}</>); };
 
 // ───────────────────────── 20. БЕСТИАРИЙ: ВРАЖЕСКИЙ МОБ ─────────────────────────
