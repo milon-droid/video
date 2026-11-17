@@ -38,20 +38,20 @@
    "parts": [
     {
      "t": "Это Б+обик.",
-     "emo": "punchy, fast, mocking introduction",
+     "emo": "punchy mocking introduction",
      "acc": [
       "Бобик"
      ],
-     "pause": 0.1
+     "pause": 0.3
     },
     {
-     "t": "Ч+ерез минуту он умрёт. Из-за шав+ухи!",
-     "emo": "fast and dynamic, one flowing phrase, shawarma stressed by tone as an absurd punchline",
+     "t": "Ч+ерез минуту он умрёт изз+а шав+ухи!",
+     "emo": "dynamic, one continuous phrase without any pause, shawarma stressed by tone",
      "acc": [
       "умрёт",
       "шавухи"
      ],
-     "maxpause": 0.12
+     "maxpause": 0.05
     }
    ]
   },
@@ -75,13 +75,19 @@
    "text": "А навстречу летел курьер. С его же шавухой.",
    "parts": [
     {
-     "t": "А навстречу летел курьер. С его же шав+ухой.",
-     "emo": "fast dynamic storytelling, building to the punchline, no long pauses",
+     "t": "А навстречу летел курьер.",
+     "emo": "dynamic storytelling",
      "acc": [
-      "курьер",
-      "шавухой"
+      "курьер"
      ],
-     "maxpause": 0.15
+     "pause": 0.25
+    },
+    {
+     "t": "С его же шав+ухой.",
+     "emo": "punchline, emphasis on shawarma",
+     "acc": [
+      "шавухой"
+     ]
     }
    ]
   },
@@ -309,15 +315,12 @@
    "parts": [
     {
      "t": "Так Б+обик попал в Эльд+орию.",
-     "emo": "grand, expressive",
-     "acc": [
-      "Эльдорию"
-     ],
+     "emo": "plain simple narration tone, not dramatic",
      "pause": 0.1
     },
     {
      "t": "Две луны, летающие остров+а...",
-     "emo": "dreamy wonder, flowing without pauses",
+     "emo": "plain simple narration tone, calm, no drama, flowing without pauses",
      "maxpause": 0.06
     }
    ]
@@ -329,7 +332,7 @@
    "parts": [
     {
      "t": "...и пруд.",
-     "emo": "plain, ordinary matter-of-fact tone"
+     "emo": "plain ordinary short tone, not drawn out"
     }
    ]
   },
@@ -520,7 +523,9 @@
      "acc": [
       "людишка",
       "гуся"
-     ]
+     ],
+     "plain_takes": 6,
+     "focus_w": 8
     }
    ]
   },

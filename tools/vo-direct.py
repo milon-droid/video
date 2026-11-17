@@ -72,6 +72,9 @@ for lid, k, p, r in parts:
         f = tmp / f"{lid}_{k}_cl{j}.wav"
         if f.exists(): continue
         w, sr = gen_clone(rus, mark(p["t"]), p.get("emo", ""), items[r]); sf.write(f, w, sr)
+    for j in range(p.get("plain_takes", 0)):  # дубли без инструкции: эмоция иногда сбивает ударение
+        f = tmp / f"{lid}_{k}_pl{j}.wav"
+        if not f.exists(): w, sr = gen_clone(rus, mark(p["t"]), "", items[r]); sf.write(f, w, sr)
     print("clone", lid, k, flush=True)
 # 3) оценка дублей
 import librosa
@@ -91,19 +94,22 @@ def clean(f, mp=None):
 def evaluate(f, p, r):
     g = clean(f, p.get("maxpause")); y48, _ = sf.read(g); y = librosa.resample(np.asarray(y48, np.float32), orig_sr=48000, target_sr=16000)
     if len(y) < 1600: return None
-    marked = mark(p["t"]); bad, badw, good = 0.0, [], []
+    marked = mark(p["t"]); bad, badw, good, foc = 0.0, [], [], 0.0
     forced = {plain(w).lower() for w in re.findall(r"[А-Яа-яЁё+]+", p["t"]) if "+" in w}  # ударение задано вручную — ошибка тут вдвое хуже
     for w, rr in zip(re.findall(r"[А-Яа-яЁё́+]+(?:-[А-Яа-яЁё́+]+)*", marked), judge(y, 16000, marked)):
         e = marked_index(w)
         if e is None or rr["best"] is None or len(rr["vowel_scores"] or []) < 2: continue
-        if rr["best"] != e: bad += rr["margin"] * (2 if w.replace("́", "").lower() in forced else 1); badw.append(w)
-        else: good.append(rr["margin"])
+        isf = w.replace("́", "").lower() in forced
+        if rr["best"] != e: bad += rr["margin"] * (2 if isf else 1); badw.append(w); foc -= rr["margin"] if isf else 0
+        else: good.append(rr["margin"]); foc += rr["margin"] if isf else 0
     good = float(np.mean(good)) if good else 0.0
     raw, rs = sf.read(f); raw = np.asarray(raw, float).ravel(); tail = raw[-int(rs * .04):]  # модель оборвала последний слог: в конце файла ещё громко
     cut = 20 * np.log10((np.sqrt((tail ** 2).mean()) + 1e-9) / (np.abs(raw).max() + 1e-9)) > -30
     words = [w for s in wm.transcribe(y, language="ru", word_timestamps=True)[0] for w in s.words]
     txt = " ".join(w.word for w in words); sim = difflib.SequenceMatcher(None, norm(txt), norm(plain(p["t"]))).ratio()
-    if re.search(r"\d", txt): sim = max(sim, difflib.SequenceMatcher(None, re.sub(r"\d", "", norm(txt)), re.sub(r"\d", "", norm(plain(p["t"])))).ratio(), .85)  # Whisper пишет числа цифрами
+    if re.search(r"\d", txt):  # Whisper пишет числа цифрами: сравнить без чисел с обеих сторон
+        NUM = r"\b(ноль|один|одна|два|две|три|четыре|пять|шесть|семь|восемь|девять|десять|двадцать|тридцать|сорок|пятьдесят|шестьдесят|семьдесят|восемьдесят|девяносто|сто|ста)\b"
+        sim = difflib.SequenceMatcher(None, re.sub(r"\d", "", norm(txt)), norm(re.sub(NUM, "", plain(p["t"]).lower()))).ratio()
     spk = float(np.dot(xvec(g), refvec[r]))
     f0 = librosa.pyin(y, fmin=60, fmax=500, sr=16000, frame_length=1024, hop_length=160)[0]; v = f0[~np.isnan(f0)]
     rng = float(np.percentile(12 * np.log2(v), 95) - np.percentile(12 * np.log2(v), 5)) if len(v) > 10 else 0
@@ -115,7 +121,7 @@ def evaluate(f, p, r):
         de = 20 * np.log10((rms[fr].mean() + 1e-9) / (rms.mean() + 1e-9)); wv = f0[fr]; wv = wv[~np.isnan(wv)]
         dp = 12 * np.log2(np.percentile(wv, 85) / med) if len(wv) > 1 else 0; acc += min(de, 6) + min(dp, 6)
     if p.get("acc"): acc /= len(p["acc"])
-    return dict(f=g, bad=bad, badw=badw, good=good, cut=cut, sim=sim, spk=spk, rng=rng, acc=acc, spans=spans, dur=len(y) / 16000, txt=txt)
+    return dict(f=g, bad=bad, badw=badw, good=good, cut=cut, foc=foc, sim=sim, spk=spk, rng=rng, acc=acc, spans=spans, dur=len(y) / 16000, txt=txt)
 res = {}
 for lid, k, p, r in parts:
     cands = [c for c in (evaluate(f, p, r) for f in sorted(tmp.glob(f"{lid}_{k}_*.wav")) if not f.name.endswith(".c.wav")) if c]
@@ -127,9 +133,9 @@ for lid, k, p, r in parts:
     top = max(c["spk"] for c in cands)
     ok = [c for c in cands if c["bad"] < .3 and c["sim"] >= .8 and c["spk"] >= max(a.spk_min, top - .08)] or \
          [c for c in cands if c["sim"] >= .7 and c["spk"] >= top - .12] or cands
-    best = max(ok, key=lambda c: c["rng"] * .3 + c["acc"] - 5 * c["bad"] + 20 * (c["sim"] - 1) + 3 * c["good"] - 6 * c["cut"])
+    best = max(ok, key=lambda c: c["rng"] * .3 + c["acc"] - 5 * c["bad"] + 20 * (c["sim"] - 1) + 3 * c["good"] - 6 * c["cut"] + p.get("focus_w", 0) * c["foc"])
     for c in cands:
-        rep.write(f"{lid}.{k} {'★' if c is best else ' '} {c['f'].name:18s} удар:{c['bad']:.2f}/{c['good']:.2f}{' ОБРЫВ' if c['cut'] else ''}{'(' + ','.join(c['badw']) + ')' if c['badw'] else ''} "
+        rep.write(f"{lid}.{k} {'★' if c is best else ' '} {c['f'].name:18s} удар:{c['bad']:.2f}/{c['good']:.2f}/{c['foc']:+.2f}{' ОБРЫВ' if c['cut'] else ''}{'(' + ','.join(c['badw']) + ')' if c['badw'] else ''} "
                   f"текст:{c['sim']:.2f} тембр:{c['spk']:.2f} размах:{c['rng']:.1f} акцент:{c['acc']:+.1f} {c['dur']:.1f}с | {c['txt']}\n")
     res[(lid, k)] = best; print(lid, k, "→", best["f"].name, f"акцент {best['acc']:+.1f} размах {best['rng']:.1f} тембр {best['spk']:.2f}", flush=True)
 rep.close()
