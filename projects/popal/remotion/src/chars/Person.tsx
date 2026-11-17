@@ -9,7 +9,7 @@ export type Limb = [number, number];
 export type Pose = { armL: Limb; armR: Limb; legL: Limb; legR: Limb; lean?: number; hip?: number };
 export type Look = 'max' | 'courier' | 'lira' | 'elf2' | 'elf3' | 'elf4';
 export type PersonProps = { x: number; y: number; s?: number; t: number; look?: Look; pose?: Partial<Pose>; expr?: Expr; mouth?: number; eye?: [number, number];
-  headTilt?: number; rot?: number; hold?: 'pan' | 'phone' | 'burger' | 'cola' | 'doner' | 'bow' | null; bowBack?: boolean; hang?: boolean; slap?: number; kisses?: number; draw?: number; panGlow?: number; squash?: number; lid?: number; noBlink?: boolean; sweat?: number; blush?: number; flip?: boolean; shadow?: boolean; noArrow?: boolean };
+  headTilt?: number; rot?: number; hold?: 'pan' | 'phone' | 'burger' | 'cola' | 'doner' | 'bow' | null; bowBack?: boolean; hang?: boolean; slap?: number; kisses?: number; draw?: number; panGlow?: number; squash?: number; lid?: number; noBlink?: boolean; sweat?: number; blush?: number; flip?: boolean; shadow?: boolean; noArrow?: boolean; hat?: React.ReactNode /* что сидит на голове (Желе): начало — макушка */ };
 
 const pt = (x: number, y: number, a: number, l: number): [number, number] => [x + Math.sin(a) * l, y + Math.cos(a) * l];
 // трапеция-звено с круглыми концами (рукав, штанина)
@@ -205,6 +205,7 @@ export const Person: React.FC<PersonProps> = (p) => {
           <path d="M-70,58 C-56,86 -30,98 0,100 C30,98 56,86 70,58" stroke="#8a6a5a" strokeWidth={10} fill="none" opacity={.13} strokeDasharray="2 7" strokeLinecap="round" />
           <Face t={t} expr={p.expr ?? 'neutral'} mouth={p.mouth} eye={p.eye} lid={p.lid} noBlink={p.noBlink} L={L} seed={Math.round(p.x)} sweat={p.sweat} blush={p.blush} />
           <Hair L={L} t={t} />
+          {p.hat && <g transform="translate(0,-132)">{p.hat}</g>}
           {(p.slap ?? 0) > 0 && <g opacity={p.slap} transform={`translate(${p.flip ? 58 : -58},40) scale(${p.flip ? -1 : 1},1) rotate(-14)`}><ellipse cx={0} cy={0} rx={24} ry={28} fill="#ff4a5a" opacity={.55} />{[-18, -6, 6, 18].map((fx, i) => <rect key={i} x={fx - 5} y={-62 + Math.abs(fx) * .6} width={11} height={44} rx={5} fill="#ff4a5a" opacity={.5} />)}</g>}
           {(p.kisses ?? 0) > 0 && [[60, 34, 12], [-62, 20, -18], [20, -70, 8], [-30, 84, -6], [84, -20, 20]].slice(0, p.kisses).map(([kx, ky, kr], i) => <g key={i} transform={`translate(${kx},${ky}) rotate(${kr})`}><path d="M-16,0 Q-8,-10 0,-3 Q8,-10 16,0 Q8,12 0,10 Q-8,12 -16,0 Z" fill="#ff3a8a" opacity={.85} /><path d="M-14,0 Q0,4 14,0" stroke="#b0105a" strokeWidth={2} /></g>)}
         </> : <>

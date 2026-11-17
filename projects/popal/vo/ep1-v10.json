@@ -1,0 +1,729 @@
+{
+ "roles": {
+  "nar4": {
+   "voice": "Deep low bass-baritone Russian male narrator, about 35, cocky sarcastic stand-up comedian roasting the hero, very expressive and dynamic, lively fast pace, strong emphasis on key words.",
+   "ref": "nar4"
+  },
+  "bobik": {
+   "voice": "Young Russian man, 27, goofy loser with a high-pitched slightly nasal voice, a bit dumb and whiny, very expressive and emotional, cartoonish.",
+   "ref": "bobik"
+  },
+  "courier": {
+   "voice": "Calm neutral male voice, overly polite delivery guy, slightly mechanical.",
+   "ref": "courier"
+  },
+  "lumina": {
+   "voice": "Young woman, bored sarcastic goddess at an office desk, sultry low voice, lazy drawl, deadpan humor.",
+   "ref": "lumina"
+  },
+  "slime": {
+   "voice": "Cute high-pitched childlike voice, cheerful cartoon mascot, bouncy and expressive.",
+   "ref": "slime"
+  },
+  "king": {
+   "voice": "Very deep, menacing, gravelly male voice of a demon king, powerful and terrifying.",
+   "ref": "king",
+   "pitch": 0.85
+  },
+  "succ": {
+   "voice": "Seductive sultry female voice, demon succubus, slow purring, mesmerizing and breathy.",
+   "ref": "succ"
+  }
+ },
+ "lines": [
+  {
+   "id": "a1",
+   "role": "nar4",
+   "text": "Это Бобик. Через минуту он умрёт. Из-за шавухи.",
+   "parts": [
+    {
+     "t": "Это Б+обик.",
+     "emo": "energetic, punchy, mocking introduction",
+     "acc": [
+      "Бобик"
+     ],
+     "pause": 0.2
+    },
+    {
+     "t": "Ч+ерез минуту он умрёт.",
+     "emo": "dramatic, ominous, fast and punchy",
+     "acc": [
+      "умрёт"
+     ],
+     "pause": 0.3
+    },
+    {
+     "t": "Из-за шав+ухи!",
+     "emo": "absurd punchline, mocking amazement, strong emphasis",
+     "acc": [
+      "шавухи"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "a2",
+   "role": "nar4",
+   "text": "Двадцать семь лет. Девственник.",
+   "parts": [
+    {
+     "t": "Двадцать семь лет.",
+     "emo": "pitying, mocking sigh about a loser",
+     "pause": 0.3
+    },
+    {
+     "t": "Девственник.",
+     "emo": "contemptuous pity, mocking the loser, drawn out",
+     "acc": [
+      "девственник"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "a3",
+   "role": "bobik",
+   "text": "Колы нет. Всухомятку я её есть не буду.",
+   "parts": [
+    {
+     "t": "К+олы нет. Всухомятку я её есть не буду.",
+     "emo": "whiny, annoyed, sulking",
+     "acc": [
+      "всухомятку"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "b1",
+   "role": "nar4",
+   "text": "А навстречу летел курьер. На самокате. С его же шавухой.",
+   "parts": [
+    {
+     "t": "А навстречу летел курьер. На самокате. С его же шав+ухой.",
+     "emo": "fast excited storytelling, building tension, punchy emphasis, few pauses",
+     "acc": [
+      "курьер",
+      "самокате",
+      "шавухой"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "c1",
+   "role": "courier",
+   "text": "Ваш заказ прибыл.",
+   "parts": [
+    {
+     "t": "Ваш заказ пр+ибыл.",
+     "emo": "polite, flat, indifferent"
+    }
+   ]
+  },
+  {
+   "id": "c2",
+   "role": "courier",
+   "text": "Избранный доставлен.",
+   "parts": [
+    {
+     "t": "Избранный доставлен.",
+     "emo": "calm, mysterious, slightly mechanical"
+    }
+   ]
+  },
+  {
+   "id": "d1",
+   "role": "nar4",
+   "text": "Так Бобик и сдох. Девственником.",
+   "parts": [
+    {
+     "t": "Так Б+обик и сдох.",
+     "emo": "mocking, dark humor",
+     "acc": [
+      "сдох"
+     ],
+     "pause": 0.35
+    },
+    {
+     "t": "Девственником.",
+     "emo": "sarcastic pity, savoring the punchline, strong emphasis",
+     "acc": [
+      "девственником"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "s1",
+   "role": "bobik",
+   "text": "Стоп. Я что, умер?! А шавуха?!",
+   "parts": [
+    {
+     "t": "Стоп. Я что, умер?!",
+     "emo": "terrified, panicking, voice shaking",
+     "acc": [
+      "умер"
+     ],
+     "pause": 0.4
+    },
+    {
+     "t": "А шав+уха?!",
+     "emo": "desperate hysterical scream, more upset about the food than about death",
+     "acc": [
+      "шавуха"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "e1",
+   "role": "nar4",
+   "text": "На том свете — очередь. Но Бобик — избранный. Небеса, видимо, ё*нулись.",
+   "parts": [
+    {
+     "t": "На том свете — очередь.",
+     "emo": "lively, sarcastic, fast",
+     "acc": [
+      "очередь"
+     ],
+     "pause": 0.2
+    },
+    {
+     "t": "Но Б+обик — избранный.",
+     "emo": "mock grandiose, big emphasis on chosen one",
+     "acc": [
+      "избранный"
+     ],
+     "pause": 0.3
+    },
+    {
+     "t": "Небеса, видимо, ёбнулись.",
+     "emo": "cheeky, punchy, dark humor",
+     "acc": [
+      "ёбнулись"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "e2",
+   "role": "bobik",
+   "text": "О... быстро!",
+   "parts": [
+    {
+     "t": "О...",
+     "emo": "surprised gasp",
+     "pause": 0.35
+    },
+    {
+     "t": "Быстро!",
+     "emo": "pleasantly surprised, delighted",
+     "acc": [
+      "быстро"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "f1",
+   "role": "lumina",
+   "text": "Перерождение. Мир — Эльдория. Вопросы?",
+   "parts": [
+    {
+     "t": "Перерождение.",
+     "emo": "bored, routine",
+     "pause": 0.2
+    },
+    {
+     "t": "Мир — Эльд+ория.",
+     "emo": "bored but clear",
+     "acc": [
+      "Эльдория"
+     ],
+     "pause": 0.25
+    },
+    {
+     "t": "Вопросы?",
+     "emo": "lazy but clearly questioning, natural rising intonation",
+     "acc": [
+      "вопросы"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "f2",
+   "role": "bobik",
+   "text": "А можно мир, где кошки-девушки?",
+   "parts": [
+    {
+     "t": "А можно мир, где кошки-девушки?",
+     "emo": "excited, aroused, eager, hopeful question",
+     "acc": [
+      "кошки"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "f3",
+   "role": "lumina",
+   "text": "Кошки — по подписке. Девственникам — двойной тариф.",
+   "parts": [
+    {
+     "t": "Кошки — по подписке.",
+     "emo": "sarcastic, smug",
+     "acc": [
+      "подписке"
+     ],
+     "pause": 0.3
+    },
+    {
+     "t": "Девственникам — двойной тариф.",
+     "emo": "mocking, teasing, savoring it",
+     "acc": [
+      "девственникам"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "g1",
+   "role": "nar4",
+   "text": "Сила — один. Здоровье — один. Аура — ноль.",
+   "parts": [
+    {
+     "t": "Сила — один. Здоровье — один. Аура — ноль.",
+     "emo": "fast, mocking, punchline on zero aura",
+     "acc": [
+      "аура",
+      "ноль"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "h1",
+   "role": "lumina",
+   "text": "Теперь дар. Крути.",
+   "parts": [
+    {
+     "t": "Теперь — дар!",
+     "emo": "energetic, teasing",
+     "acc": [
+      "дар"
+     ],
+     "pause": 0.25
+    },
+    {
+     "t": "Крути.",
+     "emo": "commanding, teasing"
+    }
+   ]
+  },
+  {
+   "id": "h2",
+   "role": "nar4",
+   "text": "Меч выпадает раз из ста. Сковородка — девяносто семь раз из ста.",
+   "parts": [
+    {
+     "t": "Меч выпадает раз из ста. Сковородка — девяносто семь раз из ста.",
+     "emo": "lively, mocking, emphasis on ninety seven",
+     "acc": [
+      "девяносто"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "h3",
+   "role": "lumina",
+   "text": "Сковорода Судьбы. Не промахивается.",
+   "parts": [
+    {
+     "t": "Сковорода Судьбы.",
+     "emo": "solemn grand announcement",
+     "acc": [
+      "сковорода",
+      "судьбы"
+     ],
+     "pause": 0.6
+    },
+    {
+     "t": "Не промахивается.",
+     "emo": "dry, deadpan"
+    }
+   ]
+  },
+  {
+   "id": "h4",
+   "role": "bobik",
+   "text": "Не-не-не, это кринж. Додеп! Дай ещё прокрутку!",
+   "parts": [
+    {
+     "t": "Не-не-не, это кринж!",
+     "emo": "outraged, indignant",
+     "acc": [
+      "кринж"
+     ],
+     "pause": 0.2
+    },
+    {
+     "t": "Дод+еп!",
+     "emo": "excited greedy gambling addict wanting more, loud, raised voice",
+     "acc": [
+      "додеп"
+     ],
+     "pause": 0.15
+    },
+    {
+     "t": "Дай ещё прокрутку!",
+     "emo": "eager, begging excitedly",
+     "acc": [
+      "ещё"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "h5",
+   "role": "lumina",
+   "text": "Пошёл на*уй.",
+   "parts": [
+    {
+     "t": "Пошёл нахуй.",
+     "emo": "fed up, harsh, strong emphasis",
+     "acc": [
+      "нахуй"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "i1",
+   "role": "nar4",
+   "text": "Так Бобик попал в Эльдорию. Две луны, летающие острова...",
+   "parts": [
+    {
+     "t": "Так Б+обик попал в Эльд+орию.",
+     "emo": "grand, expressive, wonder",
+     "acc": [
+      "Эльдорию"
+     ],
+     "pause": 0.25
+    },
+    {
+     "t": "Две луны, летающие остров+а...",
+     "emo": "dreamy wonder, building up"
+    }
+   ]
+  },
+  {
+   "id": "i2",
+   "role": "nar4",
+   "text": "...и пруд.",
+   "parts": [
+    {
+     "t": "...и пруд.",
+     "emo": "abrupt comic letdown",
+     "acc": [
+      "пруд"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "j1",
+   "role": "slime",
+   "text": "Ты как сюда упал?",
+   "parts": [
+    {
+     "t": "Ты как сюда упал?",
+     "emo": "curious, surprised question"
+    }
+   ]
+  },
+  {
+   "id": "j2",
+   "role": "bobik",
+   "text": "Желе разговаривает. Всё. П*здец. Кукуха поехала.",
+   "parts": [
+    {
+     "t": "Желе разговаривает.",
+     "emo": "shocked, confused",
+     "pause": 0.3
+    },
+    {
+     "t": "Всё.",
+     "emo": "resigned",
+     "pause": 0.35
+    },
+    {
+     "t": "Пиздец.",
+     "emo": "emphatic swearing, despair",
+     "acc": [
+      "пиздец"
+     ],
+     "pause": 0.3
+    },
+    {
+     "t": "Кукуха поехала.",
+     "emo": "hysterical, half laughing in despair",
+     "acc": [
+      "кукуха"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k1",
+   "role": "nar4",
+   "text": "А в пруду жил гусь.",
+   "parts": [
+    {
+     "t": "А в пруду жил гусь.",
+     "emo": "ominous, dramatic, emphasis on goose",
+     "acc": [
+      "гусь"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k2",
+   "role": "slime",
+   "text": "Это не простой гусь. Это вражеский моб!",
+   "parts": [
+    {
+     "t": "Это не простой гусь. Это вражеский моб!",
+     "emo": "alarmed, helpful guide warning",
+     "acc": [
+      "вражеский"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k3",
+   "role": "nar4",
+   "text": "Адский гусь. Разведчик Короля демонов. Один щипок — и конец.",
+   "parts": [
+    {
+     "t": "Адский гусь.",
+     "emo": "dramatic, ominous",
+     "acc": [
+      "адский"
+     ],
+     "pause": 0.35
+    },
+    {
+     "t": "Разведчик Короля демонов.",
+     "emo": "menacing emphasis",
+     "acc": [
+      "короля"
+     ],
+     "pause": 0.35
+    },
+    {
+     "t": "Один щипок —",
+     "emo": "tense, slow",
+     "pause": 0.4
+    },
+    {
+     "t": "и конец.",
+     "emo": "dark grim punchline",
+     "acc": [
+      "конец"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "k4",
+   "role": "slime",
+   "text": "Используй сковородку!",
+   "parts": [
+    {
+     "t": "Используй сковородку!",
+     "emo": "urgent shout, helpful",
+     "acc": [
+      "сковородку"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "l1",
+   "role": "nar4",
+   "text": "Первая победа! Ну... почти.",
+   "parts": [
+    {
+     "t": "Первая победа!",
+     "emo": "triumphant, epic",
+     "acc": [
+      "победа"
+     ],
+     "pause": 0.6
+    },
+    {
+     "t": "Ну... почти.",
+     "emo": "dry sarcastic deadpan, mocking"
+    }
+   ]
+  },
+  {
+   "id": "l2",
+   "role": "bobik",
+   "text": "А-а-а! Мои яйца!",
+   "parts": [
+    {
+     "t": "А-а-а! Мои яйца-а!",
+     "emo": "screaming in pain, high pitched howl",
+     "acc": [
+      "яйца"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "l3",
+   "role": "slime",
+   "text": "Минус аура. И минус дети.",
+   "parts": [
+    {
+     "t": "Минус аура.",
+     "emo": "dramatic expressive announcement",
+     "acc": [
+      "аура"
+     ],
+     "pause": 0.5
+    },
+    {
+     "t": "И минус дети.",
+     "emo": "sarcastic, cheeky, mocking",
+     "acc": [
+      "дети"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m1",
+   "role": "nar4",
+   "text": "А тем временем в землях демонов...",
+   "parts": [
+    {
+     "t": "А тем временем в землях демонов...",
+     "emo": "ominous, dark, slow"
+    }
+   ]
+  },
+  {
+   "id": "m2",
+   "role": "king",
+   "text": "Это что за людишка посмел убить моего гуся?!",
+   "parts": [
+    {
+     "t": "Это что за л+юдишка посмел убить моего гуся?!",
+     "emo": "furious, roaring with rage, menacing",
+     "acc": [
+      "людишка",
+      "гуся"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m3",
+   "role": "succ",
+   "text": "Мне им заняться, повелитель?",
+   "parts": [
+    {
+     "t": "Мне им заняться, повелитель?",
+     "emo": "seductive, purring, mesmerizing",
+     "acc": [
+      "повелитель"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m4",
+   "role": "king",
+   "text": "Найти. Привести.",
+   "parts": [
+    {
+     "t": "Найти!",
+     "emo": "furious command",
+     "acc": [
+      "найти"
+     ],
+     "pause": 0.4
+    },
+    {
+     "t": "Привести!",
+     "emo": "furious menacing command",
+     "acc": [
+      "привести"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "w1",
+   "role": "bobik",
+   "text": "Желе... а куда мы идём?",
+   "parts": [
+    {
+     "t": "Желе...",
+     "emo": "thoughtful, curious",
+     "acc": [
+      "желе"
+     ],
+     "pause": 0.35
+    },
+    {
+     "t": "А куда мы идём?",
+     "emo": "curious, clearly questioning, rising intonation",
+     "acc": [
+      "куда"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "w2",
+   "role": "slime",
+   "text": "Впереди развилка.",
+   "parts": [
+    {
+     "t": "Впереди развилка.",
+     "emo": "cheerful"
+    }
+   ]
+  },
+  {
+   "id": "n2",
+   "role": "slime",
+   "text": "Эльфийки или дракон? Пишите в комментах!",
+   "parts": [
+    {
+     "t": "Эльф+ийки или дракон?",
+     "emo": "excited playful question with rising intonation",
+     "acc": [
+      "дракон"
+     ],
+     "pause": 0.3
+    },
+    {
+     "t": "Пишите в комм+ентах!",
+     "emo": "energetic enthusiastic exclamation",
+     "acc": [
+      "комментах"
+     ]
+    }
+   ]
+  }
+ ]
+}

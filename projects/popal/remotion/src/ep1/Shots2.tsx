@@ -2,7 +2,7 @@
 // гусь из пруда, земли демонов, Король-бык, развилка с чиби-Желе. Остальные планы — в Shots.tsx.
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { SHOT, HIT_AT, SLOT_H2, SLOT_STOP } from './timeline.mjs';
+import { SHOT, HIT_AT, SLOT_H2, SLOT_STOP, NAH_T } from './timeline.mjs';
 import { clamp, lerp, out, io, spr, win, shake, noise, handheld } from '../anim';
 import { C, FONT } from '../theme';
 import { Person, POSES, blendPose, Pan, Doner, Cola } from '../chars/Person';
@@ -153,8 +153,8 @@ export const Dodep: React.FC<P> = ({ t, T }) => { const hh = handheld(T, 4), dd 
 
 // ───────────────────────── 15. «ПОШЁЛ НАХЕР» → портал ─────────────────────────
 export const Nah: React.FC<P> = ({ t, T }) => {
-  if (t < 1.1) return (<Frame bg="#d7ecff"><Cam z={lerp(1.15, 1.2, t)} fy={800} dy={70}><rect x={0} y={-200} width={1080} height={600} fill="#d7ecff" /><Counter t={T} /><Lumina x={540} y={1430} s={1.75} t={T} mouth={mouth('lumina', T)} expr="deadpan" overGlasses={1} swipe={clamp((t - .75) / .3)} /></Cam></Frame>);
-  const k = t - 1.1, fall = clamp((k - .25) / .9), pk = out(win(k, 0, .25));
+  if (t < NAH_T) return (<Frame bg="#d7ecff"><Cam z={lerp(1.15, 1.2, t / NAH_T * 1.1)} fy={800} dy={70}><rect x={0} y={-200} width={1080} height={600} fill="#d7ecff" /><Counter t={T} /><Lumina x={540} y={1430} s={1.75} t={T} mouth={mouth('lumina', T)} expr="deadpan" overGlasses={1} swipe={clamp((t - NAH_T + .35) / .3)} /></Cam></Frame>);
+  const k = t - NAH_T, fall = clamp((k - .25) / .9), pk = out(win(k, 0, .25));
   return (<Frame bg="#d7ecff"><Counter t={T} />
     <g transform="translate(540,1560)"><Glow x={0} y={0} r={520 * pk} c="#ffd23f" o={.9} id="portY2" /><ellipse cx={0} cy={0} rx={380 * pk} ry={110 * pk} fill="#4a2a9a" /><ellipse cx={0} cy={0} rx={300 * pk} ry={80 * pk} fill="#1a0a3a" /></g>
     <clipPath id="abovePortal2"><rect x={0} y={0} width={1080} height={1560} /><ellipse cx={540} cy={1560} rx={380} ry={110} /></clipPath>
