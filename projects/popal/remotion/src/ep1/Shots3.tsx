@@ -2,7 +2,7 @@
 // простая инфографика системы, Король на троне, прогулка Макса с Желе, развилка (чиби поменьше), сплит-экран с эльфийкой и драконом.
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { SHOT, VO_AT, WORD_AT , SLIME_K } from './timeline.mjs';
+import { SHOT, VO_AT, WORD_AT , SLIME_K, SLIME_GROUND } from './timeline.mjs';
 import { clamp, lerp, out, io, spr, win, shake, noise } from '../anim';
 import { C, FONT } from '../theme';
 import { Person, POSES, blendPose, runPose } from '../chars/Person';
@@ -82,8 +82,8 @@ export const Walk: React.FC<P> = ({ t, T }) => { const sp = 160, V = 420, off = 
     {[0, 1].map(k => <g key={k} transform={`translate(${-off + k * 2160},0)`}>{Array.from({ length: 9 }, (_, i) => <g key={i} transform={`translate(${i * 240 + 60},1480)`}><rect x={-30} y={-460} width={60} height={460} fill="#6a4a3a" /><circle cx={0} cy={-480} r={150} fill={i % 2 ? '#3f8a5e' : '#2f7a52'} /></g>)}</g>)}
     <rect x={0} y={1460} width={1080} height={460} fill="#5aa86a" /><rect x={0} y={1600} width={1080} height={120} fill="#c9a77a" />
     <Person x={470} y={1690 - Math.abs(Math.cos(ph)) * 12} s={1.05} t={T} pose={walkPose(ph)} hold="pan" expr="neutral" mouth={mouth('max', T)} eye={[.8, 0]} />
-    <Slime x={720} y={1690 - Math.abs(Math.sin(t * 5)) * 70} s={1.05 * SLIME_K} t={T} mouth={mouth('slime', T)} squish={1 - Math.abs(Math.sin(t * 5))} look={[-.8, -.3]} />
     {Array.from({ length: 6 }, (_, i) => { const fx = ((1300 - t * V * 1.8 + i * 400) % 2400 + 2400) % 2400 - 200; return <path key={i} d={`M${fx},1920 Q${fx - 20},1640 ${fx + 30},1480`} stroke="#1f4a2a" strokeWidth={40} fill="none" strokeLinecap="round" />; })}
+    <Slime x={740} y={1730 - Math.abs(Math.sin(t * 5)) * 70} s={1.05 * SLIME_GROUND} t={T} mouth={mouth('slime', T)} squish={1 - Math.abs(Math.sin(t * 5))} look={[-.8, -.3]} />
   </Cam></Frame>); };
 
 // ───────────── Развилка: Макс и Желе, чиби-Желе спрашивает зрителей ─────────────
