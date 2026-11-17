@@ -172,7 +172,7 @@ export const SystemShot: React.FC<P> = ({ t, T }) => { const AURA_T = WORD_AT('g
     <Glow x={540} y={900} r={700} c="#37c2d8" o={clamp((t - .35) / .4) * .6} id="sysG" />
     <Person x={540} y={2120} s={1.55} t={T} pose={blendPose(POSES.stand, POSES.shrug, out(win(t, .4, .7)))} expr={t > .4 ? 'shock' : 'neutral'} eye={[0, -.8]} />
     <g transform={`translate(540,${lerp(900, 1560, stamp)}) rotate(-8)`} opacity={t < .9 ? 1 : clamp(1 - (t - .9) / .3)}><rect x={-160} y={-60} width={320} height={120} rx={14} fill="none" stroke={C.red} strokeWidth={12} /><text x={0} y={24} fontSize={64} fontWeight={900} textAnchor="middle" fill={C.red} fontFamily="Mont">ОДОБРЕНО</text></g>
-  </Cam></Frame></div><SysWindow t={t} t0={.4} title="ПОДКЛЮЧЕНА" sub={t < AURA_T ? "Игрок: МАКС · Класс: ПОПАДАНЕЦ" : "АУРА: + за победы и эпик · − за кринж"} y={560} /></>); };
+  </Cam></Frame></div><SysWindow t={t} t0={.4} title="ПОДКЛЮЧЕНА" sub={t < AURA_T ? "Игрок: БОБИК · Класс: ПОПАДАНЕЦ" : "АУРА: + за победы и эпик · − за кринж"} y={560} /></>); };
 export const Monday: React.FC<P> = ({ t, T }) => (<Frame bg="#b9d4ef"><Cam z={lerp(1, 1.04, t / 1.5)}><rect width={1080} height={1920} fill="#b9d4ef" /><Glow x={540} y={800} r={700} c="#ffffff" o={.6} id="monG" />
   <g transform="translate(540,1050) scale(3.4)"><path d="M-100,-20 C-104,-100 -50,-128 0,-128 C50,-128 104,-100 100,-20 C98,40 70,84 24,98 Q0,104 -24,98 C-70,84 -98,40 -100,-20 Z" fill="#f6cfae" />
     <Face t={T} expr="deadpan" lid={.6} L={{ skin: '#f6cfae', skinSh: '#e3a989', hair: '#2f231f', iris: '#7a4a28' } as any} seed={77} sweat={.8} /></g>

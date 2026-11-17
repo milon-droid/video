@@ -177,7 +177,7 @@ export const Mob: React.FC<P> = ({ t, T }) => (<InfoStand t={t} num="ВРАЖЕ�
   art={<g><rect x={0} y={0} width={860} height={380} rx={20} fill="#2a1a2e" /><g transform="translate(240,350) scale(.9)"><Goose x={0} y={0} s={1} t={T} state="attack" honk={Math.max(0, Math.sin(t * 4)) * .6} flip /></g>
     <text x={500} y={80} fontSize={32} fontWeight={800} fill="#ff8a8a" fontFamily="Mont">РАЗВЕДЧИК</text><text x={500} y={122} fontSize={32} fontWeight={800} fill="#ff8a8a" fontFamily="Mont">КОРОЛЯ ДЕМОНОВ</text>
     <text x={500} y={200} fontSize={34} fontWeight={900} fill="#ffd23f" fontFamily="Mont">Угроза</text><path transform="translate(660,188) scale(1.3)" d="M0,-14 L4,-4 L14,-4 L6,3 L9,13 L0,7 L-9,13 L-6,3 L-14,-4 L-4,-4 Z" fill="#ffd23f" stroke="#ffd23f" strokeWidth={2} /><path transform="translate(700,188) scale(1.3)" d="M0,-14 L4,-4 L14,-4 L6,3 L9,13 L0,7 L-9,13 L-6,3 L-14,-4 L-4,-4 Z" fill="none" stroke="#ffd23f" strokeWidth={2} /><path transform="translate(740,188) scale(1.3)" d="M0,-14 L4,-4 L14,-4 L6,3 L9,13 L0,7 L-9,13 L-6,3 L-14,-4 L-4,-4 Z" fill="none" stroke="#ffd23f" strokeWidth={2} /><text x={500} y={262} fontSize={34} fontWeight={900} fill="#fff" fontFamily="Mont">Щипок: −1 ❤</text>
-    <text x={500} y={324} fontSize={34} fontWeight={900} fill="#ff5a5a" fontFamily="Mont">У Макса: ❤ 1</text></g>}
+    <text x={500} y={324} fontSize={34} fontWeight={900} fill="#ff5a5a" fontFamily="Mont">У Бобика: ❤ 1</text></g>}
   lines={[{ t: 1.2, icon: '👁', text: 'Шпионит для Короля демонов' }, { t: 3.4, icon: '☠', text: 'Один щипок — и конец', col: '#ff8a8a', big: true }]} />);
 
 // ───────────────────────── 24. ЗЕМЛИ ДЕМОНОВ ─────────────────────────

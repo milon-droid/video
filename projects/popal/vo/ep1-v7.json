@@ -1,0 +1,275 @@
+{
+ "roles": {
+  "narrator": {
+   "instruct": "Deep, warm, velvety adult male voice. Professional Russian audiobook narrator, calm confident storytelling with a light ironic smile, clear diction, lively medium-fast pace.",
+   "ref": "Это история о парне, которому очень не повезло. Но, как оказалось, это было только начало."
+  },
+  "max": {
+   "instruct": "Young Russian man, about 27, casual and ironic, a bit tired, expressive and emotional, natural everyday speech, medium-fast pace.",
+   "ref": "Слушай, ну я же просто хотел поесть. Почему всегда я?"
+  },
+  "lumina": {
+   "instruct": "Young woman, bored and sarcastic goddess working at an office desk, sultry low voice, lazy drawl, deadpan humor.",
+   "ref": "Следующий. Талон, пожалуйста. И давайте побыстрее, у меня обед."
+  },
+  "courier": {
+   "instruct": "Calm neutral male voice, overly polite delivery guy, slightly mechanical and emotionless.",
+   "ref": "Добрый вечер. Ваш заказ доставлен. Приятного аппетита."
+  },
+  "slime": {
+   "instruct": "Cute high-pitched childlike voice, cheerful and curious, bouncy, cartoon mascot.",
+   "ref": "Привет-привет! Я тут живу. А ты кто такой?"
+  },
+  "king": {
+   "instruct": "Very deep, menacing, slow and gravelly male voice of a demon king, cold and powerful.",
+   "ref": "Вы смеете тревожить меня? Я правлю этой тьмой тысячу лет.",
+   "low": true
+  },
+  "succ": {
+   "instruct": "Seductive breathy female voice, soft and playful, half-whisper, sly.",
+   "ref": "Ну здравствуй, красавчик. Скучал по мне?"
+  },
+  "nar2": {
+   "instruct": "Cocky, cheeky young Russian male narrator in his late twenties, bold sarcastic stand-up comedian roasting the hero, smirking mocking tone, punchy energetic delivery with sharp emphasis on punchlines, raspy edgy voice, fast pace, very expressive.",
+   "ref": "Ну что, народ, держитесь. Сейчас я вам расскажу про самого тупого героя в истории. Ржать будете до слёз, клянусь."
+  }
+ },
+ "lines": [
+  {
+   "id": "a1",
+   "role": "nar2",
+   "text": "Знакомьтесь, это Б+обик. Мама хотела собаку — получился он.",
+   "speed": 1.12
+  },
+  {
+   "id": "a2",
+   "role": "nar2",
+   "text": "Двадцать семь лет, ипотека и ноль баб. Ч+ерез минуту он сдохнет. Из-за д+онера.",
+   "speed": 1.12
+  },
+  {
+   "id": "a3",
+   "role": "max",
+   "text": "К+олы нет. Всухомятку я его жрать не буду, бл*ть.",
+   "speed": 1.05,
+   "say": "К+олы нет. Всухомятку я его жрать не буду, блять."
+  },
+  {
+   "id": "a4",
+   "role": "nar2",
+   "text": "И этот гений попёрся за колой. В три часа ночи.",
+   "speed": 1.12
+  },
+  {
+   "id": "b1",
+   "role": "nar2",
+   "text": "А навстречу летел курьер. На самокате. С его же д+онером.",
+   "speed": 1.12
+  },
+  {
+   "id": "c1",
+   "role": "courier",
+   "text": "Ваш заказ. Пять звёзд поставите?",
+   "speed": 1.05
+  },
+  {
+   "id": "c2",
+   "role": "courier",
+   "text": "Избранный доставлен.",
+   "fx": "radio",
+   "speed": 1.05
+  },
+  {
+   "id": "d1",
+   "role": "nar2",
+   "text": "Так Б+обик и сдох. Девственником. Зато с д+онером.",
+   "speed": 1.12
+  },
+  {
+   "id": "s1",
+   "role": "max",
+   "text": "Стоп. Я что, умер?! А донер?!",
+   "speed": 1.05
+  },
+  {
+   "id": "e1",
+   "role": "nar2",
+   "text": "На том свете — очередь. Но Б+обик — избранный. Один на тысячу лет. Небеса, видимо, бухали.",
+   "speed": 1.12
+  },
+  {
+   "id": "e2",
+   "role": "max",
+   "text": "О, быстро!",
+   "speed": 1.05
+  },
+  {
+   "id": "f1",
+   "role": "lumina",
+   "text": "Перерождение. Мир — Эльд+ория. Вопросы?",
+   "speed": 1.05
+  },
+  {
+   "id": "f2",
+   "role": "max",
+   "text": "А можно мир, где кошки-девушки?",
+   "speed": 1.05
+  },
+  {
+   "id": "f3",
+   "role": "lumina",
+   "text": "Кошки — по подписке. Девственникам — двойной тариф.",
+   "speed": 1.05
+  },
+  {
+   "id": "g1",
+   "role": "nar2",
+   "text": "Сила — один. Здоровье — один. Аура — ноль. Как у дохлого хомяка.",
+   "speed": 1.12
+  },
+  {
+   "id": "h1",
+   "role": "lumina",
+   "text": "Теперь дар. Крути, болезный.",
+   "speed": 1.05
+  },
+  {
+   "id": "h2",
+   "role": "nar2",
+   "text": "Меч выпадает раз из ста. Сковородка — девяносто семь раз из ста.",
+   "speed": 1.12
+  },
+  {
+   "id": "h3",
+   "role": "lumina",
+   "text": "Сковорода Судьбы. Не промахивается.",
+   "speed": 1.05
+  },
+  {
+   "id": "h4",
+   "role": "max",
+   "text": "Не-не-не, это кринж. Дод+еп! Дай ещё прокрутку!",
+   "speed": 1.05
+  },
+  {
+   "id": "h5",
+   "role": "lumina",
+   "text": "Пошёл нахер.",
+   "speed": 1.05
+  },
+  {
+   "id": "i1",
+   "role": "nar2",
+   "text": "Так Б+обик попал в Эльд+орию. Две луны, летающие остров+а...",
+   "speed": 1.12
+  },
+  {
+   "id": "i2",
+   "role": "nar2",
+   "text": "...и жопой в пруд.",
+   "speed": 1.12
+  },
+  {
+   "id": "j1",
+   "role": "slime",
+   "text": "Ты как сюда упал?",
+   "speed": 1.05
+  },
+  {
+   "id": "j2",
+   "role": "max",
+   "text": "Желе разговаривает. Всё, п*здец, кукуха поехала.",
+   "speed": 1.05,
+   "say": "Желе разговаривает. Всё, пиздец, кукуха поехала."
+  },
+  {
+   "id": "k1",
+   "role": "nar2",
+   "text": "А в пруду жил гусь. Злой, как бывшая. Которой у Б+обика никогда не было.",
+   "speed": 1.12
+  },
+  {
+   "id": "k2",
+   "role": "max",
+   "text": "Ёпта, это не простой гусь. Это вражеский моб!",
+   "speed": 1.05
+  },
+  {
+   "id": "k3",
+   "role": "nar2",
+   "text": "Адский гусь, разведчик Короля демонов. Один щипок — и Б+обик сдохнет дважды за ночь.",
+   "speed": 1.12
+  },
+  {
+   "id": "k4",
+   "role": "max",
+   "text": "Ща я его сковородкой, с*ка!",
+   "speed": 1.05,
+   "say": "Ща я его сковородкой, сука!"
+  },
+  {
+   "id": "l1",
+   "role": "nar2",
+   "text": "Первая победа! Ну, почти.",
+   "speed": 1.12
+  },
+  {
+   "id": "l2",
+   "role": "max",
+   "text": "Мои яйца...",
+   "speed": 1.05
+  },
+  {
+   "id": "l3",
+   "role": "slime",
+   "text": "Минус аура. И минус дети.",
+   "speed": 1.05
+  },
+  {
+   "id": "m1",
+   "role": "nar2",
+   "text": "А тем временем в землях демонов...",
+   "speed": 1.12
+  },
+  {
+   "id": "m2",
+   "role": "king",
+   "text": "Сковородкой. Моего гуся.",
+   "fx": "dead",
+   "pitch": 0.82,
+   "speed": 1.05
+  },
+  {
+   "id": "m3",
+   "role": "succ",
+   "text": "Мне им заняться, повелитель? Он такой... нетронутый.",
+   "speed": 1.05
+  },
+  {
+   "id": "m4",
+   "role": "king",
+   "text": "Найти. Привести. Живым — необязательно.",
+   "fx": "dead",
+   "pitch": 0.82,
+   "speed": 1.05
+  },
+  {
+   "id": "w1",
+   "role": "max",
+   "text": "Желе, а куда мы идём?",
+   "speed": 1.05
+  },
+  {
+   "id": "w2",
+   "role": "slime",
+   "text": "Впереди развилка.",
+   "speed": 1.05
+  },
+  {
+   "id": "n2",
+   "role": "slime",
+   "text": "Эльф+ийки или дракон? Пишите в комментах!",
+   "speed": 1.05
+  }
+ ]
+}
