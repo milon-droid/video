@@ -2,7 +2,7 @@
 #   bash projects/popal/remotion/scripts/post-vo-ep1.sh   (из любого места; нужен ~/.venvs/qwentts)
 set -e
 cd "$(dirname "$0")/../../../.."   # корень репозитория
-P=projects/popal; VO=$P/assets/vo/ep1v7; DATA=$P/remotion/src/data; SP=${SP:-/tmp}; PY=~/.venvs/qwentts/bin/python
+P=projects/popal; VO=$P/assets/vo/ep1v9; DATA=$P/remotion/src/data; SP=${SP:-/tmp}; PY=~/.venvs/qwentts/bin/python
 python3 - <<PY
 import json, subprocess, re
 from pathlib import Path

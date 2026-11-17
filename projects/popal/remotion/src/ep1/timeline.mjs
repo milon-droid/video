@@ -20,11 +20,11 @@ const CAP = { a1: 'Это {Бобик}. Через минуту он {умрёт
   d1: 'Так Бобик и сдох. {Девственником}.',
   s1: 'Стоп. Я что, {умер?!} А {шавуха?!}',
   e1: 'На том свете — {очередь}. Но Бобик — {избранный}. Небеса, видимо, {ё*нулись}.',
-  e2: 'О, быстро!',
+  e2: 'О... {быстро!}',
   f1: 'Перерождение. Мир — {Эльдория}. Вопросы?',
   f2: 'А можно мир, где {кошки-девушки}?',
   f3: 'Кошки — {по подписке}. Девственникам — {двойной тариф}.',
-  g1: 'Сила — {один}. Здоровье — {один}. Аура — {ноль}. Как у {дохлого хомяка}.',
+  g1: 'Сила — {один}. Здоровье — {один}. Аура — {ноль}.',
   g2: 'Сила и здоровье растут с {опытом}. Аура — только от {побед}.',
   h1: 'Теперь дар. {Крути}.',
   h2: 'Меч выпадает {раз из ста}. Сковородка — {девяносто семь} раз из ста.',
@@ -32,13 +32,13 @@ const CAP = { a1: 'Это {Бобик}. Через минуту он {умрёт
   h4: 'Не-не-не, это {кринж}. {Додеп!} Дай ещё прокрутку!',
   h5: '{Пошёл на*ер}.',
   i1: 'Так Бобик попал в {Эльдорию}. Две луны, летающие острова...',
-  i2: '...и {жопой} в пруд.',
+  i2: '...и {пруд}.',
   j1: 'Ты как сюда {упал}?',
-  j2: 'Желе разговаривает. Всё, {кукуха} поехала.',
+  j2: 'Желе разговаривает. Всё, {п*здец}, кукуха поехала.',
   k1: 'А в пруду жил {гусь}.',
-  k2: 'Блин, это не простой гусь. Это {вражеский моб!}',
+  k2: '{Ёпта}, это не простой гусь. Это {вражеский моб!}',
   k3: '{Адский гусь}, разведчик Короля демонов. Один щипок — и {конец}.',
-  k4: 'Надо его {сковородкой} прибить!',
+  k4: 'Ща я его {сковородкой}, {с*ка!}',
   l1: 'Первая {победа!} Ну, почти.',
   l2: 'Мои {яйца...}',
   l3: '{Минус} аура. И {минус дети}.',
@@ -73,8 +73,8 @@ const SPEC = [
   ['item', 2.6, [['h3', .25]], [[0, 'shimmer-long-bright', .55], [.1, 'cinematic-metal-big', .25, { bright: 2 }]]],
   ['dodep', 3.8, [['h4', .2]], [[.1, 'foley-fabric-slide', .4], [2.4, 'impact-light-firm', .6]]],
   ['nah', 2.2, [['h5', .3]], [[1.15, 'swipe-medium-firm', .7], [1.25, 'reverse-whoosh-medium-strong', .6], [1.45, 'faller-2s-strong', .6]]],
-  ['fall', 3.9, [['i1', .2]], [[0, 'bsb-wind-strong-outside', .5, { dur: 4.5 }], [3.4, 'cinematic-thunder-big', .2]]],
-  ['splash', 1.6, [['i2', .55]], [[.12, 'props-splash', 1], [.2, 'impact-medium-soft', .6, { bright: 2 }], [.7, 'props-drip', .4]]],
+  ['fall', 3.9, [['i1', .2]], [[0, 'bsb-wind-strong-outside', .5, { dur: 4.5 }], [3.4, 'cinematic-thunder-big', .2], [-2.0, 'faller-2s-strong', .75], [-1.0, 'whoosh-slow-hard', .6]]],
+  ['splash', 1.6, [['i2', .7]], [[.1, 'impact-heavy-soft', .9, { bright: 2 }], [.12, 'props-splash', 1, { rate: .7 }], [.16, 'props-splash', .9], [.3, 'oc-WATRBubl_WaterBubbles_LOOP_01', .45, { dur: 1.3 }], [.8, 'props-drip', .5]]],
   ['slime', 4.7, [['j1', .3], ['j2', AF('j1', .2)]], [[0, 'oc-GORESqsh_BloodSquishSlimy_OS_02', .4], [.4, 'pop-small-bubble', .5], [1.7, 'props-drip', .3]]],
   ['gooseUp', 3.8, [['k1', .3]], [[0, 'props-drip', .3], [1.8, 'bass-rumble-medium', .4], [2.4, 'oc-CLOTHFlp_FlagFlapping_LOOP_01', .5, { dur: 1 }], [3.0, 'honk', 1], [3.0, 'impact-heavy-soft', .7, { bright: 2 }]]],
   ['chase', 3.4, [['k2', .2]], [[0, 'honk', .6], [1.0, 'click-snap-medium', .7], [1.05, 'whoosh-medium-soft', .4], [1.9, 'honk', .5], [2.55, 'click-snap-medium', .7], [2.6, 'whoosh-medium-soft', .4]]],
@@ -121,7 +121,7 @@ for (let i = 0; i < CAPS.length - 1; i++) CAPS[i].b = Math.min(CAPS[i].b, CAPS[i
 export const CUES = [];
 const S = id => SHOT[id].a;
 const GAIN = { n: 4.4, max: 4.4, lumina: 4.6, slime: 4.6, courier: 4.4, king: 7.5, succ: 9 };
-VO.forEach(v => CUES.push({ t: v.t, type: 'file', path: `projects/popal/assets/vo/ep1v7/${v.id}.wav`, gain: GAIN[v.who] ?? 4.4 }));
+VO.forEach(v => CUES.push({ t: v.t, type: 'file', path: `projects/popal/assets/vo/ep1v9/${v.id}.wav`, gain: GAIN[v.who] ?? 4.4 }));
 const M = 'projects/popal/assets/music/';
 const music = (file, t0, t1, gain, from = 0) => CUES.push({ t: t0, type: 'file', path: M + file, gain, from, dur: +(t1 - t0).toFixed(2), voice: false });
 music('calm.wav', 0, S('street'), .3);

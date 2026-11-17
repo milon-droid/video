@@ -28,6 +28,8 @@ ap = argparse.ArgumentParser(); ap.add_argument("lines"); ap.add_argument("-o", 
 ap.add_argument("--cands", type=int, default=1, help="дублей на реплику; лучший выбирается по замеру тона (вопрос — подъём к концу, король — низкий голос)")
 ap.add_argument("--lang", default="Russian", help="English и др.: без разметки ударений, клон — базовой моделью --base")
 ap.add_argument("--base", default=os.path.expanduser("~/models/base"))
+ap.add_argument("--stress", action="store_true", help="из дублей брать тот, где ударения по звуку совпали с разметкой (детектор meter2, ~/models/rus/meter)")
+ap.add_argument("--pause", type=float, default=0.3, help="паузы внутри реплики длиннее этого ужимаются до него (с); для живой речи 0.5–0.6")
 ap.add_argument("--direct", action="store_true", help="каждая реплика — сразу VoiceDesign по описанию роли + emo реплики (живее клона, для английского)")
 ap.add_argument("--vd", default=os.path.expanduser("~/models/vd")); ap.add_argument("--rus", default=os.path.expanduser("~/models/rus"))
 a = ap.parse_args()
@@ -63,7 +65,10 @@ import numpy as np, soundfile as sf, torch
 from qwen_tts import Qwen3TTSModel
 torch.set_num_threads(os.cpu_count() or 4)
 REF_DIR.mkdir(parents=True, exist_ok=True)
-need = sorted({l["role"] for l in lines if not (REF_DIR / f"{l['role']}.wav").exists()})
+# "ref_wav" у роли — готовая запись-образец (напр. удачная эмоциональная реплика героя): голос и манера клонируются с неё
+REF = lambda r: Path(roles[r]["ref_wav"]) if roles[r].get("ref_wav") else REF_DIR / f"{r}.wav"
+REFTXT = lambda r: roles[r]["ref"] if roles[r].get("ref_wav") else (REF_DIR / f"{r}.txt").read_text(encoding="utf-8")
+need = sorted({l["role"] for l in lines if not REF(l["role"]).exists()})
 if need:  # голоса по описанию
     vd = Qwen3TTSModel.from_pretrained(a.vd, device_map="cpu", dtype=torch.float32)
     for r in need:
@@ -99,16 +104,31 @@ def score(y, sr, ln, role):
     if role.get("f0"):  # держать высоту голоса героя одинаковой между дублями и сериями: ближе к целевой медиане (Гц)
         d = abs(st(np.median(v), role["f0"])); sc -= 3 * d; inf += f"медиана {np.median(v):.0f} Гц (цель {role['f0']}) "
     return sc, inf
+judge = None
+if a.stress:
+    sys.path.insert(0, os.path.expanduser("~/models/rus/meter")); os.environ.setdefault("METER2_HEAD", os.path.expanduser("~/models/rus/meter/head.pt"))
+    from meter2 import judge, marked_index
+def stress_bad(y, sr, ln):
+    """сумма уверенности по словам, где ударение в звуке не там, где в разметке"""
+    marked = mark(ln.get("say", ln["text"])); words = re.findall(r"[А-Яа-яЁё́+]+(?:-[А-Яа-яЁё́+]+)*", marked); bad, info = 0.0, []
+    for w, rr in zip(words, judge(np.asarray(y, np.float32), sr, marked)):
+        e = marked_index(w)
+        if e is None or rr["best"] is None or len(rr["vowel_scores"] or []) < 2: continue
+        if rr["best"] != e: bad += rr["margin"]; info.append(w)
+    return bad, info
 out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
 dfile = out / "durations.json"; durs = json.loads(dfile.read_text()) if dfile.exists() else {}
 for ln in lines:
     r = ln["role"]
-    if r not in prompts and not a.direct: prompts[r] = tts.create_voice_clone_prompt(ref_audio=str(REF_DIR / f"{r}.wav"), ref_text=(REF_DIR / f"{r}.txt").read_text(encoding="utf-8"))
+    if r not in prompts and not a.direct: prompts[r] = tts.create_voice_clone_prompt(ref_audio=str(REF(r)), ref_text=REFTXT(r))
     best, best_s, info = None, -1e9, ""
     for k in range(max(1, a.cands)):
         if a.direct: w, sr = tts.generate_voice_design(text=ln.get("say", ln["text"]).replace("+", ""), language=a.lang, instruct=(roles[r]["instruct"] + " " + ln.get("emo", "")).strip(), do_sample=True, temperature=.9)
         else: w, sr = tts.generate_voice_clone(text=mark(ln.get("say", ln["text"])), language="Russian", voice_clone_prompt=prompts[r]) if a.lang == "Russian" else tts.generate_voice_clone(text=ln.get("say", ln["text"]), language=a.lang, voice_clone_prompt=prompts[r])
         sc, inf = score(w[0], sr, ln, roles[r])
+        if judge:
+            sb, sw = stress_bad(w[0], sr, ln); sc -= 10 * sb
+            if sw: inf += "ударения: " + ",".join(sw) + " "
         if sc > best_s: best, best_s, info = w[0], sc, inf
     raw, wav = out / f"{ln['id']}.raw.wav", out / f"{ln['id']}.wav"; sf.write(raw, best, sr)
     af = "highpass=f=70,lowpass=f=12000,acompressor=threshold=-20dB:ratio=2:attack=8:release=120"
@@ -124,7 +144,7 @@ for ln in lines:
     if fx == "dead": af += ",highpass=f=60,lowpass=f=6000,acrusher=bits=12:mix=0.12,aecho=0.8:0.85:70|150|260:0.35|0.25|0.15"
     if fx == "radio": af += ",highpass=f=300,lowpass=f=3600,acrusher=bits=10:mix=0.25"
     # тишина: в начале и конце — убрать, паузы внутри длиннее 0,4 с — сжать до 0,3 с
-    af += (",silenceremove=start_periods=1:start_threshold=-42dB:stop_periods=-1:stop_duration=0.4:stop_threshold=-42dB:stop_silence=0.3"
+    af += (f",silenceremove=start_periods=1:start_threshold=-42dB:stop_periods=-1:stop_duration={a.pause + .1}:stop_threshold=-42dB:stop_silence={a.pause}"
            ",areverse,silenceremove=start_periods=1:start_threshold=-42dB,areverse,apad=pad_dur=0.06,aresample=48000")
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-af", af, str(wav)], check=True); raw.unlink()
     d = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(wav)], capture_output=True, text=True).stdout)
