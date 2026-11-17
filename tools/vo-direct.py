@@ -70,7 +70,7 @@ for lid, k, p, r in parts:
     for j in range(a.clone):
         f = tmp / f"{lid}_{k}_cl{j}.wav"
         if f.exists(): continue
-        w, sr = gen_clone(rus, mark(p["t"]), p.get("emo", ""), items[r]); sf.write(f, w[0], sr)
+        w, sr = gen_clone(rus, mark(p["t"]), p.get("emo", ""), items[r]); sf.write(f, w, sr)
     print("clone", lid, k, flush=True)
 # 3) оценка дублей
 import librosa
