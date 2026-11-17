@@ -49,7 +49,7 @@ const CAP = { a1: 'Это {Бобик}. Через минуту он {умрёт
   n2: '{Эльфийки} или {дракон}? Пишите в комментах!' };
 
 const wt = (id, i) => (WORDS[id] || [])[i] ?? i * D[id] / 8;
-const HIT = .3 + wt('b1', 4) - .12; // удар — перед «С его же шавухой»
+const HIT_W = wt('b1', 4), HIT = Math.max(3.0, .3 + HIT_W - .12); /* улица ≥ 3 с: курьер успевает подъехать; удар — на «С его же шавухой» */ // удар — перед «С его же шавухой»
 // [id плана, мин. длительность, [[реплика, сдвиг от начала плана]], [[сдвиг, звук, громкость, доп.]]]
 // звук: строка с дефисом/oc-/bsb- — библиотека (tools/sfx-find.py), иначе — синтез tools/sfx.py
 export const SLIME_K = .9, SLIME_GROUND = 1.3; /* на земле — крупнее и перед травой, иначе незаметен */
@@ -60,7 +60,7 @@ const AF = (id, gap = .25) => ['after', id, gap]; // реплика сразу �
 const SPEC = [
   ['room', 3.9, [['a1', .2]], [[0, 'hum', .15, { dur: 7 }], [1.6, 'wah', .45, { dur: .9, pitch: .6 }], [2.8, 'notification-message-in-clear', .6], [3.4, 'click-tap-soft', .5], [3.8, 'notification-success-chime', .55]]],
   ['fridge', 3.6, [['a3', .3]], [[0, 'foley-wood-slide', .4], [.25, 'mechanical-latch-light', .6], [.3, 'hum50', .2, { dur: 3 }], [3.4, 'bsb-door-creak-close', .4]]],
-  ['street', HIT, [['b1', .3, true]], [[0, 'engine', .45, { dur: HIT }], [.1, 'bsb-wind-foley', .25, { dur: HIT }], [HIT - 2.3, 'notification-message-in-clear', .5], [HIT - 2.3, 'whoosh-slow-medium', .25], [HIT - .9, 'riser-1s-strong', .55], [HIT - .35, 'horn', .7]]],
+  ['street', HIT, [['b1', +(HIT - HIT_W + .12).toFixed(3), true]], [[0, 'engine', .45, { dur: HIT }], [.1, 'bsb-wind-foley', .25, { dur: HIT }], [HIT - 2.3, 'notification-message-in-clear', .5], [HIT - 2.3, 'whoosh-slow-medium', .25], [HIT - .9, 'riser-1s-strong', .55], [HIT - .35, 'horn', .7]]],
   ['freeze', 2.9, [], [[0, 'impact-heavy-hard', 1, { bright: 2 }], [0, 'oc-GLASBrk_GlassBottleBreak_OS_01', .4], [.05, 'whoosh-slow-medium', .6], [1.35, 'cinematic-slam-big', .8, { bright: 2 }], [1.4, 'sting-bold-short', .5]]],
   ['courier', 2.8, [['c1', .3]], [[0, 'foley-paper-slide', .6], [.1, 'siren', .1, { dur: 2.9 }]]],
   ['visor', 3.7, [['c2', .8]], [[0, 'digital-scan-clear', .5], [.6, 'digital-radio', .3], [2.6, 'appear-materialise', .7], [3.3, 'whoosh-medium-hard', .6]]],
