@@ -7,7 +7,8 @@ script.json: {"roles": {"bobik": {"voice": "описание голоса по-�
               "lines": [{"id": "s1", "role": "bobik", "text": "субтитр", "parts": [
                   {"t": "Стоп. Я что, умер?!", "emo": "terrified, voice shaking", "acc": ["умер"], "pause": 0.35},
                   {"t": "А шав+уха?!", "emo": "desperate hysterical scream", "acc": ["шавуха"]}]}]}
-  t — текст куска (ударение «+» как в vo-qwen.py), emo — эмоция по-английски, acc — слова с акцентом, pause — пауза после куска (с).
+  t — текст куска (ударение «+» как в vo-qwen.py), emo — эмоция по-английски, acc — слова с акцентом, pause — пауза после куска (с), maxpause — предел пауз внутри куска.
+  Тембр одного персонажа — только --clone (--vd 0): дубли VoiceDesign звучат разными людьми.
   Реплика без parts = один кусок из "say"/"text" и "emo".
 Дубли каждого куска: --vd из VoiceDesign (описание голоса + эмоция; эмоции слушается лучше) и --clone из клона голоса роли
 (assets/voices/qwen-ref/<ref>.wav, русская модель с ударениями; эмоция подаётся той же инструкцией).
@@ -80,15 +81,15 @@ from meter2 import judge, marked_index
 wm = WhisperModel("small", device="cpu", compute_type="int8")
 norm = lambda s: re.sub(r"[^а-яa-z0-9]", "", s.lower().replace("ё", "е"))
 rep = open(out / "report.txt", "a", encoding="utf-8")
-def clean(f):
-    """края тишины и длинные паузы внутри — ffmpeg, 48 кГц"""
-    g = f.with_suffix(".c.wav")
+def clean(f, mp=None):
+    """края тишины и длинные паузы внутри — ffmpeg, 48 кГц (mp — свой предел паузы куска, "maxpause")"""
+    g = f.with_suffix(".c.wav"); mp = a.pause if mp is None else mp
     af = ("highpass=f=70,lowpass=f=12000,acompressor=threshold=-20dB:ratio=2:attack=8:release=120,"
-          f"silenceremove=start_periods=1:start_threshold=-42dB:stop_periods=-1:stop_duration={a.pause + .1}:stop_threshold=-42dB:stop_silence={a.pause},"
+          f"silenceremove=start_periods=1:start_threshold=-42dB:stop_periods=-1:stop_duration={mp + .1}:stop_threshold=-42dB:stop_silence={mp},"
           "areverse,silenceremove=start_periods=1:start_threshold=-42dB,areverse,aresample=48000")
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(f), "-af", af, str(g)], check=True); return g
 def evaluate(f, p, r):
-    g = clean(f); y48, _ = sf.read(g); y = librosa.resample(np.asarray(y48, np.float32), orig_sr=48000, target_sr=16000)
+    g = clean(f, p.get("maxpause")); y48, _ = sf.read(g); y = librosa.resample(np.asarray(y48, np.float32), orig_sr=48000, target_sr=16000)
     if len(y) < 1600: return None
     marked = mark(p["t"]); bad, badw = 0.0, []
     for w, rr in zip(re.findall(r"[А-Яа-яЁё́+]+(?:-[А-Яа-яЁё́+]+)*", marked), judge(y, 16000, marked)):

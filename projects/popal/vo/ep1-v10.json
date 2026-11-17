@@ -612,10 +612,8 @@
    "parts": [
     {
      "t": "Мне им заняться, повелитель?",
-     "emo": "seductive, purring, mesmerizing",
-     "acc": [
-      "повелитель"
-     ]
+     "emo": "seductive, purring, mesmerizing, one smooth phrase without pauses",
+     "maxpause": 0.08
     }
    ]
   },

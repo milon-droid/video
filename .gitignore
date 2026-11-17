@@ -45,5 +45,7 @@ projects/popal/assets/vo/*
 !projects/popal/assets/vo/ep2/
 !projects/popal/assets/vo/ep1v7/
 !projects/popal/assets/vo/ep1v9/
+!projects/popal/assets/vo/ep1v10/
 projects/*/vo/*.log
 assets/voices/vosk-model-*/
+projects/popal/assets/vo/*/_cands/
