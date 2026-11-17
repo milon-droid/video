@@ -309,7 +309,7 @@ export const Corner: React.FC<P> = ({ t, T }) => { const D = dur('corner'), rel 
   return (<Frame bg="#3a2a4a"><Cam z={z} fx={760} fy={1100} dy={-300}><Pond t={T} dark={.35} />
     <rect x={820} y={300} width={200} height={1500} fill="#5a3a2a" /><rect x={820} y={300} width={50} height={1500} fill="#6e4a36" />
     <Goose x={180 + clamp(t / D) * 70} y={1800} s={1.5} t={T} state="attack" honk={.3 + .3 * Math.sin(t * 8)} neck={.3 + .25 * Math.max(0, Math.sin(t * 5))} />
-    <Person x={760} y={1800} s={1.2} t={T} hold={gone ? null : 'pan'} panGlow={up} pose={pose} expr={up > .5 ? 'shock' : 'scared'} mouth={up > .5 ? mouth('max', T) * .5 : Math.max(.5, mouth('max', T))} eye={[-.9, .1]} sweat={1} headTilt={up > .5 ? -4 : 5} hat={<Slime x={0} y={0} s={.62} t={T} mouth={mouth('slime', T)} look={[-.9, .1]} />} />
+    <Person x={760} y={1800} s={1.2} t={T} hold={gone ? null : 'pan'} panGlow={up} pose={pose} expr="scared" mouth={up > .5 ? mouth('max', T) * .5 : Math.max(.5, mouth('max', T))} eye={[-.9, .1]} sweat={1} headTilt={up > .5 ? -4 : 5} hat={<Slime x={0} y={0} s={.62} t={T} mouth={mouth('slime', T)} look={[-.9, .1]} />} />
     <Glow x={700} y={900} r={400} c="#ffd23f" o={up * .5 * (1 - fk)} id="cornG" />
     {gone && <g>{[0, 1, 2, 3, 4, 5].map(i => { const q = clamp(fk - i * .05); return <circle key={i} cx={lerp(540, -120, q)} cy={lerp(1230, 1000, q) - Math.sin(q * Math.PI) * 60} r={56 - i * 7} fill="#ffd23f" opacity={.4 - i * .06} />; })}
       <g transform={`translate(${lerp(540, -120, fk)},${lerp(1230, 1000, fk) - Math.sin(fk * Math.PI) * 60}) rotate(${-90 - fk * 700}) scale(1.05) translate(0,120)`}><Pan glow={1} t={T} /></g></g>}
