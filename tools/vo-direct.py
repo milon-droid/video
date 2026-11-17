@@ -114,6 +114,11 @@ def evaluate(f, p, r):
 res = {}
 for lid, k, p, r in parts:
     cands = [c for c in (evaluate(f, p, r) for f in sorted(tmp.glob(f"{lid}_{k}_*.wav")) if not f.name.endswith(".c.wav")) if c]
+    for j in range(6):  # все дубли пустые/обрывки — досинтезировать
+        if cands: break
+        f = tmp / f"{lid}_{k}_re{j}.wav"; w, sr = gen_clone(rus, mark(p["t"]), p.get("emo", ""), items[r]); sf.write(f, w, sr)
+        c = evaluate(f, p, r); cands += [c] if c else []
+    if not cands: print("НЕ ВЫШЛО", lid, k, flush=True); continue
     top = max(c["spk"] for c in cands)
     ok = [c for c in cands if c["bad"] < .3 and c["sim"] >= .8 and c["spk"] >= max(a.spk_min, top - .08)] or \
          [c for c in cands if c["sim"] >= .7 and c["spk"] >= top - .12] or cands
@@ -128,7 +133,9 @@ durs = json.loads((out / "durations.json").read_text()) if (out / "durations.jso
 for l in lines:
     ps = l.get("parts") or [{"pause": 0}]; segs = []
     for k, p in enumerate(ps):
-        b = res[(l["id"], k)]; af = ",".join(f"volume={a.acc_db}dB:enable='between(t,{s0:.2f},{s1 + .05:.2f})'" for s0, s1 in b["spans"]) or "anull"
+        b = res.get((l["id"], k))
+        if b is None: break
+        af = ",".join(f"volume={a.acc_db}dB:enable='between(t,{s0:.2f},{s1 + .05:.2f})'" for s0, s1 in b["spans"]) or "anull"
         g = tmp / f"{l['id']}_{k}.acc.wav"; subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(b["f"]), "-af", af, "-ar", "48000", "-ac", "1", str(g)], check=True)
         segs.append(g)
         if k < len(ps) - 1:
