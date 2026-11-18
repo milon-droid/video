@@ -7,7 +7,8 @@ script.json: {"roles": {"bobik": {"voice": "описание голоса по-�
               "lines": [{"id": "s1", "role": "bobik", "text": "субтитр", "parts": [
                   {"t": "Стоп. Я что, умер?!", "emo": "terrified, voice shaking", "acc": ["умер"], "pause": 0.35},
                   {"t": "А шав+уха?!", "emo": "desperate hysterical scream", "acc": ["шавуха"]}]}]}
-  t — текст куска (ударение «+» как в vo-qwen.py), emo — эмоция по-английски, acc — слова с акцентом, pause — пауза после куска (с), maxpause — предел пауз внутри куска.
+  t — текст куска (ударение «+» как в vo-qwen.py), emo — эмоция по-английски, acc — слова с акцентом, pause — пауза после куска (с), maxpause — предел пауз внутри куска, plain — обычный тон (берётся самый ровный дубль),
+  plain_takes — доп. дубли без инструкции эмоции, focus_w — вес уверенности в ударении слов с «+».
   Тембр одного персонажа — только --clone (--vd 0): дубли VoiceDesign звучат разными людьми.
   Реплика без parts = один кусок из "say"/"text" и "emo".
 Дубли каждого куска: --vd из VoiceDesign (описание голоса + эмоция; эмоции слушается лучше) и --clone из клона голоса роли
@@ -81,6 +82,8 @@ import librosa
 from faster_whisper import WhisperModel
 sys.path.insert(0, os.path.expanduser("~/models/rus/meter")); os.environ.setdefault("METER2_HEAD", os.path.expanduser("~/models/rus/meter/head.pt"))
 from meter2 import judge, marked_index
+_sp = importlib.util.spec_from_file_location("sn", ROOT / "tools/stress-nuclei.py"); _sn = importlib.util.module_from_spec(_sp); _sp.loader.exec_module(_sn)
+stress_by_nuclei = _sn.stress_by_nuclei; VOWS = "аеёиоуыэюя"
 wm = WhisperModel("small", device="cpu", compute_type="int8")
 norm = lambda s: re.sub(r"[^а-яa-z0-9]", "", s.lower().replace("ё", "е"))
 rep = open(out / "report.txt", "a", encoding="utf-8")
@@ -106,6 +109,16 @@ def evaluate(f, p, r):
     raw, rs = sf.read(f); raw = np.asarray(raw, float).ravel(); tail = raw[-int(rs * .04):]  # модель оборвала последний слог: в конце файла ещё громко
     cut = 20 * np.log10((np.sqrt((tail ** 2).mean()) + 1e-9) / (np.abs(raw).max() + 1e-9)) > -30
     words = [w for s in wm.transcribe(y, language="ru", word_timestamps=True)[0] for w in s.words]
+    # вторая проверка ударения (ядра слогов) — для слов с ручным «+»: обе проверки должны согласиться
+    for fw in re.findall(r"[А-Яа-яЁё+]+", p["t"]):
+        if "+" not in fw: continue
+        base = plain(fw).lower(); hit = [w for w in words if norm(w.word)[:4] == norm(base)[:4]]
+        exp = sum(ch in VOWS for ch in fw[:fw.index("+")].lower()); nv = sum(ch in VOWS for ch in base)
+        if not hit or nv < 2: continue
+        kk, mm = stress_by_nuclei(y, hit[0].start, hit[0].end, nv)
+        if kk is None: continue
+        if kk != exp: bad += min(mm, 2); badw.append(base + "(ядра)"); foc -= min(mm, 2)
+        else: foc += min(mm, 2) * .5
     txt = " ".join(w.word for w in words); sim = difflib.SequenceMatcher(None, norm(txt), norm(plain(p["t"]))).ratio()
     if re.search(r"\d", txt):  # Whisper пишет числа цифрами: сравнить без чисел с обеих сторон
         NUM = r"\b(ноль|один|одна|два|две|три|четыре|пять|шесть|семь|восемь|девять|десять|двадцать|тридцать|сорок|пятьдесят|шестьдесят|семьдесят|восемьдесят|девяносто|сто|ста)\b"
@@ -133,7 +146,8 @@ for lid, k, p, r in parts:
     top = max(c["spk"] for c in cands)
     ok = [c for c in cands if c["bad"] < .3 and c["sim"] >= .8 and c["spk"] >= max(a.spk_min, top - .08)] or \
          [c for c in cands if c["sim"] >= .7 and c["spk"] >= top - .12] or cands
-    best = max(ok, key=lambda c: c["rng"] * .3 + c["acc"] - 5 * c["bad"] + 20 * (c["sim"] - 1) + 3 * c["good"] - 6 * c["cut"] + p.get("focus_w", 0) * c["foc"])
+    sty = -.4 if p.get("plain") else .3  # "plain": обычный тон — из дублей берём самый ровный, без крика и экспрессии
+    best = max(ok, key=lambda c: c["rng"] * sty + (0 if p.get("plain") else c["acc"]) - 5 * c["bad"] + 20 * (c["sim"] - 1) + 3 * c["good"] - 6 * c["cut"] + p.get("focus_w", 0) * c["foc"])
     for c in cands:
         rep.write(f"{lid}.{k} {'★' if c is best else ' '} {c['f'].name:18s} удар:{c['bad']:.2f}/{c['good']:.2f}/{c['foc']:+.2f}{' ОБРЫВ' if c['cut'] else ''}{'(' + ','.join(c['badw']) + ')' if c['badw'] else ''} "
                   f"текст:{c['sim']:.2f} тембр:{c['spk']:.2f} размах:{c['rng']:.1f} акцент:{c['acc']:+.1f} {c['dur']:.1f}с | {c['txt']}\n")

@@ -45,13 +45,10 @@
      "pause": 0.3
     },
     {
-     "t": "Ч+ерез минуту он умрёт изз+а шав+ухи!",
-     "emo": "dynamic, one continuous phrase without any pause, shawarma stressed by tone",
-     "acc": [
-      "умрёт",
-      "шавухи"
-     ],
-     "maxpause": 0.05
+     "t": "Через минуту он умрёт изз+а шав+ухи!",
+     "emo": "same plain punchy tone as the intro, even, no emphasis on the first word",
+     "maxpause": 0.05,
+     "plain": true
     }
    ]
   },
@@ -119,12 +116,12 @@
    "text": "Так Бобик и сдох девственником.",
    "parts": [
     {
-     "t": "Так Б+обик и сдох девственником.",
-     "emo": "mocking dark humor, one phrase without pause, strong tone emphasis on the last word",
+     "t": "Так Б+обик и сдох... девственником.",
+     "emo": "mocking dark humor, short pause before the last word, tone emphasis on it",
      "acc": [
       "девственником"
      ],
-     "maxpause": 0.08
+     "maxpause": 0.25
     }
    ]
   },
@@ -146,16 +143,16 @@
   {
    "id": "e1",
    "role": "nar4",
-   "text": "На том свете — очередь. Но Бобик — избранный. Небеса, видимо, ё*нулись.",
+   "text": "На том свете — очередь. Но Бобик — избранный. Небеса, видимо... ё*нулись.",
    "parts": [
     {
-     "t": "На том свете — очередь. Но Б+обик — избранный. Небеса, видимо, +ёбнулись.",
-     "emo": "fast lively sarcastic, no pauses, last word hit hard",
+     "t": "На том свете — очередь. Но Б+обик — избранный. Небеса, видимо... +ёбнулись.",
+     "emo": "fast lively sarcastic, a short pause before the last word, last word hit hard",
      "acc": [
       "избранный",
       "ёбнулись"
      ],
-     "maxpause": 0.1
+     "maxpause": 0.25
     }
    ]
   },
@@ -245,10 +242,10 @@
   {
    "id": "h2",
    "role": "nar4",
-   "text": "Меч выпадает раз из ста. Сковородка — девяносто семь раз из ста.",
+   "text": "Меч выпадает раз из ста. Сковородка — девяносто семь из ста.",
    "parts": [
     {
-     "t": "Меч выпадает раз из ста. Сковородка — девяносто семь раз из ста.",
+     "t": "Меч выпадает раз из ста. Сковородка — девяносто семь из ста.",
      "emo": "lively, mocking, emphasis on ninety seven",
      "acc": [
       "девяносто"
@@ -316,12 +313,14 @@
     {
      "t": "Так Б+обик попал в Эльд+орию.",
      "emo": "plain simple narration tone, not dramatic",
-     "pause": 0.1
+     "pause": 0.1,
+     "plain": true
     },
     {
      "t": "Две луны, летающие остров+а...",
      "emo": "plain simple narration tone, calm, no drama, flowing without pauses",
-     "maxpause": 0.06
+     "maxpause": 0.06,
+     "plain": true
     }
    ]
   },
@@ -332,7 +331,8 @@
    "parts": [
     {
      "t": "...и пруд.",
-     "emo": "plain ordinary short tone, not drawn out"
+     "emo": "quiet, calm, ordinary everyday tone, no shouting, short",
+     "plain": true
     }
    ]
   },
@@ -515,17 +515,16 @@
   {
    "id": "m2",
    "role": "king",
-   "text": "Это что за людишка посмел убить моего гуся?!",
+   "text": "Это что за идиот посмел убить моего гуся?!",
    "parts": [
     {
-     "t": "Это что за л+юдишка посмел убить моего г+уся?!",
+     "t": "Это что за иди+от посмел убить моего г+уся?!",
      "emo": "furious, roaring with rage, menacing, pronounce every syllable to the end",
      "acc": [
-      "людишка",
+      "идиот",
       "гуся"
      ],
-     "plain_takes": 6,
-     "focus_w": 8
+     "plain_takes": 3
     }
    ]
   },
@@ -567,11 +566,11 @@
      "acc": [
       "желе"
      ],
-     "pause": 0.15
+     "pause": 0.3
     },
     {
-     "t": "А куда мы идём?",
-     "emo": "curious, clearly questioning, rising intonation",
+     "t": "А куда мы ид+ём?",
+     "emo": "curious natural question, lively, not robotic",
      "acc": [
       "куда"
      ]
@@ -584,8 +583,10 @@
    "text": "Впереди развилка.",
    "parts": [
     {
-     "t": "Впереди развилка.",
-     "emo": "cheerful, cute"
+     "t": "Впереди разв+илка.",
+     "emo": "cheerful, cute",
+     "plain_takes": 4,
+     "focus_w": 8
     }
    ]
   },
