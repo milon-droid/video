@@ -3,6 +3,7 @@ import { Look } from './head';
 import { Costume } from './body';
 const SK = '#f3d6c6', SKS = '#c9978e';
 export const LK: Record<string, Look> = {
+  father: { skin: '#e4c4b4', skinSh: '#b48c80', hair: '#5a4c44', hairHi: '#9a8a80', iris: '#4a5a78', style: 'natural', sharp: true, beard: '#4a3e38', age: 50, tired: true },
   timur: { skin: '#e8c4a8', skinSh: '#b88e76', hair: '#1e1a1c', hairHi: '#4a4048', iris: '#3a2a1a', style: 'curly' },
   kWeak: { skin: '#ecd2c4', skinSh: '#c4948a', hair: '#5e4a3e', hairHi: '#8a7666', iris: '#5a6070', style: 'messy', tired: true, plaster: true },
   kWeakHurt: { skin: '#ecd2c4', skinSh: '#c4948a', hair: '#5e4a3e', hairHi: '#8a7666', iris: '#5a6070', style: 'messy', tired: true, plaster: true, bruise: true },
@@ -24,6 +25,9 @@ export const LK: Record<string, Look> = {
   r2: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#c8b070', hairHi: '#f0e0a0', iris: '#3a5a8a', style: 'slick' },
 };
 export const CS: Record<string, Costume> = {
+  courierY: { top: '#f5c518', topSh: '#c4960a', pants: '#2a2c34', shoes: '#d8d8dc', hood: true, collar: true, w: .95, box: true },
+  hoodieY: { top: '#f5c518', topSh: '#c4960a', pants: '#2a2c34', shoes: '#d8d8dc', hood: true, collar: true, w: .95 },
+  porterY: { top: '#f5c518', topSh: '#c4960a', pants: '#2a2c34', shoes: '#6a6a70', hood: true, collar: true, w: .95, box: true, bags: true },
   weakRaid: { top: '#5a5e68', topSh: '#3e424c', pants: '#2e3038', shoes: '#6a6a70', hood: true, w: .94, armor: true, trim: '#8a8e98' },
   timur: { top: '#3a6a4a', topSh: '#24442e', pants: '#2a2a30', shoes: '#d8d8d8', hood: true, w: .9 },
   hoodieWeak: { top: '#6a6e78', topSh: '#4a4e58', pants: '#2e3038', shoes: '#c8c8cc', hood: true, w: .94 },

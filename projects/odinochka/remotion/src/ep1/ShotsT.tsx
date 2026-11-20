@@ -12,7 +12,7 @@ import { Frame, SP, talk } from './common';
 import { SHOTS } from './timeline';
 export { S14 } from './ShotsC';
 const caps = (id: string) => SHOTS.find(s => s.id === id)?.caps;
-const K = { L: LK.kWeakHurt, C: CS.weakRaid };
+const K = { L: LK.kWeakHurt, C: CS.porterY };
 
 // пассажиры по обе стороны вагона (перспектива). look(i) — поворот головы, rise(i) — тянутся
 const Rows: React.FC<{ t: number; look?: (i: number, side: number) => number; rise?: (i: number) => number; vp?: number }> = ({ t, look = () => 0, rise = () => 0, vp = 820 }) => {
@@ -98,6 +98,7 @@ export const S20: React.FC<SP> = ({ t }) => (
     <g transform={cam(1.05 + t * .02, 540, 950)}>
       <TrainInterior t={t} flicker={.7} shake={2} red={.6} />
       <Rows t={t} />
+      <CarBoard t={t} n={7} y={420} />
       {['timur', 'zhora', 'mikh'].map((k, i) => <Figure key={k} x={260 + i * 280} y={1960} s={1.05} t={t} L={LK[k]} C={CS[k]} pose={POSES.stand} seed={60 + i} lookY={-.9} expr={k === 'zhora' ? 'angry' : 'scared'} turn={(i - 1) * .3} />)}
     </g>
   </Frame>
@@ -191,11 +192,68 @@ export const S27: React.FC<SP> = ({ t }) => (
   </Frame>
 );
 
-export const S28: React.FC<SP> = ({ t, d }) => {
-  const cut = d - 1.6;
-  if (t < cut) return <Frame t={t} grade="#2a1a20" gradeK={.12}>
-    <rect width={1080} height={1920} fill="#100a0c" /><ellipse cx={540} cy={640} rx={560} ry={560} fill="#fff0c0" opacity={.12} filter="url(#blur30)" />
-    <g transform={cam(1 + t * .04, 540, 700)}><g transform="translate(540 600) scale(6.2)"><Head t={t} L={K.L} expr="scared" seed={3} turn={-.2} lookX={-.3} sweat={1} /></g></g>
+// табло вагонов: n — сколько вагонов осталось (горящих), мигает последний
+const CarBoard: React.FC<{ t: number; n: number; total?: number; y?: number }> = ({ t, n, total = 8, y = 330 }) => (
+  <g transform={`translate(540 ${y})`}>
+    <rect x={-330} y={-60} width={660} height={120} rx={14} fill="#0a0c12" stroke="#4a4e58" strokeWidth={5} />
+    {Array.from({ length: total }).map((_, i) => { const on = i < n, last = i === n - 1; return <rect key={i} x={-300 + i * 76} y={-30} width={62} height={60} rx={8}
+      fill={on ? (last ? '#ff3a3a' : '#ffcf5a') : '#22252c'} opacity={on && last ? (Math.floor(t * 4) % 2 ? 1 : .3) : 1} />; })}
+  </g>
+);
+export { CarBoard };
+
+// 22b: наклейка на двери «ПО ВАГОНУ НЕ БЕГАТЬ» — Кирилл замечает правило
+export const S22b: React.FC<SP> = ({ t }) => {
+  const z = 1 + ease(t, .2, 2.4) * .5;
+  return <Frame t={t} grade="#3a1a20" gradeK={.12}>
+    <g transform={cam(z, 540, 760)}>
+      <rect width={1080} height={1920} fill="#7a808a" />
+      <rect x={160} y={200} width={760} height={1100} fill="#0a0c12" stroke="#4a4e58" strokeWidth={14} />
+      <g transform={`translate(${noise('rf', t, .5) * 10 + 600} 820) scale(2.4)`} opacity={.35}><Head t={t} L={LK.kWeakHurt} expr="scared" seed={3} turn={-.3} lookX={-.5} /></g>
+      {/* наклейка: бегущий человечек в красном перечёркнутом круге */}
+      <g transform="translate(400 700)"><rect x={-150} y={-190} width={300} height={400} rx={18} fill="#f4f2ec" stroke="#c81e2a" strokeWidth={6} />
+        <circle cx={0} cy={-50} r={110} fill="none" stroke="#c81e2a" strokeWidth={20} />
+        <g fill="#111"><circle cx={10} cy={-115} r={16} /><path d="M0 -95 L-20 -40 L10 -10 L-10 30 M-20 -40 L-50 -60 M0 -80 L40 -60 M10 -10 L50 10" stroke="#111" strokeWidth={14} strokeLinecap="round" fill="none" /></g>
+        <path d="M-78 28 L78 -128" stroke="#c81e2a" strokeWidth={20} />
+        <text x={0} y={110} textAnchor="middle" fontFamily="Mont" fontWeight={900} fontSize={34} fill="#111">ПО ВАГОНУ</text>
+        <text x={0} y={155} textAnchor="middle" fontFamily="Mont" fontWeight={900} fontSize={34} fill="#c81e2a">НЕ БЕГАТЬ</text></g>
+      <text x={540} y={1240} textAnchor="middle" fontFamily="Mont" fontWeight={800} fontSize={40} fill="#c8ccd4" opacity={.7}>НЕ ПРИСЛОНЯТЬСЯ</text>
+    </g>
+  </Frame>;
+};
+
+// 28: Машинист поднимает фонарь — свет падает на Кирилла, остальные отступают
+export const S28: React.FC<SP> = ({ t }) => {
+  const beam = ease(t, .4, 1.4);
+  return <Frame t={t} grade="#2a2418" gradeK={.12}>
+    <g transform={cam(1.0 + t * .03, 540, 1000)}>
+      <rect width={1080} height={1920} fill="#0c0d12" />
+      <polygon points={`540,-50 ${380 - beam * 120},1960 ${700 + beam * 120},1960`} fill="#fff0c0" opacity={.22 * beam} filter="url(#blur12)" />
+      {['mikh', 'zhora', 'timur'].map((k, i) => <Figure key={k} x={[170, 920, 330][i] + (i === 1 ? 1 : -1) * beam * 60} y={1880} s={1.0} t={t} L={LK[k]} C={CS[k]} pose={POSES.stand} seed={80 + i} expr="scared" turn={i === 1 ? -.5 : .5} lookX={i === 1 ? -.7 : .7} opacity={.85} />)}
+      <Figure x={560} y={1960} s={1.3} t={t} L={K.L} C={K.C} pose={PK(t, [[0, 'stand'], [1.0, { armL: [-30, 120], armR: [30, -120] }]])} expr="scared" seed={3} lookY={-.7} rim="#fff0c0" sweat={1} />
+      <ellipse cx={560} cy={900} rx={260 * beam} ry={500 * beam} fill="#fff0c0" opacity={.15} filter="url(#blur30)" />
+    </g>
+  </Frame>;
+};
+
+// 29: фонарь гаснет — под ним лицо пропавшего отца
+export const S29: React.FC<SP> = ({ t }) => {
+  const c = caps('s29'); const rv = ease(t, .3, 1.1);
+  const face = <g transform="translate(0 20) scale(1.25)"><Head t={t} L={LK.father} expr="sad" seed={12} lookY={.3} mouth={talk(t, c, '???') * .35} /></g>;
+  return <Frame t={t} grade="#1a1a2a" gradeK={.12} over={<Flash t={t} t0={.3} dur={.6} color="#fff6d8" max={.5} />}>
+    <g transform={cam(1.25 + t * .06, 540, 760, 0, 140)}>
+      <rect width={1080} height={1920} fill="#0a0b10" />
+      <Machinist x={540} y={2300} s={2.6} t={t} k={1 - rv} reveal={rv} face={face} />
+    </g>
+  </Frame>;
+};
+
+// 30: крупно Кирилл: «Папа?..» → название
+export const S30: React.FC<SP> = ({ t, d }) => {
+  const c = caps('s30'); const cut = d - 1.6;
+  if (t < cut) return <Frame t={t} grade="#1a1a2a" gradeK={.12}>
+    <rect width={1080} height={1920} fill="#0c0a0e" /><ellipse cx={540} cy={640} rx={560} ry={560} fill="#fff0c0" opacity={.1} filter="url(#blur30)" />
+    <g transform={cam(1 + t * .05, 540, 700)}><g transform="translate(540 600) scale(6.2)"><Head t={t} L={K.L} expr="scared" seed={3} lookY={-.4} mouth={talk(t, c, 'КИРИЛЛ')} tears={ease(t, 1.2, 2.4) * .8} /></g></g>
   </Frame>;
   return <Frame t={t} vign={1}>
     <rect width={1080} height={1920} fill="#000" />

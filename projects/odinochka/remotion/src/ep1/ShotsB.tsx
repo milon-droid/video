@@ -52,7 +52,7 @@ export const S07: React.FC<SP> = ({ t }) => {
   return <Frame t={t} grade="#2a3a7a" gradeK={.2}>
     <g transform={cam(1.08, 540, 1000, -t * 20, -60)}>
       <MetroStreet t={t} />
-      <Figure x={x} y={1560} s={.95} t={t} L={LK.kWeak} C={CS.courierWeak} pose={walkPose(dist)} expr="sad" seed={3} turn={.35} lookX={.4} />
+      <Figure x={x} y={1560} s={.95} t={t} L={LK.kWeak} C={CS.courierY} pose={walkPose(dist)} expr="sad" seed={3} turn={.35} lookX={.4} />
       <Rain t={t} k={.6} />
     </g>
   </Frame>;
@@ -107,7 +107,7 @@ export const S09: React.FC<SP> = ({ t }) => {
     <g transform={cam(1.08 + t * .01, 540, 1000, sx, sy - 40)}>
       <Stairwell t={t} graffiti={0} />
       <Spray t={t} />
-      <Figure x={x + (t < hit ? -80 * (1 - ease(t, 0, .5)) : 0)} y={1700 - slide * 80} s={1.12} t={t} L={LK.kWeakHurt} C={CS.hoodieWeak} pose={pose} expr={t < hit ? 'scared' : 'pain'} seed={3} rot={t > hit ? -fly * 8 : 0} turn={.3} sweat={t < hit ? 1 : 0} />
+      <Figure x={x + (t < hit ? -80 * (1 - ease(t, 0, .5)) : 0)} y={1700 - slide * 80} s={1.12} t={t} L={LK.kWeakHurt} C={CS.hoodieY} pose={pose} expr={t < hit ? 'scared' : 'pain'} seed={3} rot={t > hit ? -fly * 8 : 0} turn={.3} sweat={t < hit ? 1 : 0} />
       <Smoke t={t} t0={hit + .35} x={240} y={1250} n={10} r={120} spread={160} color="#d8d0c0" life={1.6} rise={60} k={.7} seed={4} />
       <Figure x={950} y={1880} s={1.35} t={t} L={LK.coll1} C={CS.kabala} pose={PK(t, [[0, 'stand'], [.9, { armR: [-60, -60] }], [hit, { armR: [-120, -10] }], [1.9, 'stand']])} flip expr="smirk" seed={9} turn={-.4} mouth={talk(t, c, 'КОЛЛЕКТОР')} />
       {t > hit - .05 && t < hit + .25 && <SpeedLines t={t} cx={700} cy={1100} n={50} inner={300} color="#fff" k={.6} />}
@@ -121,7 +121,7 @@ export const S10: React.FC<SP> = ({ t }) => {
   return <Frame t={t} grade="#1a2a5a" gradeK={.2}>
     <g transform={cam(1 + t * .02, 540, 1000)}>
       <Kitchen t={t} />
-      <Figure x={560} y={1760} s={1.05} t={t} L={LK.kWeakHurt} C={CS.hoodieWeak} pose={{ ...POSES.phone, crouch: 160 }} expr="sad" seed={3} lookY={.6} />
+      <Figure x={560} y={1760} s={1.05} t={t} L={LK.kWeakHurt} C={CS.hoodieY} pose={{ ...POSES.phone, crouch: 160 }} expr="sad" seed={3} lookY={.6} />
       <rect x={240} y={1360} width={800} height={30} fill="#7a5a3a" /><rect x={240} y={1390} width={800} height={600} fill="#3a2418" />
       <rect x={0} y={0} width={1080} height={1920} fill="#000" opacity={ph * .6} />
     </g>
@@ -162,7 +162,7 @@ export const S12: React.FC<SP> = ({ t }) => {
       <Kitchen t={t} />
       <rect x={60} y={420} width={300} height={1200} fill="#1a1410" /><rect x={60} y={420} width={300} height={1200} fill="#ffcf8a" opacity={.12} />
       <Figure x={210} y={1600} s={.95} t={t} L={LK.nastya} C={CS.nastya} pose={POSES.hold} expr="cry" seed={5} turn={.4} lookX={.7} mouth={talk(t, c, 'НАСТЯ')} tears={1} />
-      <Figure x={800} y={2050} s={1.45} t={t} L={LK.kWeakHurt} C={CS.hoodieWeak} pose={PK(t, [[0, 'stand'], [.3, { armR: [20, -40], fistR: true }]])} expr="determined" seed={3} turn={-.55} lookX={-.8} mouth={talk(t, c, 'КИРИЛЛ')} />
+      <Figure x={800} y={2050} s={1.45} t={t} L={LK.kWeakHurt} C={CS.hoodieY} pose={PK(t, [[0, 'stand'], [.3, { armR: [20, -40], fistR: true }]])} expr="determined" seed={3} turn={-.55} lookX={-.8} mouth={talk(t, c, 'КИРИЛЛ')} />
     </g>
   </Frame>;
 };
@@ -177,7 +177,7 @@ export const S13: React.FC<SP> = ({ t }) => {
       <ellipse cx={540} cy={1000} rx={500} ry={600} fill="#4ac8ff" opacity={.12} filter="url(#blur30)" />
       <text x={540} y={210} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={56} fill="#c8b080" opacity={.8} letterSpacing={10}>СЕВЕРНАЯ</text>
       {team.map((k, i) => { const x = 300 + i * 95 + (i % 2) * 20, y = 1330 + (i % 3) * 60 - t * 40, s = .42 - (i % 3) * .03;
-        return <Figure key={k} x={x} y={y} s={s} t={t} L={LK[k]} C={CS[k === 'kWeak' ? 'weakRaid' : k]} pose={walkPose(t * 80 + i * 60)} seed={i + 10} opacity={.95} rim="#7fd8ff" />; })}
+        return <Figure key={k} x={x} y={y} s={s} t={t} L={LK[k]} C={CS[k === 'kWeak' ? 'porterY' : k]} pose={walkPose(t * 80 + i * 60)} seed={i + 10} opacity={.95} rim="#7fd8ff" />; })}
       <Motes t={t} x={540} y={1300} w={700} h={900} n={30} color="#7fd8ff" speed={40} />
     </g>
   </Frame>;

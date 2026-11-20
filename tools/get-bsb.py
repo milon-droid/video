@@ -34,7 +34,7 @@ PICK = {
 # по какому запросу звук находится в поиске сайта (страница звука нужна для проверки лицензии)
 Q = {"snow": "3363 0208 2890", "wind": "0595 0146 0154 0155 1714", "car engine": "0189 0187 0557 0291 2369", "car door": "1526 0655 1265", "seat belt": "1506 1507 0656",
      "glove box": "0757", "indicator": "1021 3110", "ice crack": "2205 2206 2207", "heart": "0218 1929 1930 0457 1309", "whisper": "3255", "breathing": "2195 1103",
-     "kettle": "0660", "television": "1786 2134", "creaking door": "3211 3205", "knock": "0320 0015", "dripping": "1386", "metal": "0303 0359", "cough": "2183", "tape": "0566 2691", "coin": "0193"}
+     "kettle": "0660", "television": "1786 2134", "creaking door": "3211 3205", "knock": "0320 0015", "dripping": "1386", "metal": "0303 0359", "cough": "2183", "tape": "0566 2691", "coin": "0193", "metro": "3040 3039 3043 2153 2967 3032 0090 0093"}
 QUERY = {n: q for q, ns in Q.items() for n in ns.split()}
 _cache = {}
 def page_link(n):

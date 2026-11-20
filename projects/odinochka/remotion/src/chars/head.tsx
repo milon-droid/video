@@ -135,7 +135,7 @@ const HairFront: React.FC<{ L: Look; t: number; turn: number; sway?: number; cli
     for (let i = 0; i < 40; i++) { const side = i % 2 ? 1 : -1, u = h1(i * 3.7), v = h1(i * 9.1), dark = h1(i * 5.3);
       const rx = side * (2 + u * 10), ry = -110 + v * 14, px = side * (52 + u * 26), py = -40 + v * 70;
       strands.push(<path key={i} d={taperQ(X(rx), ry, X(side * (40 + u * 30)), -96 + v * 10, X(px) + f * (.5 + u), py, 7 + dark * 5, true)} fill={dark < .35 ? mixC(L.hair, '#000000', .45) : dark > .8 ? L.hairHi : mixC(L.hair, '#000000', .15)} opacity={.75} />); }
-    const fly = [[-30, -110, -38, -122, -46, -120], [24, -110, 30, -122, 40, -120]];
+    const fly: number[][] = [];
     return <g>
       <defs><clipPath id={cid}><path d={sil} /></clipPath>
         <linearGradient id={cid + 'g'} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={mixC(L.hair, '#ffffff', .08)} /><stop offset="1" stopColor={mixC(L.hair, '#000000', .3)} /></linearGradient></defs>

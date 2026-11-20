@@ -126,7 +126,7 @@ export const Passenger: React.FC<{ x: number; y: number; s?: number; t: number; 
 };
 
 // Машинист: высокий, в старой форме метрополитена, вместо головы — фонарь (свет k)
-export const Machinist: React.FC<{ x: number; y: number; s?: number; t: number; k?: number; turn?: number }> = ({ x, y, s = 1, t, k = 1, turn = 0 }) => (
+export const Machinist: React.FC<{ x: number; y: number; s?: number; t: number; k?: number; turn?: number; face?: React.ReactNode; reveal?: number }> = ({ x, y, s = 1, t, k = 1, turn = 0, face, reveal = 0 }) => (
   <g transform={`translate(${x} ${y}) scale(${s})`}>
     <path d="M-90 0 L-80 -520 L80 -520 L90 0Z" fill="#1a2030" stroke={INK} strokeWidth={5} />
     <path d="M-80 -520 L-120 -300 L-100 -100" stroke="#1a2030" strokeWidth={46} strokeLinecap="round" fill="none" />
@@ -134,8 +134,9 @@ export const Machinist: React.FC<{ x: number; y: number; s?: number; t: number; 
     {[-460, -400, -340, -280].map((yy, i) => <circle key={i} cx={0} cy={yy} r={7} fill="#c8a85a" />)}
     <rect x={-60} y={-500} width={40} height={10} fill="#c8a85a" /><path d="M-80 -520 L0 -470 L80 -520" stroke="#2a3248" strokeWidth={8} fill="none" />
     <g transform={`translate(${turn * 20} -600)`}>
-      <rect x={-70} y={-80} width={140} height={150} rx={20} fill="#2a2a30" stroke={INK} strokeWidth={5} />
-      <circle cx={0} cy={0} r={52} fill="#fff6d8" opacity={k} />
+      {face && reveal > 0 && <g opacity={reveal}>{face}</g>}
+      <g opacity={1 - reveal}><rect x={-70} y={-80} width={140} height={150} rx={20} fill="#2a2a30" stroke={INK} strokeWidth={5} /></g>
+      <circle cx={0} cy={0} r={52} fill="#fff6d8" opacity={k * (1 - reveal)} />
       <circle cx={0} cy={0} r={170} fill="#fff0c0" opacity={.35 * k} filter="url(#blur30)" />
       <rect x={-80} y={-100} width={160} height={24} rx={6} fill="#1a1a20" /><rect x={-50} y={-120} width={100} height={22} fill="#1a1a20" />
       <circle cx={0} cy={-108} r={10} fill="#c8a85a" />

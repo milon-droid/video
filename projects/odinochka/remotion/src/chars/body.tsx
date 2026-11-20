@@ -36,7 +36,7 @@ export const PK = (t: number, ks: [number, Partial<Pose> | string][], snap = tru
 export const walkPose = (dist: number, run = false): Pose => { const ph = dist / (run ? 260 : 190) * Math.PI; const a = Math.sin(ph) * (run ? 34 : 22);
   return { armL: [-a * .8 - 6, run ? 70 : 14], armR: [a * .8 + 6, run ? -70 : -14], legL: [a, Math.max(0, -Math.cos(ph)) * (run ? 60 : 30)], legR: [-a, Math.max(0, Math.cos(ph)) * (run ? 60 : 30)], lean: run ? 10 : 2, crouch: Math.abs(Math.cos(ph)) * (run ? 18 : 8), head: 0 }; };
 
-export type Costume = { top: string; topSh: string; pants: string; shoes: string; coat?: boolean; hood?: boolean; box?: boolean; armor?: boolean; dress?: boolean; logo?: string; trim?: string; w?: number; stripe?: string; collar?: boolean; chain?: boolean; longcoat?: string };
+export type Costume = { top: string; topSh: string; pants: string; shoes: string; coat?: boolean; hood?: boolean; box?: boolean; armor?: boolean; dress?: boolean; logo?: string; trim?: string; w?: number; stripe?: string; collar?: boolean; bags?: boolean; chain?: boolean; longcoat?: string };
 
 const dir = (a: number) => { const r = a * Math.PI / 180; return [Math.sin(r), Math.cos(r)]; };
 const Limb: React.FC<{ a: number[]; b: number[]; w1: number; w2: number; fill: string; sh?: string }> = ({ a, b, w1, w2, fill, sh }) => {
@@ -93,7 +93,15 @@ export const Figure: React.FC<{ x: number; y: number; s?: number; t: number; L: 
   return (
     <g transform={`translate(${p.x} ${p.y}) scale(${(p.flip ? -1 : 1) * s} ${s}) rotate(${p.rot || 0})`} opacity={p.opacity ?? 1}>
       <ellipse cx={0} cy={4} rx={110 * W} ry={16} fill="#000" opacity={.35} />
-      {C.box && <g transform={`translate(0 ${hipY}) rotate(${lean})`}><rect x={-90} y={ty - 20} width={180} height={230} rx={14} fill="#ffb020" stroke={INK} strokeWidth={4} /><text x={0} y={ty + 110} textAnchor="middle" fontFamily="Mont" fontWeight={900} fontSize={34} fill="#3a2200">ЕДА</text></g>}
+      {C.box && <g transform={`translate(0 ${hipY}) rotate(${lean})`}>
+        {/* термокороб курьера: жёлтый куб с тёмной полосой и светоотражателем, без логотипов */}
+        <rect x={-104} y={ty - 40} width={208} height={250} rx={18} fill="#f2c200" stroke={INK} strokeWidth={4} />
+        <rect x={-104} y={ty - 40} width={208} height={36} rx={14} fill="#d8a800" stroke={INK} strokeWidth={3} />
+        <rect x={-104} y={ty + 120} width={208} height={22} fill="#222" /><rect x={-104} y={ty + 126} width={208} height={6} fill="#e8eef8" opacity={.8} />
+        <path d={`M86 ${ty - 30} V${ty + 200}`} stroke="#000" strokeWidth={14} opacity={.15} /></g>}
+      {C.bags && <g transform={`translate(0 ${hipY}) rotate(${lean})`}>
+        <path d={`M-70 ${ty + 6} L-120 ${ty + 230}`} stroke="#3a3020" strokeWidth={8} /><path d={`M70 ${ty + 6} L120 ${ty + 230}`} stroke="#3a3020" strokeWidth={8} />
+        <rect x={-190} y={ty + 210} width={130} height={110} rx={30} fill="#4a5a3a" stroke={INK} strokeWidth={4} /><rect x={60} y={ty + 220} width={140} height={100} rx={30} fill="#5a4a3a" stroke={INK} strokeWidth={4} /></g>}
       {C.coat && <g transform={`translate(0 ${hipY}) rotate(${lean})`}><path d={`M${-80 * W} ${ty} L${-110 * W - coatSw} 330 Q0 ${350 + coatSw} ${110 * W + coatSw} 330 L${80 * W} ${ty}Z`} fill="#0b0d16" stroke={INK} strokeWidth={4} />{p.rim && <path d={`M${-80 * W} ${ty} L${-110 * W - coatSw} 330`} stroke={p.rim} strokeWidth={5} filter="url(#glow)" />}</g>}
       {C.longcoat && <g transform={`translate(0 ${hipY}) rotate(${lean})`}><path d={`M${-78 * W} ${shY - hipY} L${-96 * W - coatSw * .5} 250 L${96 * W + coatSw * .5} 250 L${78 * W} ${shY - hipY}Z`} fill={C.longcoat} stroke={INK} strokeWidth={4} /></g>}
       {Leg(lL)}{Leg(lR)}

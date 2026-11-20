@@ -16,7 +16,7 @@ duck — приглушение всего, кроме cue с "keep": true (зв
 Общие параметры: t (с), gain (0..1), dur (с), pitch (множитель частоты), pan (−1..1).
 
 Звуки из библиотеки (сначала bash tools/get-sfx.sh, найти: python3 tools/sfx-find.py "запрос"):
-    {"t": 10.15, "type": "lib", "id": "oc-METLImpt_HammerAnvil_OS_01", "gain": 0.9, "rate": 1.0, "align": "sync"}
+    {"t": 10.15, "type": "lib", "id": "oc-METLImpt_HammerAnvil_OS_01", "gain": 0.9, "rate": 1.0, "align": "sync", "offset": 0, "dur": 2}
     align: "sync" — точка синхронизации звука (момент удара) ставится ровно на t; "start" — начало звука на t.
 """
 import argparse
@@ -106,6 +106,8 @@ def lib_sound(c):
         raise ValueError(f"нет звука в библиотеке: {c['id']} (python3 tools/sfx-find.py)")
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(root / s["file"]), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout
     x = np.frombuffer(raw, dtype=np.float32).astype(np.float64)
+    if c.get("offset"):  # начать звук не с начала (длинные атмосферы), с плавным входом 50 мс
+        x = x[int(c["offset"] * SR):].copy(); x[:int(.05 * SR)] *= np.linspace(0, 1, int(.05 * SR))[:len(x)]
     rate = c.get("rate", 1.0)
     if rate != 1.0:
         x = np.interp(np.arange(0, len(x), rate), np.arange(len(x)), x)

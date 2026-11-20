@@ -7,8 +7,8 @@
    "fit": true
   },
   "collector": {
-   "instruct": "Deep calm menacing Russian male voice, around 40, cold polite threat, slow, low and smooth, slight rasp, gangster debt collector.",
-   "ref": "Мы же по-хорошему пришли. Пока по-хорошему.",
+   "instruct": "Very deep, low, menacing Russian gangster voice, about 45, slow and cold, quiet threatening growl with heavy rasp, every word weighs, intimidating debt collector.",
+   "ref": "Ты меня понял, малой? Второй раз объяснять не буду.",
    "low": true
   },
   "mikh": {
@@ -30,6 +30,10 @@
   "announcer": {
    "instruct": "Calm formal Russian male metro announcer, neutral emotionless voice, measured slow pace, clear diction.",
    "ref": "Станция Северная. Переход на кольцевую линию."
+  },
+  "father": {
+   "instruct": "Exhausted hoarse Russian man, about 50, weak broken voice, disbelief and tenderness, very quiet, slow.",
+   "ref": "Сколько же я здесь… Я уже не помню, какой сейчас год."
   }
  },
  "lines": [
@@ -62,7 +66,8 @@
   {
    "id": "v07",
    "role": "kirill",
-   "text": "В подземелья я не хожу. Я курьер."
+   "text": "В подземелья я не хожу. Я курьер — вожу еду по Москве.",
+   "say": "В подземелья я не хожу. Я курьер — вожу +еду по Москве."
   },
   {
    "id": "v08",
@@ -82,13 +87,14 @@
   {
    "id": "v11",
    "role": "mikh",
-   "text": "Рейд ранга Д. Доля — двести тысяч. Едешь?",
+   "text": "Нужен носильщик. Рейд ранга Д, доля — двести тысяч. Едешь?",
    "fx": "radio"
   },
   {
    "id": "v12a",
    "role": "kirill",
-   "text": "Еду.", "say": "+Еду."
+   "text": "Еду.",
+   "say": "+Еду."
   },
   {
    "id": "v12b",
@@ -103,7 +109,8 @@
   {
    "id": "v15",
    "role": "mikh",
-   "text": "Здесь поезда не ходят.", "say": "Здесь поезд+а не ходят."
+   "text": "Здесь поезда не ходят.",
+   "say": "Здесь поезд+а не ходят."
   },
   {
    "id": "v16a",
@@ -128,12 +135,17 @@
   {
    "id": "v20",
    "role": "announcer",
-   "text": "Следующая станция — Конечная. Лишних просим выйти."
+   "text": "Внимание. Вагоны отцепляются по одному. Пройдите в головной вагон."
   },
   {
    "id": "v21",
    "role": "zhora",
-   "text": "Бегом вперёд!"
+   "text": "Бегом в головной!"
+  },
+  {
+   "id": "v22",
+   "role": "kirill",
+   "text": "«По вагону не бегать»…"
   },
   {
    "id": "v23",
@@ -146,9 +158,14 @@
    "text": "Конечная. Выход — один."
   },
   {
-   "id": "v28",
+   "id": "v28f",
+   "role": "father",
+   "text": "Кирилл?.. Сынок?.."
+  },
+  {
+   "id": "v29",
    "role": "kirill",
-   "text": "Я тогда ещё не знал: выйдет только один."
+   "text": "Папа?.. Это ты?"
   }
  ]
 }

@@ -87,3 +87,8 @@
 - `templates/components/stickman-rig.js` — готовый риг стикмена (позы, шаг без
   проскальзывания, лица, клоны).
 
+
+## Звук: внешние скиллы (2026-11-20)
+- `free-audio` (michaelbarney) — поиск CC-аудио через Openverse (Freesound/Jamendo/Wikimedia). Автозапуск его скрипта заблокирован проверкой безопасности; тот же поиск — прямой запрос `curl "https://api.openverse.org/v1/audio/?q=...&license=cc0"`, затем `/v1/audio/<id>/` → поле url.
+- `real-sound` (leonxlnx/earshot) — методика звука «только реальные записи», сведение и QA; `audio-mixing-mastering` (calesthio) — правила сведения (голос впереди, телефон).
+- BigSoundBank (CC0): записи метро 3040/3039/3043/2153/3032 — `tools/get-bsb.py`; в `tools/sfx.py` у lib-звука есть `offset` (начать с середины) и `dur`.
