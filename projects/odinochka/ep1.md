@@ -13,6 +13,8 @@
   «ПОСЛЕ» — LK.kirill4 (natural, боковой пробор) + CS.jacket3 — пользователь: «вторая версия хорошая прям». Ровных линий на лбу нет.
   Музыка: CC0 с OpenGameArt (`get-music.sh`), голоса: `vo/ep1.json` (Qwen3, в синтезе).
 
+- v2 собрана: озвучка `vo/ep1.json` → `vo/ep1/` (Qwen3, 23 реплики), `durations.json` и `mouth.json` → `remotion/public/vo/`; сведение `python3 build_mix.py` (голос + шумы + музыка CC0 из `get-music.sh`, sidechain). 1:44. Рендер `render/ep1-v2.mp4`.
+
 ## Сценарий v2 — «Последний поезд» (≈ 2:00)
 ГОЛОС — Кирилл про себя. ДИКТОР — мужской голос метро.
 

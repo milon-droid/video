@@ -3,7 +3,7 @@
 import json, re, subprocess, os
 R = 'remotion/src/ep1/timeline.ts'; src = open(R).read()
 dur = json.load(open('remotion/public/vo/durations.json'))
-raw = re.findall(r"\{ id: '(s\d+)', d: ([\d.]+)(?:, vo: \[([^\]]*\]?)\])? \}", src)
+raw = re.findall(r"\{ id: '(s\d+)', d: ([\d.]+)((?:, vo: \[(?:\['v\w+', [\d.]+\],? ?)*\])?) \}", src)
 shots = []; a = 0
 for sid, d, vo in raw:
     vos = re.findall(r"\['(v\w+)', ([\d.]+)\]", vo or '')
@@ -58,7 +58,7 @@ for sid, b, dd, vos in shots:
     for v, at in vos:
         f = f'vo/ep1/{v}.wav'
         if not os.path.exists(f): continue
-        i = len(vo_in); vo_in += ['-i', f]; ms = int((b + float(at)) * 1000)
+        i = len(vo_in) // 2; vo_in += ['-i', f]; ms = int((b + float(at)) * 1000)
         role = [l['role'] for l in json.load(open('vo/ep1.json'))['lines'] if l['id'] == v][0]
         fx = ',aecho=0.8:0.6:120|260:0.35|0.2,highpass=f=250,lowpass=f=6000' if role == 'announcer' else ''
         vo_f.append(f'[{i}]aresample=48000,aformat=channel_layouts=mono{fx},adelay={ms}|{ms}[v{i}]')
