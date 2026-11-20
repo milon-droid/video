@@ -3,6 +3,10 @@ import { Look } from './head';
 import { Costume } from './body';
 const SK = '#f3d6c6', SKS = '#c9978e';
 export const LK: Record<string, Look> = {
+  kirill3: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#b4bac8', hairHi: '#eef2ff', iris: '#4a5a78', style: 'cool', sharp: true, under: '#2e3038', scar: true },
+  kirill3Hurt: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#b4bac8', hairHi: '#eef2ff', iris: '#4a5a78', style: 'cool', sharp: true, under: '#2e3038', scar: true, bruise: true },
+  kirill2: { skin: '#f3d8c8', skinSh: '#cf9e92', hair: '#b8946a', hairHi: '#ecd2a6', iris: '#5a7a6a', style: 'rus', plaster: true },
+  kirill2Hurt: { skin: '#f3d8c8', skinSh: '#cf9e92', hair: '#b8946a', hairHi: '#ecd2a6', iris: '#5a7a6a', style: 'rus', plaster: true, bruise: true },
   kirill: { skin: SK, skinSh: SKS, hair: '#141826', hairHi: '#4a6aa8', iris: '#3a4a6a', style: 'kirill', bruise: false },
   kirillHurt: { skin: SK, skinSh: SKS, hair: '#141826', hairHi: '#4a6aa8', iris: '#3a4a6a', style: 'kirill', bruise: true },
   nastya: { skin: SK, skinSh: SKS, hair: '#2a1c22', hairHi: '#7a4a6a', iris: '#6a4a3a', style: 'nastya', female: true },
@@ -15,6 +19,11 @@ export const LK: Record<string, Look> = {
   r2: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#c8b070', hairHi: '#f0e0a0', iris: '#3a5a8a', style: 'slick' },
 };
 export const CS: Record<string, Costume> = {
+  jacket3: { top: '#2a2c34', topSh: '#16171c', pants: '#1c1d24', shoes: '#e8e8ee', hood: true, collar: true, stripe: '#ff7a1a', w: 1.1 },
+  courier3: { top: '#2a2c34', topSh: '#16171c', pants: '#1c1d24', shoes: '#e8e8ee', hood: true, collar: true, stripe: '#ff7a1a', w: 1.1, box: true },
+  courier2: { top: '#ff7a1a', topSh: '#c24e08', pants: '#2a2c36', shoes: '#e8e8ee', hood: true, collar: true, stripe: '#d8dde8', box: true },
+  jacket2: { top: '#ff7a1a', topSh: '#c24e08', pants: '#2a2c36', shoes: '#e8e8ee', hood: true, collar: true, stripe: '#d8dde8' },
+  kabala: { top: '#f0ece4', topSh: '#b8b0a4', pants: '#1a1418', shoes: '#0a0a0a', longcoat: '#5a1420', chain: true, w: 1.18 },
   kirill: { top: '#26345a', topSh: '#141c36', pants: '#20222c', shoes: '#d8d8e0', hood: true },
   courier: { top: '#26345a', topSh: '#141c36', pants: '#20222c', shoes: '#d8d8e0', hood: true, box: true },
   kirillRaid: { top: '#2a3a52', topSh: '#141c30', pants: '#262a34', shoes: '#3a3a44', hood: true, armor: true, trim: '#6a7a9a' },

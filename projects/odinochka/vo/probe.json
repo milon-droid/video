@@ -1,0 +1,10 @@
+{"roles": {
+  "kirill": {"instruct": "Young Russian man, about 22, quiet and tired, low husky voice, restrained emotions, inner monologue, intimate close-mic delivery, natural slow-medium pace.", "ref": "Меня зовут Кирилл. Я никогда не хотел быть охотником.", "f0": 120, "fit": true},
+  "collector": {"instruct": "Deep calm menacing Russian male voice, around 40, cold polite threat, slow, low and smooth, slight rasp, gangster debt collector.", "ref": "Мы же по-хорошему пришли. Пока по-хорошему.", "low": true},
+  "mikh": {"instruct": "Old Russian man, about 55, gravelly warm voice, grumpy but caring, smoker's rasp, fatherly, medium pace.", "ref": "Ну что, Кирюха, живой? Давай, собирайся, время не ждёт."}
+},
+"lines": [
+  {"id": "p1", "role": "kirill", "text": "Через год меня будет бояться вся Москва."},
+  {"id": "p2", "role": "collector", "text": "Долг отца — миллион восемьсот сорок. До пятницы."},
+  {"id": "p3", "role": "mikh", "text": "Рейд ранга Д. Доля — двести тысяч. Едешь?"}
+]}
