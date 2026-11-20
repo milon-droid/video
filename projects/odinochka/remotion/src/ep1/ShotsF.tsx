@@ -33,6 +33,35 @@ const TEAM = ['timur', 'r2', 'r1', 'kirill', 'mikh', 'zhora'];
 // в бою отряд меньше и ниже — чтобы были видны безликие и эффекты сил
 const Low: React.FC<{ children: React.ReactNode }> = ({ children }) => <g transform="translate(540 2080) scale(.8) translate(-540 -1920)">{children}</g>;
 
+
+// стоящий безликий: высокий силуэт в пальто, длинные руки, бледная голова без лица. lift 0..1 — поднимает голову, lunge 0..1 — тянет руки вперёд
+const Faceless: React.FC<{ x: number; y: number; s: number; t: number; seed: number; lift?: number; lunge?: number; dissolve?: number }> = ({ x, y, s, t, seed, lift = 1, lunge = 0, dissolve = 0 }) => {
+  if (dissolve >= 1) return null; const sw = noise('fl' + seed, t, .5) * 3, coat = ['#2a2a32', '#30282a', '#262c30', '#2c2a24'][seed % 4];
+  return <g transform={`translate(${x} ${y}) scale(${s})`} opacity={1 - dissolve}>
+    <path d={`M-70 0 L-62 -420 C-66 -500 -40 -540 0 -548 C40 -540 66 -500 62 -420 L70 0Z`} fill={coat} stroke="#0c0d18" strokeWidth={5} />
+    {[-1, 1].map(sd => <path key={sd} d={`M${sd * 56} -500 Q${sd * (90 + lunge * 40)} ${-330 - lunge * 160} ${sd * (60 + lunge * 20)} ${-170 - lunge * 330 + sw}`} stroke={coat} strokeWidth={30} fill="none" strokeLinecap="round" />)}
+    {[-1, 1].map(sd => <g key={'h' + sd} transform={`translate(${sd * (60 + lunge * 20)} ${-170 - lunge * 330 + sw})`}>{[-14, 0, 14].map((f, i) => <path key={i} d={`M${f} 0 l${f * .4} ${34 + lunge * 10}`} stroke="#c8c4bc" strokeWidth={7} strokeLinecap="round" />)}</g>)}
+    <g transform={`translate(${sw} ${-600 + (1 - lift) * 40}) rotate(${(1 - lift) * 40 + noise('fh' + seed, t, .7) * 6})`}>
+      <ellipse rx={46} ry={58} fill="#cfcac0" stroke="#0c0d18" strokeWidth={5} /><ellipse cx={0} cy={6} rx={30} ry={40} fill="#b4b0a6" opacity={.55} />
+    </g>
+  </g>;
+};
+// толпа безликих в проходе: n рядов в глубину, плотная; adv — насколько продвинулись к отряду
+const Crowd: React.FC<{ t: number; adv?: number; lift?: (i: number) => number; lunge?: number; dis?: (i: number) => number; n?: number }> = ({ t, adv = 0, lift = () => 1, lunge = 0, dis = () => 0, n = 22 }) => {
+  const out: React.ReactNode[] = [];
+  for (let i = n - 1; i >= 0; i--) { const row = Math.floor(i / 3), col = i % 3, k = Math.pow(.8, row - adv * 1.5), kk = Math.min(1.5, k);
+    out.push(<Faceless key={i} x={540 + (col - 1) * 230 * kk + (h1(i * 3) - .5) * 60 * kk} y={VP + 640 * kk} s={kk * 1.1} t={t} seed={i} lift={lift(i)} lunge={lunge} dissolve={dis(i)} />); }
+  return <g>{out}</g>;
+};
+// темнота с «дырками» света: лучи фонаря и пятна (огонь, вспышки)
+type Hole = { beam?: [number, number, number, number, number]; spot?: [number, number, number] };
+const Dark: React.FC<{ id: string; k?: number; holes?: Hole[] }> = ({ id, k = .93, holes = [] }) => <g>
+  <defs><mask id={id}><rect width={1080} height={1920} fill="#fff" />
+    {holes.map((h, i) => h.beam ? <polygon key={i} points={`${h.beam[0]},${h.beam[1]} ${h.beam[2] - h.beam[4]},${h.beam[3]} ${h.beam[2] + h.beam[4]},${h.beam[3]}`} fill="#000" filter="url(#blur30)" />
+      : h.spot ? <circle key={i} cx={h.spot[0]} cy={h.spot[1]} r={h.spot[2]} fill="#000" filter="url(#blur30)" /> : null)}</mask></defs>
+  <rect width={1080} height={1920} fill="#020205" opacity={k} mask={`url(#${id})`} />
+</g>;
+
 // эффекты сил: огненный шар, молния, трассеры, аура кулаков
 const Fireball: React.FC<{ t: number; t0: number; x0: number; y0: number; x1: number; y1: number }> = ({ t, t0, x0, y0, x1, y1 }) => {
   const q = clamp((t - t0) / .45); if (t < t0 || q >= 1) return null; const x = x0 + (x1 - x0) * q, y = y0 + (y1 - y0) * q;
@@ -82,101 +111,123 @@ export const F18: React.FC<SP> = ({ t }) => {
   </Frame>;
 };
 
+
+// f18b: тоннель — свет мигает и гаснет; в темноте шорох, Тимур: «Что со светом?..»
+export const F18b: React.FC<SP> = ({ t }) => {
+  const c = caps('f18b'); const off = t > 1.3 ? 1 : (Math.floor(t * 12) % 3 === 0 && t > .5 ? .8 : 0);
+  return <Frame t={t} grade="#1a1a2a" gradeK={.15}>
+    <g transform={cam(1.05, 540, 1050)}>
+      <TrainInterior t={t} flicker={.8} vp={VP} shake={2} />
+      <Rows t={t} st={(j) => ({ bow: t > 1.6 ? .6 : 1 })} />
+      {TEAM.map(w => <H key={w} t={t} w={w} expr="scared" lookY={-.5} mouth={w === 'timur' ? talk(t, c, 'ТИМУР') : 0} rim={off ? '#ff2a3a' : undefined} />)}
+      <Dark id="d18b" k={.95 * off} holes={[{ spot: [540, 120, 120] }]} />
+      {off > .9 && <rect x={480} y={90} width={120} height={50} fill="#ff2a3a" opacity={.25 + .1 * Math.sin(t * 8)} filter="url(#blur12)" />}
+    </g>
+  </Frame>;
+};
+
+// f18c: щелчок — фонарь на автомате бойца; луч скользит по проходу и выхватывает толпу безликих вплотную, их много
+export const F18c: React.FC<SP> = ({ t }) => {
+  const on = t > .4, sweep = ease(t, .5, 2.6), bx = 120 + sweep * 760, [sx, sy] = shakeXY(t, [[2.0, 10, .5]]);
+  const lift = (i: number) => ease(t, .9 + (i % 7) * .18, 1.4 + (i % 7) * .18);
+  return <Frame t={t} grade="#1a1a2a" gradeK={.1}>
+    <g transform={cam(1.05 + ease(t, 2, 3.4) * .08, 540, 1050, sx, sy)}>
+      <TrainInterior t={0} flicker={0} vp={VP} />
+      <Crowd t={t} adv={.6} lift={lift} n={24} />
+      <Dark id="d18c" k={.97} holes={on ? [{ beam: [880, 1900, bx, 700, 280] }] : []} />
+      {on && <circle cx={880} cy={1880} r={50} fill="#fff8e0" filter="url(#glowBig)" />}
+    </g>
+  </Frame>;
+};
+
 // f19: один пассажир поднимает голову — лица нет; затем второй; затем все
 export const F19: React.FC<SP> = ({ t }) => {
-  const cut = 1.9;
-  if (t < cut) return <Frame t={t} grade="#2a2228" gradeK={.18}>
-    <g transform={cam(1 + t * .04, 540, 900)}>
-      <TrainInterior t={t} flicker={.4} vp={VP} shake={1.5} />
-      <rect width={1080} height={1920} fill="#05060a" opacity={.35} />
-      <Passenger x={540} y={2350} s={3.6} t={t} seed={4} coat="#2e3440" hair="#5a4a3a" bow={1 - ease(t, .5, 1.5)} look={0} rock={.4} />
-    </g>
-  </Frame>;
-  const st = (j: number) => { const t0 = cut + (j % 4) * .12; return { bow: 1 - ease(t, t0, t0 + .45), look: ease(t, t0 + .3, t0 + .6) * (j % 2 ? -.3 : .3) }; };
-  return <Frame t={t} grade="#2a2228" gradeK={.18}>
-    <g transform={cam(1.0 + ease(t, cut, cut + 1.5) * .1, 540, 1000)}>
-      <TrainInterior t={t} flicker={.4} vp={VP} shake={2} />
-      <Rows t={t} st={st} big={1.55} />
+  const tilt = ease(t, .4, 1.6);
+  return <Frame t={t} grade="#1a1a2a" gradeK={.1}>
+    <g transform={cam(1.0 + t * .06, 540, 800)}>
+      <rect width={1080} height={1920} fill="#0a0b10" />
+      <Faceless x={540} y={2900} s={3.4} t={t} seed={5} lift={1} />
+      <g transform={`rotate(${tilt * 18} 540 860)`} opacity={0} />
+      <Dark id="d19" k={.9} holes={[{ beam: [700, 1950, 540, 500, 420] }]} />
     </g>
   </Frame>;
 };
 
-// f20: Михалыч: «К бою!» — отряд принимает стойки, загораются силы
+// f20: в темноте Михалыч: «К бою!» — огонь в его руке освещает толпу, она уже рядом
 export const F20: React.FC<SP> = ({ t }) => {
-  const c = caps('f20'); const on = ease(t, .4, .8);
-  return <Frame t={t} grade="#2a1a20" gradeK={.15}>
-    <g transform={cam(1.2, 600, 1100)}>
-      <TrainInterior t={t} flicker={.5} vp={VP} shake={2} red={.3} />
-      <Rows t={t} st={() => ({ rise: .3 })} big={1.2} />
-      <Low>
-      <H t={t} w="r1" pose={{ ...POSES.hold, armR: [60, -90] }} expr="determined" />
-      <Rifle x={G.r1[0] + 40} y={G.r1[1] - 470} ang={-15} />
-      <H t={t} w="mikh" pose={PK(t, [[0, 'stand'], [.3, { armR: [130, -30], armL: [-40, 60] }]])} expr="shout" mouth={talk(t, c, 'МИХАЛЫЧ')} />
-      <circle cx={G.mikh[0] + 230} cy={G.mikh[1] - 820} r={50 * on} fill="#ffb040" filter="url(#glowBig)" opacity={on} />
-      <H t={t} w="zhora" pose={POSES.guard} expr="angry" />
-      {[[-1], [1]].map(([sd], i) => <circle key={i} cx={G.zhora[0] + sd * 70} cy={G.zhora[1] - 600} r={40} fill="#ff6a2a" opacity={.5 * on} filter="url(#blur12)" />)}
-      </Low>
+  const c = caps('f20'); const on = ease(t, .3, .7), fx = G.mikh[0] + 150, fy = G.mikh[1] - 640;
+  return <Frame t={t} grade="#2a1a20" gradeK={.12}>
+    <g transform={cam(1.1, 600, 1150)}>
+      <TrainInterior t={0} flicker={0} vp={VP} />
+      <Crowd t={t} adv={.9 + t * .05} lunge={.4} n={24} />
+      <Low><H t={t} w="r1" pose={{ ...POSES.hold, armR: [60, -90] }} expr="determined" /><Rifle x={G.r1[0] + 40} y={G.r1[1] - 470} ang={-15} />
+        <H t={t} w="mikh" pose={PK(t, [[0, 'stand'], [.25, { armR: [120, -40], armL: [-40, 60] }]])} expr="shout" mouth={talk(t, c, 'МИХАЛЫЧ')} />
+        <H t={t} w="zhora" pose={POSES.guard} expr="angry" /><H t={t} w="kirill" pose={{ ...POSES.guard, armL: [-80, 30] }} expr="scared" /><H t={t} w="timur" expr="scared" pose={{ ...POSES.stand, crouch: 60 }} />
+        <H t={t} w="r2" pose={POSES.guard} expr="scared" /></Low>
+      <Dark id="d20" k={.9} holes={[{ spot: [540 + (fx - 540) * .8, 2080 - (1920 - fy) * .8, 380 * on + 60] }, { beam: [760, 1700, 520, 700, 200] }]} />
+      <circle cx={540 + (fx - 540) * .8} cy={2080 - (1920 - fy) * .8} r={46 * on} fill="#ffb040" filter="url(#glowBig)" opacity={on} />
     </g>
   </Frame>;
 };
 
-// f21: бой А — огненный шар Михалыча, очередь из автомата; безликие рассыпаются дымом
+// f21: бой А — огненный шар, взрыв освещает толпу; очередь из автомата вспышками; безликие рассыпаются, но лезут новые
 export const F21: React.FC<SP> = ({ t }) => {
-  const fb = .4, hit = .85, [sx, sy] = shakeXY(t, [[hit, 26, .6], [1.8, 12, .3], [2.3, 12, .3]]);
-  const st = (j: number) => ({ rise: .9, dissolve: j === 2 || j === 3 ? ease(t, hit, hit + .6) : j === 4 ? ease(t, 2.0, 2.5) : j === 5 ? ease(t, 2.5, 3.0) : 0 });
-  return <Frame t={t} impact={isImpact(t, hit, 2)} grade="#2a1a20" gradeK={.12} over={<Flash t={t} t0={hit} color="#ffb060" max={.5} />}>
+  const fb = .3, hit = .75, [sx, sy] = shakeXY(t, [[hit, 26, .6], [1.8, 12, .3], [2.4, 12, .3]]);
+  const boomL = clamp(1 - Math.abs(t - hit - .15) / .5), muzzle = t > 1.5 && t < 2.9 && Math.floor(t * 30) % 2 === 0;
+  const dis = (i: number) => i < 6 ? ease(t, hit, hit + .6) : i < 9 ? ease(t, 2.0, 2.6) : 0;
+  return <Frame t={t} impact={isImpact(t, hit, 2)} grade="#2a1a20" gradeK={.1}>
     <g transform={cam(1.05, 540, 1050, sx, sy)}>
-      <TrainInterior t={t} flicker={.6} vp={VP} shake={3} red={.3} />
-      <Rows t={t} st={st} big={1.2} />
-      <Smoke t={t} t0={hit} x={540} y={1250} n={12} r={130} spread={260} color="#0a0a10" life={1.6} rise={140} k={.9} seed={7} />
-      <Smoke t={t} t0={2.0} x={760} y={1150} n={8} r={90} spread={160} color="#0a0a10" life={1.4} rise={120} k={.9} seed={8} />
-      <Fireball t={t} t0={fb} x0={G.mikh[0] + 120} y0={G.mikh[1] - 800} x1={540} y1={1250} /><Boom t={t} t0={hit} x={540} y={1250} />
-      <Tracers t={t} t0={1.6} t1={2.9} x0={G.r1[0] + 260} y0={G.r1[1] - 520} x1={780} y1={1150} />
-      <Low>
-      {TEAM.map(w => <H key={w} t={t} w={w} pose={w === 'mikh' ? { ...POSES.stand, armR: [120, -20] } : w === 'r1' ? { ...POSES.hold, armR: [60, -90] } : w === 'timur' || w === 'kirill' ? POSES.stand : POSES.guard} expr={w === 'timur' ? 'scared' : 'determined'} rim="#ffb060" />)}
-      <Rifle x={G.r1[0] + 40} y={G.r1[1] - 470} ang={-15} />
-      </Low>
+      <TrainInterior t={0} flicker={0} vp={VP} />
+      <Crowd t={t} adv={1.0 + t * .08} lunge={.7} dis={dis} n={27} />
+      <Smoke t={t} t0={hit} x={540} y={1300} n={12} r={130} spread={300} color="#0a0a10" life={1.6} rise={140} k={.9} seed={7} />
+      <Smoke t={t} t0={2.0} x={700} y={1200} n={8} r={90} spread={180} color="#0a0a10" life={1.4} rise={120} k={.9} seed={8} />
+      <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={w === 'mikh' ? { ...POSES.stand, armR: [120, -20] } : w === 'r1' ? { ...POSES.hold, armR: [60, -90] } : w === 'timur' ? { ...POSES.stand, crouch: 60 } : POSES.guard} expr={w === 'timur' || w === 'kirill' ? 'scared' : 'shout'} rim="#ffb060" />)}
+        <Rifle x={G.r1[0] + 40} y={G.r1[1] - 470} ang={-15} /></Low>
+      <Dark id="d21" k={.92} holes={[...(boomL > 0 ? [{ spot: [540, 1300, 700 * boomL] } as Hole] : []), ...(muzzle ? [{ spot: [740, 1560, 420] } as Hole] : []), { spot: [540, 1300, t > fb && t < hit ? 260 : 0] }]} />
+      <Fireball t={t} t0={fb} x0={700} y0={1450} x1={540} y1={1300} /><Boom t={t} t0={hit} x={540} y={1300} />
+      <Tracers t={t} t0={1.5} t1={2.9} x0={740} y0={1560} x1={700} y1={1150} />
     </g>
   </Frame>;
 };
 
-// f22: бой Б — цепная молния, светящийся кулак Жоры; Кирилл прикрывает Тимура за сумками
+// f22: бой Б — цепная молния, кулак Жоры в огне; Тимура хватают — Кирилл вырывает его
 export const F22: React.FC<SP> = ({ t }) => {
-  const bolt = .5, punch = 1.7, [sx, sy] = shakeXY(t, [[bolt, 14, .4], [punch, 24, .5]]);
-  const st = (j: number) => ({ rise: .9, dissolve: j === 0 || j === 1 ? ease(t, bolt + .1, bolt + .7) : j === 6 || j === 7 ? ease(t, punch, punch + .6) : j < 6 ? 1 : 0 });
-  return <Frame t={t} impact={isImpact(t, punch, 2)} grade="#1a2030" gradeK={.12} over={<Flash t={t} t0={bolt} color="#bfe8ff" max={.45} />}>
+  const bolt = .4, punch = 1.6, [sx, sy] = shakeXY(t, [[bolt, 14, .4], [punch, 24, .5]]);
+  const flashB = clamp(1 - Math.abs(t - bolt - .1) / .35), flashP = clamp(1 - Math.abs(t - punch) / .4);
+  const dis = (i: number) => i < 9 ? 1 : i < 13 ? ease(t, bolt + .1, bolt + .6) : i < 16 ? ease(t, punch, punch + .6) : 0;
+  return <Frame t={t} impact={isImpact(t, punch, 2)} grade="#1a2030" gradeK={.1}>
     <g transform={cam(1.05, 540, 1050, sx, sy)}>
-      <TrainInterior t={t} flicker={.6} vp={VP} shake={3} />
-      <Rows t={t} st={st} big={1.2} />
-      <Bolt t={t} t0={bolt} pts={[[G.r2[0] + 80, G.r2[1] - 820], [430, 1300], [300, 1230], [700, 1260], [820, 1200]]} />
-      <Smoke t={t} t0={bolt + .1} x={350} y={1250} n={10} r={110} spread={220} color="#0a0a10" life={1.5} rise={130} k={.9} seed={9} />
-      <Smoke t={t} t0={punch} x={720} y={1300} n={10} r={110} spread={200} color="#0a0a10" life={1.5} rise={130} k={.9} seed={10} />
-      <Low>
-      <H t={t} w="r2" pose={{ ...POSES.raiseR, armR: [150, -10] }} expr="determined" rim="#8fd8ff" />
-      <H t={t} w="zhora" dx={-ease(t, 1.2, punch) * 180} pose={t < punch - .2 ? POSES.guard : PK(t - punch + .2, [[0, { armR: [60, -100], fistR: true }], [.2, { armR: [-95, -5], fistR: true, lean: -14 }], [.9, 'guard']])} expr="shout" rim="#ff8a3a" />
-      {t > punch - .25 && t < punch + .3 && <circle cx={G.zhora[0] - 300} cy={G.zhora[1] - 620} r={70} fill="#ff7a2a" filter="url(#glowBig)" />}
-      <H t={t} w="kirill" pose={{ ...POSES.guard, armL: [-80, 30] }} expr="scared" dx={-40} />
-      <H t={t} w="timur" pose={{ ...POSES.stand, crouch: 80, armL: [-40, 120], armR: [40, -120] }} expr="scared" />
-      {['mikh', 'r1'].map(w => <H key={w} t={t} w={w} pose={POSES.guard} expr="determined" />)}
-      {t > punch - .05 && t < punch + .25 && <SpeedLines t={t} cx={650} cy={1250} n={40} inner={240} k={.5} />}
-      </Low>
+      <TrainInterior t={0} flicker={0} vp={VP} />
+      <Crowd t={t} adv={1.25} lunge={.9} dis={dis} n={24} />
+      <Smoke t={t} t0={bolt + .1} x={420} y={1300} n={10} r={110} spread={240} color="#0a0a10" life={1.5} rise={130} k={.9} seed={9} />
+      <Smoke t={t} t0={punch} x={720} y={1340} n={10} r={110} spread={200} color="#0a0a10" life={1.5} rise={130} k={.9} seed={10} />
+      <Low><H t={t} w="r2" pose={{ ...POSES.raiseR, armR: [150, -10] }} expr="shout" rim="#8fd8ff" />
+        <H t={t} w="zhora" dx={-ease(t, 1.1, punch) * 180} pose={t < punch - .2 ? POSES.guard : PK(t - punch + .2, [[0, { armR: [60, -100], fistR: true }], [.2, { armR: [-95, -5], fistR: true, lean: -14 }], [.9, 'guard']])} expr="shout" rim="#ff8a3a" />
+        <H t={t} w="timur" dx={t > .9 && t < 1.9 ? -60 : 0} pose={t > .9 && t < 1.9 ? { ...POSES.hit, armL: [-70, 20] } : { ...POSES.stand, crouch: 60 }} expr="scared" />
+        <H t={t} w="kirill" pose={t > 1.0 && t < 2.0 ? { ...POSES.stand, armL: [-70, -15], fistL: true, lean: 12 } : POSES.guard} expr="shout" mouth={t > 1.1 && t < 1.7 ? .5 : 0} />
+        {['mikh', 'r1'].map(w => <H key={w} t={t} w={w} pose={POSES.guard} expr="shout" />)}</Low>
+      {t > .9 && t < 1.9 && <Faceless x={60} y={2050} s={1.2} t={t} seed={30} lunge={1} />}
+      <Dark id="d22" k={.92} holes={[{ spot: [500, 1250, 800 * flashB] }, { spot: [650, 1300, 500 * flashP] }, { beam: [760, 1800, 400, 900, 180] }]} />
+      <Bolt t={t} t0={bolt} pts={[[480, 1400], [430, 1300], [300, 1230], [700, 1260], [820, 1200]]} />
+      {t > punch - .25 && t < punch + .3 && <circle cx={650} cy={1300} r={70} fill="#ff7a2a" filter="url(#glowBig)" />}
+      {t > punch - .05 && t < punch + .25 && <SpeedLines t={t} cx={650} cy={1300} n={40} inner={240} k={.5} />}
     </g>
   </Frame>;
 };
 
-// f23: последние безликие рассыпаются; дым оседает, тишина
-export const F23: React.FC<SP> = ({ t }) => (
-  <Frame t={t} grade="#2a2a3a" gradeK={.15}>
+// f23: свет мигает и возвращается — проход пуст, оседает чёрный дым; тишина
+export const F23: React.FC<SP> = ({ t }) => {
+  const lit = t > .9 ? 1 : (Math.floor(t * 14) % 3 === 0 ? 1 : 0);
+  return <Frame t={t} grade="#2a2a3a" gradeK={.15}>
     <g transform={cam(1.0 + t * .03, 540, 1050)}>
-      <TrainInterior t={t} flicker={.2} vp={VP} shake={1.5} />
-      <Rows t={t} st={(j) => ({ rise: .9, dissolve: j >= 8 ? ease(t, .3 + (j - 8) * .3, .9 + (j - 8) * .3) : 1 })} big={1.2} />
-      <Smoke t={t} t0={.3} x={540} y={1050} n={14} r={140} spread={380} color="#0a0a10" life={2.6} rise={160} k={.7} seed={11} />
-      <Low>
-      {TEAM.map(w => <H key={w} t={t} w={w} pose={POSES.stand} expr="calm" />)}
-      </Low>
+      <TrainInterior t={t} flicker={.1} vp={VP} shake={1.2} />
+      <Crowd t={t} adv={1.2} dis={(i) => i < 21 ? 1 : ease(t, .2 + (i - 21) * .2, .7 + (i - 21) * .2)} n={24} />
+      <Smoke t={t} t0={0} x={540} y={1100} n={14} r={140} spread={380} color="#0a0a10" life={2.6} rise={160} k={.7} seed={11} />
+      <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={POSES.stand} expr={w === 'timur' ? 'scared' : 'calm'} />)}</Low>
+      <Dark id="d23" k={.9 * (1 - lit)} />
     </g>
-  </Frame>
-);
+  </Frame>;
+};
 
 // f24: Жора: «Изи. И это всё?» — смеётся; Михалыч опускает руку, но хмурится
 export const F24: React.FC<SP> = ({ t }) => {

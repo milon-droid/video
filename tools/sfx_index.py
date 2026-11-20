@@ -27,5 +27,10 @@ if bsb.exists():
     for n, m in json.loads(bsb.read_text()).items():
         out.append({"id": "bsb-" + m["name"], "file": "bigsoundbank/" + m.get("file", f"{n}.flac"), "license": "CC0 (BigSoundBank)", "name": m["title"],
                     "text": (m["title"] + " " + m["name"].replace("-", " ") + " " + m["tags"]).lower(), "dur": None, "sync": 0, "lufs": None})
+fs = lib / "freesound-cc0" / "sounds.json"  # Freesound через Openverse, только CC0 (страницы — в sounds.json)
+if fs.exists():
+    for n, m in json.loads(fs.read_text()).items():
+        out.append({"id": "fs-" + n, "file": "freesound-cc0/" + m["file"], "license": "CC0 (Freesound, " + m["creator"] + ")", "name": m["title"],
+                    "text": (m["title"] + " " + n.replace("-", " ")).lower(), "dur": None, "sync": 0, "lufs": None})
 (lib / "index.json").write_text(json.dumps(out, ensure_ascii=False))
 print(f"каталог: {len(out)} звуков → {lib / 'index.json'}")

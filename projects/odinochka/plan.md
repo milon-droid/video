@@ -38,4 +38,4 @@
 ## Подпись к посту, серия 1
 Самый слабый охотник Москвы. Долг отца. Храм, где статуи улыбаются. 🗡️ Серия 1 — «Самый слабый».
 #аниме #anime #сололевелинг #москва #манхва
-Музыка: Freesound — Bertsz, szegvari, Magmi.Soundtracks (CC0); звуки метро — BigSoundBank, Joseph Sardin (CC0)
+Музыка: Freesound — Bertsz, szegvari, Magmi.Soundtracks (CC0); звуки метро — BigSoundBank, Joseph Sardin (CC0); хоррор-звуки — Freesound (CC0)
