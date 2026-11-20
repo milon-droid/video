@@ -35,7 +35,7 @@ const Low: React.FC<{ children: React.ReactNode }> = ({ children }) => <g transf
 
 
 // стоящий безликий: высокий силуэт в пальто, длинные руки, бледная голова без лица. lift 0..1 — поднимает голову, lunge 0..1 — тянет руки вперёд
-const Faceless: React.FC<{ x: number; y: number; s: number; t: number; seed: number; lift?: number; lunge?: number; dissolve?: number }> = ({ x, y, s, t, seed, lift = 1, lunge = 0, dissolve = 0 }) => {
+const Faceless: React.FC<{ x: number; y: number; s: number; t: number; seed: number; lift?: number; lunge?: number; dissolve?: number; grin?: number; eyes?: number }> = ({ x, y, s, t, seed, lift = 1, lunge = 0, dissolve = 0, grin = 0, eyes = 0 }) => {
   if (dissolve >= 1) return null; const sw = noise('fl' + seed, t, .5) * 3, coat = ['#2a2a32', '#30282a', '#262c30', '#2c2a24'][seed % 4];
   return <g transform={`translate(${x} ${y}) scale(${s})`} opacity={1 - dissolve}>
     <path d={`M-70 0 L-62 -420 C-66 -500 -40 -540 0 -548 C40 -540 66 -500 62 -420 L70 0Z`} fill={coat} stroke="#0c0d18" strokeWidth={5} />
@@ -43,6 +43,9 @@ const Faceless: React.FC<{ x: number; y: number; s: number; t: number; seed: num
     {[-1, 1].map(sd => <g key={'h' + sd} transform={`translate(${sd * (60 + lunge * 20)} ${-170 - lunge * 330 + sw})`}>{[-14, 0, 14].map((f, i) => <path key={i} d={`M${f} 0 l${f * .4} ${34 + lunge * 10}`} stroke="#c8c4bc" strokeWidth={7} strokeLinecap="round" />)}</g>)}
     <g transform={`translate(${sw} ${-600 + (1 - lift) * 40}) rotate(${(1 - lift) * 40 + noise('fh' + seed, t, .7) * 6})`}>
       <ellipse rx={46} ry={58} fill="#cfcac0" stroke="#0c0d18" strokeWidth={5} /><ellipse cx={0} cy={6} rx={30} ry={40} fill="#b4b0a6" opacity={.55} />
+      {eyes > 0 && [-17, 17].map((ex, i) => <g key={i}><path d={`M${ex - 12} -12 Q${ex} ${-20 - eyes * 4} ${ex + 12} -12 Q${ex} -8 ${ex - 12} -12Z`} fill="#0a0404" /><ellipse cx={ex} cy={-13} rx={4 * eyes} ry={3 * eyes} fill="#ff2030" filter="url(#glow)" /></g>)}
+      {grin > 0 && <g><path d={`M${-34 * grin - 4} 16 Q0 ${20 + 34 * grin} ${34 * grin + 4} 16 Q0 ${24 + 18 * grin} ${-34 * grin - 4} 16Z`} fill="#140606" stroke="#0c0d18" strokeWidth={2} />
+        {Array.from({ length: 9 }).map((_, i) => { const u = i / 8 - .5, xx = u * 62 * grin, yy = 18 + (1 - 4 * u * u) * 14 * grin; return <path key={i} d={`M${xx - 3} ${yy - 2} l3 ${5 * grin} l3 ${-5 * grin}`} fill="#e8e0d0" />; })}</g>}
     </g>
   </g>;
 };
@@ -140,15 +143,46 @@ export const F18c: React.FC<SP> = ({ t }) => {
   </Frame>;
 };
 
+
+// секундная отсылка: каменное лицо с жуткой улыбкой (своя прорисовка, синий свет, красные зрачки, штриховка, трещины)
+const BossGrin: React.FC<{ t: number; k: number }> = ({ t, k }) => {
+  const sh = Math.sin(t * 50) * 4 * k;
+  return <g opacity={k} transform={`translate(${540 + sh} 900) scale(${1 + (1 - k) * .1})`}>
+    <defs><radialGradient id="bgFace" cx=".5" cy=".4" r=".7"><stop offset="0" stopColor="#4fa8e8" /><stop offset="1" stopColor="#0e2a5a" /></radialGradient></defs>
+    <rect x={-540} y={-900} width={1080} height={1920} fill="#061430" />
+    {/* каменный капюшон */}
+    <path d="M-520 -900 L-420 -300 L-470 400 L-300 1000 L300 1000 L470 400 L420 -300 L520 -900Z" fill="#1a3a6a" stroke="#05101e" strokeWidth={10} />
+    <path d="M-120 -900 L0 -560 L120 -900Z" fill="#2a5088" stroke="#05101e" strokeWidth={8} />
+    {/* лицо */}
+    <path d="M-330 -420 C-360 -120 -330 160 -240 330 C-150 470 150 470 240 330 C330 160 360 -120 330 -420 C200 -560 -200 -560 -330 -420Z" fill="url(#bgFace)" stroke="#05101e" strokeWidth={10} />
+    {/* глазницы со штриховкой */}
+    {[-1, 1].map(sd => <g key={sd}><path d={`M${sd * 60} -250 C${sd * 120} -300 ${sd * 260} -290 ${sd * 290} -200 C${sd * 250} -140 ${sd * 110} -140 ${sd * 60} -190Z`} fill="#071226" />
+      {Array.from({ length: 10 }).map((_, i) => <line key={i} x1={sd * (70 + i * 22)} y1={-290} x2={sd * (75 + i * 22)} y2={-210} stroke="#05101e" strokeWidth={4} />)}
+      <circle cx={sd * 175} cy={-205} r={30} fill="#ff1030" filter="url(#glowBig)" /><circle cx={sd * 175} cy={-205} r={10} fill="#fff" /></g>)}
+    {/* нос-щели и морщины */}
+    <path d="M-30 -160 L-50 -20 L-20 0 M30 -160 L50 -20 L20 0" stroke="#05101e" strokeWidth={8} fill="none" />
+    {[-1, 1].map(sd => <path key={'w' + sd} d={`M${sd * 120} -80 Q${sd * 200} 20 ${sd * 230} 120`} stroke="#05101e" strokeWidth={6} fill="none" />)}
+    {/* улыбка */}
+    <path d="M-280 60 Q0 120 280 60 Q240 300 0 330 Q-240 300 -280 60Z" fill="#05060c" stroke="#05101e" strokeWidth={8} />
+    {Array.from({ length: 12 }).map((_, i) => { const u = i / 11 - .5, x = u * 470, top = 92 + Math.abs(u) * 30, w = 40; return <g key={i}>
+      <path d={`M${x - w / 2} ${top} L${x + w / 2} ${top} L${x + w * .4} ${top + 70 - Math.abs(u) * 40} L${x - w * .4} ${top + 70 - Math.abs(u) * 40}Z`} fill="#e4ecf8" stroke="#05101e" strokeWidth={3} />
+      <path d={`M${x - w / 2} ${260 - Math.abs(u) * 60} L${x + w / 2} ${260 - Math.abs(u) * 60} L${x + w * .4} ${200 - Math.abs(u) * 40} L${x - w * .4} ${200 - Math.abs(u) * 40}Z`} fill="#d4dcea" stroke="#05101e" strokeWidth={3} /></g>; })}
+    {/* штриховка под подбородком и трещины */}
+    {Array.from({ length: 16 }).map((_, i) => <line key={'h' + i} x1={-200 + i * 26} y1={430} x2={-180 + i * 26} y2={560} stroke="#05101e" strokeWidth={5} />)}
+    <path d="M-330 -380 L-250 -300 L-280 -200 M300 -60 L250 40 L290 120" stroke="#05101e" strokeWidth={5} fill="none" />
+  </g>;
+};
+
 // f19: один пассажир поднимает голову — лица нет; затем второй; затем все
 export const F19: React.FC<SP> = ({ t }) => {
   const tilt = ease(t, .4, 1.6);
   return <Frame t={t} grade="#1a1a2a" gradeK={.1}>
     <g transform={cam(1.0 + t * .06, 540, 800)}>
       <rect width={1080} height={1920} fill="#0a0b10" />
-      <Faceless x={540} y={2900} s={3.4} t={t} seed={5} lift={1} />
+      <g transform={`translate(${t > 1.3 ? Math.sin(t * 40) * 3 : 0} 0)`}><Faceless x={540} y={2900} s={3.4} t={t} seed={5} lift={1} grin={ease(t, .6, 1.4)} eyes={ease(t, 1.1, 1.5)} /></g>
       <g transform={`rotate(${tilt * 18} 540 860)`} opacity={0} />
       <Dark id="d19" k={.9} holes={[{ beam: [700, 1950, 540, 500, 420] }]} />
+      {t > 1.55 && t < 2.55 && <BossGrin t={t} k={Math.min(1, (t - 1.55) / .08, (2.55 - t) / .12)} />}
     </g>
   </Frame>;
 };
@@ -237,6 +271,22 @@ export const F24: React.FC<SP> = ({ t }) => {
       <TrainInterior t={t} flicker={.15} vp={VP} shake={1.5} />
       <H t={t} w="mikh" pose={PK(t, [[0, { armR: [100, -20] }], [1.0, 'stand']], false)} expr="angry" turn={-.3} lookX={.4} />
       <H t={t} w="zhora" pose={{ ...POSES.stand, armL: [-150, 30], armR: [40, -110] }} expr="smirk" mouth={talk(t, c, 'ЖОРА')} turn={-.3} />
+    </g>
+  </Frame>;
+};
+
+// f24b: Жора ещё смеётся — свет снова мигает; из темноты в конце вагона тот же смех, в окне торцевой двери — улыбка
+export const F24b: React.FC<SP> = ({ t }) => {
+  const fl = t > .4 && t < 1.2 && Math.floor(t * 14) % 2 === 0 ? 1 : 0, dark = t > 1.2 ? 1 : fl, face = ease(t, 1.4, 2.0);
+  return <Frame t={t} grade="#1a1a2a" gradeK={.15}>
+    <g transform={cam(1.0 + ease(t, 1.2, 3) * .5, 540, 760)}>
+      <TrainInterior t={t} flicker={.3} vp={VP} shake={1} />
+      <g transform="translate(540 760)"><rect x={-60} y={-90} width={120} height={110} fill="#05060a" />
+        <defs><clipPath id="win24"><rect x={-60} y={-90} width={120} height={110} /></clipPath></defs>
+        <g clipPath="url(#win24)" opacity={face}><Faceless x={0} y={170} s={.36} t={t} seed={5} grin={1} eyes={1} /></g></g>
+
+      <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={POSES.stand} expr={t > 1.3 ? 'scared' : w === 'zhora' ? 'smirk' : 'calm'} lookY={-.3} turn={t > 1.3 ? 0 : -.2} />)}</Low>
+      <Dark id="d24b" k={.88 * dark} holes={[{ spot: [540, 740, 140 * face] }]} />
     </g>
   </Frame>;
 };
