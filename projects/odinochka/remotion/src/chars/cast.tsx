@@ -1,0 +1,29 @@
+// Внешность и костюмы героев серии (одно место — одинаково во всех планах).
+import { Look } from './head';
+import { Costume } from './body';
+const SK = '#f3d6c6', SKS = '#c9978e';
+export const LK: Record<string, Look> = {
+  kirill: { skin: SK, skinSh: SKS, hair: '#141826', hairHi: '#4a6aa8', iris: '#3a4a6a', style: 'kirill', bruise: false },
+  kirillHurt: { skin: SK, skinSh: SKS, hair: '#141826', hairHi: '#4a6aa8', iris: '#3a4a6a', style: 'kirill', bruise: true },
+  nastya: { skin: SK, skinSh: SKS, hair: '#2a1c22', hairHi: '#7a4a6a', iris: '#6a4a3a', style: 'nastya', female: true },
+  liza: { skin: '#f6dccd', skinSh: '#d0a092', hair: '#c88a6a', hairHi: '#f0c0a0', iris: '#3a8a6a', style: 'liza', female: true },
+  mikh: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#9a9a9a', hairHi: '#d0d0d0', iris: '#4a4a4a', style: 'mikh', beard: '#8a8a8a', age: 55 },
+  zhora: { skin: '#eac2a6', skinSh: '#b88a76', hair: '#2a2420', hairHi: '#5a4a40', iris: '#3a2a1a', style: 'zhora', scar: true },
+  coll1: { skin: '#e8c8b4', skinSh: '#b48c7c', hair: '#1a1a1a', hairHi: '#444', iris: '#222', style: 'slick', glasses: true },
+  coll2: { skin: '#eac2a6', skinSh: '#b88a76', hair: '#3a2a20', hairHi: '#5a4a40', iris: '#2a2a2a', style: 'buzz', scar: true },
+  r1: { skin: SK, skinSh: SKS, hair: '#5a3a2a', hairHi: '#8a6a4a', iris: '#3a2a1a', style: 'curly' },
+  r2: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#c8b070', hairHi: '#f0e0a0', iris: '#3a5a8a', style: 'slick' },
+};
+export const CS: Record<string, Costume> = {
+  kirill: { top: '#26345a', topSh: '#141c36', pants: '#20222c', shoes: '#d8d8e0', hood: true },
+  courier: { top: '#26345a', topSh: '#141c36', pants: '#20222c', shoes: '#d8d8e0', hood: true, box: true },
+  kirillRaid: { top: '#2a3a52', topSh: '#141c30', pants: '#262a34', shoes: '#3a3a44', hood: true, armor: true, trim: '#6a7a9a' },
+  shadow: { top: '#0b0d16', topSh: '#05060a', pants: '#0b0d16', shoes: '#05060a', coat: true },
+  nastya: { top: '#d86a8a', topSh: '#a04a6a', pants: '#2a2e44', shoes: '#f0f0f0', hood: true },
+  liza: { top: '#e8e4f0', topSh: '#a8a4c0', pants: '#4a4a6a', shoes: '#6a5a7a', armor: true, trim: '#6adca0' },
+  mikh: { top: '#4a5a3a', topSh: '#2a3420', pants: '#3a3a30', shoes: '#2a2018', armor: true, trim: '#c8a050', w: 1.08 },
+  zhora: { top: '#5a2a2a', topSh: '#341414', pants: '#2a2a2a', shoes: '#1a1a1a', armor: true, trim: '#ff6a3a', w: 1.25 },
+  coll: { top: '#141414', topSh: '#000000', pants: '#1a1a1e', shoes: '#0a0a0a', logo: 'СВАРОГ', trim: '#ff5a2a', w: 1.18 },
+  r1: { top: '#3a4a5a', topSh: '#1a2430', pants: '#2a2a30', shoes: '#222', armor: true },
+  r2: { top: '#4a3a5a', topSh: '#2a1a34', pants: '#2a2a30', shoes: '#222', armor: true },
+};
