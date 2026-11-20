@@ -25,8 +25,8 @@ export const S05: React.FC<SP> = ({ t }) => {
       <Fog t={t} y={1320} k={.4} color="#e0d8e8" />
       <Panelka x={-30} y={1700} w={420} floors={8} c="#b8b0a8" lit={.05} seed={4} />
       {/* билборд героя ранга S на панельке */}
-      <g transform="translate(560 1010)"><rect x={0} y={0} width={500} height={300} fill="#101830" stroke="#d8c060" strokeWidth={8} />
-        <g transform="translate(110 250) scale(1.5)"><Head t={t} L={LK.r2} expr="smirk" seed={9} /></g>
+      <g transform="translate(560 840)"><rect x={0} y={0} width={500} height={300} fill="#101830" stroke="#d8c060" strokeWidth={8} />
+        <g transform="translate(100 190) scale(1.15)"><Head t={t} L={LK.r2} expr="smirk" seed={9} /></g>
         <text x={330} y={100} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={110} fill="#ffcf4a">S</text>
         <text x={330} y={170} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={30} fill="#fff">ГЕРОЙ МОСКВЫ</text>
         <text x={330} y={215} textAnchor="middle" fontFamily={FONT} fontWeight={700} fontSize={24} fill="#9fb4d8">ГИЛЬДИЯ «СВАРОГ»</text></g>
@@ -41,8 +41,8 @@ export const S06: React.FC<SP> = ({ t }) => (
   <Frame t={t}>
     <rect width={1080} height={1920} fill="#060a18" />
     <Motes t={t} x={540} y={1900} w={1100} h={1900} n={40} color="#3a6aaa" speed={40} k={.6} />
-    <g transform={cam(1 + t * .02, 540, 600)}><RankLadder t={t} t0={.1} /></g>
-    {t > 1.2 && <g transform={`translate(150 ${885}) scale(${.8 * spr(t, 1.2)})`}><circle r={74} fill="#3a0710" stroke="#ff3b4f" strokeWidth={4} /><g transform="translate(0 12) scale(.8)"><Head t={t} L={LK.kirill} expr="sad" seed={3} /></g></g>}
+    <g transform={cam(1 + t * .02, 540, 600, 0, -360)}><RankLadder t={t} t0={.1} /></g>
+    {t > 1.2 && <g transform={`translate(150 ${896}) scale(${.8 * spr(t, 1.2)})`}><circle r={74} fill="#3a0710" stroke="#ff3b4f" strokeWidth={4} /><g transform="translate(0 12) scale(.8)"><Head t={t} L={LK.kirill} expr="sad" seed={3} /></g></g>}
   </Frame>
 );
 
