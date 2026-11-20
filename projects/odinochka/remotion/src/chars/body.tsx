@@ -52,14 +52,14 @@ const Hand: React.FC<{ at: number[]; ang: number; skin: string; fist?: boolean; 
   </g>
 );
 
-export const Figure: React.FC<{ x: number; y: number; s?: number; t: number; L: Look; C: Costume; pose: Pose; expr?: Expr; mouth?: number; turn?: number; lookX?: number; lookY?: number; glow?: number; seed?: number; flip?: boolean; rot?: number; breathe?: boolean; prop?: React.ReactNode; rim?: string; sweat?: number; tears?: number; opacity?: number; idle?: boolean }> = (p) => {
+export const Figure: React.FC<{ x: number; y: number; s?: number; t: number; L: Look; C: Costume; pose: Pose; expr?: Expr; mouth?: number; turn?: number; lookX?: number; lookY?: number; glow?: number; seed?: number; flip?: boolean; rot?: number; breathe?: boolean; prop?: React.ReactNode; rim?: string; sweat?: number; tears?: number; opacity?: number; idle?: boolean; noBlink?: boolean; lid?: number }> = (p) => {
   const { t, L, C, s = 1, seed = 1 } = p; let pose = p.pose; const W = C.w || 1;
   const br = p.breathe === false ? 0 : Math.sin(t * 2.2 + seed) * 3;
   const hipY = -410 + pose.crouch, shY = -640 + pose.crouch * .9 + br * .4;
-  const lean = pose.lean + noise('ln' + seed, t, .4) * 1.6;
+  const lean = pose.lean + noise('ln' + seed, t, .3) * .5;
   // «жизнь» в покое: перенос веса, лёгкое покачивание рук, волосы реагируют на наклоны
   const idle = p.idle === false ? 0 : 1;
-  const ia = (k: string) => noise(k + seed, t, .5) * 4 * idle;
+  const ia = (k: string) => noise(k + seed, t, .4) * 1.5 * idle;
   pose = { ...pose, armL: [pose.armL[0] + ia('al'), pose.armL[1] + ia('el')], armR: [pose.armR[0] + ia('ar'), pose.armR[1] + ia('er')] };
   const sway = noise('sw' + seed, t, 1.3) * .5 + lean * .04;
   // ноги
@@ -118,7 +118,7 @@ export const Figure: React.FC<{ x: number; y: number; s?: number; t: number; L: 
         {/* шея и голова */}
         <rect x={-17} y={ty - 54} width={34} height={44} fill={L.skinSh} stroke={INK} strokeWidth={3.5} />
         <g transform={`translate(0 ${ty - 100}) rotate(${pose.head + noise('hd' + seed, t, .5) * 2}) translate(0 -14)`}>
-          <Head t={t} L={L} expr={p.expr} mouth={p.mouth} turn={(p.turn || 0) + noise('tn' + seed, t, .35) * .1 * idle} lookX={(p.lookX || 0) + (Math.floor(t * 1.3 + seed) % 3 === 0 ? .15 : 0) * idle} lookY={p.lookY} glow={p.glow} seed={seed} sweat={p.sweat} tears={p.tears} sway={sway} />
+          <Head t={t} L={L} expr={p.expr} mouth={p.mouth} turn={(p.turn || 0) + noise('tn' + seed, t, .35) * .1 * idle} lookX={(p.lookX || 0) + (Math.floor(t * 1.3 + seed) % 3 === 0 ? .15 : 0) * idle} lookY={p.lookY} glow={p.glow} seed={seed} sweat={p.sweat} tears={p.tears} sway={sway} noBlink={p.noBlink} lid={p.lid} />
         </g>
         {p.prop}
         {Arm(aL, -1, pose.fistL)}{Arm(aR, 1, pose.fistR)}

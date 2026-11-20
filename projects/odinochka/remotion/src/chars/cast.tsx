@@ -3,6 +3,11 @@ import { Look } from './head';
 import { Costume } from './body';
 const SK = '#f3d6c6', SKS = '#c9978e';
 export const LK: Record<string, Look> = {
+  pA: { skin: '#e0d0c8', skinSh: '#b0a098', hair: '#3a3430', hairHi: '#5a5048', iris: '#2a2a2a', style: 'slick', age: 50 },
+  pB: { skin: '#e4d4cc', skinSh: '#b4a49c', hair: '#6a5a4a', hairHi: '#8a7a6a', iris: '#2a2a2a', style: 'nastya', female: true },
+  pC: { skin: '#dcccc4', skinSh: '#aca094', hair: '#8a8a8a', hairHi: '#b0b0b0', iris: '#2a2a2a', style: 'mikh', age: 60 },
+  pD: { skin: '#e2d2c6', skinSh: '#b2a296', hair: '#1a1818', hairHi: '#3a3434', iris: '#2a2a2a', style: 'buzz' },
+  pE: { skin: '#e6d6ce', skinSh: '#b6a69e', hair: '#4a3a30', hairHi: '#6a5a50', iris: '#2a2a2a', style: 'liza', female: true },
   father: { skin: '#e4c4b4', skinSh: '#b48c80', hair: '#5a4c44', hairHi: '#9a8a80', iris: '#4a5a78', style: 'natural', sharp: true, beard: '#4a3e38', age: 50, tired: true },
   timur: { skin: '#e8c4a8', skinSh: '#b88e76', hair: '#1e1a1c', hairHi: '#4a4048', iris: '#3a2a1a', style: 'curly' },
   kWeak: { skin: '#ecd2c4', skinSh: '#c4948a', hair: '#5e4a3e', hairHi: '#8a7666', iris: '#5a6070', style: 'messy', tired: true, plaster: true },
@@ -25,6 +30,9 @@ export const LK: Record<string, Look> = {
   r2: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#c8b070', hairHi: '#f0e0a0', iris: '#3a5a8a', style: 'slick' },
 };
 export const CS: Record<string, Costume> = {
+  pA: { top: '#3a3a40', topSh: '#24242a', pants: '#2a2a2e', shoes: '#1a1a1a' }, pB: { top: '#5a4a44', topSh: '#3a302c', pants: '#2a2a30', shoes: '#1a1a1a' },
+  pC: { top: '#3a4038', topSh: '#262a24', pants: '#2a2a2a', shoes: '#1a1a1a' }, pD: { top: '#2e3440', topSh: '#1c2028', pants: '#22242a', shoes: '#111' },
+  pE: { top: '#4a3a48', topSh: '#2e2430', pants: '#2a2630', shoes: '#1a1a1a' },
   courierY: { top: '#f5c518', topSh: '#c4960a', pants: '#2a2c34', shoes: '#d8d8dc', hood: true, collar: true, w: .95, box: true },
   hoodieY: { top: '#f5c518', topSh: '#c4960a', pants: '#2a2c34', shoes: '#d8d8dc', hood: true, collar: true, w: .95 },
   porterY: { top: '#f5c518', topSh: '#c4960a', pants: '#2a2c34', shoes: '#6a6a70', hood: true, collar: true, w: .95, box: true, bags: true },
