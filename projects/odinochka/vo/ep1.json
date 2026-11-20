@@ -34,6 +34,11 @@
   "father": {
    "instruct": "Exhausted hoarse Russian man, about 50, weak broken voice, disbelief and tenderness, very quiet, slow.",
    "ref": "Сколько же я здесь… Я уже не помню, какой сейчас год."
+  },
+  "future": {
+   "instruct": "Deep confident calm Russian male voice, about 30, commanding and cold, powerful low timbre, slow deliberate speech, a leader addressing his army.",
+   "ref": "Я вернулся. Теперь за моей спиной — армия.",
+   "low": true
   }
  },
  "lines": [
@@ -44,9 +49,8 @@
   },
   {
    "id": "v03",
-   "role": "kirill",
-   "text": "Восстань.",
-   "fx": "whisper"
+   "role": "future",
+   "text": "Восстань."
   },
   {
    "id": "v05",
@@ -200,8 +204,8 @@
   },
   {
    "id": "v31",
-   "role": "kirill",
-   "text": "Вступай в мой отряд. Поддержи лайком и комментарием."
+   "role": "future",
+   "text": "Каждый лайк и комментарий — новый боец моего отряда. Вступай."
   }
  ]
 }
