@@ -9,4 +9,4 @@ import * as F from './ShotsF';
 import { L1, L2, L3, L4 } from './ShotsL';
 export const MAP: Record<string, React.FC<SP>> = { s01: S01, s02: S02, s03: S03, s04i: Intro, s04: S04, s05: S05, s06: S06, s07: S07, s08: S08, s09: S09, s10: S10, s11: S11, s12: S12,
   s13: S13, l1: L1, l2: L2, l3: L3, l4: L4, s14: S14, s15: S15, s16: S16,
-  ...Object.fromEntries(Object.entries(F).filter(([k]) => /^F\d+[a-z]?$/.test(k)).map(([k, v]) => [k.toLowerCase(), v as React.FC<SP>])) };
+  ...Object.fromEntries(Object.entries(F).filter(([k]) => /^[FE]\d+[a-z]?$/.test(k)).map(([k, v]) => [k.toLowerCase(), v as React.FC<SP>])) };
