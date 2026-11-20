@@ -130,7 +130,7 @@ export const S10: React.FC<SP> = ({ t }) => {
       <text x={40} y={230} fontFamily={FONT} fontWeight={600} fontSize={30} fill="#9fb4d8">Баланс</text>
       <text x={40} y={300} fontFamily={FONT} fontWeight={900} fontSize={64} fill="#fff">42 300 ₽</text>
       <rect x={30} y={360} width={380} height={2} fill="#2a3a5a" />
-      <text x={40} y={440} fontFamily={FONT} fontWeight={600} fontSize={30} fill="#ff8a9a">Долг «Сварог»</text>
+      <text x={40} y={440} fontFamily={FONT} fontWeight={600} fontSize={30} fill="#ff8a9a">Долг «Кабала»</text>
       <text x={40} y={520} fontFamily={FONT} fontWeight={900} fontSize={64} fill="#ff3b4f">1 840 000 ₽</text>
       <rect x={40} y={580} width={360} height={20} rx={10} fill="#2a1018" /><rect x={40} y={580} width={360 * .023} height={20} rx={10} fill="#ff3b4f" />
       <text x={40} y={650} fontFamily={FONT} fontWeight={700} fontSize={28} fill="#ff8a9a">Срок: пятница</text>
