@@ -3,7 +3,7 @@
 import json, re, subprocess, os
 R = 'remotion/src/ep1/timeline.ts'; src = open(R).read()
 dur = json.load(open('remotion/public/vo/durations.json'))
-raw = re.findall(r"\{ id: '([sp]\w+)', d: ([\d.]+)((?:, vo: \[(?:\['v\w+', [\d.]+\],? ?)*\])?) \}", src)
+raw = re.findall(r"\{ id: '([spf]\w+)', d: ([\d.]+)((?:, vo: \[(?:\['v\w+', [\d.]+\],? ?)*\])?) \}", src)
 shots = []; a = 0
 for sid, d, vo in raw:
     vos0 = re.findall(r"\['(v\w+)', ([\d.]+)\]", vo or ''); vos = []; prev = -1
@@ -29,25 +29,23 @@ C = {
  's11': [(0, L('phone-vibrate-table', .7)), (.45, L('click-tap-firm', .6))],
  's12': [],
  's04i': [(.3, L('whoosh-medium-hard', .6, rate=.8)), (.55, L('cinematic-drum-massive', 1.0)), (.55, L('impact-deep-hard', .6)), (.6, S('charge', .3, dur=1.0)), (1.3, L('whoosh-fast-soft', .4))],
- 'p13': [(0, L('bsb-bsb-3032', .6))] + [(.2 + i * .45, S('step', .25, pitch=.8)) for i in range(8)],
- 'p14': [(0, L('bsb-bsb-3032', .4, offset=5))],
- 'p15': [(.1, S('step', .4)), (.45, S('step', .4)), (.8, L('bsb-bsb-2153', .8)), (1.6, S('hiss', .3, dur=.5)), (2.1, L('impact-deep-hard', .7))],
- 'p16': [(0, S('hum', .2, dur=3.4))],
- 'p17': [(0, S('hum', .15, dur=3.4)), (.3, S('tone', .12, dur=1.4, freq=180))],
- 'p18': [(0, L('bsb-bsb-3039', .9)), (.1, S('thud', .4))],
- 'p19': [(0, L('bsb-bsb-3040', .7)), (.3, S('crackle', .2, dur=.3)), (1.1, S('crackle', .2, dur=.3)), (2.3, L('whoosh-fast-soft', .5)), (2.3, S('tone', .2, dur=1.2, freq=140))],
- 'p20': [(0, L('bsb-bsb-3040', .6, offset=4))],
- 'p21': [(0, L('bsb-bsb-3040', .6, offset=7)), (.1, L('mechanical-latch-heavy', .7)), (.5, L('mechanical-latch-heavy', .7)), (1.2, L('impact-heavy-firm', .8)), (2.3, L('whoosh-fast-medium', .5)), (2.65, L('impact-heavy-hard', .8))],
- 'p22': [(0, L('bsb-bsb-3040', .6, offset=11)), (.2, S('debris', .3, dur=1.6)), (.4, L('bass-rumble-medium', .5))],
- 'p23': [(0, L('bsb-bsb-3040', .6, offset=14))] + [(.2 + i * .4, S('step', .45)) for i in range(8)] + [(1.45, L('whoosh-fast-medium', .6)), (1.6, L('cinematic-drum-big', .9)), (1.62, L('impact-heavy-hard', .9))],
- 'p24': [(0, L('bsb-bsb-3040', .6, offset=18)), (.7, L('impact-heavy-firm', .8)), (.75, S('brush', .5, dur=.9)), (2.0, S('brush', .5, dur=1.0)), (2.9, L('impact-deep-soft', .6))],
- 'p25': [(.3, L('bsb-bsb-3043', 1.0, offset=8)), (.4, S('skid', .6, dur=1.2)), (.55, L('cinematic-slam-big', .6))],
- 'p26': [(0, S('drone', .3, dur=2.4)), (.2, L('bsb-heartbeat-slow', .6))],
- 'p27': [(.2, L('bsb-bsb-2153', .7)), (.3, S('hiss', .4, dur=.8)), (.5, L('cinematic-drum-massive', .6))],
- 'p28': [(0, S('drone', .3, dur=3.2))],
- 'p29': [(0, S('tone', .15, dur=3.0, freq=110))],
- 'p30': [(0, L('bsb-heartbeat-slow', .7))],
- 'p31': [(0, S('wind', .2, dur=4.8))],
+ 's13': [(0, L('bsb-bsb-3032', .5)), (0, S('hum', .3, dur=3.6))] + [(.2 + i * .45, S('step', .22, pitch=.8)) for i in range(7)],
+ 's14': [(.2, S('charge', .6, dur=2.0)), (.3, L('whoosh-medium-hard', .6, rate=.7)), (2.2, L('cinematic-drum-big', .8))],
+ 's15': [(.2, L('bsb-bsb-3039', 1.0)), (.4, L('bass-rumble-long', .6)), (1.8, S('horn', .35, dur=1.0, pitch=.7))],
+ 's16': [(0, L('bsb-bsb-3032', .3, offset=5))],
+ 'f17': [(0, L('bsb-bsb-3040', .5)), (.8, L('bsb-bsb-2153', .8))],
+ 'f18': [(.4, L('impact-deep-hard', .8)), (.5, S('thud', .5)), (.6, L('bsb-bsb-3039', .7, offset=6))],
+ 'f19': [(0, L('bsb-bsb-3040', .7, offset=4)), (.4, S('crackle', .25, dur=.4)), (1.3, S('crackle', .25, dur=.4)), (2.2, L('whoosh-fast-soft', .5)), (2.2, S('tone', .22, dur=1.4, freq=130))],
+ 'f20': [(0, L('bsb-bsb-3040', .6, offset=8)), (.3, L('mechanical-latch-heavy', .6)), (.4, S('charge', .45, dur=.6)), (.5, S('crackle', .3, dur=.8))],
+ 'f21': [(0, L('bsb-bsb-3040', .5, offset=11)), (.4, L('whoosh-medium-hard', .7)), (.85, L('cinematic-drum-big', 1.0)), (.85, L('impact-heavy-hard', .8)), (.9, S('crackle', .5, dur=1.0))] + [(1.6 + i * .1, S('click', .35, pitch=.6)) for i in range(12)] + [(2.0, S('puff', .4)), (2.5, S('puff', .4))],
+ 'f22': [(0, L('bsb-bsb-3040', .5, offset=15)), (.5, S('zap', .8, dur=.4)), (.55, L('cinematic-thunder-massive', .5)), (.6, S('puff', .4)), (1.5, L('whoosh-fast-medium', .6)), (1.7, L('impact-heavy-hard', 1.0)), (1.72, L('cinematic-drum-big', .7)), (1.8, S('puff', .4))],
+ 'f23': [(0, L('bsb-bsb-3040', .5, offset=19)), (.3, S('puff', .3)), (.6, S('puff', .3)), (.9, S('hiss', .2, dur=1.4))],
+ 'f24': [(0, L('bsb-bsb-3040', .5, offset=22))],
+ 'f25': [(.2, L('bsb-bsb-3043', 1.0, offset=8)), (.3, S('skid', .6, dur=1.2)), (.5, L('cinematic-slam-big', .5))],
+ 'f26': [(.2, L('bsb-bsb-2153', .7)), (.3, S('hiss', .4, dur=.8)), (.5, L('cinematic-drum-massive', .6))],
+ 'f27': [(0, S('drone', .35, dur=3.2)), (.2, S('tone', .2, dur=3.0, freq=220)), (.2, L('bsb-heartbeat-slow', .5))],
+ 'f28': [(.2, S('powerdown', .4)), (.2, L('whoosh-fast-soft', .4))],
+ 'f29': [(0, L('bsb-heartbeat-slow', .7)), (2.0, S('tone', .2, dur=1.4, freq=110))],
 }
 cues = []
 sd = {x[0]: x[2] for x in shots}
@@ -58,7 +56,7 @@ for sid, cs in C.items():
         if c.get('id') in ('bsb-bsb-3040', 'bsb-bsb-3032', 'bsb-bsb-3039', 'bsb-bsb-3043') and 'dur' not in c: c['dur'] = round(sd[sid] - t + .15, 2)  # атмосфера — ровно на план
         cues.append(c)
 # финальный удар на титр
-s30 = [x for x in shots if x[0] == 'p31'][0]; cues.append({'type': 'lib', 'id': 'cinematic-slam-massive', 'gain': 1.0, 't': round(s30[1] + s30[2] - 1.8, 3)})
+s30 = [x for x in shots if x[0] == 'f29'][0]; cues.append({'type': 'lib', 'id': 'cinematic-slam-massive', 'gain': 1.0, 't': round(s30[1] + s30[2] - 1.8, 3)})
 json.dump(sorted(cues, key=lambda c: c['t']), open('sfx-ep1.json', 'w'), ensure_ascii=False)
 A = 'remotion/public/audio'; os.makedirs(A, exist_ok=True)
 subprocess.run(['python3', '../../tools/sfx.py', 'sfx-ep1.json', '-o', f'{A}/sfx.wav', '--duration', str(TOTAL)], check=True)
@@ -80,13 +78,14 @@ fc = ';'.join(vo_f) + ';' + ''.join(f'[v{i}]' for i in range(n)) + f'amix=inputs
 subprocess.run(['ffmpeg', '-v', 'error', '-y', *vo_in, '-filter_complex', fc, '-map', '[vo]', '-ac', '2', '-ar', '48000', f'{A}/vo.wav'], check=True)
 # музыка по сценам: хук — эпик, дом — пианино, поезд — тёмный эмбиент + нарастание, финал — трагический эпик
 lib = f'{A}/lib'
-b05, b14, b20, b25, END = st['s05'], st['p15'], st['p19'], st['p27'], TOTAL
+b05, b14, b20, b25, END = st['s05'], st['s14'], st['f19'], st['f28'], TOTAL
 M = [  # файл, с какой секунды трека, начало в ролике, длина, громкость, fade in, fade out (музыка CC0: music-credits.json, get-music.sh)
  ('epic-orch-bertsz.mp3', 27, 0, st['s04i'] + .6, .8, .2, .12),
  ('epic-loop-fusionwolf.mp3', 0, st['s04i'] + .5, st['s04'] - st['s04i'] - .4, .7, .05, .4),
  ('piano-darknight-szegvari.mp3', 0, b05 - .3, b14 - b05 + .6, .7, 1.2, 1.5),
- ('horror-drone-magmi.mp3', 0, b14 + 1.8, b20 - b14 - 1.4, .22, 2, 1.2),
- ('horror-intense-magmi.mp3', 60, b20 - .3, b25 - b20 + .8, .4, 1.0, 1.0),
+ ('horror-drone-magmi.mp3', 0, b14 + 1.8, st['f20'] - b14 - 1.6, .22, 2, .4),
+ ('epic-loop-fusionwolf.mp3', 40, st['f20'], st['f24'] - st['f20'] + .6, .75, .1, .8),
+ ('horror-intense-magmi.mp3', 0, st['f25'], b25 - st['f25'] + .5, .35, .8, .8),
  ('strings-choir-slow-szegvari.mp3', 6, b25, END - b25, .6, 1.5, 2.0),
 ]
 ins, fs = [], []
