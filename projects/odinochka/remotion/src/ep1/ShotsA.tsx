@@ -42,7 +42,7 @@ export const S01: React.FC<SP> = ({ t }) => {
       <rect x={-40} y={1560} width={1160} height={600} fill="#0c101a" /><rect x={-40} y={1560} width={1160} height={26} fill="#252c42" />
       {[0, 1, 2, 3, 4, 5].map(i => <rect key={i} x={i * 210 - 20} y={1510} width={60} height={60} fill="#121624" />)}
       <Motes t={t} x={540} y={1400} w={1000} h={1300} n={30} color="#6fd0ff" k={.8} speed={60} size={4} />
-      <Figure x={700} y={1570} s={1.3} t={t} L={LK.kirill} C={CS.shadow} pose={coatPose} expr="determined" glow={1} seed={3} turn={-.15} rim="#5fd2ff" />
+      <Figure x={700} y={1570} s={1.3} t={t} L={LK.kirill4} C={CS.shadow} pose={coatPose} expr="determined" glow={1} seed={3} turn={-.15} rim="#5fd2ff" />
       <ellipse cx={700} cy={800} rx={420} ry={700} fill="#4ab8ff" opacity={.08} filter="url(#blur30)" />
     </g>
   </Frame>;
@@ -79,7 +79,7 @@ export const S03: React.FC<SP> = ({ t }) => {
     <rect width={1080} height={1920} fill="#05070f" />
     <ellipse cx={540} cy={900} rx={700} ry={900} fill="#1a3a8a" opacity={.5} filter="url(#blur30)" />
     <g transform={cam(z, 540, 860, sx, sy)}>
-      <g transform="translate(540 660) scale(7.5)"><Head t={t} L={LK.kirill} expr="determined" glow={1} mouth={mouth} seed={3} noBlink /></g>
+      <g transform="translate(540 660) scale(7.5)"><Head t={t} L={LK.kirill4} expr="determined" glow={1} mouth={mouth} seed={3} noBlink /></g>
     </g>
     <Motes t={t} x={540} y={1800} w={1100} h={1700} n={40} color="#7fe0ff" speed={200} size={6} />
   </Frame>;

@@ -135,3 +135,44 @@ export const Temple: React.FC<{ t: number; lit?: number; red?: number; vp?: numb
     <rect width={1080} height={1920} fill="#060818" opacity={.55 * (1 - lit)} />
   </g>;
 };
+
+// вагон метро изнутри (перспектива вдоль вагона): сиденья по бокам, поручни, тёмные окна, мерцающие лампы; far — дверь в следующий вагон
+export const TrainInterior: React.FC<{ t: number; flicker?: number; vp?: number; shake?: number; red?: number }> = ({ t, flicker = .3, vp = 820, shake = 0, red = 0 }) => {
+  const fl = noise('fl', t, 9) > .55 - flicker * .4 ? .35 : 1, sy = Math.sin(t * 23) * shake;
+  const ribs = []; for (let i = 0; i < 9; i++) { const k = Math.pow(.78, i), w = 1180 * k, x = 540 - w / 2, top = vp - 760 * k, bot = vp + 900 * k;
+    ribs.push(<g key={i}><rect x={x} y={top} width={w} height={bot - top} fill="none" stroke="#3a3e48" strokeWidth={10 * k} opacity={.8} />
+      <rect x={x + 20 * k} y={top + 120 * k} width={160 * k} height={260 * k} fill="#05060a" stroke="#4a4e58" strokeWidth={6 * k} />
+      <rect x={x + w - 180 * k} y={top + 120 * k} width={160 * k} height={260 * k} fill="#05060a" stroke="#4a4e58" strokeWidth={6 * k} />
+      <rect x={540 - 6 * k} y={top} width={12 * k} height={bot - top} fill="#9aa0aa" opacity={i % 2 ? 0 : .9} />
+      <rect x={x + 60 * k} y={top + 10 * k} width={w - 120 * k} height={14 * k} fill="#fff8e0" opacity={fl * .9} /></g>); }
+  return <g transform={`translate(0 ${sy})`}>
+    <rect width={1080} height={1920} fill="#1c1e24" />
+    <path d={`M0 0 L1080 0 L${540 + 90} ${vp - 120} L${540 - 90} ${vp - 120}Z`} fill="#2a2c34" />
+    <path d={`M0 1920 L1080 1920 L${540 + 90} ${vp + 140} L${540 - 90} ${vp + 140}Z`} fill="#24201e" />
+    <path d={`M0 1150 L0 1500 L${540 - 90} ${vp + 120} L${540 - 90} ${vp + 40}Z`} fill="#5a2a2a" /><path d={`M1080 1150 L1080 1500 L${540 + 90} ${vp + 120} L${540 + 90} ${vp + 40}Z`} fill="#4a2424" />
+    {ribs.reverse()}
+    <rect x={540 - 90} y={vp - 120} width={180} height={260} fill="#0a0a10" stroke="#4a4e58" strokeWidth={4} />
+    <rect x={540 - 60} y={vp - 90} width={120} height={110} fill="#05060a" />
+    <rect x={120} y={120} width={840} height={40} fill="#e8e8e0" opacity={.9} /><text x={540} y={150} textAnchor="middle" fontFamily="Mont" fontWeight={800} fontSize={26} fill="#c81e2a" letterSpacing={4}>СЕВЕРНАЯ ● ● ● ● КОНЕЧНАЯ</text>
+    <rect width={1080} height={1920} fill="#000" opacity={(1 - fl) * .5} />
+    {red > 0 && <rect width={1080} height={1920} fill="#ff1020" opacity={red * .15} style={{ mixBlendMode: 'screen' }} />}
+  </g>;
+};
+
+// мёртвая станция с поездом: train 0..1 — поезд выезжает из тоннеля (фара → вагоны)
+export const DeadPlatform: React.FC<{ t: number; train?: number; doors?: number }> = ({ t, train = 0, doors = 0 }) => {
+  const x = 1400 - train * 1500;
+  return <g>
+    <MetroStation t={t} />
+    <rect width={1080} height={1920} fill="#0a0c14" opacity={.45} />
+    {train > 0 && <g>
+      <ellipse cx={x + 40} cy={1020} rx={260} ry={160} fill="#fff4d0" opacity={.4 * (1 - train * .6)} filter="url(#blur30)" />
+      <rect x={x} y={760} width={1600} height={420} rx={30} fill="#2a4a6a" stroke="#0a0c14" strokeWidth={8} />
+      <rect x={x} y={1080} width={1600} height={40} fill="#1a2a3a" />
+      {Array.from({ length: 5 }).map((_, i) => <g key={i}><rect x={x + 120 + i * 300} y={820} width={170} height={150} fill="#0a0e14" stroke="#9aa0aa" strokeWidth={4} />
+        <rect x={x + 60 + i * 300 - doors * 30} y={800} width={50} height={280} fill="#c8ccd4" opacity={.25} /></g>)}
+      <circle cx={x + 30} cy={1020} r={26} fill="#fff8e0" />
+      <text x={x + 300} y={1150} fontFamily="Mont" fontWeight={800} fontSize={30} fill="#c8ccd4">ЭКСПРЕСС · БЕЗ ОСТАНОВОК</text>
+    </g>}
+  </g>;
+};

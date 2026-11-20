@@ -106,3 +106,39 @@ export const BowFigure: React.FC<{ x: number; y: number; s?: number; bow: number
     <path d={`M${hd[0] - 50} ${hd[1] - 25} A58 58 0 0 1 ${hd[0] + 45} ${hd[1] - 38}`} stroke={rim} strokeWidth={5} fill="none" opacity={.85} filter="url(#glow)" />
   </g>;
 };
+
+// безликий пассажир: сидит, голова-овал без лица; look −1..1 — поворот головы к бегущему, rise 0..1 — тянется вперёд, руки длиннеют
+export const Passenger: React.FC<{ x: number; y: number; s?: number; t: number; look?: number; rise?: number; seed?: number; coat?: string }> = ({ x, y, s = 1, t, look = 0, rise = 0, seed = 1, coat = '#3a3a44' }) => {
+  const br = Math.sin(t * 1.3 + seed) * 1.5, lean = rise * 30;
+  return <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <path d="M-60 0 L-50 -110 L50 -110 L60 0Z" fill="#141418" />
+    <g transform={`rotate(${lean} 0 -110)`}>
+      <path d={`M-62 -110 C-70 -200 -50 -260 0 -268 C50 -260 70 -200 62 -110Z`} fill={coat} stroke={INK} strokeWidth={4} />
+      <path d={`M-50 -230 L${-70 - rise * 60} ${-140 + rise * 80} L${-56 - rise * 70} ${-120 + rise * 100}`} stroke={coat} strokeWidth={26} strokeLinecap="round" fill="none" />
+      <path d={`M50 -230 L${70 + rise * 60} ${-140 + rise * 80} L${56 + rise * 70} ${-120 + rise * 100}`} stroke={coat} strokeWidth={26} strokeLinecap="round" fill="none" />
+      <g transform={`translate(${look * 10} ${-310 + br}) rotate(${look * 35})`}>
+        <ellipse rx={38} ry={48} fill="#c8c4bc" stroke={INK} strokeWidth={4} />
+        <ellipse cx={look * 12} cy={4} rx={26} ry={34} fill="#b0aca4" opacity={.6} />
+        {rise > .3 && <ellipse cx={look * 14} cy={12} rx={8 * rise} ry={14 * rise} fill="#1a0a0a" />}
+      </g>
+    </g>
+  </g>;
+};
+
+// Машинист: высокий, в старой форме метрополитена, вместо головы — фонарь (свет k)
+export const Machinist: React.FC<{ x: number; y: number; s?: number; t: number; k?: number; turn?: number }> = ({ x, y, s = 1, t, k = 1, turn = 0 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <path d="M-90 0 L-80 -520 L80 -520 L90 0Z" fill="#1a2030" stroke={INK} strokeWidth={5} />
+    <path d="M-80 -520 L-120 -300 L-100 -100" stroke="#1a2030" strokeWidth={46} strokeLinecap="round" fill="none" />
+    <path d="M80 -520 L120 -300 L100 -100" stroke="#1a2030" strokeWidth={46} strokeLinecap="round" fill="none" />
+    {[-460, -400, -340, -280].map((yy, i) => <circle key={i} cx={0} cy={yy} r={7} fill="#c8a85a" />)}
+    <rect x={-60} y={-500} width={40} height={10} fill="#c8a85a" /><path d="M-80 -520 L0 -470 L80 -520" stroke="#2a3248" strokeWidth={8} fill="none" />
+    <g transform={`translate(${turn * 20} -600)`}>
+      <rect x={-70} y={-80} width={140} height={150} rx={20} fill="#2a2a30" stroke={INK} strokeWidth={5} />
+      <circle cx={0} cy={0} r={52} fill="#fff6d8" opacity={k} />
+      <circle cx={0} cy={0} r={170} fill="#fff0c0" opacity={.35 * k} filter="url(#blur30)" />
+      <rect x={-80} y={-100} width={160} height={24} rx={6} fill="#1a1a20" /><rect x={-50} y={-120} width={100} height={22} fill="#1a1a20" />
+      <circle cx={0} cy={-108} r={10} fill="#c8a85a" />
+    </g>
+  </g>
+);
