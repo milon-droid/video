@@ -3,6 +3,8 @@ import { Look } from './head';
 import { Costume } from './body';
 const SK = '#f3d6c6', SKS = '#c9978e';
 export const LK: Record<string, Look> = {
+  kirill4: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#5e4a3e', hairHi: '#a08a78', iris: '#4a5a78', style: 'natural', sharp: true, scar: true },
+  kirill4Hurt: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#5e4a3e', hairHi: '#a08a78', iris: '#4a5a78', style: 'natural', sharp: true, scar: true, bruise: true },
   kirill3: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#b4bac8', hairHi: '#eef2ff', iris: '#4a5a78', style: 'cool', sharp: true, under: '#2e3038', scar: true },
   kirill3Hurt: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#b4bac8', hairHi: '#eef2ff', iris: '#4a5a78', style: 'cool', sharp: true, under: '#2e3038', scar: true, bruise: true },
   kirill2: { skin: '#f3d8c8', skinSh: '#cf9e92', hair: '#b8946a', hairHi: '#ecd2a6', iris: '#5a7a6a', style: 'rus', plaster: true },

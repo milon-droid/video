@@ -2,20 +2,21 @@
 // Центр головы (0,0), ширина ~120, подбородок y≈78. turn −1…1 — поворот лица (черты смещаются).
 import React from 'react';
 import { blink, clamp, noise } from '../anim';
+const h1 = (n: number) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
 
 export const INK = '#0c0d18';
 export type Expr = 'calm' | 'sad' | 'scared' | 'angry' | 'shout' | 'determined' | 'smirk' | 'pain' | 'cry';
-export type HairStyle = 'cool' | 'rus' | 'kirill' | 'liza' | 'nastya' | 'zhora' | 'mikh' | 'slick' | 'buzz' | 'curly' | 'none';
+export type HairStyle = 'natural' | 'cool' | 'rus' | 'kirill' | 'liza' | 'nastya' | 'zhora' | 'mikh' | 'slick' | 'buzz' | 'curly' | 'none';
 export type Look = { skin: string; skinSh: string; hair: string; hairHi: string; iris: string; style: HairStyle; female?: boolean; beard?: string; scar?: boolean; bruise?: boolean; glasses?: boolean; age?: number; plaster?: boolean; sharp?: boolean; under?: string };
 
 const mixC = (a: string, b: string, k: number) => { const p = (x: string) => [1, 3, 5].map(i => parseInt(x.slice(i, i + 2), 16)); const A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, '0')).join(''); };
 // прядь: квадратичная кривая p0→c→p1, ширина w у корня сужается к кончику
-export const taperQ = (x0: number, y0: number, cx: number, cy: number, x1: number, y1: number, w: number) => {
+export const taperQ = (x0: number, y0: number, cx: number, cy: number, x1: number, y1: number, w: number, both = false) => {
   const N = 14, L: string[] = [], R: string[] = [];
   for (let i = 0; i <= N; i++) { const u = i / N, a = (1 - u) * (1 - u), b = 2 * (1 - u) * u, c = u * u;
     const x = a * x0 + b * cx + c * x1, y = a * y0 + b * cy + c * y1;
     const dx = 2 * (1 - u) * (cx - x0) + 2 * u * (x1 - cx), dy = 2 * (1 - u) * (cy - y0) + 2 * u * (y1 - cy), l = Math.hypot(dx, dy) || 1;
-    const ww = w / 2 * Math.pow(1 - u, .75); L.push(`${(x - dy / l * ww).toFixed(1)} ${(y + dx / l * ww).toFixed(1)}`); R.push(`${(x + dy / l * ww).toFixed(1)} ${(y - dx / l * ww).toFixed(1)}`); }
+    const ww = w / 2 * (both ? Math.pow(Math.sin(Math.PI * Math.min(1, u * 1.15 + .02)), .8) : Math.pow(1 - u, .75)); L.push(`${(x - dy / l * ww).toFixed(1)} ${(y + dx / l * ww).toFixed(1)}`); R.push(`${(x + dy / l * ww).toFixed(1)} ${(y - dx / l * ww).toFixed(1)}`); }
   return 'M' + L.join(' L') + ' L' + R.reverse().join(' L') + 'Z';
 };
 const brows: Record<Expr, [number, number]> = { calm: [0, 0], sad: [-14, 4], scared: [-18, 8], angry: [18, -4], shout: [22, -6], determined: [12, -2], smirk: [6, 0], pain: [-10, 6], cry: [-16, 6] };
@@ -53,7 +54,7 @@ export const Head: React.FC<{ t: number; L: Look; expr?: Expr; mouth?: number; t
       {open < .2 && <path d={`M${cx - w} ${eyeY} Q${cx} ${eyeY + 4} ${cx + w} ${eyeY}`} stroke={INK} strokeWidth={4} fill="none" strokeLinecap="round" />}
       <path d={`M${cx - side * w * .7} ${eyeY + hgt * open * .9 + 2} Q${cx} ${eyeY + hgt * open + 4} ${cx + side * w * .9} ${eyeY + hgt * open * .7}`} stroke={INK} strokeWidth={1.8} fill="none" opacity={.6} />
       {/* бровь */}
-      <path d={`M${cx - side * w * .9} ${eyeY - (L.sharp ? 16 : 22) + bY + (L.sharp ? 3 : 0)} L${cx + side * w * 1.1} ${eyeY - (L.sharp ? 20 : 24) + bY}`} transform={`rotate(${side * -bAng * .6 + 0} ${cx} ${eyeY - 23})`} stroke={L.hair === '#e8e4dc' ? '#8a8378' : INK} strokeWidth={L.style === 'mikh' || L.style === 'zhora' ? 7 : L.sharp ? 6.5 : 4.5} strokeLinecap="round" />
+      <path d={`M${cx - side * w * .9} ${eyeY - (L.sharp ? 16 : 22) + bY + (L.sharp ? 3 : 0)} L${cx + side * w * 1.1} ${eyeY - (L.sharp ? 20 : 24) + bY}`} transform={`rotate(${side * -bAng * .6 + 0} ${cx} ${eyeY - 23})`} stroke={L.hair === '#e8e4dc' ? '#8a8378' : INK} strokeWidth={L.style === 'mikh' || L.style === 'zhora' ? 7 : L.sharp ? 5 : 4.5} strokeLinecap="round" />
     </g>;
   };
   // рот
@@ -88,7 +89,7 @@ export const Head: React.FC<{ t: number; L: Look; expr?: Expr; mouth?: number; t
       {fem && <g opacity={.35}><ellipse cx={-30 + tx} cy={36} rx={12} ry={6} fill="#ff7a8a" /><ellipse cx={30 + tx} cy={36} rx={12} ry={6} fill="#ff7a8a" /></g>}
       {L.bruise && <ellipse cx={-34 + tx} cy={34} rx={13} ry={9} fill="#6a4a8a" opacity={.5} />}
       {L.scar && <path d={`M${22 + tx} -10 l14 26`} stroke="#b05a5a" strokeWidth={3} />}
-      {['rus', 'cool', 'liza', 'nastya', 'kirill'].includes(L.style) && <path d={`M-56 -26 Q0 ${-4} 56 -26 L56 -12 Q0 ${8} -56 -12Z`} fill={L.skinSh} opacity={.35} />}
+      {['rus', 'cool', 'natural', 'liza', 'nastya', 'kirill'].includes(L.style) && <path d={`M-56 -26 Q0 ${-4} 56 -26 L56 -12 Q0 ${8} -56 -12Z`} fill={L.skinSh} opacity={.35} />}
       {Eye(-1)}{Eye(1)}
       {L.plaster && <g transform={`translate(${tx * 1.1 + 4} 28) rotate(-12)`}><rect x={-16} y={-6} width={32} height={12} rx={4} fill="#f0d8b8" stroke={INK} strokeWidth={2} /><path d="M-6 -6 v12 M6 -6 v12" stroke="#c8a888" strokeWidth={1.5} /></g>}
       {/* нос */}
@@ -106,6 +107,7 @@ export const Head: React.FC<{ t: number; L: Look; expr?: Expr; mouth?: number; t
 // волосы: задняя масса (за лицом)
 const HairBack: React.FC<{ L: Look; t: number; turn: number; sway?: number }> = ({ L, t, turn, sway = 0 }) => {
   const sw = noise('hb', t, .6) * 3 + sway * 8;
+  if (L.style === 'natural') return <path d={`M-66 -26 C-72 -4 -70 12 -62 22 L62 22 C70 12 72 -4 66 -26 C60 -96 -60 -96 -66 -26Z`} fill={mixC(L.hair, '#000000', .35)} stroke={INK} strokeWidth={3.5} />;
   if (L.style === 'cool') return <path d={`M-66 -20 C-72 0 -68 14 -60 20 L60 20 C68 14 72 0 66 -20 C60 -90 -60 -90 -66 -20Z`} fill={L.under || '#26262e'} stroke={INK} strokeWidth={3.5} />;
   if (L.style === 'rus') return <path d={`M-70 -14 C-76 8 -72 22 ${-64 + sw * .3} 30 L${64 + sw * .3} 30 C72 22 76 8 70 -14 C60 -90 -60 -90 -70 -14Z`} fill={L.hair} stroke={INK} strokeWidth={3.5} strokeLinejoin="round" />;
   if (L.style === 'liza') return <path d={`M-70 -40 C-84 30 -80 90 ${-66 + sw} 130 Q0 110 66 130 C80 90 84 30 70 -40 C40 -110 -40 -110 -70 -40Z`} fill={L.hair} stroke={INK} strokeWidth={3.5} />;
@@ -119,6 +121,38 @@ const HairBack: React.FC<{ L: Look; t: number; turn: number; sway?: number }> = 
 const HairFront: React.FC<{ L: Look; t: number; turn: number; sway?: number; clip?: string }> = ({ L, t, turn, sway = 0, clip }) => {
   const tx = turn * 10, sw = noise('hf', t, .8) * 2 + sway * 10;
   const st = { fill: L.hair, stroke: INK, strokeWidth: 3.5, strokeLinejoin: 'round' as const };
+  if (L.style === 'natural') {
+    // естественная мужская стрижка с боковым пробором: ровный силуэт, мягкая чёлка, линия роста у висков;
+    // текстура — десятки тонких прядей по направлению роста (от пробора влево-вниз), обрезанных по силуэту
+    const f = sw * .6, X = (x: number) => x + tx;
+    const sil = `M${X(58)} 6 C${X(64)} -12 ${X(68)} -34 ${X(66)} -54 C${X(64)} -86 ${X(40)} -108 ${X(8)} -110 C${X(-26)} -112 ${X(-58)} -98 ${X(-68)} -72 `
+      + `C${X(-76)} -54 ${X(-74)} -36 ${X(-70)} -22 C${X(-68)} -10 ${X(-66)} -2 ${X(-62)} 4 C${X(-62)} -8 ${X(-60)} -16 ${X(-56)} -22 `
+      + `C${X(-52)} -18 ${X(-50)} -12 ${X(-50) + f} -4 C${X(-44)} -12 ${X(-38)} -18 ${X(-32)} -20 C${X(-32)} -12 ${X(-30)} -6 ${X(-32) + f} 2 `
+      + `C${X(-22)} -8 ${X(-14)} -16 ${X(-6)} -22 C${X(-6)} -16 ${X(-4)} -12 ${X(-6) + f * .6} -8 C${X(2)} -18 ${X(10)} -28 ${X(18)} -38 `
+      + `C${X(26)} -46 ${X(36)} -46 ${X(44)} -42 C${X(52)} -38 ${X(56)} -24 ${X(58)} 6Z`;
+    const cid = 'hc' + (clip || '');
+    const strands: React.ReactNode[] = [];
+    for (let i = 0; i < 46; i++) { const u = h1(i * 3.7), v = h1(i * 9.1), dark = h1(i * 5.3);
+      const rx = 34 + (u - .5) * 30 - v * 40, ry = -106 + v * 40; // корни у пробора/макушки, вразброс
+      const ang = -2.25 - u * .85 + v * .35; const len = 80 + h1(i * 2.2) * 70;
+      const px = rx + Math.cos(ang) * len * 1.1, py = ry - Math.sin(ang) * len * .9 + 20;
+      strands.push(<path key={i} d={taperQ(X(rx), ry, X((rx + px) / 2 - 6), Math.min(ry, py) - 10, X(px) + f * (1 - v), py, 6 + dark * 6, true)} fill={dark < .33 ? mixC(L.hair, '#000000', .45) : dark > .8 ? L.hairHi : mixC(L.hair, '#000000', .15)} opacity={.75} />); }
+    for (let i = 0; i < 10; i++) { const v = h1(i * 4.4); strands.push(<path key={'r' + i} d={`M${X(34 + v * 6)} ${-100 + v * 20} Q${X(56)} ${-86 + v * 24} ${X(62)} ${-40 + v * 30}`} stroke={mixC(L.hair, '#000000', .3)} strokeWidth={3} fill="none" opacity={.5} />); }
+    const hl = `M${X(-50)} -86 C${X(-30)} -100 ${X(-4)} -104 ${X(20)} -100`;
+    return <g>
+      <defs><clipPath id={cid}><path d={sil} /></clipPath>
+        <linearGradient id={cid + 'g'} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor={mixC(L.hair, '#ffffff', .12)} /><stop offset="1" stopColor={mixC(L.hair, '#000000', .3)} /></linearGradient></defs>
+      {/* тень от волос на лбу и висках */}
+      <g clipPath={clip ? `url(#${clip})` : undefined}><path d={sil} transform="translate(2 8)" fill={L.skinSh} opacity={.5} /></g>
+      <path d={sil} fill={`url(#${cid}g)`} />
+      <g clipPath={`url(#${cid})`}>{strands}
+        <path d={hl} stroke={L.hairHi} strokeWidth={12} fill="none" opacity={.35} filter="url(#blur4)" strokeLinecap="round" />
+        <path d={`M${X(30)} -106 C${X(26)} -84 ${X(22)} -64 ${X(20)} -46`} stroke={mixC(L.hair, '#000000', .55)} strokeWidth={2.5} fill="none" opacity={.7} />
+        <path d={`M${X(66)} -70 C${X(60)} -40 ${X(60)} -10 ${X(58)} 6`} stroke="#000" strokeWidth={14} opacity={.18} fill="none" />
+      </g>
+      <path d={sil} fill="none" stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+    </g>;
+  }
   if (L.style === 'cool') {
     // пепельные волосы: короткий выбритый бок справа (андеркат), верх длинный, зачёсан справа налево с объёмом вверх,
     // острые длинные пряди, одна прядь падает между глаз. Кончики качаются (sway).
