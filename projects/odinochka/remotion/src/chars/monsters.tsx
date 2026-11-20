@@ -92,17 +92,17 @@ export const ShadowSoldier: React.FC<{ x: number; y: number; s?: number; t: numb
 };
 
 // силуэт человека на коленях в поклоне (вид сбоку): bow 0 — стоит на коленях прямо, 1 — лбом в пол
-export const BowFigure: React.FC<{ x: number; y: number; s?: number; bow: number; flip?: boolean; color?: string; rim?: string }> = ({ x, y, s = 1, bow, flip, color = '#0a0a12', rim = '#ff3a4a' }) => {
-  const a = bow * 80; // угол наклона спины
-  const r = a * Math.PI / 180, hipX = 0, hipY = -150, back = 260, shX = hipX + Math.sin(r) * back, shY = hipY - Math.cos(r) * back;
-  const hx = shX + Math.sin(r) * 80, hy = shY - Math.cos(r) * 80;
+export const BowFigure: React.FC<{ x: number; y: number; s?: number; bow: number; flip?: boolean; color?: string; rim?: string }> = ({ x, y, s = 1, bow, flip, color = '#0c0a12', rim = '#ff3a4a' }) => {
+  const a = bow * 78 * Math.PI / 180, hip = [-80, -110], L = 230;
+  const sh = [hip[0] + Math.sin(a) * L, hip[1] - Math.cos(a) * L], hd = [sh[0] + Math.sin(a + .15) * 85, sh[1] - Math.cos(a + .15) * 85];
+  const hand = [sh[0] + 90 + bow * 120, Math.min(-14, sh[1] + 150 + bow * 40)];
+  const ln = (p: number[], q: number[], w: number, c = color) => <path d={`M${p[0]} ${p[1]} L${q[0]} ${q[1]}`} stroke={c} strokeWidth={w} strokeLinecap="round" />;
   return <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s})`}>
-    <path d={`M-120 0 L${hipX} ${hipY} L${hipX - 40} ${hipY + 30} L-140 0Z`} fill={color} />
-    <path d={`M-130 0 L60 0 L40 -40 L-110 -40Z`} fill={color} />
-    <path d={`M${hipX - 50} ${hipY + 10} L${shX - 40 * Math.cos(r)} ${shY - 40 * Math.sin(r)} L${shX + 40 * Math.cos(r)} ${shY + 40 * Math.sin(r)} L${hipX + 50} ${hipY + 30}Z`} fill={color} />
-    <circle cx={hx} cy={hy} r={62} fill={color} />
-    <path d={`M${shX} ${shY} L${shX + Math.sin(r + .9) * 200} ${Math.min(-10, shY - Math.cos(r + .9) * 200)}`} stroke={color} strokeWidth={44} strokeLinecap="round" />
-    <path d={`M${hipX - 50} ${hipY + 10} L${shX - 40 * Math.cos(r)} ${shY - 40 * Math.sin(r)}`} stroke={rim} strokeWidth={4} opacity={.8} filter="url(#glow)" />
-    <path d={`M${hx - 50} ${hy - 30} A62 62 0 0 1 ${hx + 40} ${hy - 48}`} stroke={rim} strokeWidth={4} fill="none" opacity={.8} filter="url(#glow)" />
+    <ellipse cx={0} cy={4} rx={220} ry={18} fill="#000" opacity={.5} />
+    {ln([-150, -22], [70, -30], 56)}{ln(hip, [70, -40], 74)}
+    {ln(hip, sh, 110)}{ln(sh, hand, 40)}
+    <circle cx={hd[0]} cy={hd[1]} r={58} fill={color} />
+    <path d={`M${hip[0] - 40 * Math.cos(a)} ${hip[1] - 40 * Math.sin(a) - 10} L${sh[0] - 50 * Math.cos(a)} ${sh[1] - 50 * Math.sin(a)}`} stroke={rim} strokeWidth={5} opacity={.85} filter="url(#glow)" strokeLinecap="round" />
+    <path d={`M${hd[0] - 50} ${hd[1] - 25} A58 58 0 0 1 ${hd[0] + 45} ${hd[1] - 38}`} stroke={rim} strokeWidth={5} fill="none" opacity={.85} filter="url(#glow)" />
   </g>;
 };

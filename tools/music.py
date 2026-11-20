@@ -147,6 +147,36 @@ if a.style == "isekai":  # фэнтези-аниме: арфа-арпеджио,
             tt = np.arange(len(pad)) / SR; e = np.minimum(1, tt / .5) * np.minimum(1, (ln - tt) / .5)
             add(pad * e * 0.03, t, 1, .85); add(pad * e * 0.03, t + .015, .85, 1)
     total_beats = 0
+if a.style == "epic":  # эпик-аниме (хук/кульминация): тайко, медные стабы, хор-пэд, минор Dm–Bb–Gm–A; --seed 2 — без барабанов (напряжение)
+    prog = [(38, [50, 53, 57]), (34, [50, 53, 58]), (31, [50, 55, 58]), (33, [49, 52, 57])]
+    def taiko(t, g=1.0):
+        ln = .9; tt = np.arange(int(ln * SR)) / SR; f = 48 + 70 * np.exp(-tt * 18)
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 4.5) + band(rng.uniform(-1, 1, len(tt)), 80, 900) * np.exp(-tt * 30) * .5
+        add(x * .8 * g, t)
+    drums = a.seed != 2
+    for b in range(total_beats):
+        t = b * beat; br = (b // 4) % 4; root, ch = prog[br]
+        if drums:
+            if b % 4 == 0: taiko(t, 1.1)
+            if b % 4 == 2: taiko(t, .8); taiko(t + beat / 2, .5)
+            if b % 16 >= 14: taiko(t + beat / 4, .5); taiko(t + 3 * beat / 4, .6)
+            if b % 2 == 1: snare(t + beat / 2) if b % 8 == 7 else hat(t, g=.05)
+        if b % 4 == 0:
+            ln = 4 * beat; tt = np.arange(int(ln * SR)) / SR
+            choir = np.zeros(len(tt))
+            for m in ch + [ch[0] + 12]:
+                vib = 1 + .004 * np.sin(2 * np.pi * 5.2 * tt + m)
+                ph = 2 * np.pi * np.cumsum(note(m) * vib) / SR
+                choir += band(np.sign(np.sin(ph)) * .5 + np.sin(ph * 2) * .3, 300, 2600)
+            e = np.minimum(1, tt / .8) * np.minimum(1, (ln - tt) / .6)
+            add(choir * e * .045, t, 1, .8); add(choir * e * .045, t + .02, .8, 1)
+            # медный стаб и бас
+            sl = .7; st = np.arange(int(sl * SR)) / SR; brass = np.zeros(len(st))
+            for m in ch: brass += smooth(saw(note(m - 12), sl, .003) + saw(note(m - 12), sl, -.003), 10)
+            add(np.tanh(brass * 1.5) * np.exp(-st * 2.2) * np.minimum(1, st / .03) * .12, t)
+            bl = 4 * beat; bt = np.arange(int(bl * SR)) / SR
+            add(np.sin(2 * np.pi * note(root - 12) * bt) * .3 * np.minimum(1, bt / .05) * np.exp(-bt * .4), t)
+    total_beats = 0
 if a.style == "comedy":  # комедия: свинг, пиццикато-бас «на цыпочках», маримба-мелодия, хлопок на 2 и 4, шейкер; мажор C–Am–F–G
     prog = [(48, [60, 64, 67]), (45, [57, 60, 64]), (41, [57, 60, 65]), (43, [59, 62, 67])]
     sw = beat * 2 / 3  # свинг: вторая восьмая сдвинута
