@@ -172,7 +172,6 @@ export const DeadPlatform: React.FC<{ t: number; train?: number; doors?: number 
       {Array.from({ length: 5 }).map((_, i) => <g key={i}><rect x={x + 120 + i * 300} y={820} width={170} height={150} fill="#0a0e14" stroke="#9aa0aa" strokeWidth={4} />
         <rect x={x + 60 + i * 300 - doors * 30} y={800} width={50} height={280} fill="#c8ccd4" opacity={.25} /></g>)}
       <circle cx={x + 30} cy={1020} r={26} fill="#fff8e0" />
-      <text x={x + 300} y={1150} fontFamily="Mont" fontWeight={800} fontSize={30} fill="#c8ccd4">ЭКСПРЕСС · БЕЗ ОСТАНОВОК</text>
     </g>}
   </g>;
 };

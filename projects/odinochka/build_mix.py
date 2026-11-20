@@ -41,13 +41,19 @@ C = {
  'f18': [(.4, L('impact-deep-hard', .8)), (.5, S('thud', .5)), (.6, L('bsb-bsb-3039', .7, offset=6))],
  'f18b': [(0, L('bsb-bsb-3040', .6, offset=6)), (.2, L('fs-train-squeal', .6)), (.5, L('fs-fluorescent-flicker', .8)), (1.25, L('fs-bass-power-down', .9)), (1.4, L('fs-whispers-4voices', .45)), (1.5, L('bsb-heartbeat-slow', .7)), (2.2, L('fs-shuffling-crowd', .5))],
  'f18c': [(0, L('fs-whispers-4voices', .5, offset=3)), (0, L('fs-shuffling-crowd', .55, offset=4)), (.4, L('click-tap-firm', .9)), (.42, L('mechanical-latch-heavy', .5)), (1.3, L('fs-horror-sting', 1.0)), (1.35, L('fs-stinger-metal', .7)), (1.5, L('bsb-heartbeat-fast', .7)), (2.0, L('fs-whispers-creepy', .6))],
- 'f19': [(0, L('fs-gasp', .9)), (.1, L('fs-piano-shock', .7)), (.3, L('bsb-breathing-man-slow', .5)), (.6, L('fs-laugh-creepy', 1.0)), (1.1, L('fs-stinger-metal', .6)), (1.2, L('fs-laugh-deep-evil', .7))],
+ 'f19': [(0, L('fs-whispers-deafening', .35, offset=6)), (.55, L('fs-laugh-creepy', .9)), (1.0, L('fs-stinger-3', .8)), (1.0, L('impact-heavy-hard', .5)), (1.5, L('fs-stinger-4', .8)), (1.5, L('fs-gasp', .7)), (1.95, L('fs-piano-shock', .9)), (2.35, L('fs-horror-sting', 1.0)), (2.4, L('fs-laugh-deep-evil', .8))],
+ 'f19_old': [(0, L('fs-gasp', .9)), (.1, L('fs-piano-shock', .7)), (.3, L('bsb-breathing-man-slow', .5)), (.6, L('fs-laugh-creepy', 1.0)), (1.1, L('fs-stinger-metal', .6)), (1.2, L('fs-laugh-deep-evil', .7))],
  'f20': [(0, L('fs-shuffling-crowd2', .6)), (.25, S('charge', .5, dur=.6)), (.3, S('crackle', .45, dur=1.6)), (.35, L('fs-stinger-3', .7))],
  'f21': [(0, L('fs-shuffling-crowd2', .5, offset=3)), (.3, L('whoosh-medium-hard', .7)), (.75, L('cinematic-drum-big', 1.0)), (.75, L('impact-heavy-hard', .8)), (.8, S('crackle', .5, dur=1.0))] + [(1.5 + i * .1, S('click', .4, pitch=.6)) for i in range(14)] + [(2.0, S('puff', .4)), (2.5, S('puff', .4)), (2.6, L('fs-whispers-creepy', .4))],
  'f22': [(0, L('fs-shuffling-crowd', .5, offset=8)), (.4, S('zap', .8, dur=.4)), (.45, L('cinematic-thunder-massive', .5)), (.9, L('fs-gasp', .6)), (1.0, S('brush', .5, dur=.8)), (1.4, L('whoosh-fast-medium', .6)), (1.6, L('impact-heavy-hard', 1.0)), (1.62, L('cinematic-drum-big', .7)), (1.7, S('puff', .4)), (2.2, L('fs-stinger-4', .5))],
  'f23': [(0, L('fs-fluorescent-flicker', .6, offset=1)), (.2, S('puff', .3)), (.5, S('puff', .3)), (.6, S('tone', .12, dur=2.0, freq=4000))],
  'f24': [(0, L('bsb-bsb-3040', .5, offset=22))],
- 'f24b': [(.4, L('fs-fluorescent-flicker', .7)), (1.2, L('fs-bass-power-down', .7)), (1.4, L('fs-laugh-tunnel', 1.0)), (1.5, L('fs-horror-sting', .7)), (1.6, L('bsb-heartbeat-fast', .6))],
+ 'f24b': [(0, L('fs-bass-power-down', .8)), (.3, L('fs-whispers-4voices', .4)), (.9, L('fs-horror-sting', 1.0)), (.9, L('fs-laugh-possessed', 1.0)), (.92, L('cinematic-slam-massive', .6)), (1.4, L('bsb-heartbeat-fast', .7)), (2.4, L('fs-laugh-tunnel', .9)), (2.4, L('fs-stinger-metal', .6)), (3.3, L('fs-fluorescent-flicker', .6))],
+ 'f24b_old': [(.4, L('fs-fluorescent-flicker', .7)), (1.2, L('fs-bass-power-down', .7)), (1.4, L('fs-laugh-tunnel', 1.0)), (1.5, L('fs-horror-sting', .7)), (1.6, L('bsb-heartbeat-fast', .6))],
+ 'f20b': [(0, S('crackle', .6, dur=1.6)), (.1, S('charge', .5, dur=1.0)), (.2, L('whoosh-medium-hard', .5, rate=.7))],
+ 'f21b': [(.2, S('charge', .5, dur=.8)), (.3, L('whoosh-medium-hard', .7, rate=.6)), (1.05, L('cinematic-drum-massive', 1.0)), (1.05, L('impact-heavy-hard', 1.0)), (1.1, L('cinematic-slam-big', .6)), (1.15, S('puff', .5)), (1.2, S('crackle', .4, dur=1.0))],
+ 'f28b': [(0, S('drone', .35, dur=2.6)), (1.6, L('fs-stinger-3', .8)), (1.6, L('fs-laugh-creepy', .6))],
+ 'f30': [(.2, S('beep', .3)), (.25, L('whoosh-fast-soft', .4))] + [(.5 + i * .5, S('tick', .25)) for i in range(4)] + [(2.5, L('click-tap-firm', .9)), (2.52, S('chord', .3, dur=1.2)), (3.0, L('cinematic-drum-massive', .9)), (3.05, L('whoosh-medium-hard', .5))],
  'f25': [(.2, L('bsb-bsb-3043', 1.0, offset=8)), (.3, S('skid', .6, dur=1.2)), (.5, L('cinematic-slam-big', .5))],
  'f26': [(.2, L('bsb-bsb-2153', .7)), (.3, S('hiss', .4, dur=.8)), (.5, L('cinematic-drum-massive', .6))],
  'f27': [(0, S('drone', .35, dur=3.2)), (.2, S('tone', .2, dur=3.0, freq=220)), (.2, L('bsb-heartbeat-slow', .5))],
@@ -57,13 +63,14 @@ C = {
 cues = []
 sd = {x[0]: x[2] for x in shots}
 for sid, cs in C.items():
+    if sid not in st: continue
     for t, c in cs:
         if c.get('gain', 1) <= 0: continue
         c = {**c, 't': round(st[sid] + t, 3)}
         if c.get('id') in ('bsb-bsb-3040', 'bsb-bsb-3032', 'bsb-bsb-3039', 'bsb-bsb-3043') and 'dur' not in c: c['dur'] = round(sd[sid] - t + .15, 2)  # атмосфера — ровно на план
         cues.append(c)
 # финальный удар на титр
-s30 = [x for x in shots if x[0] == 'f29'][0]; cues.append({'type': 'lib', 'id': 'cinematic-slam-massive', 'gain': 1.0, 't': round(s30[1] + s30[2] - 1.8, 3)})
+pass
 json.dump(sorted(cues, key=lambda c: c['t']), open('sfx-ep1.json', 'w'), ensure_ascii=False)
 A = 'remotion/public/audio'; os.makedirs(A, exist_ok=True)
 subprocess.run(['python3', '../../tools/sfx.py', 'sfx-ep1.json', '-o', f'{A}/sfx.wav', '--duration', str(TOTAL)], check=True)
@@ -78,6 +85,7 @@ for sid, b, dd, vos in shots:
         fx = {'announcer': ',aecho=0.8:0.6:120|260:0.35|0.2,highpass=f=250,lowpass=f=6000',
               'collector': ',asetrate=48000*0.88,aresample=48000,atempo=1.136,lowshelf=f=160:g=4,acrusher=bits=12:mix=0.15',
               'father': ',highpass=f=120,aecho=0.6:0.5:60:0.2'}.get(role, '')
+        if v == 'v03': fx += ',volume=2.4'
         fx += ',highpass=f=80,acompressor=threshold=0.08:ratio=3:attack=5:release=120:makeup=2,equalizer=f=3000:t=q:w=1:g=3'
         vo_f.append(f'[{i}]aresample=48000,aformat=channel_layouts=mono{fx},adelay={ms}|{ms}[v{i}]')
 n = len(vo_f)
@@ -91,10 +99,13 @@ M = [  # файл, с какой секунды трека, начало в ро
  ('epic-loop-fusionwolf.mp3', 0, st['s04i'] + .5, st['s04'] - st['s04i'] - .4, .7, .05, .4),
  ('strings-choir-sad-szegvari.mp3', 4, b05 - .3, st['s06'] - b05 + .3, .7, 1.0, 1.0),
  ('piano-darknight-szegvari.mp3', 0, st['s06'] - .3, b14 - st['s06'] + .6, .7, 1.2, 1.5),
- ('horror-drone-magmi.mp3', 0, b14 + 1.8, st['f18b'] + 1.3 - b14 - 1.8, .2, 2, .08),   # обрыв музыки, когда гаснет свет
- ('horror-intense-magmi.mp3', 60, st['f20'], st['f23'] - st['f20'] + .3, .45, .05, .3),
- ('horror-intense-magmi.mp3', 0, st['f24b'] + 1.3, b25 - st['f24b'] - .8, .32, .4, .8),
- ('strings-choir-slow-szegvari.mp3', 6, b25, END - b25, .6, 1.5, 2.0),
+ ('horror-drone-magmi.mp3', 0, b14 + 1.0, st['f18b'] + 1.3 - b14 - 1.0, .4, 2, .08),
+ ('../../../../../../assets/sfx-library/freesound-cc0/suspense-drones.mp3', 0, st['f18b'] + 1.35, st['f20'] - st['f18b'] - 1.35, 1.1, .6, .3),
+ ('horror-intense-magmi.mp3', 60, st['f20'], st['f23'] - st['f20'] + .3, .8, .05, .3),
+ ('../../../../../../assets/sfx-library/freesound-cc0/horror-strings.mp3', 0, st['f23'], st['f24b'] - st['f23'] + .2, .7, .5, .2),
+ ('horror-intense-magmi.mp3', 0, st['f24b'] + 3.3, b25 - st['f24b'] - 3.3, .6, .4, .8),
+ ('strings-choir-slow-szegvari.mp3', 6, b25, st['f30'] - b25 + .3, .6, 1.5, .8),
+ ('epic-orch-bertsz.mp3', 54, st['f30'], END - st['f30'], .7, .4, 1.5),
 ]
 ins, fs = [], []
 for i, (f, off, at, ln, g, fi, fo) in enumerate(M):

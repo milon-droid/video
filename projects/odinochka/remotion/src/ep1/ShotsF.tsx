@@ -2,8 +2,9 @@
 // Кирилл видит в фонаре отца, отец говорит → веки тяжелеют → титр. Лор (не объяснять): Фонарь — монстр, каждый видит желанного, долгий взгляд — потеря сознания.
 import React from 'react';
 import { clamp, ease, noise, spr } from '../anim';
-import { cam, Flash, h1, isImpact, Lids, Motes, Smoke, SpeedLines, shakeXY } from '../kit/fx';
+import { cam, DashLines, Flash, h1, isImpact, Lids, Motes, Smoke, SpeedLines, shakeXY } from '../kit/fx';
 import { TrainInterior } from '../bg/places';
+import { SysWin } from '../kit/ui';
 import { Figure, PK, Pose, POSES } from '../chars/body';
 import { Head } from '../chars/head';
 import { Machinist, Passenger } from '../chars/monsters';
@@ -88,6 +89,26 @@ const Tracers: React.FC<{ t: number; t0: number; t1: number; x0: number; y0: num
 const Rifle: React.FC<{ x: number; y: number; ang?: number }> = ({ x, y, ang = -10 }) => <g transform={`translate(${x} ${y}) rotate(${ang})`}>
   <rect x={-40} y={-14} width={220} height={28} rx={6} fill="#1a1c22" stroke="#0c0d18" strokeWidth={4} /><rect x={20} y={10} width={30} height={60} fill="#1a1c22" /><rect x={170} y={-6} width={60} height={12} fill="#2a2c34" />
   {[0, 1, 2].map(i => <rect key={i} x={40 + i * 40} y={-6} width={20} height={12} fill="#5fd2ff" opacity={.7} />)}</g>;
+
+
+// ударная волна — расходящиеся кольца
+const Shock: React.FC<{ t: number; t0: number; x: number; y: number; c?: string; r?: number }> = ({ t, t0, x, y, c = '#ffd890', r = 600 }) => {
+  const q = clamp((t - t0) / .45); if (t < t0 || q >= 1) return null;
+  return <g opacity={1 - q}>{[0, .15].map((d, i) => <ellipse key={i} cx={x} cy={y} rx={r * Math.max(0, q - d)} ry={r * .45 * Math.max(0, q - d)} fill="none" stroke={i ? '#fff' : c} strokeWidth={30 * (1 - q)} filter="url(#glow)" />)}</g>;
+};
+// пепел: частицы летят вверх и в стороны из точки (безликий рассыпается)
+const Ash: React.FC<{ t: number; t0: number; x: number; y: number; n?: number; spread?: number; c?: string }> = ({ t, t0, x, y, n = 40, spread = 260, c = '#1a1a22' }) => {
+  const q = clamp((t - t0) / 1.4); if (t < t0 || q >= 1) return null;
+  return <g>{Array.from({ length: n }).map((_, i) => { const a = h1(i * 3.3) * Math.PI * 2, sp = spread * (.3 + h1(i * 7.1)), px = x + Math.cos(a) * sp * q + Math.sin(t * 3 + i) * 10, py = y + Math.sin(a) * sp * q * .6 - q * 260 * h1(i * 5);
+    const ember = i % 5 === 0; return <rect key={i} x={px} y={py} width={(ember ? 6 : 10) * (1 - q * .6)} height={(ember ? 6 : 10) * (1 - q * .6)} fill={ember ? '#ffb040' : c} opacity={(1 - q) * (ember ? 1 : .9)} transform={`rotate(${q * 300 * (h1(i) - .5)} ${px} ${py})`} filter={ember ? 'url(#glow)' : undefined} />; })}</g>;
+};
+// языки пламени вокруг точки (спираль), k — сила
+const FireSpiral: React.FC<{ t: number; x: number; y: number; k: number; r?: number }> = ({ t, x, y, k, r = 160 }) => <g opacity={k}>
+  <circle cx={x} cy={y} r={r * .9 * k} fill="#ff7a1a" opacity={.35} filter="url(#blur30)" />
+  {Array.from({ length: 18 }).map((_, i) => { const a = t * 7 + i * .35, rr = r * (.2 + (i / 18) * .9) * k, px = x + Math.cos(a) * rr, py = y + Math.sin(a) * rr * .8;
+    return <ellipse key={i} cx={px} cy={py} rx={14 + i} ry={26 + i * 1.4} fill={i % 3 ? '#ffb040' : '#fff0a0'} transform={`rotate(${a * 57 + 90} ${px} ${py})`} opacity={.8} filter="url(#glow)" />; })}
+  <circle cx={x} cy={y} r={40 * k} fill="#fff6d0" filter="url(#glowBig)" />
+</g>;
 
 // f17: вагон — «обычные люди»: дремлют, опустив головы, газеты; диктор «Осторожно, двери закрываются»
 export const F17: React.FC<SP> = ({ t }) => (
@@ -175,14 +196,15 @@ const BossGrin: React.FC<{ t: number; k: number }> = ({ t, k }) => {
 
 // f19: один пассажир поднимает голову — лица нет; затем второй; затем все
 export const F19: React.FC<SP> = ({ t }) => {
-  const tilt = ease(t, .4, 1.6);
-  return <Frame t={t} grade="#1a1a2a" gradeK={.1}>
-    <g transform={cam(1.0 + t * .06, 540, 800)}>
+  // резкие рывки зума на лицо (без плавности), с тряской; улыбка растягивается
+  const steps = [0, 1.0, 1.5, 1.95, 2.35], zs = [1.0, 1.35, 1.8, 2.4, 3.1], k = steps.filter(x => t >= x).length - 1;
+  const z = zs[k] + (t - steps[k]) * .05, [sx, sy] = shakeXY(t, steps.slice(1).map(x => [x, 22, .25] as [number, number, number]));
+  const grin = ease(t, .55, 1.3);
+  return <Frame t={t} grade="#1a1a2a" gradeK={.1} impact={steps.slice(1).some(x => isImpact(t, x, 1))}>
+    <g transform={cam(z, 540, 700, sx, sy)}>
       <rect width={1080} height={1920} fill="#0a0b10" />
-      <g transform={`translate(${t > 1.3 ? Math.sin(t * 40) * 3 : 0} 0)`}><Faceless x={540} y={2900} s={3.4} t={t} seed={5} lift={1} grin={ease(t, .6, 1.4)} eyes={ease(t, 1.1, 1.5)} /></g>
-      <g transform={`rotate(${tilt * 18} 540 860)`} opacity={0} />
+      <g transform={`translate(${t > 1.2 ? Math.sin(t * 45) * 3 : 0} 0)`}><Faceless x={540} y={2900} s={3.4} t={t} seed={5} lift={1} grin={grin} eyes={0} /></g>
       <Dark id="d19" k={.9} holes={[{ beam: [700, 1950, 540, 500, 420] }]} />
-      {t > 1.55 && t < 2.55 && <BossGrin t={t} k={Math.min(1, (t - 1.55) / .08, (2.55 - t) / .12)} />}
     </g>
   </Frame>;
 };
@@ -218,8 +240,39 @@ export const F21: React.FC<SP> = ({ t }) => {
       <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={w === 'mikh' ? { ...POSES.stand, armR: [120, -20] } : w === 'r1' ? { ...POSES.hold, armR: [60, -90] } : w === 'timur' ? { ...POSES.stand, crouch: 60 } : POSES.guard} expr={w === 'timur' || w === 'kirill' ? 'scared' : 'shout'} rim="#ffb060" />)}
         <Rifle x={G.r1[0] + 40} y={G.r1[1] - 470} ang={-15} /></Low>
       <Dark id="d21" k={.92} holes={[...(boomL > 0 ? [{ spot: [540, 1300, 700 * boomL] } as Hole] : []), ...(muzzle ? [{ spot: [740, 1560, 420] } as Hole] : []), { spot: [540, 1300, t > fb && t < hit ? 260 : 0] }]} />
-      <Fireball t={t} t0={fb} x0={700} y0={1450} x1={540} y1={1300} /><Boom t={t} t0={hit} x={540} y={1300} />
+      <Fireball t={t} t0={fb} x0={700} y0={1450} x1={540} y1={1300} /><Boom t={t} t0={hit} x={540} y={1300} /><Shock t={t} t0={hit} x={540} y={1300} c="#ffb060" />
+      <Ash t={t} t0={hit} x={540} y={1250} n={50} spread={380} /><Ash t={t} t0={2.0} x={700} y={1150} n={30} spread={240} />
       <Tracers t={t} t0={1.5} t1={2.9} x0={740} y0={1560} x1={700} y1={1150} />
+    </g>
+  </Frame>;
+};
+
+
+// f20b: крупно Михалыч — в ладони закручивается огненная спираль, глаза загораются
+export const F20b: React.FC<SP> = ({ t }) => {
+  const k = ease(t, .1, .9);
+  return <Frame t={t} grade="#3a1a10" gradeK={.1} over={<SpeedLines t={t} cx={700} cy={900} n={60} inner={380} color="#ffb060" k={.35 * k} />}>
+    <rect width={1080} height={1920} fill="#0a0604" />
+    <g transform={cam(1.1 + t * .08, 540, 900, noise('m20', t, 3) * 6, 0)}>
+      <Figure x={420} y={2300} s={2.2} t={t} L={LK.mikh} C={CS.mikh} pose={{ ...POSES.stand, armR: [125, -40] }} expr="shout" seed={6} glow={0} rim="#ffb060" />
+      <FireSpiral t={t} x={760} y={760} k={k} r={220} />
+      <Motes t={t} x={760} y={900} w={500} h={700} n={40} color="#ffb040" speed={260} k={k} />
+    </g>
+  </Frame>;
+};
+
+// f21b: крупно Жора — замедление, рывок, кулак в огненной ауре → кадр-вспышка, ударная волна, безликий рассыпается пеплом
+export const F21b: React.FC<SP> = ({ t }) => {
+  const hit = 1.05, dash = t < hit ? Math.pow(ease(t, .2, hit), 3) : 1, [sx, sy] = shakeXY(t, [[hit, 34, .6]]);
+  return <Frame t={t} impact={isImpact(t, hit, 3)} grade="#2a1408" gradeK={.1} over={<g>{t < hit && t > .3 && <DashLines t={t} k={.6} color="#ffd8a0" />}<Flash t={t} t0={hit} color="#ffe0b0" max={.7} /></g>}>
+    <rect width={1080} height={1920} fill="#08060a" />
+    <g transform={cam(1.25, 540, 1000, sx, sy)}>
+      {t < hit + .1 && <Faceless x={820} y={2000} s={1.6} t={t} seed={12} grin={.6} lunge={.5} />}
+      <Ash t={t} t0={hit} x={820} y={1200} n={60} spread={420} />
+      <Shock t={t} t0={hit} x={760} y={1150} />
+      <g transform={`translate(${-260 + dash * 420} 0)`}>
+        <Figure x={360} y={2000} s={1.7} t={t} L={LK.zhora} C={CS.zhora} pose={t < hit ? { ...POSES.guard, armR: [70, -110], fistR: true, lean: 8 + dash * 10 } : { ...POSES.stand, armR: [-95, -5], fistR: true, lean: -16 }} expr="shout" seed={7} rim="#ff8a3a" />
+      </g>
     </g>
   </Frame>;
 };
@@ -242,7 +295,8 @@ export const F22: React.FC<SP> = ({ t }) => {
         {['mikh', 'r1'].map(w => <H key={w} t={t} w={w} pose={POSES.guard} expr="shout" />)}</Low>
       {t > .9 && t < 1.9 && <Faceless x={60} y={2050} s={1.2} t={t} seed={30} lunge={1} />}
       <Dark id="d22" k={.92} holes={[{ spot: [500, 1250, 800 * flashB] }, { spot: [650, 1300, 500 * flashP] }, { beam: [760, 1800, 400, 900, 180] }]} />
-      <Bolt t={t} t0={bolt} pts={[[480, 1400], [430, 1300], [300, 1230], [700, 1260], [820, 1200]]} />
+      <Bolt t={t} t0={bolt} pts={[[480, 1400], [430, 1300], [300, 1230], [700, 1260], [820, 1200]]} /><Bolt t={t} t0={bolt + .08} pts={[[430, 1300], [520, 1100], [620, 1080]]} /><Bolt t={t} t0={bolt + .12} pts={[[300, 1230], [220, 1050], [160, 980]]} />
+      <Ash t={t} t0={bolt + .1} x={400} y={1250} n={40} spread={320} c="#1a2030" /><Ash t={t} t0={punch} x={680} y={1300} n={40} spread={300} />
       {t > punch - .25 && t < punch + .3 && <circle cx={650} cy={1300} r={70} fill="#ff7a2a" filter="url(#glowBig)" />}
       {t > punch - .05 && t < punch + .25 && <SpeedLines t={t} cx={650} cy={1300} n={40} inner={240} k={.5} />}
     </g>
@@ -270,24 +324,25 @@ export const F24: React.FC<SP> = ({ t }) => {
     <g transform={cam(1.25, 820, 1150)}>
       <TrainInterior t={t} flicker={.15} vp={VP} shake={1.5} />
       <H t={t} w="mikh" pose={PK(t, [[0, { armR: [100, -20] }], [1.0, 'stand']], false)} expr="angry" turn={-.3} lookX={.4} />
-      <H t={t} w="zhora" pose={{ ...POSES.stand, armL: [-150, 30], armR: [40, -110] }} expr="smirk" mouth={talk(t, c, 'ЖОРА')} turn={-.3} />
+      <H t={t} w="zhora" pose={{ ...POSES.stand, armR: [150, -30], armL: [-20, 40] }} expr="smirk" mouth={talk(t, c, 'ЖОРА')} turn={-.3} />
     </g>
   </Frame>;
 };
 
 // f24b: Жора ещё смеётся — свет снова мигает; из темноты в конце вагона тот же смех, в окне торцевой двери — улыбка
 export const F24b: React.FC<SP> = ({ t }) => {
-  const fl = t > .4 && t < 1.2 && Math.floor(t * 14) % 2 === 0 ? 1 : 0, dark = t > 1.2 ? 1 : fl, face = ease(t, 1.4, 2.0);
-  return <Frame t={t} grade="#1a1a2a" gradeK={.15}>
-    <g transform={cam(1.0 + ease(t, 1.2, 3) * .5, 540, 760)}>
+  const off = t > .25 ? 1 : (Math.floor(t * 20) % 2 ? 1 : 0);
+  const scream = t > .9 && t < 1.25, again = ease(t, 2.4, 3.0), lightBack = t > 3.3;
+  return <Frame t={t} grade="#1a1a2a" gradeK={.15} impact={isImpact(t, .9, 2)}>
+    <g transform={cam(1.05, 540, 1000)}>
       <TrainInterior t={t} flicker={.3} vp={VP} shake={1} />
-      <g transform="translate(540 760)"><rect x={-60} y={-90} width={120} height={110} fill="#05060a" />
-        <defs><clipPath id="win24"><rect x={-60} y={-90} width={120} height={110} /></clipPath></defs>
-        <g clipPath="url(#win24)" opacity={face}><Faceless x={0} y={170} s={.36} t={t} seed={5} grin={1} eyes={1} /></g></g>
-
-      <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={POSES.stand} expr={t > 1.3 ? 'scared' : w === 'zhora' ? 'smirk' : 'calm'} lookY={-.3} turn={t > 1.3 ? 0 : -.2} />)}</Low>
-      <Dark id="d24b" k={.88 * dark} holes={[{ spot: [540, 740, 140 * face] }]} />
+      <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={POSES.stand} expr={t > .3 ? 'scared' : w === 'zhora' ? 'smirk' : 'calm'} lookY={-.3} />)}</Low>
+      <Dark id="d24b" k={lightBack ? 0 : .97 * off} holes={[{ spot: [540, 120, 110] }]} />
     </g>
+    {/* скример: синее лицо в глубине вагона вспыхивает на ~0,3 с и исчезает */}
+    {scream && <g transform={`translate(540 760) scale(${.55 + (t - .9) * 1.2}) translate(-540 -900)`}><BossGrin t={t} k={1} /></g>}
+    {/* перед включением света — снова синяя улыбка, медленнее, из темноты */}
+    {again > 0 && !lightBack && <g opacity={again * .9}><BossGrin t={t} k={1} /></g>}
   </Frame>;
 };
 
@@ -334,7 +389,7 @@ export const F27: React.FC<SP> = ({ t }) => {
 // f28: свет на Кирилле — в фонаре лицо отца; отец говорит
 export const F28: React.FC<SP> = ({ t }) => {
   const c = caps('f28'); const rv = ease(t, .2, 1.0);
-  const face = <g transform="translate(0 20) scale(1.25)"><Head t={t} L={LK.father} expr="sad" seed={12} lookY={.3} mouth={talk(t, c, '???') * .35} /></g>;
+  const face = <g transform="translate(0 20) scale(1.25)"><Head t={t} L={LK.father} expr="sad" seed={12} lookY={.3} noBlink mouth={talk(t, c, '???') * .35} /></g>;
   return <Frame t={t} grade="#1a1a2a" gradeK={.12} over={<Flash t={t} t0={.2} dur={.6} color="#fff6d8" max={.4} />}>
     <g transform={cam(1.25 + t * .05, 540, 760, 0, -160)}>
       <rect width={1080} height={1920} fill="#0a0b10" />
@@ -343,16 +398,46 @@ export const F28: React.FC<SP> = ({ t }) => {
   </Frame>;
 };
 
+// f28b: Кирилл: «Папа?..» — свет фонаря мерцает; на 3 кадра — оскал вместо лица отца (подсознательная вспышка)
+export const F28b: React.FC<SP> = ({ t }) => {
+  const c = caps('f28b'); const flick = .75 + .25 * noise('fk', t, 9), sub = t > 1.6 && t < 1.7;
+  if (sub) return <Frame t={t} vign={1}><rect width={1080} height={1920} fill="#0a0b10" /><Faceless x={540} y={2700} s={3.0} t={t} seed={5} grin={1} eyes={1} /></Frame>;
+  return <Frame t={t} grade="#2a2418" gradeK={.12}>
+    <rect width={1080} height={1920} fill="#0c0a0e" /><ellipse cx={540} cy={640} rx={560} ry={560} fill="#fff0c0" opacity={.18 * flick} filter="url(#blur30)" />
+    <g transform={cam(1.05 + t * .12, 540, 650)}><g transform="translate(540 600) scale(6.2)"><Head t={t} L={KL} expr="scared" seed={3} lookY={-.2} mouth={talk(t, c, 'КИРИЛЛ')} noBlink tears={.6} /></g></g>
+  </Frame>;
+};
+
 // f29: Кирилл не может отвести взгляд — веки тяжелеют, кадр гаснет → титр
 export const F29: React.FC<SP> = ({ t, d }) => {
-  const cut = d - 1.8, lid = 1 - ease(t, .8, cut) * .85;
-  if (t < cut) return <Frame t={t} grade="#2a2418" gradeK={.12} over={<Lids k={ease(t, cut - .7, cut)} />}>
+  const lid = 1 - ease(t, .6, d - .6) * .85;
+  return <Frame t={t} grade="#2a2418" gradeK={.12} over={<Lids k={ease(t, d - 1.0, d - .15)} />}>
     <rect width={1080} height={1920} fill="#0c0a0e" /><ellipse cx={540} cy={640} rx={560} ry={560} fill="#fff0c0" opacity={.16} filter="url(#blur30)" />
-    <g transform={cam(1 + t * .05, 540, 700)}><g transform="translate(540 600) scale(6.2)"><Head t={t} L={KL} expr="sad" seed={3} lookY={-.2} noBlink lid={lid} tears={ease(t, .4, 1.6) * .8} /></g></g>
+    <g transform={cam(1 + t * .05, 540, 700)}><g transform="translate(540 600) scale(6.2)"><Head t={t} L={KL} expr="sad" seed={3} lookY={-.2} noBlink lid={lid} tears={.8} /></g></g>
   </Frame>;
+};
+
+// f30: финал — окно Системы «ЭКСТРЕННЫЙ КВЕСТ» с призывом (лайк = силы Кириллу, комментарий: отец или Фонарь?) → кнопка «ПРИНЯТЬ» → название и «Серия 2»
+const HeartIcon: React.FC<{ x: number; y: number; s: number; c?: string }> = ({ x, y, s, c = '#ff3a5a' }) => <path transform={`translate(${x} ${y}) scale(${s})`} d="M0 12 C-30 -14 -20 -38 0 -24 C20 -38 30 -14 0 12Z" fill={c} filter="url(#glow)" />;
+export const F30: React.FC<SP> = ({ t, d }) => {
+  const press = 2.5, cut = d - 1.8, pk = spr(t, press, { damping: 10 }), btn = t > press ? 1 - .15 * Math.sin(Math.min(1, (t - press) / .2) * Math.PI) : 1;
+  if (t >= cut) { const q = t - cut; return <Frame t={t} vign={1} over={<Flash t={t} t0={cut} dur={.4} color="#bfe8ff" max={.7} />}>
+    <rect width={1080} height={1920} fill="#02040c" /><ellipse cx={540} cy={900} rx={800} ry={360} fill="#1a4aaa" opacity={.4} filter="url(#blur30)" />
+    <text x={540} y={960} textAnchor="middle" fontFamily="CormSC, serif" fontWeight={700} fontSize={138} letterSpacing={4} fill="#f4fbff" opacity={ease(q, 0, .4)} filter="url(#glow)">ОДИНОЧКА</text>
+    <line x1={540 - 340 * ease(q, .3, .7)} x2={540 + 340 * ease(q, .3, .7)} y1={1010} y2={1010} stroke="#5fd2ff" strokeWidth={3} filter="url(#glow)" />
+    <text x={540} y={1080} textAnchor="middle" fontFamily="Oswald" fontWeight={300} fontSize={44} letterSpacing={18} fill="#9fdcff" opacity={ease(q, .5, .9)}>СЕРИЯ 2 — СКОРО</text>
+    <Motes t={t} x={540} y={1700} w={1100} h={1500} n={40} color="#7fe0ff" speed={160} />
+  </Frame>; }
   return <Frame t={t} vign={1}>
-    <rect width={1080} height={1920} fill="#000" />
-    <text x={540} y={960} textAnchor="middle" fontFamily="CormSC, serif" fontWeight={700} fontSize={138} letterSpacing={4} fill="#f4fbff" opacity={ease(t, cut + .1, cut + .6)} filter="url(#glow)">ОДИНОЧКА</text>
-    <text x={540} y={1060} textAnchor="middle" fontFamily="Oswald" fontWeight={300} fontSize={40} letterSpacing={16} fill="#9fdcff" opacity={ease(t, cut + .6, cut + 1)}>СЕРИЯ 2 — СКОРО</text>
+    <rect width={1080} height={1920} fill="#02040c" />
+    <Motes t={t} x={540} y={1800} w={1100} h={1700} n={40} color="#5fd2ff" speed={100} k={.7} />
+    <SysWin t={t} t0={.15} y={760} w={980} title="[ ЭКСТРЕННЫЙ КВЕСТ ]" lines={['Выжить на «Конечной»', 'Лайк — дать Кириллу сил', 'В комментах: кто ждёт его', 'на платформе — отец или Фонарь?']} size={48} color="#5fd2ff" cps={62} />
+    {t > .9 && <HeartIcon x={90} y={790} s={1.3 + .2 * Math.sin(t * 8)} />}
+    {/* кнопка ПРИНЯТЬ */}
+    <g transform={`translate(540 1150) scale(${btn})`} opacity={ease(t, 2.2, 2.5)}>
+      <rect x={-200} y={-50} width={400} height={100} rx={12} fill={t > press ? '#5fd2ff' : '#06182e'} stroke="#5fd2ff" strokeWidth={4} filter="url(#glow)" />
+      <text y={18} textAnchor="middle" fontFamily="Oswald" fontWeight={600} fontSize={50} letterSpacing={10} fill={t > press ? '#02040c' : '#e8f8ff'}>ПРИНЯТЬ</text>
+    </g>
+    {t > press && <circle cx={540} cy={1150} r={260 * pk} fill="none" stroke="#5fd2ff" strokeWidth={8 * (1 - Math.min(1, (t - press) / .6))} filter="url(#glow)" />}
   </Frame>;
 };

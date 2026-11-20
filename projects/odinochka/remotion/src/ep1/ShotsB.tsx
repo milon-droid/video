@@ -24,12 +24,6 @@ export const S05: React.FC<SP> = ({ t }) => {
       <Vysotka x={180} y={1380} s={.55} c="#8a8ca0" cs="#6a6c84" lit={.05} seed={2} />
       <Fog t={t} y={1320} k={.4} color="#e0d8e8" />
       <Panelka x={-30} y={1700} w={420} floors={8} c="#b8b0a8" lit={.05} seed={4} />
-      {/* билборд героя ранга S на панельке */}
-      <g transform="translate(560 840)"><rect x={0} y={0} width={500} height={300} fill="#101830" stroke="#d8c060" strokeWidth={8} />
-        <g transform="translate(100 190) scale(1.15)"><Head t={t} L={LK.r2} expr="smirk" seed={9} /></g>
-        <text x={330} y={100} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={110} fill="#ffcf4a">S</text>
-        <text x={330} y={170} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={30} fill="#fff">ГЕРОЙ МОСКВЫ</text>
-        <text x={330} y={215} textAnchor="middle" fontFamily={FONT} fontWeight={700} fontSize={24} fill="#9fb4d8">ГИЛЬДИЯ «КАБАЛА»</text></g>
       <Panelka x={560} y={1760} w={540} floors={6} c="#a8a098" lit={.05} seed={7} />
       <rect y={1760} width={1080} height={300} fill="#5a5258" />
     </g>
@@ -160,7 +154,14 @@ export const S12: React.FC<SP> = ({ t }) => {
   return <Frame t={t} grade="#1a2a5a" gradeK={.2}>
     <g transform={cam(1.08 + t * .02, 400, 1000)}>
       <Kitchen t={t} />
-      <rect x={60} y={420} width={300} height={1200} fill="#1a1410" /><rect x={60} y={420} width={300} height={1200} fill="#ffcf8a" opacity={.12} />
+      {/* стена с дверным проёмом в коридор (закрывает холодильник) */}
+      <rect x={0} y={0} width={430} height={1920} fill="#2e384c" />
+      <rect x={70} y={400} width={290} height={1240} fill="#0e0c0c" />
+      <defs><linearGradient id="hall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#3a2e22" /><stop offset="1" stopColor="#120e0c" /></linearGradient></defs>
+      <rect x={70} y={400} width={290} height={1240} fill="url(#hall)" opacity={.9} />
+      <path d="M360 400 L410 430 L410 1610 L360 1640Z" fill="#6a5a4a" stroke="#1a1410" strokeWidth={4} />
+      <rect x={52} y={384} width={326} height={20} fill="#c8c0b0" /><rect x={52} y={384} width={20} height={1256} fill="#c8c0b0" /><rect x={358} y={384} width={20} height={1256} fill="#b8b0a0" />
+      <rect y={1640} width={430} height={300} fill="#3a2a2a" />
       <Figure x={210} y={1600} s={.95} t={t} L={LK.nastya} C={CS.nastya} pose={POSES.hold} expr="cry" seed={5} turn={.4} lookX={.7} mouth={talk(t, c, 'НАСТЯ')} tears={1} />
       <Figure x={800} y={2050} s={1.45} t={t} L={LK.kWeakHurt} C={CS.hoodieY} pose={PK(t, [[0, 'stand'], [.3, { armR: [20, -40], fistR: true }]])} expr="determined" seed={3} turn={-.55} lookX={-.8} mouth={talk(t, c, 'КИРИЛЛ')} />
     </g>

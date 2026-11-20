@@ -3,23 +3,33 @@ import React from 'react';
 import { noise } from '../anim';
 import { INK } from './head';
 
-// упырь: серый, сутулый, длинные руки с когтями, светящиеся глаза, пасть. attack 0..1 — замах лапой
+// упырь: высокий тощий сгорбленный силуэт, длинные руки с когтями, череп с пустыми глазницами и точками глаз, рваная пасть с иглами зубов.
+// attack 0..1 — замах лапой, dead 0..1 — падает и рассыпается
 export const Upyr: React.FC<{ x: number; y: number; s?: number; t: number; attack?: number; dead?: number; flip?: boolean; seed?: number }> = ({ x, y, s = 1, t, attack = 0, dead = 0, flip, seed = 1 }) => {
-  const br = Math.sin(t * 3 + seed) * 4, sk = '#7a8478', sh = '#4a5448';
-  const armA = -30 - attack * 120;
-  return <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s}) rotate(${dead * -80})`} opacity={1 - dead * .3}>
-    <ellipse cx={0} cy={4} rx={120} ry={16} fill="#000" opacity={.35} />
-    <path d="M-50 0 L-60 -180 L-30 -200 L-20 -60 L-6 0Z" fill={sh} stroke={INK} strokeWidth={4} /><path d="M50 0 L60 -180 L30 -200 L20 -60 L6 0Z" fill={sk} stroke={INK} strokeWidth={4} />
-    <path d={`M-70 -190 C-90 -320 -40 ${-420 + br} 30 ${-430 + br} C90 -420 110 -320 80 -190Z`} fill={sk} stroke={INK} strokeWidth={4} />
-    {[0, 1, 2].map(i => <path key={i} d={`M-30 ${-300 + i * 34} q40 10 80 0`} stroke={sh} strokeWidth={5} fill="none" />)}
-    <g transform={`translate(60 ${-400 + br}) rotate(${armA})`}><path d="M-14 0 L-10 220 L10 220 L14 0Z" fill={sk} stroke={INK} strokeWidth={4} />{[-10, 0, 10].map((c, i) => <path key={i} d={`M${c} 218 l${c * .6} 50 l6 -48`} fill="#e8e0c8" stroke={INK} strokeWidth={2} />)}</g>
-    <g transform={`translate(-60 ${-400 + br}) rotate(${20 + Math.sin(t * 2) * 6})`}><path d="M-14 0 L-10 220 L10 220 L14 0Z" fill={sh} stroke={INK} strokeWidth={4} /></g>
-    {/* голова */}
-    <g transform={`translate(40 ${-450 + br}) rotate(${10 + noise('up' + seed, t, 2) * 8})`}>
-      <path d="M-60 0 C-66 -70 -20 -100 20 -96 C60 -90 76 -50 64 10 C50 50 -40 60 -60 0Z" fill={sk} stroke={INK} strokeWidth={4} />
-      <path d="M-40 10 L50 10 L30 50 L-20 50Z" fill="#2a0a0a" stroke={INK} strokeWidth={3} />
-      {[-30, -14, 2, 18, 34].map((xx, i) => <path key={i} d={`M${xx} 10 l6 14 l6 -14`} fill="#e8e0c8" />)}
-      {[-22, 26].map((xx, i) => <g key={i}><ellipse cx={xx} cy={-30} rx={13} ry={9} fill="#ffcf3a" filter="url(#glow)" /><ellipse cx={xx} cy={-30} rx={3} ry={8} fill="#000" /></g>)}
+  const br = Math.sin(t * 2.4 + seed) * 5, tw = noise('uw' + seed, t, 3) * 6, sk = '#3c4040', sh = '#1e2222', rim = '#9fb0c0';
+  const armA = -20 - attack * 130;
+  return <g transform={`translate(${x} ${y}) scale(${(flip ? -1 : 1) * s} ${s}) rotate(${dead * -70})`} opacity={1 - dead * .5}>
+    <ellipse cx={0} cy={4} rx={130} ry={16} fill="#000" opacity={.45} />
+    {/* ноги — тонкие, согнутые назад */}
+    <path d="M-40 0 L-70 -120 L-40 -250" stroke={sh} strokeWidth={22} fill="none" strokeLinecap="round" /><path d="M40 0 L80 -130 L40 -250" stroke={sk} strokeWidth={22} fill="none" strokeLinecap="round" />
+    {/* сгорбленный торс */}
+    <path d={`M-60 -250 C-90 -380 -50 ${-500 + br} 40 ${-520 + br} C110 -500 120 -380 70 -250Z`} fill={sk} stroke="#050606" strokeWidth={5} />
+    {[0, 1, 2, 3].map(i => <path key={i} d={`M-30 ${-340 - i * 30} q50 -14 90 4`} stroke={sh} strokeWidth={5} fill="none" />)}
+    <path d={`M-60 -250 C-90 -380 -50 ${-500 + br} 40 ${-520 + br}`} stroke={rim} strokeWidth={4} fill="none" opacity={.5} />
+    {/* дальняя рука */}
+    <path d={`M-40 ${-480 + br} Q-120 -300 -100 ${-60 + tw}`} stroke={sh} strokeWidth={18} fill="none" strokeLinecap="round" />
+    {[-14, 0, 14].map((c, i) => <path key={i} d={`M-100 ${-60 + tw} l${c} 70`} stroke="#d8d4c8" strokeWidth={5} strokeLinecap="round" />)}
+    {/* ближняя рука с замахом */}
+    <g transform={`translate(70 ${-480 + br}) rotate(${armA})`}><path d="M0 0 Q40 160 10 330" stroke={sk} strokeWidth={20} fill="none" strokeLinecap="round" />
+      {[-18, -6, 6, 18].map((c, i) => <path key={i} d={`M10 330 q${c} 50 ${c * 1.6} 90`} stroke="#e4e0d4" strokeWidth={6} fill="none" strokeLinecap="round" />)}</g>
+    {/* голова-череп, вытянута вперёд */}
+    <g transform={`translate(70 ${-540 + br}) rotate(${25 + noise('uh' + seed, t, 1.6) * 10})`}>
+      <path d="M-50 0 C-56 -70 -10 -96 30 -90 C74 -84 92 -40 80 10 C70 46 40 60 10 60 C-30 60 -48 36 -50 0Z" fill="#8a8c84" stroke="#050606" strokeWidth={5} />
+      <path d="M-50 0 C-56 -70 -10 -96 30 -90" stroke="#c8ccd0" strokeWidth={3} fill="none" opacity={.6} />
+      {[-14, 34].map((ex, i) => <g key={i}><ellipse cx={ex} cy={-28} rx={17} ry={13} fill="#050404" /><circle cx={ex + 2} cy={-27} r={4} fill="#ff3a2a" filter="url(#glow)" /></g>)}
+      <path d="M-30 20 L70 20 L60 70 L-20 70Z" fill="#080303" stroke="#050606" strokeWidth={3} />
+      {Array.from({ length: 9 }).map((_, i) => <path key={i} d={`M${-26 + i * 11} 20 l4 ${14 + (i % 2) * 8} l4 ${-14 - (i % 2) * 8}`} fill="#ece6d6" />)}
+      {Array.from({ length: 8 }).map((_, i) => <path key={'b' + i} d={`M${-18 + i * 10} 70 l4 -16 l4 16`} fill="#d8d0c0" />)}
     </g>
   </g>;
 };

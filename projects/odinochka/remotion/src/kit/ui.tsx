@@ -59,11 +59,11 @@ export const Title: React.FC<{ t: number; t0: number; text: string; sub?: string
 export const RankLadder: React.FC<{ t: number; t0: number }> = ({ t, t0 }) => {
   const rs = [['S', '#ffcf4a'], ['A', '#ff7a4a'], ['B', '#c46bff'], ['C', '#4aa8ff'], ['D', '#4adf9a'], ['E', '#8a90a0']];
   return <g>{rs.map(([r, c], i) => { const k = spr(t, t0 + i * .12, { damping: 13 }); const isE = r === 'E'; const blink = isE && t > t0 + 1.1 ? (Math.floor(t * 4) % 2 ? 1 : .35) : 1;
-    const w = 640 - i * 60, y = 260 + i * 125;
+    const w = isE ? 660 : 640 - i * 60, y = 260 + i * 125;
     return <g key={r} transform={`translate(${540 + (1 - k) * 400} ${y})`} opacity={k}>
       <rect x={-w / 2} y={-52} width={w} height={104} fill={isE ? '#3a0710' : '#0b1426'} opacity={.85} stroke={isE ? '#ff3b4f' : c} strokeWidth={3} />
       <text x={-w / 2 + 40} y={30} fontFamily={FONT} fontWeight={900} fontSize={80} fill={isE ? '#ff3b4f' : c} opacity={blink}>{r}</text>
-      <text x={w / 2 - 30} y={20} textAnchor="end" fontFamily={FONT} fontWeight={700} fontSize={isE ? 40 : 32} fill={isE ? '#ffd0d5' : '#c8d4ea'} opacity={blink}>{isE ? 'КИРИЛЛ ВОЛКОВ' : ['ГЕРОИ', 'ЭЛИТА', 'ГИЛЬДИИ', 'ОПЫТНЫЕ', 'НОВИЧКИ'][i]}</text>
+      <text x={w / 2 - 30} y={20} textAnchor="end" fontFamily={FONT} fontWeight={700} fontSize={isE ? 34 : 32} fill={isE ? '#ffd0d5' : '#c8d4ea'} opacity={blink}>{isE ? 'КИРИЛЛ ВОЛКОВ' : ['ГЕРОИ', 'ЭЛИТА', 'ГИЛЬДИИ', 'ОПЫТНЫЕ', 'НОВИЧКИ'][i]}</text>
     </g>; })}</g>;
 };
 
@@ -72,7 +72,8 @@ export const Phone: React.FC<{ x: number; y: number; s?: number; rot?: number; c
   <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
     <rect x={-240} y={-460} width={480} height={920} rx={56} fill="#0b0c10" stroke="#2a2e3a" strokeWidth={6} />
     <rect x={-220} y={-440} width={440} height={880} rx={40} fill="#0f1830" />
-    <g transform="translate(-220 -440)">{children}</g>
+    <defs><clipPath id="phoneScr"><rect x={0} y={0} width={440} height={880} rx={40} /></clipPath></defs>
+    <g transform="translate(-220 -440)" clipPath="url(#phoneScr)">{children}</g>
     <rect x={-60} y={-428} width={120} height={26} rx={13} fill="#000" />
   </g>
 );
