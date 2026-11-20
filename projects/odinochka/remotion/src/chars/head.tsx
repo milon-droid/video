@@ -7,7 +7,7 @@ const h1 = (n: number) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; 
 export const INK = '#0c0d18';
 export type Expr = 'calm' | 'sad' | 'scared' | 'angry' | 'shout' | 'determined' | 'smirk' | 'pain' | 'cry';
 export type HairStyle = 'messy' | 'natural' | 'cool' | 'rus' | 'kirill' | 'liza' | 'nastya' | 'zhora' | 'mikh' | 'slick' | 'buzz' | 'curly' | 'none';
-export type Look = { skin: string; skinSh: string; hair: string; hairHi: string; iris: string; style: HairStyle; female?: boolean; beard?: string; scar?: boolean; bruise?: boolean; glasses?: boolean; age?: number; plaster?: boolean; sharp?: boolean; under?: string; tired?: boolean };
+export type Look = { skin: string; skinSh: string; hair: string; hairHi: string; iris: string; style: HairStyle; female?: boolean; beard?: string; scar?: boolean; bruise?: boolean; glasses?: boolean; age?: number; plaster?: boolean; sharp?: boolean; under?: string; tired?: boolean; hat?: 'helmet' | 'hood' | 'bandana' | 'cap' };
 
 const mixC = (a: string, b: string, k: number) => { const p = (x: string) => [1, 3, 5].map(i => parseInt(x.slice(i, i + 2), 16)); const A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, '0')).join(''); };
 // прядь: квадратичная кривая p0→c→p1, ширина w у корня сужается к кончику
@@ -101,6 +101,12 @@ export const Head: React.FC<{ t: number; L: Look; expr?: Expr; mouth?: number; t
       {tears > 0 && <g opacity={tears}><path d={`M${-27 + tx} 24 q-3 18 0 30`} stroke="#bfe6ff" strokeWidth={4} fill="none" /><path d={`M${27 + tx} 24 q3 18 0 30`} stroke="#bfe6ff" strokeWidth={4} fill="none" /></g>}
       <defs><clipPath id={`fc${seed}`}><path d={face} /><circle cx={0} cy={-28} r={60 * wide} /></clipPath></defs>
       <HairFront L={L} t={t} turn={turn} sway={sway} clip={`fc${seed}`} />
+      {L.hat === 'helmet' && <g><path d="M-76 -6 C-80 -96 -40 -128 0 -128 C40 -128 80 -96 76 -6 L66 -10 C60 -60 30 -86 0 -86 C-30 -86 -60 -60 -66 -10Z" fill="#4a5a3a" stroke={INK} strokeWidth={4} />
+        <path d="M-80 -4 H80" stroke="#3a4a2a" strokeWidth={10} strokeLinecap="round" /><rect x={-52} y={-92} width={104} height={30} rx={12} fill="#1a1c22" stroke={INK} strokeWidth={3} /><rect x={-44} y={-88} width={38} height={22} rx={8} fill="#5fd2ff" opacity={.6} /><rect x={6} y={-88} width={38} height={22} rx={8} fill="#5fd2ff" opacity={.6} /></g>}
+      {L.hat === 'hood' && <g><path d="M-92 60 C-100 -40 -70 -136 0 -140 C70 -136 100 -40 92 60 L70 70 C76 -10 56 -90 0 -92 C-56 -90 -76 -10 -70 70Z" fill="#3a2a5a" stroke={INK} strokeWidth={4} />
+        <circle cx={0} cy={100} r={14} fill="#bf8fff" filter="url(#glow)" /></g>}
+      {L.hat === 'bandana' && <g><path d="M-66 -40 C-40 -64 40 -64 66 -40 L64 -18 C40 -40 -40 -40 -64 -18Z" fill="#c81e2a" stroke={INK} strokeWidth={3} /><path d="M62 -30 l30 10 l-8 18 l20 8" stroke="#c81e2a" strokeWidth={10} fill="none" strokeLinecap="round" /></g>}
+      {L.hat === 'cap' && <g><path d="M-68 -30 C-70 -92 -30 -112 0 -112 C34 -112 70 -94 68 -30 C40 -52 -40 -52 -68 -30Z" fill="#6a5440" stroke={INK} strokeWidth={4} /><path d="M-70 -32 C-40 -60 30 -58 96 -30 C60 -18 -30 -20 -70 -32Z" fill="#5a4634" stroke={INK} strokeWidth={4} /></g>}
     </g>
   );
 };

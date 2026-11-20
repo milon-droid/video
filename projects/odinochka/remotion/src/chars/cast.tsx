@@ -22,12 +22,12 @@ export const LK: Record<string, Look> = {
   kirillHurt: { skin: SK, skinSh: SKS, hair: '#141826', hairHi: '#4a6aa8', iris: '#3a4a6a', style: 'kirill', bruise: true },
   nastya: { skin: SK, skinSh: SKS, hair: '#2a1c22', hairHi: '#7a4a6a', iris: '#6a4a3a', style: 'nastya', female: true },
   liza: { skin: '#f6dccd', skinSh: '#d0a092', hair: '#c88a6a', hairHi: '#f0c0a0', iris: '#3a8a6a', style: 'liza', female: true },
-  mikh: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#9a9a9a', hairHi: '#d0d0d0', iris: '#4a4a4a', style: 'mikh', beard: '#8a8a8a', age: 55 },
-  zhora: { skin: '#eac2a6', skinSh: '#b88a76', hair: '#2a2420', hairHi: '#5a4a40', iris: '#3a2a1a', style: 'zhora', scar: true },
+  mikh: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#9a9a9a', hairHi: '#d0d0d0', iris: '#4a4a4a', style: 'mikh', beard: '#8a8a8a', age: 55, hat: 'cap' },
+  zhora: { skin: '#eac2a6', skinSh: '#b88a76', hair: '#2a2420', hairHi: '#5a4a40', iris: '#3a2a1a', style: 'zhora', scar: true, hat: 'bandana' },
   coll1: { skin: '#e8c8b4', skinSh: '#b48c7c', hair: '#1a1a1a', hairHi: '#444', iris: '#222', style: 'slick', glasses: true },
   coll2: { skin: '#eac2a6', skinSh: '#b88a76', hair: '#3a2a20', hairHi: '#5a4a40', iris: '#2a2a2a', style: 'buzz', scar: true },
-  r1: { skin: SK, skinSh: SKS, hair: '#5a3a2a', hairHi: '#8a6a4a', iris: '#3a2a1a', style: 'curly' },
-  r2: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#c8b070', hairHi: '#f0e0a0', iris: '#3a5a8a', style: 'slick' },
+  r1: { skin: SK, skinSh: SKS, hair: '#5a3a2a', hairHi: '#8a6a4a', iris: '#3a2a1a', style: 'buzz', hat: 'helmet' },
+  r2: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#c8b070', hairHi: '#f0e0a0', iris: '#3a5a8a', style: 'slick', hat: 'hood' },
 };
 export const CS: Record<string, Costume> = {
   pA: { top: '#3a3a40', topSh: '#24242a', pants: '#2a2a2e', shoes: '#1a1a1a' }, pB: { top: '#5a4a44', topSh: '#3a302c', pants: '#2a2a30', shoes: '#1a1a1a' },

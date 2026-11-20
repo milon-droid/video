@@ -70,8 +70,11 @@ const Dark: React.FC<{ id: string; k?: number; holes?: Hole[] }> = ({ id, k = .9
 // эффекты сил: огненный шар, молния, трассеры, аура кулаков
 const Fireball: React.FC<{ t: number; t0: number; x0: number; y0: number; x1: number; y1: number }> = ({ t, t0, x0, y0, x1, y1 }) => {
   const q = clamp((t - t0) / .45); if (t < t0 || q >= 1) return null; const x = x0 + (x1 - x0) * q, y = y0 + (y1 - y0) * q;
-  return <g><line x1={x0 + (x1 - x0) * Math.max(0, q - .35)} y1={y0 + (y1 - y0) * Math.max(0, q - .35)} x2={x} y2={y} stroke="#ff9a2a" strokeWidth={30} strokeLinecap="round" opacity={.6} filter="url(#blur12)" />
-    <circle cx={x} cy={y} r={48} fill="#ffcf5a" filter="url(#glowBig)" /><circle cx={x} cy={y} r={26} fill="#fff6d0" /></g>;
+  const tx = x0 + (x1 - x0) * Math.max(0, q - .45), ty = y0 + (y1 - y0) * Math.max(0, q - .45), ang = Math.atan2(y1 - y0, x1 - x0), px = -Math.sin(ang) * 46, py = Math.cos(ang) * 46;
+  return <g><polygon points={`${tx},${ty} ${x + px},${y + py} ${x - px},${y - py}`} fill="#ff7a1a" opacity={.7} filter="url(#blur12)" />
+    <polygon points={`${tx},${ty} ${x + px * .5},${y + py * .5} ${x - px * .5},${y - py * .5}`} fill="#ffd060" opacity={.8} />
+    {Array.from({ length: 8 }).map((_, i) => { const a = t * 20 + i * .8, rr = 40 + (i % 3) * 12; return <ellipse key={i} cx={x + Math.cos(a) * rr * .6} cy={y + Math.sin(a) * rr * .6} rx={18} ry={34} fill={i % 2 ? '#ffb040' : '#ff6a1a'} transform={`rotate(${a * 57} ${x + Math.cos(a) * rr * .6} ${y + Math.sin(a) * rr * .6})`} opacity={.85} filter="url(#glow)" />; })}
+    <circle cx={x} cy={y} r={58} fill="#ffcf5a" filter="url(#glowBig)" /><circle cx={x} cy={y} r={30} fill="#fff6d0" /></g>;
 };
 const Boom: React.FC<{ t: number; t0: number; x: number; y: number; c?: string; r?: number }> = ({ t, t0, x, y, c = '#ff8a2a', r = 220 }) => {
   const q = clamp((t - t0) / .5); if (t < t0 || q >= 1) return null;
@@ -221,7 +224,7 @@ export const F20: React.FC<SP> = ({ t }) => {
         <H t={t} w="mikh" pose={PK(t, [[0, 'stand'], [.25, { armR: [120, -40], armL: [-40, 60] }]])} expr="shout" mouth={talk(t, c, 'МИХАЛЫЧ')} />
         <H t={t} w="zhora" pose={POSES.guard} expr="angry" /><H t={t} w="kirill" pose={{ ...POSES.guard, armL: [-80, 30] }} expr="scared" /><H t={t} w="timur" expr="scared" pose={{ ...POSES.stand, crouch: 60 }} />
         <H t={t} w="r2" pose={POSES.guard} expr="scared" /></Low>
-      <Dark id="d20" k={.9} holes={[{ spot: [540 + (fx - 540) * .8, 2080 - (1920 - fy) * .8, 380 * on + 60] }, { beam: [760, 1700, 520, 700, 200] }]} />
+      <Dark id="d20" k={.76} holes={[{ spot: [540 + (fx - 540) * .8, 2080 - (1920 - fy) * .8, 380 * on + 60] }, { beam: [760, 1700, 520, 700, 200] }]} />
       <circle cx={540 + (fx - 540) * .8} cy={2080 - (1920 - fy) * .8} r={46 * on} fill="#ffb040" filter="url(#glowBig)" opacity={on} />
     </g>
   </Frame>;
@@ -240,7 +243,7 @@ export const F21: React.FC<SP> = ({ t }) => {
       <Smoke t={t} t0={2.0} x={700} y={1200} n={8} r={90} spread={180} color="#0a0a10" life={1.4} rise={120} k={.9} seed={8} />
       <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={w === 'mikh' ? { ...POSES.stand, armR: [120, -20] } : w === 'r1' ? { ...POSES.hold, armR: [60, -90] } : w === 'timur' ? { ...POSES.stand, crouch: 60 } : POSES.guard} expr={w === 'timur' || w === 'kirill' ? 'scared' : 'shout'} rim="#ffb060" />)}
         <Rifle x={G.r1[0] + 40} y={G.r1[1] - 470} ang={-15} /></Low>
-      <Dark id="d21" k={.92} holes={[...(boomL > 0 ? [{ spot: [540, 1300, 700 * boomL] } as Hole] : []), ...(muzzle ? [{ spot: [740, 1560, 420] } as Hole] : []), { spot: [540, 1300, t > fb && t < hit ? 260 : 0] }]} />
+      <Dark id="d21" k={.76} holes={[...(boomL > 0 ? [{ spot: [540, 1300, 700 * boomL] } as Hole] : []), ...(muzzle ? [{ spot: [740, 1560, 420] } as Hole] : []), { spot: [540, 1300, t > fb && t < hit ? 260 : 0] }]} />
       <Fireball t={t} t0={fb} x0={700} y0={1450} x1={540} y1={1300} /><Boom t={t} t0={hit} x={540} y={1300} /><Shock t={t} t0={hit} x={540} y={1300} c="#ffb060" />
       <Ash t={t} t0={hit} x={540} y={1250} n={50} spread={380} /><Ash t={t} t0={2.0} x={700} y={1150} n={30} spread={240} />
       <Tracers t={t} t0={1.5} t1={2.9} x0={740} y0={1560} x1={700} y1={1150} />
@@ -248,6 +251,42 @@ export const F21: React.FC<SP> = ({ t }) => {
   </Frame>;
 };
 
+
+
+// f21a: ракурс снизу — Михалыч метает огненный шар прямо в камеру (хвост пламени, линии скорости)
+export const F21a: React.FC<SP> = ({ t }) => {
+  const thr = .45, q = ease(t, thr, thr + .6), [sx, sy] = shakeXY(t, [[thr, 14, .4]]);
+  return <Frame t={t} grade="#3a1a10" gradeK={.1} over={<g>{t > thr && <SpeedLines t={t} cx={560} cy={760} n={60} inner={200 + q * 300} color="#ffb060" k={.5} />}<Flash t={t} t0={thr + .55} color="#ffd890" max={.6} /></g>}>
+    <rect width={1080} height={1920} fill="#0c0806" />
+    <g transform={cam(1.0, 540, 960, sx, sy)}>
+      {/* потолок вагона снизу: лампы уходят в перспективу вверх */}
+      {Array.from({ length: 8 }).map((_, i) => { const k = Math.pow(.8, i); return <rect key={i} x={540 - 420 * k} y={300 - 200 * k} width={840 * k} height={10 * k} fill="#fff4d0" opacity={.25 * k} />; })}
+      <Figure x={560} y={2700} s={2.6} t={t} L={LK.mikh} C={CS.mikh} pose={PK(t, [[0, { armR: [150, -60] }], [thr, { armR: [170, 10] }]])} expr="shout" seed={6} rim="#ffb060" />
+      {t < thr && <FireSpiral t={t} x={760} y={560} k={1} r={120} />}
+      <Fireball t={t} t0={thr} x0={760} y0={560} x1={540} y1={1500} />
+      {t > thr + .45 && <circle cx={540} cy={1500} r={500 * ease(t, thr + .45, thr + .65)} fill="#ffcf5a" opacity={1 - ease(t, thr + .5, thr + .9)} filter="url(#blur30)" />}
+    </g>
+  </Frame>;
+};
+
+// f21c: через плечо бойца в каске — очередь, вспышки освещают толпу, летят гильзы
+export const F21c: React.FC<SP> = ({ t }) => {
+  const fire = t > .3 && t < 1.3, f = Math.floor(t * 30), on = fire && f % 2 === 0, [sx, sy] = shakeXY(t, fire ? [[.3, 6, 1.0]] : []);
+  const dis = (i: number) => i < 12 ? 1 : i < 15 ? ease(t, .6 + (i - 12) * .2, 1.0 + (i - 12) * .2) : 0;
+  return <Frame t={t} grade="#1a2030" gradeK={.1}>
+    <g transform={cam(1.1, 540, 1000, sx, sy)}>
+      <TrainInterior t={0} flicker={0} vp={VP} />
+      <Crowd t={t} adv={1.1} lunge={.8} dis={dis} n={21} />
+      {[12, 13, 14].map(i => <Ash key={i} t={t} t0={.6 + (i - 12) * .2} x={420 + (i - 12) * 120} y={1200} n={24} spread={180} />)}
+      <Dark id="d21c" k={on ? .35 : .62} holes={[{ beam: [760, 1700, 560, 800, 260] }]} />
+      {on && <g><circle cx={720} cy={1430} r={60} fill="#bff0ff" filter="url(#glowBig)" /><line x1={720} y1={1430} x2={560} y2={1100} stroke="#e8fbff" strokeWidth={8} filter="url(#glow)" /></g>}
+      {fire && Array.from({ length: 6 }).map((_, i) => { const tt = ((t * 4 + i / 6) % 1); return <rect key={i} x={860 + tt * 160} y={1500 - tt * 200 + tt * tt * 500} width={10} height={22} rx={3} fill="#d8b860" transform={`rotate(${tt * 600} ${860 + tt * 160} ${1500 - tt * 200 + tt * tt * 500})`} />; })}
+      {/* плечо, каска и автомат на переднем плане (тёмный силуэт, чуть размыт) */}
+      <g filter="url(#blur4)"><path d="M700 1920 C700 1700 760 1560 900 1520 C1040 1500 1100 1600 1100 1920Z" fill="#141810" /><path d="M820 1500 C810 1380 880 1320 960 1320 C1040 1320 1100 1380 1090 1500Z" fill="#2a3420" /></g>
+      <g transform="translate(700 1440) rotate(-28)"><rect x={0} y={-16} width={300} height={34} rx={6} fill="#14161c" /><rect x={-60} y={-8} width={70} height={16} fill="#1c1e26" /></g>
+    </g>
+  </Frame>;
+};
 
 // f20b: крупно Михалыч — в ладони закручивается огненная спираль, глаза загораются
 export const F20b: React.FC<SP> = ({ t }) => {
@@ -271,6 +310,7 @@ export const F21b: React.FC<SP> = ({ t }) => {
       {t < hit + .1 && <Faceless x={820} y={2000} s={1.6} t={t} seed={12} grin={.6} lunge={.5} />}
       <Ash t={t} t0={hit} x={820} y={1200} n={60} spread={420} />
       <Shock t={t} t0={hit} x={760} y={1150} />
+      {t < hit && t > .4 && [3, 2, 1].map(g => <g key={g} transform={`translate(${-260 + Math.max(0, dash - g * .08) * 420} 0)`} opacity={.12 * (4 - g)}><Figure x={360} y={2000} s={1.7} t={t} L={LK.zhora} C={CS.zhora} pose={{ ...POSES.guard, armR: [70, -110], fistR: true, lean: 14 }} expr="shout" seed={7} idle={false} /></g>)}
       <g transform={`translate(${-260 + dash * 420} 0)`}>
         <Figure x={360} y={2000} s={1.7} t={t} L={LK.zhora} C={CS.zhora} pose={t < hit ? { ...POSES.guard, armR: [70, -110], fistR: true, lean: 8 + dash * 10 } : { ...POSES.stand, armR: [-95, -5], fistR: true, lean: -16 }} expr="shout" seed={7} rim="#ff8a3a" />
       </g>
@@ -280,11 +320,11 @@ export const F21b: React.FC<SP> = ({ t }) => {
 
 // f22: бой Б — цепная молния, кулак Жоры в огне; Тимура хватают — Кирилл вырывает его
 export const F22: React.FC<SP> = ({ t }) => {
-  const bolt = .4, punch = 1.6, [sx, sy] = shakeXY(t, [[bolt, 14, .4], [punch, 24, .5]]);
+  const fly = 1 + Math.pow(1 - ease(t, 0, .45), 2) * .9; const bolt = .4, punch = 1.6, [sx, sy] = shakeXY(t, [[bolt, 14, .4], [punch, 24, .5]]);
   const flashB = clamp(1 - Math.abs(t - bolt - .1) / .35), flashP = clamp(1 - Math.abs(t - punch) / .4);
   const dis = (i: number) => i < 9 ? 1 : i < 13 ? ease(t, bolt + .1, bolt + .6) : i < 16 ? ease(t, punch, punch + .6) : 0;
   return <Frame t={t} impact={isImpact(t, punch, 2)} grade="#1a2030" gradeK={.1}>
-    <g transform={cam(1.05, 540, 1050, sx, sy)}>
+    <g transform={cam(1.05 * fly, 540, 1050, sx, sy)}>
       <TrainInterior t={0} flicker={0} vp={VP} />
       <Crowd t={t} adv={1.25} lunge={.9} dis={dis} n={24} />
       <Smoke t={t} t0={bolt + .1} x={420} y={1300} n={10} r={110} spread={240} color="#0a0a10" life={1.5} rise={130} k={.9} seed={9} />
@@ -295,7 +335,7 @@ export const F22: React.FC<SP> = ({ t }) => {
         <H t={t} w="kirill" pose={t > 1.0 && t < 2.0 ? { ...POSES.stand, armL: [-70, -15], fistL: true, lean: 12 } : POSES.guard} expr="shout" mouth={t > 1.1 && t < 1.7 ? .5 : 0} />
         {['mikh', 'r1'].map(w => <H key={w} t={t} w={w} pose={POSES.guard} expr="shout" />)}</Low>
       {t > .9 && t < 1.9 && <Faceless x={60} y={2050} s={1.2} t={t} seed={30} lunge={1} />}
-      <Dark id="d22" k={.92} holes={[{ spot: [500, 1250, 800 * flashB] }, { spot: [650, 1300, 500 * flashP] }, { beam: [760, 1800, 400, 900, 180] }]} />
+      <Dark id="d22" k={.76} holes={[{ spot: [500, 1250, 800 * flashB] }, { spot: [650, 1300, 500 * flashP] }, { beam: [760, 1800, 400, 900, 180] }]} />
       <Bolt t={t} t0={bolt} pts={[[480, 1400], [430, 1300], [300, 1230], [700, 1260], [820, 1200]]} /><Bolt t={t} t0={bolt + .08} pts={[[430, 1300], [520, 1100], [620, 1080]]} /><Bolt t={t} t0={bolt + .12} pts={[[300, 1230], [220, 1050], [160, 980]]} />
       <Ash t={t} t0={bolt + .1} x={400} y={1250} n={40} spread={320} c="#1a2030" /><Ash t={t} t0={punch} x={680} y={1300} n={40} spread={300} />
       {t > punch - .25 && t < punch + .3 && <circle cx={650} cy={1300} r={70} fill="#ff7a2a" filter="url(#glowBig)" />}
