@@ -2,7 +2,7 @@
 // Текст и длительность реплик — из vo/ep1.json и public/vo/durations.json (озвучка Qwen3).
 import VO from '../../../vo/ep1.json';
 import DUR from '../../public/vo/durations.json';
-export type Cap = [string, string, number, number];
+export type Cap = [string, string, number, number, string?];
 export type Spec = { id: string; d: number; vo?: [string, number][]; caps?: Cap[] };
 const WHO: Record<string, string> = { kirill: 'КИРИЛЛ', collector: 'КОЛЛЕКТОР «КАБАЛЫ»', mikh: 'МИХАЛЫЧ', nastya: 'НАСТЯ', zhora: 'ЖОРА', timur: 'ТИМУР', announcer: 'ДИКТОР' };
 const INNER = new Set(['v02', 'v05', 'v06a', 'v06b', 'v07', 'v10', 'v13', 'v28']);
@@ -20,7 +20,7 @@ const RAW: Spec[] = [
 const lines: Record<string, { role: string; text: string }> = Object.fromEntries((VO as any).lines.map((l: any) => [l.id, l]));
 const dur = DUR as Record<string, number>;
 // план не короче реплик + 0,3 с
-export const SHOTS: Spec[] = RAW.map(s => { const caps: Cap[] = (s.vo || []).map(([id, at]) => { const l = lines[id]; return [INNER.has(id) ? V : WHO[l.role], l.text, at, at + (dur[id] || 2)]; });
+export const SHOTS: Spec[] = RAW.map(s => { const caps: Cap[] = (s.vo || []).map(([id, at]) => { const l = lines[id]; return [INNER.has(id) ? V : WHO[l.role], l.text, at, at + (dur[id] || 2), id] as Cap; });
   const need = Math.max(0, ...caps.map(c => c[3] + .3)); return { ...s, d: Math.max(s.d, need), caps }; });
 export const starts = (() => { let a = 0; return SHOTS.map(s => { const r = a; a += s.d; return r; }); })();
 export const TOTAL = SHOTS.reduce((a, s) => a + s.d, 0);

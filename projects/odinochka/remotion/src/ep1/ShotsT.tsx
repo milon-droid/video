@@ -148,7 +148,7 @@ export const S24: React.FC<SP> = ({ t }) => {
       {t > br && <g><rect x={450} y={700} width={180} height={260} fill="#000" /><Motes t={t - br} x={540} y={960} w={200} h={300} n={30} color="#ffcf6a" speed={400} size={4} /></g>}
       <Rows t={t} look={lk} />
       <Figure x={420} y={1880} s={1.15} t={t} L={LK.timur} C={CS.timur} pose={walkPose(t * 70)} expr="scared" seed={41} turn={.5} lookX={.8} />
-      <Figure x={660} y={1900} s={1.2} t={t} L={K.L} C={K.C} pose={{ ...walkPose(t * 70 + 95), armL: [-70, 20] }} expr="determined" seed={3} turn={-.3} lookX={-.4} sweat={1} />
+      <Figure x={660} y={1900} s={1.2} t={t} L={K.L} C={K.C} pose={{ ...walkPose(t * 70 + 95), armL: [-62, 22] }} expr="determined" seed={3} turn={-.3} lookX={-.4} sweat={1} />
     </g>
   </Frame>;
 };

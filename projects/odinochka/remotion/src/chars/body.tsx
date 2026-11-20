@@ -110,7 +110,7 @@ export const Figure: React.FC<{ x: number; y: number; s?: number; t: number; L: 
         {/* шея и голова */}
         <rect x={-17} y={ty - 54} width={34} height={44} fill={L.skinSh} stroke={INK} strokeWidth={3.5} />
         <g transform={`translate(0 ${ty - 100}) rotate(${pose.head + noise('hd' + seed, t, .5) * 2}) translate(0 -14)`}>
-          <Head t={t} L={L} expr={p.expr} mouth={p.mouth} turn={p.turn} lookX={p.lookX} lookY={p.lookY} glow={p.glow} seed={seed} sweat={p.sweat} tears={p.tears} sway={sway} />
+          <Head t={t} L={L} expr={p.expr} mouth={p.mouth} turn={(p.turn || 0) + noise('tn' + seed, t, .35) * .1 * idle} lookX={(p.lookX || 0) + (Math.floor(t * 1.3 + seed) % 3 === 0 ? .15 : 0) * idle} lookY={p.lookY} glow={p.glow} seed={seed} sweat={p.sweat} tears={p.tears} sway={sway} />
         </g>
         {p.prop}
         {Arm(aL, -1, pose.fistL)}{Arm(aR, 1, pose.fistR)}
