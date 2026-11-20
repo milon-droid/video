@@ -49,3 +49,4 @@ projects/popal/assets/vo/*
 projects/*/vo/*.log
 assets/voices/vosk-model-*/
 projects/popal/assets/vo/*/_cands/
+projects/*/remotion/public/audio/

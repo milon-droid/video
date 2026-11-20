@@ -3,6 +3,8 @@ import { Look } from './head';
 import { Costume } from './body';
 const SK = '#f3d6c6', SKS = '#c9978e';
 export const LK: Record<string, Look> = {
+  kWeak: { skin: '#ecd2c4', skinSh: '#c4948a', hair: '#5e4a3e', hairHi: '#8a7666', iris: '#5a6070', style: 'messy', tired: true, plaster: true },
+  kWeakHurt: { skin: '#ecd2c4', skinSh: '#c4948a', hair: '#5e4a3e', hairHi: '#8a7666', iris: '#5a6070', style: 'messy', tired: true, plaster: true, bruise: true },
   kirill4: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#5e4a3e', hairHi: '#a08a78', iris: '#4a5a78', style: 'natural', sharp: true, scar: true },
   kirill4Hurt: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#5e4a3e', hairHi: '#a08a78', iris: '#4a5a78', style: 'natural', sharp: true, scar: true, bruise: true },
   kirill3: { skin: '#f0d4c4', skinSh: '#c8968a', hair: '#b4bac8', hairHi: '#eef2ff', iris: '#4a5a78', style: 'cool', sharp: true, under: '#2e3038', scar: true },
@@ -21,6 +23,8 @@ export const LK: Record<string, Look> = {
   r2: { skin: '#e8c4ae', skinSh: '#b8887a', hair: '#c8b070', hairHi: '#f0e0a0', iris: '#3a5a8a', style: 'slick' },
 };
 export const CS: Record<string, Costume> = {
+  hoodieWeak: { top: '#6a6e78', topSh: '#4a4e58', pants: '#2e3038', shoes: '#c8c8cc', hood: true, w: .94 },
+  courierWeak: { top: '#6a6e78', topSh: '#4a4e58', pants: '#2e3038', shoes: '#c8c8cc', hood: true, w: .94, box: true },
   jacket3: { top: '#2a2c34', topSh: '#16171c', pants: '#1c1d24', shoes: '#e8e8ee', hood: true, collar: true, stripe: '#ff7a1a', w: 1.1 },
   courier3: { top: '#2a2c34', topSh: '#16171c', pants: '#1c1d24', shoes: '#e8e8ee', hood: true, collar: true, stripe: '#ff7a1a', w: 1.1, box: true },
   courier2: { top: '#ff7a1a', topSh: '#c24e08', pants: '#2a2c36', shoes: '#e8e8ee', hood: true, collar: true, stripe: '#d8dde8', box: true },

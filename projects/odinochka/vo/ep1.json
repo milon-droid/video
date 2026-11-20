@@ -1,0 +1,154 @@
+{
+ "roles": {
+  "kirill": {
+   "instruct": "Young Russian man, about 22, quiet and tired, low husky voice, restrained emotions, inner monologue, intimate close-mic delivery, natural slow-medium pace.",
+   "ref": "Меня зовут Кирилл. Я никогда не хотел быть охотником.",
+   "f0": 120,
+   "fit": true
+  },
+  "collector": {
+   "instruct": "Deep calm menacing Russian male voice, around 40, cold polite threat, slow, low and smooth, slight rasp, gangster debt collector.",
+   "ref": "Мы же по-хорошему пришли. Пока по-хорошему.",
+   "low": true
+  },
+  "mikh": {
+   "instruct": "Old Russian man, about 55, gravelly warm voice, grumpy but caring, smoker's rasp, fatherly, medium pace.",
+   "ref": "Ну что, Кирюха, живой? Давай, собирайся, время не ждёт."
+  },
+  "nastya": {
+   "instruct": "Russian teenage girl, 16, soft trembling voice, scared and close to tears, quiet.",
+   "ref": "Кирилл, мне страшно. Они опять приходили."
+  },
+  "zhora": {
+   "instruct": "Loud brash Russian man, about 35, rough arrogant voice, mocking and cocky, energetic.",
+   "ref": "Чего встал, ранг Е? Шевелись давай!"
+  },
+  "timur": {
+   "instruct": "Russian teenage boy, 17, nervous shaky voice, scared, speaking quietly and fast.",
+   "ref": "Я… я в первый раз. Я не знаю, что делать."
+  },
+  "announcer": {
+   "instruct": "Calm formal Russian male metro announcer, neutral emotionless voice, measured slow pace, clear diction.",
+   "ref": "Станция Северная. Переход на кольцевую линию."
+  }
+ },
+ "lines": [
+  {
+   "id": "v02",
+   "role": "kirill",
+   "text": "Через год меня будет бояться вся Москва."
+  },
+  {
+   "id": "v03",
+   "role": "kirill",
+   "text": "Восстань.",
+   "fx": "whisper"
+  },
+  {
+   "id": "v05",
+   "role": "kirill",
+   "text": "Десять лет назад над Москвой открылись Врата."
+  },
+  {
+   "id": "v06a",
+   "role": "kirill",
+   "text": "Кто-то стал героем. Я — ранг Е."
+  },
+  {
+   "id": "v06b",
+   "role": "kirill",
+   "text": "Самый слабый в Москве."
+  },
+  {
+   "id": "v07",
+   "role": "kirill",
+   "text": "В подземелья я не хожу. Я курьер."
+  },
+  {
+   "id": "v08",
+   "role": "collector",
+   "text": "Долг отца — миллион восемьсот сорок. До пятницы."
+  },
+  {
+   "id": "v09",
+   "role": "collector",
+   "text": "Не успеешь — сестрёнка отработает."
+  },
+  {
+   "id": "v10",
+   "role": "kirill",
+   "text": "Защитить не могу. Заплатить — тоже."
+  },
+  {
+   "id": "v11",
+   "role": "mikh",
+   "text": "Рейд ранга Д. Доля — двести тысяч. Едешь?",
+   "fx": "radio"
+  },
+  {
+   "id": "v12a",
+   "role": "kirill",
+   "text": "Еду.", "say": "+Еду."
+  },
+  {
+   "id": "v12b",
+   "role": "nastya",
+   "text": "Обещай, что вернёшься."
+  },
+  {
+   "id": "v13",
+   "role": "kirill",
+   "text": "Обычный рейд. Так все думали."
+  },
+  {
+   "id": "v15",
+   "role": "mikh",
+   "text": "Здесь поезда не ходят.", "say": "Здесь поезд+а не ходят."
+  },
+  {
+   "id": "v16a",
+   "role": "timur",
+   "text": "Я… я в первый раз."
+  },
+  {
+   "id": "v16b",
+   "role": "kirill",
+   "text": "Держись за мной."
+  },
+  {
+   "id": "v17",
+   "role": "announcer",
+   "text": "Осторожно, двери закрываются."
+  },
+  {
+   "id": "v18",
+   "role": "zhora",
+   "text": "Отлично. Прокатимся."
+  },
+  {
+   "id": "v20",
+   "role": "announcer",
+   "text": "Следующая станция — Конечная. Лишних просим выйти."
+  },
+  {
+   "id": "v21",
+   "role": "zhora",
+   "text": "Бегом вперёд!"
+  },
+  {
+   "id": "v23",
+   "role": "kirill",
+   "text": "Не бегите! Шагом!"
+  },
+  {
+   "id": "v26",
+   "role": "announcer",
+   "text": "Конечная. Выход — один."
+  },
+  {
+   "id": "v28",
+   "role": "kirill",
+   "text": "Я тогда ещё не знал: выйдет только один."
+  }
+ ]
+}
