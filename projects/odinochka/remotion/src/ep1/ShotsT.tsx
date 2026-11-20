@@ -241,7 +241,7 @@ export const S29: React.FC<SP> = ({ t }) => {
   const c = caps('s29'); const rv = ease(t, .3, 1.1);
   const face = <g transform="translate(0 20) scale(1.25)"><Head t={t} L={LK.father} expr="sad" seed={12} lookY={.3} mouth={talk(t, c, '???') * .35} /></g>;
   return <Frame t={t} grade="#1a1a2a" gradeK={.12} over={<Flash t={t} t0={.3} dur={.6} color="#fff6d8" max={.5} />}>
-    <g transform={cam(1.25 + t * .06, 540, 760, 0, 140)}>
+    <g transform={cam(1.25 + t * .06, 540, 760, 0, -160)}>
       <rect width={1080} height={1920} fill="#0a0b10" />
       <Machinist x={540} y={2300} s={2.6} t={t} k={1 - rv} reveal={rv} face={face} />
     </g>
