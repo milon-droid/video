@@ -385,12 +385,13 @@ export const F27: React.FC<SP> = ({ t }) => {
 
 // f28: свет на Кирилле — в фонаре лицо отца; отец говорит
 export const F28: React.FC<SP> = ({ t }) => {
-  const c = caps('f28'); const rv = ease(t, .2, 1.0);
+  // Машинист поднимает руки и снимает фонарь-голову, как шлем; под ним — лицо отца; отец говорит
+  const c = caps('f28'); const lift = ease(t, .2, 1.3);
   const face = <g transform="translate(0 20) scale(1.25)"><Head t={t} L={LK.father} expr="sad" seed={12} lookY={.3} noBlink mouth={talk(t, c, '???') * .35} /></g>;
-  return <Frame t={t} grade="#1a1a2a" gradeK={.12} over={<Flash t={t} t0={.2} dur={.6} color="#fff6d8" max={.4} />}>
-    <g transform={cam(1.25 + t * .05, 540, 760, 0, -160)}>
+  return <Frame t={t} grade="#1a1a2a" gradeK={.12}>
+    <g transform={cam(1.15 + t * .04, 540, 900, 0, -40)}>
       <rect width={1080} height={1920} fill="#0a0b10" />
-      <Machinist x={540} y={2300} s={2.6} t={t} k={1 - rv * .7} reveal={rv} face={face} />
+      <Machinist x={540} y={2350} s={2.3} t={t} k={1} lift={lift} face={face} />
     </g>
   </Frame>;
 };
@@ -404,13 +405,27 @@ export const F28b: React.FC<SP> = ({ t }) => {
   </Frame>;
 };
 
+// f28c: отец «сбоит» — лицо дёргается, мелькает синий оскал; к концу — синий целиком (дальше e0 продолжает с этого кадра)
+export const F28c: React.FC<SP> = ({ t, d }) => {
+  const f = Math.floor(t * 30), glitch = t > .3 && (f % 5 === 0 || f % 7 === 0), full = t > d - .45;
+  const face = <g transform="translate(0 20) scale(1.25)"><Head t={t} L={LK.father} expr="smirk" seed={12} lookY={.3} noBlink /></g>;
+  const [sx, sy] = shakeXY(t, [[.3, 8, d]]);
+  if (full || glitch) return <Frame t={t} vign={1} impact={glitch && f % 2 === 0}><g transform={`translate(${sx} ${sy}) translate(540 1060) scale(.85) translate(-540 -1060)`}><BossGrin t={t} k={1} /></g></Frame>;
+  return <Frame t={t} grade="#1a1a2a" gradeK={.12}>
+    <g transform={cam(1.25 + t * .1, 540, 900, sx + (glitch ? 20 : 0), sy - 40)}>
+      <rect width={1080} height={1920} fill="#0a0b10" />
+      <Machinist x={540} y={2350} s={2.3} t={t} k={1} lift={1} face={face} />
+    </g>
+  </Frame>;
+};
+
 // e0: синий скример → камера влетает в пасть → пасть раскрывается синим порталом (переход в концовку)
 export const E0: React.FC<SP> = ({ t, d }) => {
-  const rise = ease(t, 0, .7), dive = Math.pow(ease(t, .9, 1.9), 2), portal = ease(t, 1.6, d - .2);
-  const [sx, sy] = shakeXY(t, [[.15, 14, .9]]);
-  return <Frame t={t} vign={1} over={<Flash t={t} t0={1.75} dur={.35} color="#bfe8ff" max={.8} />}>
+  const dive = Math.pow(ease(t, .5, 1.6), 2), portal = ease(t, 1.3, d - .2);
+  const [sx, sy] = shakeXY(t, [[0, 10, .6]]);
+  return <Frame t={t} vign={1} over={<g><Flash t={t} t0={1.45} dur={.35} color="#bfe8ff" max={.8} /><g opacity={ease(t, 1.7, 2.1) * (1 - ease(t, d - .25, d))}><text x={540} y={1560} textAnchor="middle" fontFamily="Oswald" fontWeight={500} fontSize={72} letterSpacing={18} fill="#e8f8ff" filter="url(#glow)">ГОД СПУСТЯ</text></g></g>}>
     <rect width={1080} height={1920} fill="#02030a" />
-    {t < 1.85 && <g transform={`translate(${sx} ${sy}) translate(540 1060) scale(${.85 + rise * .2 + dive * 6}) translate(-540 -1060)`} opacity={rise}><BossGrin t={t} k={1} /></g>}
+    {t < 1.55 && <g transform={`translate(${sx} ${sy}) translate(540 1060) scale(${.85 + dive * 6}) translate(-540 -1060)`}><BossGrin t={t} k={1} /></g>}
     {portal > 0 && <g><Gate x={540} y={900} s={.4 + portal * 1.6} t={t} /><Motes t={t} x={540} y={1300} w={900} h={1100} n={40} color="#7fe0ff" speed={260} k={portal} /></g>}
   </Frame>;
 };

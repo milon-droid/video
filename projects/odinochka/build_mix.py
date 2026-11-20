@@ -54,14 +54,14 @@ C = {
  'f21b': [(.2, S('charge', .5, dur=.8)), (.3, L('whoosh-medium-hard', .7, rate=.6)), (1.05, L('cinematic-drum-massive', 1.0)), (1.05, L('impact-heavy-hard', 1.0)), (1.1, L('cinematic-slam-big', .6)), (1.15, S('puff', .5)), (1.2, S('crackle', .4, dur=1.0))],
  'f28b': [(0, S('drone', .35, dur=1.4)), (.2, L('bsb-heartbeat-slow', .6))],
  'f30': [(.2, S('beep', .3)), (.25, L('whoosh-fast-soft', .4))] + [(.5 + i * .5, S('tick', .25)) for i in range(4)] + [(2.5, L('click-tap-firm', .9)), (2.52, S('chord', .3, dur=1.2)), (3.0, L('cinematic-drum-massive', .9)), (3.05, L('whoosh-medium-hard', .5))],
- 'e0': [(0, L('fs-laugh-possessed', 1.0)), (.05, L('fs-horror-sting', .9)), (.1, L('fs-laugh-deep-evil', .6)), (.9, L('whoosh-medium-hard', .8, rate=.6)), (1.0, S('charge', .6, dur=.9)), (1.75, L('cinematic-drum-massive', 1.0)), (1.8, L('whoosh-fast-soft', .5)), (2.0, S('hum', .3, dur=.8))],
+ 'f28c': [(.3, S('glitch', .6, dur=.3)), (.55, S('glitch', .6, dur=.25)), (.7, L('fs-laugh-creepy', .9)), (.8, S('glitch', .7, dur=.3)), (.95, L('fs-horror-sting', 1.0)), (1.0, L('fs-laugh-possessed', .9))],
  'e2': [(.2, S('wind', .3, dur=2.0)), (0, S('hum', .3, dur=2.2))] + [(.4 + i * .5, S('step', .45, pitch=.7)) for i in range(4)],
  'e3': [(.2 + i * .1, S('pop', .3)) for i in range(26)] + [(.65 + i * .1, S('zap', .12, dur=.15)) for i in range(26)] + [(.65 + i * .1, S('puff', .2)) for i in range(26)],
  'e4': [(0, L('whoosh-medium-hard', .6, rate=.6)), (1.0, L('cinematic-drum-massive', 1.0)), (1.0, S('roar', .4, dur=1.4))],
  'f25': [(.2, L('bsb-bsb-3043', 1.0, offset=8)), (.3, S('skid', .6, dur=1.2)), (.5, L('cinematic-slam-big', .5))],
  'f26': [(.2, L('bsb-bsb-2153', .7)), (.3, S('hiss', .4, dur=.8)), (.5, L('cinematic-drum-massive', .6))],
  'f27': [(0, S('drone', .35, dur=3.2)), (.2, S('tone', .2, dur=3.0, freq=220)), (.2, L('bsb-heartbeat-slow', .5))],
- 'f28': [(.2, S('powerdown', .4)), (.2, L('whoosh-fast-soft', .4))],
+ 'f28': [(.2, L('mechanical-latch-heavy', .8)), (.4, S('hum', .3, dur=1.0)), (.7, L('whoosh-fast-soft', .4)), (1.2, S('tone', .15, dur=2.0, freq=110))],
  'f29': [(0, L('bsb-heartbeat-slow', .7)), (2.0, S('tone', .2, dur=1.4, freq=110))],
 }
 cues = []
@@ -108,8 +108,8 @@ M = [  # файл, с какой секунды трека, начало в ро
  ('horror-intense-magmi.mp3', 60, st['f20'], st['f23'] - st['f20'] + .3, .8, .05, .3),
  ('../../../../../../assets/sfx-library/freesound-cc0/horror-strings.mp3', 0, st['f23'], st['f24b'] - st['f23'] + .2, .7, .5, .2),
  ('horror-intense-magmi.mp3', 0, st['f24b'] + 3.3, b25 - st['f24b'] - 3.3, .6, .4, .8),
- ('strings-choir-slow-szegvari.mp3', 6, b25, st['e0'] + .2 - b25, .6, 1.5, .15),
- ('epic-orch-bertsz.mp3', 0, st['e0'] + 1.75, END - st['e0'] - 1.75, .85, .05, 1.2),
+ ('strings-choir-slow-szegvari.mp3', 6, b25, st['f28c'] + .2 - b25, .6, 1.5, .15),
+ ('epic-orch-bertsz.mp3', 0, st['e0'] + 1.45, END - st['e0'] - 1.45, .85, .05, 1.2),
 ]
 ins, fs = [], []
 for i, (f, off, at, ln, g, fi, fo) in enumerate(M):
