@@ -8,6 +8,7 @@ export type Expr = 'calm' | 'sad' | 'scared' | 'angry' | 'shout' | 'determined' 
 export type HairStyle = 'cool' | 'rus' | 'kirill' | 'liza' | 'nastya' | 'zhora' | 'mikh' | 'slick' | 'buzz' | 'curly' | 'none';
 export type Look = { skin: string; skinSh: string; hair: string; hairHi: string; iris: string; style: HairStyle; female?: boolean; beard?: string; scar?: boolean; bruise?: boolean; glasses?: boolean; age?: number; plaster?: boolean; sharp?: boolean; under?: string };
 
+const mixC = (a: string, b: string, k: number) => { const p = (x: string) => [1, 3, 5].map(i => parseInt(x.slice(i, i + 2), 16)); const A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, '0')).join(''); };
 // прядь: квадратичная кривая p0→c→p1, ширина w у корня сужается к кончику
 export const taperQ = (x0: number, y0: number, cx: number, cy: number, x1: number, y1: number, w: number) => {
   const N = 14, L: string[] = [], R: string[] = [];
@@ -96,7 +97,8 @@ export const Head: React.FC<{ t: number; L: Look; expr?: Expr; mouth?: number; t
       {L.glasses && <g stroke="#111" strokeWidth={4} fill="#0a0a12" opacity={.92}><rect x={-48 + tx} y={-2} width={40} height={24} rx={6} /><rect x={8 + tx} y={-2} width={40} height={24} rx={6} /><path d={`M${-8 + tx} 6 h16`} /></g>}
       {sweat > 0 && <path d={`M${50 + tx} -30 q8 14 0 20 q-8 -6 0 -20Z`} fill="#bfe6ff" stroke={INK} strokeWidth={2} opacity={sweat} transform={`translate(0 ${(t * 40) % 30 * sweat})`} />}
       {tears > 0 && <g opacity={tears}><path d={`M${-27 + tx} 24 q-3 18 0 30`} stroke="#bfe6ff" strokeWidth={4} fill="none" /><path d={`M${27 + tx} 24 q3 18 0 30`} stroke="#bfe6ff" strokeWidth={4} fill="none" /></g>}
-      <HairFront L={L} t={t} turn={turn} sway={sway} />
+      <defs><clipPath id={`fc${seed}`}><path d={face} /><circle cx={0} cy={-28} r={60 * wide} /></clipPath></defs>
+      <HairFront L={L} t={t} turn={turn} sway={sway} clip={`fc${seed}`} />
     </g>
   );
 };
@@ -114,7 +116,7 @@ const HairBack: React.FC<{ L: Look; t: number; turn: number; sway?: number }> = 
 };
 
 // волосы: чёлка и шапка (поверх лица)
-const HairFront: React.FC<{ L: Look; t: number; turn: number; sway?: number }> = ({ L, t, turn, sway = 0 }) => {
+const HairFront: React.FC<{ L: Look; t: number; turn: number; sway?: number; clip?: string }> = ({ L, t, turn, sway = 0, clip }) => {
   const tx = turn * 10, sw = noise('hf', t, .8) * 2 + sway * 10;
   const st = { fill: L.hair, stroke: INK, strokeWidth: 3.5, strokeLinejoin: 'round' as const };
   if (L.style === 'cool') {
@@ -125,17 +127,20 @@ const HairFront: React.FC<{ L: Look; t: number; turn: number; sway?: number }> =
     const cl: number[][] = [
       [44, -96, 0, -150, -64, -124, 30, .5], [40, -88, -30, -140, -86, -84, 34, .7], [36, -80, -40, -110, -84, -40, 34, .9],
       [30, -74, -30, -80, -70, -4, 30, 1], [24, -70, -10, -60, -40, 10, 26, 1], [-56, -50, -76, -30, -72, 6, 22, .8], [16, -70, 4, -40, -4, 16, 14, 1.2], [44, -76, 52, -60, 30, -16, 22, .6]];
-    const strand = ([rx, ry, cx2, cy2, px, py, w, k]: number[], i: number) => <path key={i} d={taperQ(rx + tx, ry, cx2 + tx + sh(k) * .4, cy2, px + tx + sh(k), py, w * 1.7)} {...st} />;
+    const strandD = ([rx, ry, cx2, cy2, px, py, w, k]: number[]) => taperQ(rx + tx, ry, cx2 + tx + sh(k) * .4, cy2, px + tx + sh(k), py, w * 1.7);
+    const base = `M-72 0 C-86 -60 -60 -106 -16 -114 C16 -120 44 -108 50 -84 C30 -70 0 -58 -30 -44 C-50 -34 -64 -20 -72 0Z`;
+    const shapes = [base, ...cl.map(strandD)];
+    const gid = 'hg' + (clip || '');
+    // приём аниме: жирный контур только по силуэту (все формы толстым штрихом снизу), внутри — тонкие линии прядей;
+    // тень от чёлки на лбу (те же формы, сдвиг вниз, в цвет тени кожи, только по лицу); волосы темнее у корней
     return <g>
-      {/* выбритый бок справа */}
+      <defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={mixC(L.hair, '#1a1c28', .45)} /><stop offset=".45" stopColor={L.hair} /><stop offset="1" stopColor={mixC(L.hair, '#ffffff', .25)} /></linearGradient></defs>
+      <g clipPath={clip ? `url(#${clip})` : undefined}>{shapes.slice(1).map((d, i) => <path key={'sh' + i} d={d} transform="translate(3 9)" fill={L.skinSh} opacity={.55} />)}</g>
       <path d={`M40 -88 C64 -80 72 -50 68 -6 C64 -20 60 -36 52 -48 Z`} fill={U} stroke={INK} strokeWidth={3} />
       <path d="M54 -60 L66 -20" stroke="#000" strokeWidth={1.5} opacity={.35} />
-      {/* основа верха */}
-      <path d={`M-72 0 C-86 -60 -60 -106 -16 -114 C16 -120 44 -108 50 -84 C30 -70 0 -58 -30 -44 C-50 -34 -64 -20 -72 0Z`} {...st} />
-      {cl.map(strand)}
-      {/* блики */}
-      {[[-46, -96, -12, -112], [-60, -60, -40, -82], [4, -110, 30, -104]].map(([a, b, c, d], i) => <path key={i} d={`M${a + tx} ${b} Q${(a + c) / 2 + tx} ${Math.min(b, d) - 8} ${c + tx} ${d}`} stroke={L.hairHi} strokeWidth={5} strokeLinecap="round" fill="none" opacity={.85} />)}
-      <path d={`M${36 + tx} -80 Q${-20 + tx} -94 ${-60 + tx} -60`} stroke="#000" strokeWidth={2} opacity={.3} fill="none" />
+      {shapes.map((d, i) => <path key={'o' + i} d={d} fill={INK} stroke={INK} strokeWidth={7} strokeLinejoin="round" />)}
+      {shapes.map((d, i) => <path key={'f' + i} d={d} fill={`url(#${gid})`} stroke={mixC(L.hair, '#000000', .55)} strokeWidth={1.6} strokeLinejoin="round" />)}
+      {[[-46, -96, -12, -112], [-60, -60, -40, -82], [4, -110, 30, -104]].map(([a, b, c, d], i) => <path key={i} d={`M${a + tx} ${b} Q${(a + c) / 2 + tx} ${Math.min(b, d) - 8} ${c + tx} ${d}`} stroke={L.hairHi} strokeWidth={4.5} strokeLinecap="round" fill="none" opacity={.8} />)}
     </g>;
   }
   if (L.style === 'rus') {
