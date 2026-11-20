@@ -96,7 +96,7 @@ export const Figure: React.FC<{ x: number; y: number; s?: number; t: number; L: 
         <path d={`M${20 * W} ${ty - 14} C${60 * W} ${-120} ${50 * W} ${-60} ${56 * W} 0 L${10} 0 Z`} fill={C.topSh} opacity={.7} />
         {!C.armor && !C.dress && <path d={`M0 ${ty - 4} V-4`} stroke={INK} strokeWidth={2.5} opacity={.7} />}
         {C.armor && <g><path d={`M${-60 * W} ${ty + 20} L0 ${ty + 110} L${60 * W} ${ty + 20}`} stroke={C.trim || '#8a96b8'} strokeWidth={6} fill="none" /><rect x={-56 * W} y={-30} width={112 * W} height={26} fill={C.trim || '#8a96b8'} stroke={INK} strokeWidth={3} /></g>}
-        {C.logo && <text x={-30 * W} y={ty + 90} textAnchor="middle" fontFamily="Mont" fontWeight={900} fontSize={22} fill={C.trim || '#ff5a3a'}>{C.logo}</text>}
+        {C.logo && <text transform={p.flip ? 'scale(-1 1)' : undefined} x={(p.flip ? 30 : -30) * W} y={ty + 90} textAnchor="middle" fontFamily="Mont" fontWeight={900} fontSize={22} fill={C.trim || '#ff5a3a'}>{C.logo}</text>}
         {/* шея и голова */}
         <rect x={-17} y={ty - 54} width={34} height={44} fill={L.skinSh} stroke={INK} strokeWidth={3.5} />
         <g transform={`translate(0 ${ty - 100}) rotate(${pose.head + noise('hd' + seed, t, .5) * 2}) translate(0 -14)`}>
@@ -104,7 +104,7 @@ export const Figure: React.FC<{ x: number; y: number; s?: number; t: number; L: 
         </g>
         {p.prop}
         {Arm(aL, -1, pose.fistL)}{Arm(aR, 1, pose.fistR)}
-        {p.rim && <path d={torso} fill="none" stroke={p.rim} strokeWidth={4} opacity={.7} filter="url(#glow)" transform="translate(-3 0)" />}
+        {p.rim && <path d={`M${-74 * W} ${shY - hipY - 6} C${-80 * W} ${-120} ${-56 * W} ${-60} ${-56 * W} 0`} fill="none" stroke={p.rim} strokeWidth={5} opacity={.8} filter="url(#glow)" />}
       </g>
     </g>
   );

@@ -59,7 +59,7 @@ export const Title: React.FC<{ t: number; t0: number; text: string; sub?: string
 export const RankLadder: React.FC<{ t: number; t0: number }> = ({ t, t0 }) => {
   const rs = [['S', '#ffcf4a'], ['A', '#ff7a4a'], ['B', '#c46bff'], ['C', '#4aa8ff'], ['D', '#4adf9a'], ['E', '#8a90a0']];
   return <g>{rs.map(([r, c], i) => { const k = spr(t, t0 + i * .12, { damping: 13 }); const isE = r === 'E'; const blink = isE && t > t0 + 1.1 ? (Math.floor(t * 4) % 2 ? 1 : .35) : 1;
-    const w = 640 - i * 60, y = 330 + i * 140;
+    const w = 640 - i * 60, y = 260 + i * 125;
     return <g key={r} transform={`translate(${540 + (1 - k) * 400} ${y})`} opacity={k}>
       <rect x={-w / 2} y={-52} width={w} height={104} fill={isE ? '#3a0710' : '#0b1426'} opacity={.85} stroke={isE ? '#ff3b4f' : c} strokeWidth={3} />
       <text x={-w / 2 + 40} y={30} fontFamily={FONT} fontWeight={900} fontSize={80} fill={isE ? '#ff3b4f' : c} opacity={blink}>{r}</text>
