@@ -332,19 +332,14 @@ export const F24: React.FC<SP> = ({ t }) => {
 
 // f24b: Жора ещё смеётся — свет снова мигает; из темноты в конце вагона тот же смех, в окне торцевой двери — улыбка
 export const F24b: React.FC<SP> = ({ t }) => {
-  // свет гаснет → в окне торцевой двери смеётся безликий (дальний план) → резко синий во весь кадр → свет мигает обратно
-  const off = t > .25 ? 1 : (Math.floor(t * 20) % 2 ? 1 : 0), face = ease(t, .5, .9), blue = t > 1.7 && t < 2.6, back = t > 2.6;
-  const flick = back && Math.floor(t * 14) % 2 === 0;
-  return <Frame t={t} grade="#1a1a2a" gradeK={.15} impact={isImpact(t, 1.7, 2)}>
-    <g transform={cam(1.0 + ease(t, .5, 1.7) * .5, 540, 760)}>
-      <TrainInterior t={t} flicker={.3} vp={VP} shake={1} />
-      <g transform="translate(540 760)"><rect x={-60} y={-90} width={120} height={110} fill="#05060a" />
-        <defs><clipPath id="win24"><rect x={-60} y={-90} width={120} height={110} /></clipPath></defs>
-        <g clipPath="url(#win24)" opacity={face}><g transform={`translate(${Math.sin(t * 40) * 1.5} 0)`}><Faceless x={0} y={170} s={.36} t={t} seed={5} grin={1} eyes={1} /></g></g></g>
-      <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={POSES.stand} expr={t > .3 ? 'scared' : w === 'zhora' ? 'smirk' : 'calm'} lookY={-.3} />)}</Low>
-      <Dark id="d24b" k={back ? (flick ? .9 : 0) : .96 * off} holes={[{ spot: [540, 740, 150 * face] }]} />
+  // свет мерцает — и поезд резко встаёт (следующий план)
+  const off = (Math.floor(t * 11) % 3 === 0) || (t > .6 && t < .9) ? 1 : 0;
+  return <Frame t={t} grade="#1a1a2a" gradeK={.15}>
+    <g transform={cam(1.05, 540, 1000)}>
+      <TrainInterior t={t} flicker={.3} vp={VP} shake={1.5} />
+      <Low>{TEAM.map(w => <H key={w} t={t} w={w} pose={POSES.stand} expr={t > .3 ? 'scared' : w === 'zhora' ? 'smirk' : 'calm'} lookY={-.4} />)}</Low>
+      <Dark id="d24b" k={.9 * off} holes={[{ spot: [540, 120, 110] }]} />
     </g>
-    {blue && <BossGrin t={t} k={1} />}
   </Frame>;
 };
 
@@ -401,19 +396,25 @@ export const F28: React.FC<SP> = ({ t }) => {
 };
 
 // f28b: Кирилл: «Папа?..» — свет фонаря мерцает; на 3 кадра — оскал вместо лица отца (подсознательная вспышка)
-export const F28b: React.FC<SP> = ({ t, d }) => {
-  const c = caps('f28b'); const sc = d - .7;
-  if (t >= sc) { const q = (t - sc) / .7; const [sx, sy] = shakeXY(t, [[sc, 40, .7]]);
-    return <Frame t={t} vign={1} impact={isImpact(t, sc, 2)}><rect width={1080} height={1920} fill="#05060a" />
-      <g transform={`translate(${sx} ${sy})`}><Faceless x={540} y={2500 + q * 900} s={2.6 + q * 3} t={t} seed={5} grin={1} eyes={1} lunge={1} /></g></Frame>; }
-  const flick = .75 + .25 * noise('fk', t, 9);
+export const F28b: React.FC<SP> = ({ t }) => {
+  const c = caps('f28b'); const flick = .75 + .25 * noise('fk', t, 9);
   return <Frame t={t} grade="#2a2418" gradeK={.12}>
     <rect width={1080} height={1920} fill="#0c0a0e" /><ellipse cx={540} cy={640} rx={560} ry={560} fill="#fff0c0" opacity={.18 * flick} filter="url(#blur30)" />
     <g transform={cam(1.05 + t * .12, 540, 650)}><g transform="translate(540 600) scale(6.2)"><Head t={t} L={KL} expr="scared" seed={3} lookY={-.2} mouth={talk(t, c, 'КИРИЛЛ')} noBlink tears={.6} /></g></g>
   </Frame>;
 };
 
-// f29: Кирилл не может отвести взгляд — веки тяжелеют, кадр гаснет → титр
+// e0: синий скример → камера влетает в пасть → пасть раскрывается синим порталом (переход в концовку)
+export const E0: React.FC<SP> = ({ t, d }) => {
+  const rise = ease(t, 0, .7), dive = Math.pow(ease(t, .9, 1.9), 2), portal = ease(t, 1.6, d - .2);
+  const [sx, sy] = shakeXY(t, [[.15, 14, .9]]);
+  return <Frame t={t} vign={1} over={<Flash t={t} t0={1.75} dur={.35} color="#bfe8ff" max={.8} />}>
+    <rect width={1080} height={1920} fill="#02030a" />
+    {t < 1.85 && <g transform={`translate(${sx} ${sy}) translate(540 1060) scale(${.85 + rise * .2 + dive * 6}) translate(-540 -1060)`} opacity={rise}><BossGrin t={t} k={1} /></g>}
+    {portal > 0 && <g><Gate x={540} y={900} s={.4 + portal * 1.6} t={t} /><Motes t={t} x={540} y={1300} w={900} h={1100} n={40} color="#7fe0ff" speed={260} k={portal} /></g>}
+  </Frame>;
+};
+
 // ---------- концовка: карточка → Врата → будущий Кирилл → отряд из лайков и комментариев → «ОДИНОЧКА» ----------
 const Card: React.FC<{ t: number }> = ({ t }) => <g>
   <rect x={-300} y={-440} width={600} height={880} rx={24} fill="#0a1426" stroke="#5fd2ff" strokeWidth={8} filter="url(#glow)" />
@@ -434,23 +435,32 @@ export const E1: React.FC<SP> = ({ t, d }) => {
 };
 export const E2: React.FC<SP> = ({ t }) => {
   const walk = ease(t, .2, 2.0);
-  return <Frame t={t} vign={1} over={<Flash t={t} t0={0} dur={.3} color="#bfe8ff" max={.6} />}>
+  return <Frame t={t} vign={1}>
     <rect width={1080} height={1920} fill="#02030a" />
-    <ellipse cx={540} cy={900} rx={500} ry={800} fill="#1a3a8a" opacity={.35} filter="url(#blur30)" />
-    <Smoke t={t} t0={-1} x={540} y={1700} n={12} r={180} spread={420} color="#05060c" life={3} rise={120} k={.9} seed={41} />
+    <Gate x={540} y={1050} s={2.0 - walk * .4} t={t} />
+    <Smoke t={t} t0={-1} x={540} y={1750} n={12} r={180} spread={420} color="#05060c" life={3} rise={120} k={.9} seed={41} />
     <Figure x={540} y={1500 + walk * 380} s={.7 + walk * .6} t={t} L={LK.kirill4} C={CS.shadow} pose={walkPose(walk * 260)} expr="determined" glow={1} seed={3} rim="#5fd2ff" opacity={.2 + walk * .8} />
   </Frame>;
 };
 export const E3: React.FC<SP> = ({ t }) => {
   const c = caps('e3');
-  const items = Array.from({ length: 26 }).map((_, i) => ({ x: 120 + h1(i * 3.1) * 840, y: 360 + h1(i * 7.7) * 760, t0: .2 + i * .1, heart: i % 2 === 0, txt: ['Жду 2 серию!', 'Это Фонарь!', 'Вступаю', 'Отец жив?', 'Кирилл топ', 'Отряд готов', 'Фонарь врёт', 'В отряд!'][i % 8] }));
+  const items = Array.from({ length: 26 }).map((_, i) => ({ x: 120 + h1(i * 3.1) * 840, y: 520 + h1(i * 7.7) * 600, t0: .2 + i * .1, heart: i % 2 === 0, txt: ['Жду 2 серию!', 'Это Фонарь!', 'Вступаю', 'Отец жив?', 'Кирилл топ', 'Отряд готов', 'Фонарь врёт', 'В отряд!'][i % 8] }));
   return <Frame t={t} vign={1}>
     <rect width={1080} height={1920} fill="#02030a" />
     <ellipse cx={540} cy={1000} rx={700} ry={900} fill="#1a3a8a" opacity={.3} filter="url(#blur30)" />
     {/* отряд встаёт за спиной: каждый лайк/коммент → силуэт бойца */}
     {items.map((it, i) => { const born = ease(t, it.t0 + .4, it.t0 + .9), row = i % 4, x = 100 + (i * 157) % 880, y = 1180 + row * 80, s = .4 + row * .09;
-      return <g key={'s' + i} opacity={born}><ShadowSoldier x={x} y={y} s={s} t={t} rise={born} seed={i} kind={i % 4 === 0 ? 1 : 0} /></g>; })}
+      const fl = clamp(1 - Math.abs(t - it.t0 - .45) / .15); return <g key={'s' + i}><g opacity={born}><ShadowSoldier x={x} y={y} s={s} t={t} rise={born} seed={i} kind={i % 4 === 0 ? 1 : 0} /></g>{fl > 0 && <circle cx={x} cy={y - 300 * s} r={70 * fl} fill="#7fe0ff" opacity={fl} filter="url(#glowBig)" />}</g>; })}
     <Figure x={540} y={1960} s={1.35} t={t} L={LK.kirill4} C={CS.shadow} pose={POSES.stand} expr="determined" glow={1} seed={3} rim="#5fd2ff" mouth={talk(t, c, 'КИРИЛЛ')} />
+    {/* понятный посыл: лайк/коммент = боец + счётчик отряда */}
+    <g opacity={ease(t, .2, .5)}>
+      <rect x={90} y={150} width={900} height={190} rx={14} fill="#06182e" opacity={.85} stroke="#5fd2ff" strokeWidth={4} filter="url(#glow)" />
+      <path transform="translate(170 205) scale(.9)" d="M0 22 C-56 -26 -36 -70 0 -44 C36 -70 56 -26 0 22Z" fill="#ff3a5a" />
+      <text x={240} y={222} fontFamily="Oswald" fontWeight={600} fontSize={52} fill="#e8f8ff" letterSpacing={2}>ЛАЙК = НОВЫЙ БОЕЦ</text>
+      <rect x={130} y={262} width={80} height={52} rx={12} fill="#0a1830" stroke="#5fd2ff" strokeWidth={4} />
+      <text x={240} y={308} fontFamily="Oswald" fontWeight={600} fontSize={52} fill="#e8f8ff" letterSpacing={2}>КОММЕНТ = НОВЫЙ БОЕЦ</text>
+    </g>
+    <g opacity={ease(t, .4, .7)}><text x={540} y={430} textAnchor="middle" fontFamily="Oswald" fontWeight={500} fontSize={46} letterSpacing={8} fill="#9fdcff">{`ОТРЯД: ${Math.floor(Math.pow(clamp((t - .3) / 3.6), 2.2) * 9999)}`}</text></g>
     {items.map((it, i) => { const k = spr(t, it.t0, { damping: 12 }), gone = ease(t, it.t0 + .4, it.t0 + .7); if (t < it.t0 || gone >= 1) return null;
       const x = it.x + ((100 + (i * 157) % 880) - it.x) * gone, y = it.y + ((1180 + (i % 4) * 80 - 400) - it.y) * gone;
       return <g key={i} transform={`translate(${x} ${y}) scale(${k * (1 - gone * .6)})`} opacity={1 - gone}>
