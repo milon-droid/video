@@ -107,18 +107,32 @@ export const BowFigure: React.FC<{ x: number; y: number; s?: number; bow: number
   </g>;
 };
 
-// безликий пассажир: сидит, голова-овал без лица; look −1..1 — поворот головы к бегущему, rise 0..1 — тянется вперёд, руки длиннеют
-export const Passenger: React.FC<{ x: number; y: number; s?: number; t: number; look?: number; rise?: number; seed?: number; coat?: string }> = ({ x, y, s = 1, t, look = 0, rise = 0, seed = 1, coat = '#3a3a44' }) => {
-  const br = Math.sin(t * 1.3 + seed) * 1.5, lean = rise * 30;
+// безликий пассажир: сидит, голова-овал без лица. look −1..1 — поворот головы, rise 0..1 — тянется вперёд (руки длиннеют).
+// Живой: качается вместе с вагоном, дышит; занятие по seed: газета (перелистывает), телефон (свет на «лице»), дремлет (голова клонится)
+export const Passenger: React.FC<{ x: number; y: number; s?: number; t: number; look?: number; rise?: number; seed?: number; coat?: string; rock?: number }> = ({ x, y, s = 1, t, look = 0, rise = 0, seed = 1, coat = '#3a3a44', rock = 1 }) => {
+  const br = Math.sin(t * 1.3 + seed) * 1.5, lean = rise * 30, kind = seed % 3;
+  const sway = (Math.sin(t * 2.1 + seed * .7) * 2.2 + noise('ps' + seed, t, 1.5) * 1.5) * rock * (1 - rise);
+  const doze = kind === 2 ? (8 + Math.sin(t * .9 + seed) * 6) * (1 - Math.abs(look)) : 0;
+  const busy = 1 - Math.min(1, Math.abs(look) * 2 + rise * 2); // смотрит на героев — бросает газету/телефон
   return <g transform={`translate(${x} ${y}) scale(${s})`}>
     <path d="M-60 0 L-50 -110 L50 -110 L60 0Z" fill="#141418" />
-    <g transform={`rotate(${lean} 0 -110)`}>
+    <g transform={`rotate(${lean + sway} 0 -110)`}>
       <path d={`M-62 -110 C-70 -200 -50 -260 0 -268 C50 -260 70 -200 62 -110Z`} fill={coat} stroke={INK} strokeWidth={4} />
-      <path d={`M-50 -230 L${-70 - rise * 60} ${-140 + rise * 80} L${-56 - rise * 70} ${-120 + rise * 100}`} stroke={coat} strokeWidth={26} strokeLinecap="round" fill="none" />
-      <path d={`M50 -230 L${70 + rise * 60} ${-140 + rise * 80} L${56 + rise * 70} ${-120 + rise * 100}`} stroke={coat} strokeWidth={26} strokeLinecap="round" fill="none" />
-      <g transform={`translate(${look * 10} ${-310 + br}) rotate(${look * 35})`}>
+      {rise > 0 ? <g>
+        <path d={`M-50 -230 L${-70 - rise * 60} ${-140 + rise * 80} L${-56 - rise * 70} ${-120 + rise * 100}`} stroke={coat} strokeWidth={26} strokeLinecap="round" fill="none" />
+        <path d={`M50 -230 L${70 + rise * 60} ${-140 + rise * 80} L${56 + rise * 70} ${-120 + rise * 100}`} stroke={coat} strokeWidth={26} strokeLinecap="round" fill="none" />
+        {[-1, 1].map(sd => <g key={sd} transform={`translate(${sd * (56 + rise * 70)} ${-120 + rise * 100})`}>{[-12, 0, 12].map((f, i) => <path key={i} d={`M${f} 0 l${f * .5} ${30 * rise} `} stroke="#c8c4bc" strokeWidth={6} strokeLinecap="round" />)}</g>)}
+      </g> : <g>
+        <path d="M-50 -230 Q-40 -170 -14 -170" stroke={coat} strokeWidth={24} strokeLinecap="round" fill="none" /><path d="M50 -230 Q40 -170 14 -170" stroke={coat} strokeWidth={24} strokeLinecap="round" fill="none" />
+        {kind === 0 && <g opacity={busy}><rect x={-62} y={-250} width={124} height={86} fill="#d8d4c8" stroke={INK} strokeWidth={3} transform={`rotate(${Math.sin(t * .7 + seed) * 3} 0 -207)`} />
+          {[0, 1, 2, 3].map(i => <rect key={i} x={-52} y={-240 + i * 18} width={i % 2 ? 60 : 100} height={6} fill="#8a867c" />)}
+          {Math.floor(t * .5 + seed) % 4 === 0 && <path d={`M0 -250 Q${30 + Math.sin(t * 6) * 20} -230 0 -164`} fill="#e8e4d8" stroke={INK} strokeWidth={2} />}</g>}
+        {kind === 1 && <g opacity={busy}><rect x={-12} y={-196} width={24} height={40} rx={4} fill="#0a0c12" stroke="#6a7a9a" strokeWidth={2} /><rect x={-9} y={-192} width={18} height={30} fill="#8fd0ff" opacity={.8} /></g>}
+      </g>}
+      <g transform={`translate(${look * 10} ${-310 + br}) rotate(${look * 35 + doze})`}>
         <ellipse rx={38} ry={48} fill="#c8c4bc" stroke={INK} strokeWidth={4} />
         <ellipse cx={look * 12} cy={4} rx={26} ry={34} fill="#b0aca4" opacity={.6} />
+        {kind === 1 && busy > 0 && <ellipse cx={0} cy={10} rx={30} ry={30} fill="#8fd0ff" opacity={.25 * busy} />}
         {rise > .3 && <ellipse cx={look * 14} cy={12} rx={8 * rise} ry={14 * rise} fill="#1a0a0a" />}
       </g>
     </g>

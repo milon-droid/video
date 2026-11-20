@@ -33,6 +33,8 @@ C = {
  's17': [(0, S('hum', .2, dur=3.8)), (.6, L('bsb-bsb-2153', .8))],
  's18': [(.5, L('impact-deep-hard', .9)), (.55, S('thud', .6)), (.8, L('bsb-bsb-3043', .9)), (.8, L('bass-rumble-medium', .6))],
  's19': [(0, L('bsb-bsb-3040', .8)), (.75, L('impact-heavy-hard', 1.0)), (.8, S('crackle', .5, dur=1.4)), (.85, L('faller-2s-strong', .7))],
+ 's19b': [(0, L('bsb-bsb-3040', .7, offset=6))],
+ 's20b': [(0, L('bsb-bsb-3040', .7, offset=10))],
  's20': [(0, L('bsb-bsb-3040', .8, offset=4)), (.2, S('beep', .25))],
  's21': [(0, L('bsb-bsb-3040', .8, offset=9))] + [(.4 + i * .2, S('step', .55)) for i in range(10)],
  's22': [(0, L('bsb-bsb-3040', .8, offset=12)), (.3, L('whoosh-fast-medium', .6)), (.3, S('crackle', .3, dur=.4)), (1.4, L('cinematic-drum-big', .9)), (1.45, L('oc-VOXFem_Female01DeathScream_OS_01', .0))],

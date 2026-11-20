@@ -62,9 +62,9 @@ export const Head: React.FC<{ t: number; L: Look; expr?: Expr; mouth?: number; t
   const my = 52, mx = tx * .9;
   const m = clamp(mouth);
   const Mouth = () => {
-    if (expr === 'shout' || m > .05) { const o = expr === 'shout' ? Math.max(.7, m) : m; const w = 9 + o * 7;
+    if (expr === 'shout' || m > .05) { const o = expr === 'shout' ? Math.max(.7, m) : m; const fear = ['scared', 'sad', 'cry', 'pain'].includes(expr); const w = fear ? 6 + o * 4 : 9 + o * 7;
       return <g><path d={`M${mx - w} ${my - 2} Q${mx} ${my - 5} ${mx + w} ${my - 2} Q${mx + w * .6} ${my + o * 20} ${mx} ${my + o * 22} Q${mx - w * .6} ${my + o * 20} ${mx - w} ${my - 2}Z`} fill="#3a1318" stroke={INK} strokeWidth={2.5} />
-        {o > .4 && <path d={`M${mx - w * .7} ${my} H${mx + w * .7}`} stroke="#fff" strokeWidth={3} />}
+        {o > .4 && !fear && <path d={`M${mx - w * .7} ${my} H${mx + w * .7}`} stroke="#fff" strokeWidth={3} />}
         <ellipse cx={mx} cy={my + o * 15} rx={w * .45} ry={o * 4} fill="#c4505a" /></g>; }
     if (expr === 'scared' || expr === 'pain') return <ellipse cx={mx} cy={my + 3} rx={6} ry={expr === 'scared' ? 9 : 5} fill="#3a1318" stroke={INK} strokeWidth={2.5} />;
     if (expr === 'angry' || expr === 'determined') return <path d={`M${mx - 12} ${my + 2} Q${mx} ${my - 2} ${mx + 12} ${my + 2}`} stroke={INK} strokeWidth={3.5} fill="none" strokeLinecap="round" />;

@@ -15,7 +15,10 @@ const caps = (id: string) => SHOTS.find(s => s.id === id)?.caps;
 const K = { L: LK.kWeakHurt, C: CS.porterY };
 
 // пассажиры по обе стороны вагона (перспектива). look(i) — поворот головы, rise(i) — тянутся
-const Rows: React.FC<{ t: number; look?: (i: number, side: number) => number; rise?: (i: number) => number; vp?: number }> = ({ t, look = () => 0, rise = () => 0, vp = 820 }) => {
+// по умолчанию один пассажир (место 4) медленно поворачивает голову вслед героям — жутко, но без нападения
+const follow = (t: number) => (j: number) => j === 4 ? Math.sin(t * .45) * .7 : j === 7 ? Math.sin(t * .3 + 2) * .4 : 0;
+const Rows: React.FC<{ t: number; look?: (i: number, side: number) => number; rise?: (i: number) => number; vp?: number }> = ({ t, look, rise = () => 0, vp = 820 }) => {
+  look = look || follow(t);
   const out: React.ReactNode[] = [];
   for (let i = 5; i >= 0; i--) { const k = Math.pow(.78, i), y = vp + 640 * k;
     for (const sd of [-1, 1]) { const x = 540 + sd * (430 * k + 20); const j = i * 2 + (sd > 0 ? 1 : 0);
@@ -117,13 +120,13 @@ export const S21: React.FC<SP> = ({ t }) => {
 };
 
 export const S22: React.FC<SP> = ({ t }) => {
-  const snap = .3, grab = 1.4, gone = t > grab + .25, [sx, sy] = shakeXY(t, [[grab, 24, .6]]);
+  const snap = .3, grab = 1.9, gone = t > grab + .35, [sx, sy] = shakeXY(t, [[grab, 24, .6]]);
   const lk = (j: number, sd: number) => -sd * ease(t, snap, snap + .12) * .9;
   return <Frame t={t} impact={isImpact(t, grab, 3)} grade="#3a1a20" gradeK={.18}>
     <g transform={cam(1.05, 540, 960, sx, sy)}>
       <TrainInterior t={t} flicker={.6} shake={3} red={.7} />
-      <Rows t={t} look={lk} rise={(j) => j === 1 || j === 3 ? ease(t, grab - .3, grab) : 0} />
-      {!gone && <Figure x={600 + ease(t, grab, grab + .25) * 300} y={1700} s={1.0} t={t} L={LK.r1} C={CS.r1} pose={t < grab ? walkPose(t * 650, true) : POSES.hit} expr="scared" seed={21} rot={t > grab ? 30 * ease(t, grab, grab + .25) : 0} />}
+      <Rows t={t} look={lk} rise={(j) => j === 1 || j === 3 || j === 5 ? ease(t, grab - .9, grab) : 0} />
+      {!gone && <Figure x={560 + ease(t, grab, grab + .35) * 330} y={1700 - ease(t, grab, grab + .35) * 120} s={1.0} t={t} L={LK.r1} C={CS.r1} pose={t < grab ? walkPose(t * 650, true) : POSES.hit} expr="scared" seed={21} rot={t > grab ? 30 * ease(t, grab, grab + .25) : 0} />}
       {gone && <Smoke t={t} t0={grab + .2} x={820} y={1500} n={8} r={90} spread={120} color="#1a1a20" life={1.4} rise={40} k={.8} seed={22} />}
     </g>
   </Frame>;
@@ -181,16 +184,19 @@ export const S26: React.FC<SP> = ({ t }) => {
   </Frame>;
 };
 
-export const S27: React.FC<SP> = ({ t }) => (
-  <Frame t={t} grade="#2a2418" gradeK={.12}>
-    <g transform={cam(1.05 + ease(t, .8, 3.2) * .35, 300, 900)}>
-      <TrainInterior t={t} flicker={.2} />
-      <rect width={1080} height={1920} fill="#05060a" opacity={.4} />
-      <Figure x={300} y={1900} s={1.3} t={t} L={LK.zhora} C={CS.zhora} pose={POSES.stand} expr="angry" seed={7} turn={ease(t, .8, 1.3) * .6} lookX={ease(t, .8, 1.3)} rim="#fff0c0" />
-      <Figure x={760} y={1940} s={1.2} t={t} L={LK.mikh} C={CS.mikh} pose={POSES.stand} expr="sad" seed={6} turn={-.3} lookY={.3} rim="#fff0c0" />
+export const S27: React.FC<SP> = ({ t }) => {
+  const c = caps('s27'); const glow = .5 + .5 * Math.sin(t * 2);
+  return <Frame t={t} grade="#2a2418" gradeK={.12}>
+    <g transform={cam(1.05 + ease(t, .2, 3) * .25, 400, 900)}>
+      <rect width={1080} height={1920} fill="#0c0d12" />
+      <ellipse cx={540} cy={200} rx={700} ry={500} fill="#fff0c0" opacity={.18 + .06 * glow} filter="url(#blur30)" />
+      {/* все застыли и смотрят в свет: веки тяжелеют, у Тимура шёпот */}
+      <Figure x={270} y={1920} s={1.25} t={t} L={LK.timur} C={CS.timur} pose={{ ...POSES.stand, armL: [-40, 20], armR: [60, -60] }} expr="sad" seed={41} lookY={-.9} turn={.2} mouth={talk(t, c, 'ТИМУР')} rim="#fff0c0" idle={false} />
+      <Figure x={560} y={1960} s={1.25} t={t} L={LK.zhora} C={CS.zhora} pose={POSES.stand} expr="calm" seed={7} lookY={-.9} rim="#fff0c0" idle={false} />
+      <Figure x={850} y={1940} s={1.2} t={t} L={LK.mikh} C={CS.mikh} pose={POSES.stand} expr="sad" seed={6} lookY={-.9} turn={-.2} rim="#fff0c0" idle={false} />
     </g>
-  </Frame>
-);
+  </Frame>;
+};
 
 // табло вагонов: n — сколько вагонов осталось (горящих), мигает последний
 const CarBoard: React.FC<{ t: number; n: number; total?: number; y?: number }> = ({ t, n, total = 8, y = 330 }) => (
@@ -201,6 +207,30 @@ const CarBoard: React.FC<{ t: number; n: number; total?: number; y?: number }> =
   </g>
 );
 export { CarBoard };
+
+
+// 19b: Тимур у торцевого окна — видит, что вагон оторвался
+export const S19b: React.FC<SP> = ({ t }) => {
+  const c = caps('s19b');
+  return <Frame t={t} grade="#2a2a3a" gradeK={.15}>
+    <g transform={cam(1.1 + t * .03, 540, 900)}>
+      <TrainInterior t={t} flicker={.5} shake={3} />
+      <Figure x={540} y={2050} s={1.5} t={t} L={LK.timur} C={CS.timur} pose={{ ...POSES.stand, armR: [140, -20], armL: [-30, 60] }} expr="scared" seed={41} turn={.6} lookX={.9} mouth={talk(t, c, 'ТИМУР')} sweat={1} />
+    </g>
+  </Frame>;
+};
+
+// 20b: Михалыч — «Идём вперёд. Спокойно.» (задаёт: идти, а не бежать)
+export const S20b: React.FC<SP> = ({ t }) => {
+  const c = caps('s20b');
+  return <Frame t={t} grade="#3a1a20" gradeK={.12}>
+    <g transform={cam(1.1 + t * .03, 540, 950)}>
+      <TrainInterior t={t} flicker={.5} shake={2} red={.4} />
+      <Rows t={t} />
+      <Figure x={540} y={2080} s={1.55} t={t} L={LK.mikh} C={CS.mikh} pose={PK(t, [[0, 'stand'], [.6, { armR: [100, -20] }], [2.2, { armR: [100, -20] }], [2.8, 'stand']])} expr="determined" seed={6} turn={-.2} mouth={talk(t, c, 'МИХАЛЫЧ')} />
+    </g>
+  </Frame>;
+};
 
 // 22b: наклейка на двери «ПО ВАГОНУ НЕ БЕГАТЬ» — Кирилл замечает правило
 export const S22b: React.FC<SP> = ({ t }) => {
