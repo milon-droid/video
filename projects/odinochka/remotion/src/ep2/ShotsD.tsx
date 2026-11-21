@@ -177,13 +177,20 @@ const TrainSide: React.FC<{ x: number; y: number; s: number; rot: number }> = ({
     {[0, 1, 2].map(j => <rect key={j} x={-170 + j * 120} y={-60} width={90} height={70} fill="#fff0c0" opacity={.7} />)}<rect x={-200} y={50} width={400} height={20} fill="#1a2a3a" /></g>)}
   <circle cx={190} cy={20} r={20} fill="#fff8e0" /><ellipse cx={330} cy={20} rx={200} ry={60} fill="#fff4d0" opacity={.35} filter="url(#blur12)" />
 </g>;
+// глаз хозяина подземелья в красном портале: open 0..1
+const HeartEye: React.FC<{ t: number; x: number; y: number; s: number; open: number }> = ({ t, x, y, s, open }) => <g transform={`translate(${x} ${y}) scale(${s})`}>
+  <ellipse rx={260} ry={150 * open + 2} fill="#1a0204" stroke="#ff3a2a" strokeWidth={8} filter="url(#glow)" />
+  {open > .2 && <g><circle cx={noise('ey', t, .6) * 60} r={110 * open} fill="#c81a10" /><ellipse cx={noise('ey', t, .6) * 60} rx={18} ry={95 * open} fill="#050000" /><circle cx={noise('ey', t, .6) * 60 - 40} cy={-40} r={14} fill="#ffd0c0" opacity={.8} /></g>}
+  {Array.from({ length: 10 }).map((_, i) => { const a = i / 10 * Math.PI * 2; return <path key={i} d={`M${Math.cos(a) * 280} ${Math.sin(a) * 170} q${Math.cos(a + .6) * 60} ${Math.sin(a + .6) * 60} ${Math.cos(a) * 120} ${Math.sin(a) * 90}`} stroke="#8a0a10" strokeWidth={8} fill="none" opacity={open} />; })}
+</g>;
 export const H2: React.FC<SP> = ({ t }) => {
   const out = ease(t, .2, 2.4, (k: number) => k), fall = Math.max(0, t - 2.4);
   return <Frame t={t} vign={.8}>
     <rect width={1080} height={1920} fill="#03040a" />
-    <ellipse cx={540} cy={1700} rx={900} ry={500} fill="#1a4aaa" opacity={.35} filter="url(#blur30)" />
-    <g transform={`translate(540 1650) scale(1 .45)`}><Gate x={0} y={0} s={2.6} t={t} /></g>
-    <Motes t={t} x={540} y={1800} w={1080} h={1600} n={50} color="#7fe0ff" speed={200} />
+    <ellipse cx={540} cy={1700} rx={900} ry={500} fill="#aa1a1a" opacity={.35} filter="url(#blur30)" />
+    <g transform={`translate(540 1650) scale(1 .45)`}><Gate x={0} y={0} s={2.6} t={t} color="#ff3a2a" /></g>
+    <HeartEye t={t} x={540} y={1650} s={.9} open={ease(t, 2.2, 3.4)} />
+    <Motes t={t} x={540} y={1800} w={1080} h={1600} n={50} color="#ff8a6a" speed={200} />
     {/* скальный обрыв и тоннель слева */}
     <path d="M0 0 L300 0 L340 900 L280 1100 L320 1920 L0 1920Z" fill="#0c0c12" /><ellipse cx={300} cy={760} rx={70} ry={150} fill="#000" />
     <path d="M300 860 L620 860" stroke="#6a5a50" strokeWidth={10} /><path d="M620 860 l30 40 M600 860 l20 60" stroke="#6a5a50" strokeWidth={8} />
@@ -194,16 +201,17 @@ export const H2: React.FC<SP> = ({ t }) => {
 // h3: поезд проваливается в портал; синяя вспышка → «СЕРИЯ 3 — СКОРО»
 export const H3: React.FC<SP> = ({ t, d }) => {
   const sink = ease(t, 0, 1.4, (k: number) => k * k);
-  return <Frame t={t} vign={1} over={<Flash t={t} t0={1.3} dur={.5} color="#bfe8ff" max={.9} />}>
-    <rect width={1080} height={1920} fill="#02030a" />
-    <Gate x={540} y={960} s={1.6 + sink * .6} t={t} />
+  return <Frame t={t} vign={1} over={<Flash t={t} t0={1.3} dur={.5} color="#ff6a5a" max={.9} />}>
+    <rect width={1080} height={1920} fill="#0a0203" />
+    <Gate x={540} y={960} s={1.6 + sink * .6} t={t} color="#ff3a2a" />
+    <HeartEye t={t} x={540} y={960} s={1.2 + sink * .8} open={1} />
     {t < 1.4 && <TrainSide x={540} y={500 + sink * 460} s={.9 - sink * .8} rot={70} />}
     <g opacity={ease(t, 1.7, 2.2)}>
       <rect x={0} y={1280} width={1080} height={420} fill="#02030a" opacity={.6} filter="url(#blur30)" />
       <text x={540} y={1430} textAnchor="middle" fontFamily="CormSC, serif" fontWeight={700} fontSize={140} letterSpacing={4} fill="#f4fbff" filter="url(#glow)">ОДИНОЧКА</text>
       <line x1={200} x2={880} y1={1480} y2={1480} stroke="#5fd2ff" strokeWidth={3} filter="url(#glow)" />
       <text x={540} y={1550} textAnchor="middle" fontFamily="Oswald" fontWeight={300} fontSize={42} letterSpacing={16} fill="#9fdcff">СЕРИЯ 3 — СКОРО</text>
-      <text x={540} y={1640} textAnchor="middle" fontFamily="Mont" fontWeight={700} fontSize={40} fill="#e8f8ff">Какое правило у бездны? Пиши в комментах</text>
+      <text x={540} y={1640} textAnchor="middle" fontFamily="Mont" fontWeight={700} fontSize={40} fill="#e8f8ff">Как Кирилл спасёт отряд? Пиши в комментах</text>
     </g>
   </Frame>;
 };
