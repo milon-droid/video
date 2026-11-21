@@ -8,27 +8,43 @@
   },
   "father": {
    "instruct": "Exhausted hoarse Russian man, about 50, weak broken voice, disbelief and tenderness, very quiet, slow.",
-   "ref": "Сколько же я здесь… Я уже не помню, какой сейчас год."
+   "ref": "Сколько же я здесь… Я уже не помню, какой сейчас год.",
+   "f0": 150,
+   "fit": true
   },
   "timur": {
    "instruct": "Russian teenage boy, 17, nervous shaky voice, scared, speaking quietly and fast.",
-   "ref": "Я… я в первый раз. Я не знаю, что делать."
+   "ref": "Я… я в первый раз. Я не знаю, что делать.",
+   "f0": 170,
+   "fit": true
   },
   "mikh": {
    "instruct": "Old Russian man, about 55, gravelly warm voice, grumpy but caring, smoker's rasp, fatherly, medium pace.",
-   "ref": "Ну что, Кирюха, живой? Давай, собирайся, время не ждёт."
+   "ref": "Ну что, Кирюха, живой? Давай, собирайся, время не ждёт.",
+   "f0": 180,
+   "fit": true
   },
   "zhora": {
    "instruct": "Loud brash Russian man, about 35, rough arrogant voice, mocking and cocky, energetic.",
-   "ref": "Чего встал, ранг Е? Шевелись давай!"
+   "ref": "Чего встал, ранг Е? Шевелись давай!",
+   "f0": 280,
+   "fit": true
   },
   "announcer": {
    "instruct": "Calm formal Russian male metro announcer, neutral emotionless voice, measured slow pace, clear diction.",
-   "ref": "Станция Северная. Переход на кольцевую линию."
+   "ref": "Станция Северная. Переход на кольцевую линию.",
+   "f0": 136,
+   "fit": true
   },
   "nastya": {
    "instruct": "Russian teenage girl, 16, soft trembling voice, scared and close to tears, quiet.",
-   "ref": "Кирилл, мне страшно. Они опять приходили."
+   "ref": "Кирилл, мне страшно. Они опять приходили.",
+   "f0": 370,
+   "fit": true
+  },
+  "machinist": {
+   "instruct": "Calm formal Russian male metro announcer, neutral emotionless voice, measured slow pace, clear diction.",
+   "ref": "Станция Северная. Переход на кольцевую линию."
   }
  },
  "lines": [
@@ -84,11 +100,6 @@
    "text": "Жора, стой!"
   },
   {
-   "id": "w26",
-   "role": "kirill",
-   "text": "Кто шёл на свет — умирал."
-  },
-  {
    "id": "w27",
    "role": "kirill",
    "text": "Не смотрите на свет! Закройте глаза!"
@@ -135,12 +146,6 @@
    "text": "Все в вагон!"
   },
   {
-   "id": "w36",
-   "role": "announcer",
-   "text": "Следующая станция — Конечная.",
-   "fx": "dead"
-  },
-  {
    "id": "w37",
    "role": "kirill",
    "text": "Но конечной не было. Была пропасть."
@@ -171,8 +176,7 @@
   {
    "id": "w43",
    "role": "mikh",
-   "text": "Кирюха… береги пацана.",
-   "say": "Кир+юха… береги пацан+а."
+   "text": "Я не добегу. Берегите себя. Защитите друг друга."
   },
   {
    "id": "w44",
@@ -188,7 +192,7 @@
   {
    "id": "w46",
    "role": "kirill",
-   "text": "Оно тянулось не к нам. Оно звало своё — фонарь."
+   "text": "Фонарь полз к нему сам. Оно искало не нас. Оно искало фонарь."
   },
   {
    "id": "w47",
@@ -256,8 +260,29 @@
   },
   {
    "id": "w60",
-   "role": "announcer",
+   "role": "machinist",
    "text": "Конечная. Выход — один."
+  },
+  {
+   "id": "w61",
+   "role": "mikh",
+   "text": "Двери открылись. Может, тут выход."
+  },
+  {
+   "id": "w62",
+   "role": "kirill",
+   "text": "Здесь до нас уже были другие.",
+   "say": "Здесь до нас уж+е были друг+ие."
+  },
+  {
+   "id": "w63",
+   "role": "kirill",
+   "text": "Папин жетон…"
+  },
+  {
+   "id": "w64",
+   "role": "kirill",
+   "text": "Сюда попадали все, кто сошёл с поезда."
   }
  ]
 }
