@@ -25,6 +25,10 @@
   "announcer": {
    "instruct": "Calm formal Russian male metro announcer, neutral emotionless voice, measured slow pace, clear diction.",
    "ref": "Станция Северная. Переход на кольцевую линию."
+  },
+  "nastya": {
+   "instruct": "Russian teenage girl, 16, soft trembling voice, scared and close to tears, quiet.",
+   "ref": "Кирилл, мне страшно. Они опять приходили."
   }
  },
  "lines": [
@@ -97,7 +101,7 @@
   {
    "id": "w29",
    "role": "mikh",
-   "text": "Сказали — одна остановка. Всё, выходим."
+   "text": "На табло — одна остановка. Конечная. Всё, выходим."
   },
   {
    "id": "w30",
@@ -210,6 +214,33 @@
    "id": "w51",
    "role": "kirill",
    "text": "А над кроватью висело это."
+  },
+  {
+   "id": "w52",
+   "role": "timur",
+   "text": "Михалыч…",
+   "say": "Мих+алыч…",
+   "fx": "whisper"
+  },
+  {
+   "id": "w53",
+   "role": "kirill",
+   "text": "Фонарь тянуло назад. Будто его кто-то звал."
+  },
+  {
+   "id": "w54",
+   "role": "mikh",
+   "text": "Лёха, молнией!"
+  },
+  {
+   "id": "w56",
+   "role": "kirill",
+   "text": "Я умирал. Я это чувствовал."
+  },
+  {
+   "id": "w57",
+   "role": "nastya",
+   "text": "Кирилл?.. Ты очнулся!"
   }
  ]
 }
