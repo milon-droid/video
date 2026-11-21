@@ -115,8 +115,9 @@ for i, (f, off, at, ln, g, fi, fo) in enumerate(M):
 fc = ';'.join(fs) + ';' + ''.join(f'[m{i}]' for i in range(len(M))) + f'amix=inputs={len(M)}:normalize=0,apad=whole_dur={TOTAL}[mu]'
 subprocess.run(['ffmpeg', '-v', 'error', '-y', *ins, '-filter_complex', fc, '-map', '[mu]', '-ar', '48000', f'{A}/music2.wav'], check=True)
 # сведение: музыка приглушается под голос (sidechain), голос громче фона
-fc = ('[2]asplit=3[vo1][vo2][vo3];[0]volume=0.35,equalizer=f=2500:t=q:w=1.2:g=-4[mu];[mu][vo1]sidechaincompress=threshold=0.02:ratio=10:attack=15:release=500[mud];'
-      '[1]volume=0.8[sf0];[sf0][vo3]sidechaincompress=threshold=0.03:ratio=4:attack=10:release=300[sf];'
-      f'[vo2]volume=2.2[vv];[mud][sf][vv]amix=inputs=3:normalize=0,alimiter=limit=0.95,atrim=0:{TOTAL}[out]')
-subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{A}/music2.wav', '-i', f'{A}/sfx2.wav', '-i', f'{A}/vo2.wav', '-filter_complex', fc, '-map', '[out]', '-ar', '48000', 'remotion/public/ep2-mix.wav'], check=True)
+for VG, OUT in ((3.2, 'remotion/public/ep2-mix.wav'), (0.0, '/tmp/claude-0/ep2-bg.wav')):
+    fc = ('[2]asplit=3[vo1][vo2][vo3];[0]volume=0.22,equalizer=f=2500:t=q:w=1.2:g=-5[mu];[mu][vo1]sidechaincompress=threshold=0.015:ratio=12:attack=10:release=450[mud];'
+          '[1]volume=0.5[sf0];[sf0][vo3]sidechaincompress=threshold=0.015:ratio=10:attack=8:release=300[sf];'
+          f'[vo2]volume={VG}[vv];[mud][sf][vv]amix=inputs=3:normalize=0,alimiter=limit=0.95,atrim=0:{TOTAL}[out]')
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{A}/music2.wav', '-i', f'{A}/sfx2.wav', '-i', f'{A}/vo2.wav', '-filter_complex', fc, '-map', '[out]', '-ar', '48000', OUT], check=True)
 print('микс готов', round(TOTAL, 2), 'с')
