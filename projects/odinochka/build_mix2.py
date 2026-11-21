@@ -25,6 +25,9 @@ C = {
  'b2': [(0, S('crackle', .5, dur=1.8)), (1.6, S('hiss', .3, dur=1.0)), (0, S('hum', .3, dur=3.4))],
  'b3': [(0, S('hum', .3, dur=4.4)), (.3, L('oc-VOXWhsp_WhispersCreepyReverb_OS_01', .25))],
  'b6': [(0, S('hum', .4, dur=3.2)), (0, L('bsb-heartbeat-slow', .6)), (1.5, F('laugh-2', .2))],
+ 'b6w': [(0, S('hum', .9, dur=2.4)), (0, S('chord', .3, notes=[50, 53, 57], dur=2.4)), (.3, F('laugh-2', .25))],
+ 'g9': [(0, S('drone', .2, dur=3.6)), (.2, L('bsb-heartbeat-slow', .5))],
+ 'i5b': [(0, S('charge', .6, dur=.6)), (.5, L('whoosh-medium-hard', .9, rate=.6)), (1.05, F('trailer-sub', 1.0)), (1.05, L('cinematic-metal-massive', 1.0)), (1.05, S('debris', .9, dur=1.5)), (1.1, L('impact-deep-hard', 1.0)), (1.8, S('hiss', .3, dur=1.2))],
  'e1': [(0, S('hum', .45, dur=3.2)), (0, L('bsb-heartbeat-fast', .7))] + [(.3 + i * .45, S('step', .45)) for i in range(6)],
  'e2': [(0, S('hum', .5, dur=1.2)), (.5, S('charge', .5, dur=.7)), (1.1, F('trailer-sub', 1.0)), (1.18, F('flesh-rip', 1.0)), (1.2, F('gore-splat', 1.0)), (1.2, BONE(2)), (1.2, L('oc-CREAHmn_GiantDeathScream_OS_01', .6, rate=1.3)), (1.55, F('bodyfall-2', 1.0)), (1.6, GORE(2))],
  'e3': [(.2, S('charge', .5, dur=.6)), (.88, F('flesh-carcass', .9)), (.9, F('gore-splat', .9)), (.9, BONE(3)), (1.25, F('bodyfall-1', .9)), (1.0, S('breath_in', .6))],
@@ -73,7 +76,7 @@ pass
 json.dump(sorted(cues, key=lambda c: c['t']), open('sfx-ep2.json', 'w'), ensure_ascii=False)
 A = 'remotion/public/audio'; os.makedirs(A, exist_ok=True)
 # пространство: метро — длинное эхо, вагон — короткое тесное, остальное — сухо
-STATION = {'g1', 'g2', 'g6', 'g3', 'g7', 'g4', 'g8', 'i6'}
+STATION = {'g1', 'g2', 'g6', 'g3', 'g7', 'g4', 'g8', 'i5b', 'i6'}
 def zone_at(tt):
     for sid, b, dd, _ in shots:
         if b <= tt < b + dd: return 'station' if sid in STATION else 'train' if sid[0] in 'abecfhik' and sid not in ('a2', 'h2', 'i5', 'i7') else 'dry'
@@ -116,15 +119,16 @@ END = TOTAL
 M = [  # файл, с какой секунды трека, начало в ролике, длина, громкость, fade in, fade out
  ('horror-intense-magmi.mp3', 0, 0, st['a2'] + .4, .8, .05, .3),
  ('epic-loop-fusionwolf.mp3', 0, st['a2'] + .5, st['b0'] - st['a2'] - .4, .7, .05, .4),
- ('strings-choir-sad-szegvari.mp3', 4, st['b0'], st['e1'] - st['b0'], .65, 1.0, .6),
+ ('strings-choir-sad-szegvari.mp3', 4, st['b0'], st['b6'] - st['b0'], .65, 1.0, .6),
+ ('strings-choir-slow-szegvari.mp3', 0, st['b6'], st['e1'] - st['b6'], .35, .4, .4),
  ('horror-intense-magmi.mp3', 10, st['e1'], st['c6'] - st['e1'] + .3, .6, .3, .4),
  ('ambient-horror-track-01.ogg', 0, st['c6'], st['c8'] - st['c6'] + .4, .7, .5, .1),
  ('epic-orch-bertsz.mp3', 30, st['c8'] + .65, st['f1'] - st['c8'] - .3, .8, .05, 1.0),
  ('strings-choir-slow-szegvari.mp3', 6, st['f1'], st['g1'] - st['f1'], .55, 1.0, .5),
  ('eyes-in-the-shadows.ogg', 0, st['g1'], st['g2'] - st['g1'] + .5, .6, .5, .2),
  ('epic-loop-fusionwolf.mp3', 40, st['g2'] + .5, st['g8'] - st['g2'] - .5, .9, .05, .6),
- ('gladiators-lament-epic-tragic-music.mp3', 0, st['g8'], st['i1'] - st['g8'] + .5, .8, .6, .8),
- ('time-of-the-apocalypse.ogg', 0, st['i1'], st['i6'] - st['i1'], .8, 1.0, .8),
+ ('gladiators-lament-epic-tragic-music.mp3', 0, st['g8'], st['g9'] - st['g8'] + .3, .8, .6, .6),
+ ('time-of-the-apocalypse.ogg', 0, st['i1'] + 1.5, st['i5b'] - st['i1'] - 1.5, .8, 1.5, .3),
  ('strings-choir-slow-szegvari.mp3', 30, st['i6'], st['j1'] - st['i6'], .55, 1.0, .5),
  ('emotional-piano-0.ogg', 0, st['j1'], TOTAL - st['j1'], .7, 1.0, 1.5),
 ]

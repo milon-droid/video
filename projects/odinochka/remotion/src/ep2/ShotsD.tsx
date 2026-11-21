@@ -16,12 +16,17 @@ import { Tag } from './ShotsE';
 
 // Обходчик: тощий великан, рваный оранжевый жилет путейца, длинные руки, в правой — молот; голова-череп с вертикальной пастью.
 // open 0..1 — пасть раскрывается; swing 0..1 — замах молотом сверху вниз; crouch — присел на лапы
-export const Walker: React.FC<{ x: number; y: number; s?: number; t: number; open?: number; swing?: number; crouch?: number; hurt?: number }> = ({ x, y, s = 1, t, open = 0, swing = 0, crouch = 0, hurt = 0 }) => {
+export const Walker: React.FC<{ x: number; y: number; s?: number; t: number; open?: number; swing?: number; crouch?: number; hurt?: number; step?: number }> = ({ x, y, s = 1, t, open = 0, swing = 0, crouch = 0, hurt = 0, step }) => {
   const br = Math.sin(t * 3) * 6, hy = -980 + crouch * 200 + br, sw = -150 + swing * 230;
   const hx = Math.sin(sw * Math.PI / 180) * 520, hyy = hy + 140 - Math.cos(sw * Math.PI / 180) * 520;
   return <g transform={`translate(${x} ${y}) scale(${s})`}>
     {/* ноги-ходули */}
-    {[-1, 1].map(sd => <path key={sd} d={`M${sd * 60} ${hy + 380} L${sd * 190} ${-200 + crouch * 60} L${sd * 120} 0`} stroke="#2a2420" strokeWidth={46} fill="none" strokeLinejoin="round" />)}
+    {[-1, 1].map(sd => { const ph = step === undefined ? 0 : Math.sin(step * Math.PI + (sd > 0 ? Math.PI : 0)), lift = step === undefined ? 0 : Math.max(0, ph) * 70, fx = sd * 130 + ph * 90;
+      const hip = [sd * 60, hy + 380], foot = [fx, -lift], kx = (hip[0] + foot[0]) / 2 + sd * (150 + crouch * 90), ky = (hip[1] + foot[1]) / 2 - crouch * 40;
+      return <g key={sd}><path d={`M${hip[0]} ${hip[1]} L${kx} ${ky} L${foot[0]} ${foot[1]}`} stroke="#2a2420" strokeWidth={50} fill="none" strokeLinejoin="round" strokeLinecap="round" />
+        <path d={`M${hip[0]} ${hip[1]} L${kx} ${ky}`} stroke="#3a3028" strokeWidth={22} fill="none" strokeLinecap="round" opacity={.6} />
+        <circle cx={kx} cy={ky} r={30} fill="#d8d0c0" stroke={INK} strokeWidth={5} />
+        <path d={`M${foot[0] - 40} ${foot[1]} l100 0 l10 -20`} stroke="#1a1410" strokeWidth={26} strokeLinecap="round" fill="none" /></g>; })}
     {/* торс + жилет */}
     <path d={`M-120 ${hy + 120} Q-150 ${hy + 300} -90 ${hy + 420} L90 ${hy + 420} Q150 ${hy + 300} 120 ${hy + 120}Z`} fill="#3a302a" stroke={INK} strokeWidth={6} />
     <path d={`M-110 ${hy + 140} L-80 ${hy + 410} L-20 ${hy + 400} L-30 ${hy + 160}Z M110 ${hy + 140} L80 ${hy + 410} L20 ${hy + 400} L30 ${hy + 160}Z`} fill="#e86a1a" stroke={INK} strokeWidth={5} />

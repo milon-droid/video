@@ -20,7 +20,8 @@ import { Walker } from './ShotsD';
 
 const KC = CS.porterY;
 // молоток в правой кисти (в координатах фигуры)
-const inHand = (pose: any, r = 0, s = 1) => { const w = wristR(pose, KC.w || 1); return <g transform={`translate(${w[0]} ${w[1]}) rotate(${r})`}><Hammer x={0} y={-40} s={.55 * s} /></g>; };
+const inHand = (pose: any, r = 0, s = 1) => { const w = wristR(pose, KC.w || 1); return <g transform={`translate(${w[0]} ${w[1]}) rotate(${180 - w[2] + r * .2})`}><Hammer x={0} y={-150 * .55 * s} s={.55 * s} /></g>; };
+export { inHand };
 // плашка имени над персонажем
 export const Tag: React.FC<{ t: number; t0: number; x: number; y: number; name: string; sub?: string }> = ({ t, t0, x, y, name, sub }) => {
   const k = spr(t, t0, { damping: 14 }); if (k <= 0) return null;
@@ -165,7 +166,7 @@ export const G7: React.FC<SP> = ({ t }) => {
       <DepotBg t={t} />
       {Array.from({ length: 40 }).map((_, i) => { const x = h1(i * 3) * 1600 - 260, y = 700 + h1(i * 7) * 300; return <g key={'e' + i} opacity={.5 + .5 * Math.sin(t * 3 + i)}><circle cx={x - 10} cy={y} r={5} fill="#ff2030" filter="url(#glow)" /><circle cx={x + 10} cy={y} r={5} fill="#ff2030" filter="url(#glow)" /></g>; })}
       {Array.from({ length: 12 }).map((_, i) => { const sd = i % 2 ? 1 : -1, row = Math.floor(i / 2), k = .45 + row * .07 + adv * .12; return <Faceless key={i} x={540 + sd * (380 + row * 40) + (h1(i) - .5) * 80} y={1250 + row * 60 + adv * 120} s={k} t={t} seed={i + 30} lunge={.5 + .3 * Math.sin(t * 2 + i)} eyes={1} grin={.6} />; })}
-      <Walker x={1250} y={1500} s={.7} t={t} open={.5} />
+      <Walker x={1350 - adv * 250} y={1500} s={.7} t={t} open={.5} step={adv * 4} />
       {/* открытые двери вагона — единственный путь */}
       <g transform="translate(-250 0)"><rect x={60} y={900} width={260} height={700} fill="#fff4d8" opacity={.7} filter="url(#blur12)" /><rect x={40} y={880} width={300} height={740} fill="none" stroke="#8a909a" strokeWidth={16} />
         <text x={190} y={860} textAnchor="middle" fontFamily="Oswald" fontWeight={600} fontSize={46} fill="#e8f8ff" letterSpacing={6}>ВАГОН</text></g>
@@ -225,13 +226,22 @@ const Vortex: React.FC<{ t: number; x: number; y: number; s: number; eye?: numbe
   {Array.from({ length: 7 }).map((_, j) => <g key={j} transform={`rotate(${t * (20 + j * 6) * (j % 2 ? 1 : -1)})`}>{Array.from({ length: 6 }).map((_, i) => { const r0 = 80 + j * 75;
     return <path key={i} d={`M${r0} 0 A${r0} ${r0} 0 0 1 ${r0 * Math.cos(1)} ${r0 * Math.sin(1)}`} transform={`rotate(${i * 60})`} stroke={j % 2 ? '#ff3a2a' : '#a80c18'} strokeWidth={22 - j * 2} fill="none" opacity={.8 - j * .08} filter={j < 2 ? 'url(#glow)' : undefined} />; })}</g>)}
   <ellipse rx={190} ry={110 * eye + 2} fill="#1a0204" stroke="#ff4a2a" strokeWidth={10} filter="url(#glow)" />
-  {eye > .2 && <g><circle cx={noise('vx', t, .5) * 40} r={80 * eye} fill="#d81a10" /><ellipse cx={noise('vx', t, .5) * 40} rx={14} ry={70 * eye} fill="#050000" /></g>}
+  {eye > .2 && <g><circle cx={noise('vx', t, .5) * 40} r={80 * eye} fill="#d81a10" /><circle cx={noise('vx', t, .5) * 40} r={60 * eye} fill="#fff0c0" opacity={.5} filter="url(#glow)" /><ellipse cx={noise('vx', t, .5) * 40} rx={14} ry={70 * eye} fill="#050000" /><circle cx={noise('vx', t, .5) * 40} r={10 * eye} fill="#fff6d8" filter="url(#glow)" /></g>}
 </g>;
-const Tentacle: React.FC<{ t: number; x0: number; y0: number; x1: number; y1: number; w?: number; seed?: number }> = ({ t, x0, y0, x1, y1, w = 60, seed = 1 }) => {
+export const Tentacle: React.FC<{ t: number; x0: number; y0: number; x1: number; y1: number; w?: number; seed?: number; spike?: boolean }> = ({ t, x0, y0, x1, y1, w = 60, seed = 1, spike }) => {
   const mx = (x0 + x1) / 2 + Math.sin(t * 2 + seed) * 120, my = (y0 + y1) / 2 + Math.cos(t * 1.7 + seed) * 80;
-  const d = `M${x0} ${y0} Q${mx} ${my} ${x1} ${y1}`;
-  return <g><path d={d} stroke="#3a0408" strokeWidth={w} strokeLinecap="round" fill="none" /><path d={d} stroke="#8a1a20" strokeWidth={w * .55} strokeLinecap="round" fill="none" />
-    {Array.from({ length: 6 }).map((_, i) => { const u = (i + 1) / 7, px = (1 - u) ** 2 * x0 + 2 * (1 - u) * u * mx + u * u * x1, py = (1 - u) ** 2 * y0 + 2 * (1 - u) * u * my + u * u * y1; return <circle key={i} cx={px} cy={py} r={w * .16 * (1 - u * .5)} fill="#e8a0a0" opacity={.7} />; })}</g>;
+  const P = (u: number) => [(1 - u) ** 2 * x0 + 2 * (1 - u) * u * mx + u * u * x1, (1 - u) ** 2 * y0 + 2 * (1 - u) * u * my + u * u * y1];
+  const N = 18, pts = Array.from({ length: N + 1 }).map((_, i) => P(i / N));
+  const side = (sg: number) => pts.map((p, i) => { const q = pts[Math.min(N, i + 1)], o = pts[Math.max(0, i - 1)], dx = q[0] - o[0], dy = q[1] - o[1], L = Math.hypot(dx, dy) || 1, ww = w * .5 * (1 - i / N * .85);
+    return `${p[0] - dy / L * ww * sg} ${p[1] + dx / L * ww * sg}`; });
+  const body = 'M' + side(1).join(' L') + ' L' + side(-1).reverse().join(' L') + 'Z';
+  const tip = pts[N], pre = pts[N - 1], ta = Math.atan2(tip[1] - pre[1], tip[0] - pre[0]);
+  return <g><path d={body} fill="#5a0a12" stroke="#1a0204" strokeWidth={4} />
+    <path d={'M' + side(.35).join(' L')} stroke="#9a2a30" strokeWidth={w * .18} fill="none" strokeLinecap="round" opacity={.7} />
+    {pts.slice(2, N - 1).map((p, i) => { const q = pts[i + 3], dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1, ww = w * .5 * (1 - (i + 2) / N * .85);
+      return <ellipse key={i} cx={p[0] + dy / L * ww * .75} cy={p[1] - dx / L * ww * .75} rx={ww * .32} ry={ww * .24} fill="#e8b0a8" stroke="#6a1a20" strokeWidth={2} />; })}
+    {spike && <path d={`M${tip[0]} ${tip[1]} l${Math.cos(ta - .3) * -20} ${Math.sin(ta - .3) * -20} L${tip[0] + Math.cos(ta) * 60} ${tip[1] + Math.sin(ta) * 60} L${tip[0] + Math.cos(ta + .3) * -20} ${tip[1] + Math.sin(ta + .3) * -20}Z`} fill="#e8e0d0" stroke="#1a0204" strokeWidth={3} />}
+  </g>;
 };
 const Cliffs: React.FC<{ t: number; par: number }> = ({ t, par }) => <g>
   {[0, 1, 2].map(l => { const k = 1 - l * .3, off = par * (1 + l) * 200; return <g key={l} opacity={1 - l * .25}>
@@ -314,7 +324,7 @@ export const I4: React.FC<SP> = ({ t }) => {
     <g transform={cam(1.1, 540, 1150, sx, sy - 120)}>
       <TrainInterior t={t} flicker={1} red={2} shake={3} />
       <rect width={1080} height={1920} fill="#2a0206" opacity={.35} />
-      <Tentacle t={t} x0={-100} y0={1500} x1={t < pierce ? -100 + ease(t, .5, pierce) * 560 : 480} y1={t < pierce ? 1500 - ease(t, .5, pierce) * 60 : 1440} w={60} seed={7} />
+      <Tentacle t={t} x0={-100} y0={1500} x1={t < pierce ? -100 + ease(t, .5, pierce) * 560 : 480} y1={t < pierce ? 1500 - ease(t, .5, pierce) * 60 : 1440} w={60} seed={7} spike />
       {t > pierce && <Spray t={t} t0={pierce} x={520} y={1440} dir={.4} seed={61} pow={600} />}
       <Figure x={540} y={2050} s={1.55} t={t} L={{ ...KL, bruise: true }} C={KC} pose={pose} expr={t < pierce ? 'determined' : t < thr - .2 ? 'pain' : 'shout'} mouth={talk(t, c, 'КИРИЛЛ')} seed={3} turn={.2}
         prop={t < thr + .05 ? <g transform={`translate(${w[0]} ${w[1]})`}><LanternHead t={t} x={0} y={-20} s={.6} broken /><Smoke t={t} t0={0} x={0} y={-40} n={5} r={30} spread={50} color="#5a5458" life={1.2} rise={160} k={.6} seed={9} /></g> : undefined} />
@@ -404,7 +414,7 @@ export const J2: React.FC<SP> = ({ t }) => (
     <rect width={1080} height={1920} fill="#0c1424" />
     <g transform={cam(1.0 + t * .04, 540, 1300)}><g transform="translate(540 1400) scale(5)"><Head t={t} L={{ ...LK.kirill4, bruise: false }} expr="scared" seed={3} lookY={-.8} glow={ease(t, 1.2, 2.2) * .6} /></g></g>
     <ellipse cx={540} cy={600} rx={600} ry={400} fill="#1a6aff" opacity={.25} filter="url(#blur30)" />
-    <SysWin t={t} t0={.4} y={560} w={880} title="ИГРОК" lines={['Кирилл Волков', 'Уровень 1', 'Новое задание: получено']} size={54} />
+    <SysWin t={t} t0={.4} y={560} w={880} title="ИГРОК" lines={['Кирилл Волков', 'Уровень 1', 'Ежедневное задание: получено']} size={54} />
   </Frame>
 );
 
