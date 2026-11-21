@@ -14,8 +14,8 @@ const Caps: React.FC = () => { const T = useCurrentFrame() / 30;
   </svg></AbsoluteFill>; };
 // счётчик выживших (как интерфейс Системы): 6 → 4 (фонарь) → 3 (Михалыч) → 2 (Лёха) → 1 (Кирилл теряет сознание) → 2 (принял контракт) → исчезает
 const S0 = (id: string) => { const i = SHOTS.findIndex(s => s.id === id); return { a: starts[i], d: SHOTS[i].d, c: SHOTS[i].caps }; };
-const EV = (() => { const g8 = S0('g8'), i6 = S0('i6'), i7 = S0('i7'); const yes = i7.c?.[0] ? i7.c[0][2] + .3 : 2.6;
-  return { show: S0('a4').a + 1.2, ev: [[S0('e2').a + 1.2, 5], [S0('e3').a + 1.05, 4], [g8.a + g8.d - 1.4, 3], [S0('i2').a + 2.6, 2], [i6.a + i6.d - 1.0, 1], [i7.a + yes + .5, 2]] as [number, number][], hide: i7.a + i7.d - .1 }; })();
+const EV = (() => { const i6 = S0('i6'), i7 = S0('i7'); const yes = i7.c?.[0] ? i7.c[0][2] + .3 : 2.6;
+  return { show: S0('a4').a + 1.2, ev: [[S0('e2').a + 1.2, 5], [S0('e3').a + 1.05, 4], [S0('h7').a + .5, 3], [S0('k4').a + 1.5, 2], [i6.a + i6.d - 1.0, 1], [i7.a + yes + .5, 2]] as [number, number][], hide: i7.a + i7.d - .1 }; })();
 const Counter: React.FC = () => { const T = useCurrentFrame() / 30; if (T < EV.show || T > EV.hide + .6) return null;
   let n = 6, last = -9; for (const [t0, v] of EV.ev) if (T >= t0) { n = v; last = t0; }
   const k = ease(T, EV.show, EV.show + .4) * (1 - ease(T, EV.hide, EV.hide + .6)), hit = spr(T, last, { damping: 9 }), fresh = T - last < .8, up = n === 2 && last === EV.ev[5][0];

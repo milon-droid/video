@@ -124,7 +124,7 @@ export const VB5: React.FC<SP> = ({ t, d }) => { const c = VB.capsOf('vb5'), cru
 
 // ===== Вариант В =====
 // кабина: пульт, рычаги, лобовое стекло с тоннелем
-const Cab: React.FC<{ t: number; speed?: number; crack?: number; red?: number }> = ({ t, speed = .5, crack = 0, red = 0 }) => <g>
+export const Cab: React.FC<{ t: number; speed?: number; crack?: number; red?: number }> = ({ t, speed = .5, crack = 0, red = 0 }) => <g>
   <rect width={1080} height={1920} fill="#1a1c22" />
   <path d="M120 260 L960 260 L1020 980 L60 980Z" fill="#05060a" stroke="#3a3e48" strokeWidth={16} />
   {Array.from({ length: 10 }).map((_, i) => { const q = ((t * (.6 + speed * 2) + i / 10) % 1), k = q * q; return <rect key={i} x={540 - 40 - k * 560} y={620 - 20 - k * 320} width={80 + k * 1120} height={40 + k * 640} fill="none" stroke="#3a3a44" strokeWidth={4 + k * 10} opacity={q} />; })}

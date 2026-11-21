@@ -33,6 +33,19 @@ C = {
  'g1b': [(0, F('drone-archi', .5, dur=5.2)), (.3, S('step', .4)), (1.0, L('click-tap-medium', .3)), (2.0, L('foley-glass-touch', .0)), (2.0, S('tinkle', .3, dur=.6)), (2.2, L('bsb-heartbeat-slow', .6))] + [(3.0 + i * .5, L('oc-METLImpt_HammerAnvil_OS_01', .3 + i * .1)) for i in range(5)],
  'i2a': [(0, S('wind', .5, dur=3.0)), (0, S('rattle', .6, dur=3.0)), (.5, F('glass-axe', .9)), (.9, GORE(1)), (1.0, S('skid', .6)), (1.8, GORE(2)), (1.9, S('skid', .6)), (1.2, L('oc-VOXWhsp_WhispersCreepyReverb_OS_01', .4))],
  'j0': [(0, F('monitor', .6)), (.2, S('hum', .12, dur=2.4))],
+ 'h3': [(0, S('rattle', .4, dur=2.6)), (0, F('drone-space', .6, dur=2.6))] + [(i * .42, S('zap', .3, dur=.15)) for i in range(6)] + [(1.0, L('oc-VOXWhsp_WhispersCreepyReverb_OS_01', .5))],
+ 'h4': [(0, F('drone-space', .6, dur=2.6))] + [(i * .38, S('zap', .35, dur=.12)) for i in range(7)] + [(i * .38 + .1, S('step', .4, pitch=.7)) for i in range(7)] + [(1.5, F('laugh', .35))],
+ 'h5': [(0, S('zap', .8, dur=3.0)), (0, F('drone-archi', .5, dur=3.2)), (1.5, F('growl-1', .4))],
+ 'h6': [(0, S('crackle', .9, dur=4.2)), (0, L('bsb-heartbeat-fast', .6)), (2.0, F('laugh-2', .35)), (3.0, S('hiss', .5, dur=1.0))],
+ 'h7': [(0, S('powerdown', .6)), (.3, F('growl-hybrid', .9)), (.55, F('flesh-rip', 1.0)), (.6, GORE(2)), (.6, L('oc-CREAHmn_GiantDeathScream_OS_01', .6))],
+ 'h8': [(0, S('rattle', .5, dur=2.2))] + [(i * .3, S('step', .5)) for i in range(4)] + [(.5, L('impact-heavy-hard', 1.0)), (.5, L('oc-DOORMetl_HatchClose_OS_01', .6))],
+ 'h9': [(0, S('rattle', .3, dur=3.0)), (0, S('skid', .35)), (.6, S('skid', .35)), (1.2, S('skid', .35)), (1.8, S('skid', .35)), (.4, L('bsb-heartbeat-slow', .6)), (2.2, L('oc-DOORMetl_HatchClose_OS_01', 1.0))],
+ 'k2': [(.3, L('cinematic-metal-big', .8)), (.4, S('skid', .7)), (1.0, S('rattle', .7, dur=1.4))],
+ 'k3': [(0, S('engine', .7, dur=2.8)), (0, S('rattle', .8, dur=2.8)), (.5, S('beep', .4)), (1.0, S('beep', .4)), (1.5, S('beep', .5)), (2.0, S('siren', .3, dur=.8))],
+ 'k4': [(.3, F('glass-slow', .7)), (.7, F('glass-axe', 1.0)), (.7, F('trailer-sub', 1.0)), (.8, F('growl-deep', .9)), (1.0, L('oc-CREAHmn_GiantDeathScream_OS_01', .5, rate=1.4)), (1.5, F('flesh-rip', .9)), (1.55, GORE(1))],
+ 'k5': [(0, S('wind', .6, dur=3.2)), (.3, F('flesh-rip', .7)), (.3, L('impact-heavy-hard', .8)), (.4, S('skid', .5)), (2.2, F('flesh-rip', 1.0)), (2.2, F('gore-splat', .9)), (2.2, L('impact-heavy-hard', .9))],
+ 'k6': [(0, S('wind', .4, dur=3.2)), (0, S('skid', .3)), (.6, S('skid', .3)), (1.3, S('skid', .3)), (2.0, S('skid', .3)), (0, L('bsb-heartbeat-fast', .6))],
+ 'k7': [(.2, S('hiss', .7, dur=1.2)), (1.2, L('whoosh-medium-hard', 1.0)), (1.5, F('growl-deep', .7))],
  'b6w': [(0, S('hum', .9, dur=2.4)), (0, S('chord', .3, notes=[50, 53, 57], dur=2.4)), (.3, F('laugh-2', .25))],
  'g9': [(0, S('drone', .2, dur=3.6)), (.2, L('bsb-heartbeat-slow', .5))],
  'i5b': [(0, S('charge', .6, dur=.6)), (.5, L('whoosh-medium-hard', .9, rate=.6)), (1.05, F('trailer-sub', 1.0)), (1.05, L('cinematic-metal-massive', 1.0)), (1.05, S('debris', .9, dur=1.5)), (1.1, L('impact-deep-hard', 1.0)), (1.8, S('hiss', .3, dur=1.2))],
@@ -48,7 +61,7 @@ C = {
  'c8': [(0, S('hum', 1.0, dur=.62)), (0, L('whoosh-fast-hard', 1.0)), (.35, L('cinematic-metal-big', .9)), (.35, S('glitch', .3)), (.65, F('glass-axe', 1.0)), (.65, F('glass-slow', .8)), (.65, L('cinematic-drum-massive', 1.0)), (.7, F('growl-hybrid', .7)), (.9, F('glass-fall', .7))],
  'c8b': [(0, S('zap', .5, dur=.8)), (.6, F('bodyfall-2', .6)), (1.8, F('bodyfall-1', 1.0)), (1.8, L('impact-deep-hard', .8)), (2.0, S('powerdown', .5))],
  'f1': [(0, S('hum50', .2, dur=5.4)), (0, L('bsb-heartbeat-slow', .4))],
- 'f2': [(.3, L('impact-deep-hard', .9)), (.3, S('rattle', .5, dur=1.5)), (.5, L('oc-TRNSbwy_SubwayPassbyEnter_OS_01', .7)), (.9, S('beep', .2))],
+ 'f2': [(.2, L('impact-deep-hard', .9)), (.2, S('rattle', .5, dur=3.0)), (.4, L('oc-TRNSbwy_SubwayPassbyEnter_OS_01', .7)), (2.8, S('zap', .3, dur=.2)), (3.1, S('zap', .3, dur=.2))],
  'g1': [(0, L('oc-TRNDoor_TrainDoorsOpen_OS_01', .7)), (0, F('drone-space', .5, dur=3.4))] + [(x, L('oc-METLImpt_HammerAnvil_OS_01', .35 + i * .08)) for i, x in enumerate([.6, 1.2, 1.8, 2.3, 2.7, 3.0])],
  'g2': [(.3, L('whoosh-medium-hard', .8, rate=.6)), (.55, F('trailer-sub', 1.0)), (.55, L('impact-deep-hard', 1.0)), (.6, S('debris', .6, dur=1.0)), (.9, F('growl-deep', 1.0)), (1.0, F('growl-1', .7))],
  'g6': [(0, F('growl-hybrid', 1.0)), (0, F('growl-deep', .8, rate=.8)), (0, L('cinematic-metal-massive', .5))],
@@ -84,7 +97,7 @@ pass
 json.dump(sorted(cues, key=lambda c: c['t']), open('sfx-ep2.json', 'w'), ensure_ascii=False)
 A = 'remotion/public/audio'; os.makedirs(A, exist_ok=True)
 # пространство: метро — длинное эхо, вагон — короткое тесное, остальное — сухо
-STATION = {'g1', 'g2', 'g6', 'g3', 'g7', 'g4', 'g8', 'i5b', 'i6'}
+STATION = {'i5b', 'i6'}
 def zone_at(tt):
     for sid, b, dd, _ in shots:
         if b <= tt < b + dd: return 'station' if sid in STATION else 'train' if sid[0] in 'abecfhik' and sid not in ('a2', 'h2', 'i5', 'i7') else 'dry'
@@ -132,11 +145,10 @@ M = [  # файл, с какой секунды трека, начало в ро
  ('horror-intense-magmi.mp3', 10, st['e1'], st['c6'] - st['e1'] + .3, .6, .3, .4),
  ('ambient-horror-track-01.ogg', 0, st['c6'], st['c8'] - st['c6'] + .4, .7, .5, .1),
  ('epic-orch-bertsz.mp3', 30, st['c8'] + .65, st['f1'] - st['c8'] - .3, .8, .05, 1.0),
- ('strings-choir-slow-szegvari.mp3', 6, st['f1'], st['g1'] - st['f1'], .55, 1.0, .5),
- ('eyes-in-the-shadows.ogg', 0, st['g1'], st['g2'] - st['g1'] + .5, .6, .5, .2),
- ('epic-loop-fusionwolf.mp3', 40, st['g2'] + .5, st['g8'] - st['g2'] - .5, .9, .05, .6),
- ('gladiators-lament-epic-tragic-music.mp3', 0, st['g8'], st['g9'] - st['g8'] + .3, .8, .6, .6),
- ('time-of-the-apocalypse.ogg', 0, st['i1'] + 1.5, st['i5b'] - st['i1'] - 1.5, .8, 1.5, .3),
+ ('strings-choir-slow-szegvari.mp3', 6, st['f1'], st['f2'] - st['f1'], .55, 1.0, .4),
+ ('horror-intense-magmi.mp3', 30, st['f2'] + 2.6, st['h7'] - st['f2'] - 2.6, .75, .3, .3),
+ ('gladiators-lament-epic-tragic-music.mp3', 0, st['h7'] + .5, st['h8'] - st['h7'], .6, .3, .4),
+ ('time-of-the-apocalypse.ogg', 0, st['h8'], st['i6'] - st['h8'], .8, .6, .8),
  ('strings-choir-slow-szegvari.mp3', 30, st['i6'], st['j1'] - st['i6'], .55, 1.0, .5),
  ('emotional-piano-0.ogg', 0, st['j1'], TOTAL - st['j1'], .7, 1.0, 1.5),
 ]
