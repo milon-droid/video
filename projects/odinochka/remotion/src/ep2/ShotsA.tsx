@@ -32,7 +32,7 @@ export const DarkCar: React.FC<{ t: number; k?: number }> = ({ t, k = 1 }) => <g
 export const Vision: React.FC<{ t: number; x: number; y: number; s: number; L: any; C: any; k: number; seed: number; arms?: boolean }> = ({ t, x, y, s, L, C, k, seed, arms }) => <g opacity={k}>
   <ellipse cx={x} cy={y - 420 * s} rx={300 * s} ry={520 * s} fill={WARM} opacity={.35} filter="url(#blur30)" />
   <g filter="url(#blur4)"><Figure x={x} y={y} s={s} t={t} L={L} C={C} pose={arms ? { ...POSES.stand, armL: [-60, 40], armR: [60, -40] } : POSES.stand} expr="calm" seed={seed} rim={WARM} /></g>
-  <rect x={x - 300 * s} y={y - 900 * s} width={600 * s} height={920 * s} fill={WARM} opacity={.35} style={{ mixBlendMode: 'screen' }} />
+  <ellipse cx={x} cy={y - 450 * s} rx={240 * s} ry={500 * s} fill={WARM} opacity={.3} filter="url(#blur30)" style={{ mixBlendMode: 'screen' }} />
 </g>;
 
 // a1: крупно глаз Кирилла — в зрачке отражается фонарь и силуэт; голос «отца»
@@ -95,19 +95,15 @@ export const B2: React.FC<SP> = ({ t }) => {
   </Frame>;
 };
 
-// b3: Жора — сверху сыплются купюры, он ловит их и смеётся; закадровый голос: каждый видел своё
-const Bills: React.FC<{ t: number; n?: number }> = ({ t, n = 40 }) => <g>{Array.from({ length: n }).map((_, i) => {
-  const sp = 160 + h1(i * 3) * 200, y = ((t * sp + h1(i * 7) * 2200) % 2200) - 200, x = h1(i * 11) * 1080 + Math.sin(t * 2 + i) * 60, r = Math.sin(t * 3 + i) * 50;
-  return <g key={i} transform={`translate(${x} ${y}) rotate(${r}) scale(${.6 + h1(i) * .6} ${Math.abs(Math.cos(t * 4 + i)) * .8 + .2})`}>
-    <rect x={-60} y={-28} width={120} height={56} rx={4} fill="#e8a858" stroke="#8a5a2a" strokeWidth={3} /><circle r={16} fill="none" stroke="#8a5a2a" strokeWidth={3} /><text x={-50} y={-8} fontSize={16} fontFamily="Mont" fontWeight={800} fill="#8a5a2a">5000</text></g>; })}</g>;
+// b3: Жора — в луче силуэт парня (брат); Жора расплывается в улыбке, тянет руки; голос: каждый видел потерянного
 export const B3: React.FC<SP> = ({ t }) => {
   const c = caps('b3');
   return <Frame t={t} grade="#2a2418" gradeK={.1}>
     <g transform={cam(1.0 + t * .03, 540, 1000, 0, -170)}>
       <DarkCar t={t} />
-      <Cone x={540} k={1.1} w={460} />
-      <g opacity={.9}><Bills t={t} /></g>
-      <Figure x={540} y={2000} s={1.45} t={t} L={LK.zhora} C={CS.zhora} pose={PK(t, [[0, 'bothUp'], [1.2, { armL: [-130, 40], armR: [130, -40] }], [2.4, 'bothUp']], false)} expr="smirk" lookY={-.8} seed={7} mouth={talk(t, c, 'ЖОРА')} rim={WARM} />
+      <Cone x={330} k={1.1} w={420} />
+      <Vision t={t} x={300} y={1480} s={.85} L={LK.pD} C={CS.pD} k={ease(t, 0, .8)} seed={53} arms />
+      <Figure x={720} y={2000} s={1.45} t={t} L={LK.zhora} C={CS.zhora} pose={PK(t, [[0, 'stand'], [1.0, { armL: [-60, 60], armR: [-30, 40], lean: -6 }], [2.6, { armL: [-80, 40], armR: [-50, 30], lean: -10 }]], false)} expr="smirk" tears={.5} lookX={-.8} lookY={-.2} turn={-.6} seed={7} mouth={talk(t, c, 'ЖОРА')} rim={WARM} />
     </g>
   </Frame>;
 };

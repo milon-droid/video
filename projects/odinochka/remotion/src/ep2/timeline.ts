@@ -5,16 +5,16 @@ import MOUTH from '../../public/vo2/mouth.json';
 export type Cap = [string, string, number, number, string?];
 export type Spec = { id: string; d: number; vo?: [string, number][]; caps?: Cap[] };
 const WHO: Record<string, string> = { father: 'ОТЕЦ?', kirill: 'КИРИЛЛ', mikh: 'МИХАЛЫЧ', zhora: 'ЖОРА', timur: 'ТИМУР', announcer: 'ДИКТОР' };
-const INNER = new Set(['w02', 'w06', 'w08', 'w10', 'w11', 'w14', 'w15', 'w16', 'w19', 'w22']);
+const INNER = new Set(['w00', 'w02b', 'w06b', 'w26', 'w37', 'w38', 'w02', 'w06', 'w08', 'w10', 'w11', 'w14', 'w15', 'w16', 'w19', 'w22']);
 export const V = 'КИРИЛЛ (про себя)';
 const RAW: Spec[] = [
-  { id: 'a1', d: 3.6, vo: [['w01', .3]] }, { id: 'a2', d: 3.0 },
-  { id: 'b0', d: 4.0, vo: [['w02', .3]] }, { id: 'b1', d: 2.6, vo: [['w03', .6]] }, { id: 'b2', d: 3.4, vo: [['w04', .3]] }, { id: 'b3', d: 4.6, vo: [['w05', .2], ['w06', 1.8]] },
-  { id: 'b4', d: 3.0, vo: [['w07', 1.0]] }, { id: 'b5', d: 3.8, vo: [['w08', .4]] }, { id: 'b6', d: 3.2, vo: [['w09', .3]] },
-  { id: 'c1', d: 3.2, vo: [['w10', .3]] }, { id: 'c2', d: 2.4, vo: [['w11', .3]] }, { id: 'c3', d: 2.8, vo: [['w12', .9]] }, { id: 'c4', d: 2.4, vo: [['w13', .2]] },
-  { id: 'c5', d: 5.0, vo: [['w14', .4]] }, { id: 'c6', d: 3.6, vo: [['w15', .4]] }, { id: 'c7', d: 3.4, vo: [['w16', .3]] }, { id: 'c8', d: 2.4, vo: [['w17', .9]] }, { id: 'c9', d: 4.4, vo: [['w18', .9], ['w19', 2.6]] },
-  { id: 'd1', d: 4.0 }, { id: 'd2', d: 4.2, vo: [['w20', .4]] }, { id: 'd3', d: 3.0, vo: [['w21', .6]] }, { id: 'd4', d: 3.0 }, { id: 'd5', d: 5.0, vo: [['w22', .6]] },
-  { id: 'd6', d: 3.2, vo: [['w23', .3]] }, { id: 'd7', d: 3.0 },
+  { id: 'a0', d: 3.0, vo: [['w00', .6]] }, { id: 'a2', d: 3.0 },
+  { id: 'b0', d: 4.2, vo: [['w02b', .3]] }, { id: 'b1', d: 2.6, vo: [['w03', .6]] }, { id: 'b2', d: 3.4, vo: [['w04', .3]] }, { id: 'b3', d: 4.4, vo: [['w05b', .2], ['w06b', 1.6]] }, { id: 'b6', d: 3.2, vo: [['w01', .3]] },
+  { id: 'e1', d: 3.2, vo: [['w25', 1.4]] }, { id: 'e2', d: 2.8 }, { id: 'e3', d: 3.0, vo: [['w26', 1.2]] }, { id: 'e4', d: 3.4, vo: [['w27', .8]] },
+  { id: 'c6', d: 3.6, vo: [['w15', .4]] }, { id: 'c7', d: 3.2, vo: [['w16', .3]] }, { id: 'c8', d: 2.4, vo: [['w17', .9]] },
+  { id: 'f1', d: 5.4, vo: [['w28', .5], ['w29', 2.4]] }, { id: 'f2', d: 4.4, vo: [['w30', .9], ['w31', 2.6]] },
+  { id: 'g1', d: 3.4, vo: [['w32', 1.2]] }, { id: 'g2', d: 2.6 }, { id: 'g6', d: 2.0 }, { id: 'g3', d: 4.2, vo: [['w33', .2], ['w34', 2.8]] }, { id: 'g4', d: 3.4, vo: [['w35', 1.6]] }, { id: 'g5', d: 4.0 },
+  { id: 'h1', d: 4.6, vo: [['w36', .4], ['w37', 2.4]] }, { id: 'h2', d: 5.0, vo: [['w38', 1.2]] }, { id: 'h3', d: 3.4 },
 ];
 const lines: Record<string, { role: string; text: string }> = Object.fromEntries((VO as any).lines.map((l: any) => [l.id, l]));
 const dur = DUR as Record<string, number>;
