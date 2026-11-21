@@ -80,7 +80,7 @@ export const H7: React.FC<SP> = ({ t }) => { const c = caps('h7'), grab = ease(t
     <circle cx={780} cy={1200} r={90 * (1 - ease(t, 0, .4))} fill="#ff8a2a" opacity={.7} filter="url(#blur30)" />
     {Array.from({ length: 12 }).map((_, i) => { const a = i / 12 * Math.PI * 2, r = 460 - grab * 330; return <g key={i}><path d={`M${780 + Math.cos(a) * 760} ${1200 + Math.sin(a) * 760} L${780 + Math.cos(a) * r} ${1200 + Math.sin(a) * r}`} stroke="#c8c4bc" strokeWidth={16} strokeLinecap="round" opacity={.7} />
       {[-1, 0, 1].map(f => <path key={f} d={`M${780 + Math.cos(a) * r} ${1200 + Math.sin(a) * r} l${Math.cos(a + f * .4) * -30} ${Math.sin(a + f * .4) * -30}`} stroke="#c8c4bc" strokeWidth={6} strokeLinecap="round" />)}</g>; })}
-    <g transform="translate(300 700) scale(4)" opacity={ease(t, .7, 1.0)}><Head t={t} L={KL} expr="shout" seed={3} mouth={Math.max(.6, talk(t, c, 'КИРИЛЛ'))} tears={.8} /></g>
+    <g transform="translate(300 700) scale(4)" opacity={ease(t, .7, 1.0)}><Head t={t} L={KL} expr="scared" seed={3} mouth={talk(t, c, 'КИРИЛЛ')} tears={1} /></g>
   </Frame>; };
 // h8: Кирилл, Тимур и Лёха вваливаются в кабину машиниста: «В кабину!»
 export const H8: React.FC<SP> = ({ t }) => { const c = caps('h8'), hit = .5, [sx, sy] = shakeXY(t, [[hit, 24, .4]]), run = ease(t, 0, 1.6);

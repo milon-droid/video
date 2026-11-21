@@ -2,10 +2,10 @@
 import json, re, subprocess, os
 R = 'remotion/src/ep2/timeline.ts'; src = open(R).read()
 dur = json.load(open('remotion/public/vo2/durations.json'))
-raw = re.findall(r"\{ id: '(\w+)', d: ([\d.]+)((?:, vo: \[(?:\['w\w+', [\d.]+\],? ?)*\])?) \}", src)
+raw = re.findall(r"\{ id: '(\w+)', d: ([\d.]+)((?:, vo: \[(?:\['\w+', [\d.]+\],? ?)*\])?) \}", src)
 shots = []; a = 0
 for sid, d, vo in raw:
-    vos0 = re.findall(r"\['(w\w+)', ([\d.]+)\]", vo or ''); vos = []; prev = -1
+    vos0 = re.findall(r"\['(\w+)', ([\d.]+)\]", vo or ''); vos = []; prev = -1
     for v, at in vos0:
         at = max(float(at), prev + .25); prev = at + dur.get(v, 2); vos.append((v, at))
     need = max([float(at) + dur.get(v, 2) + .35 for v, at in vos] + [0])
