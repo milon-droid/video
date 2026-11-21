@@ -209,3 +209,87 @@ export const J1b: React.FC<SP> = ({ t }) => (
       {off > 0 && <line x1={-130} x2={-130 + 260 * off} y1={-6} y2={-6} stroke="#ff4a5a" strokeWidth={5} />}</g>; })}
   </Frame>
 );
+
+// ---------- больница (v5): вид от изножья кровати; Кирилл лежит на подушке; интерьер палаты; окно — рассвет, берёза, снег ----------
+const HospitalRoom: React.FC<{ t: number; beep: number }> = ({ t, beep }) => <g>
+  {/* стены, пол, плинтус */}
+  <rect width={1080} height={1920} fill="#c9d6d4" /><rect y={0} width={1080} height={120} fill="#e6eceb" />
+  <rect y={1240} width={1080} height={680} fill="#8e9c9a" /><rect y={1232} width={1080} height={14} fill="#6e7c7a" />
+  {Array.from({ length: 7 }).map((_, i) => <line key={i} x1={i * 180} y1={1246} x2={i * 180 - 200} y2={1920} stroke="#7e8c8a" strokeWidth={3} />)}
+  <rect x={0} y={760} width={1080} height={8} fill="#b4c2c0" />
+  {/* потолочная лампа */}
+  <rect x={340} y={40} width={400} height={36} rx={10} fill="#f4f8f8" stroke="#a8b4b2" strokeWidth={4} /><ellipse cx={540} cy={90} rx={360} ry={60} fill="#fffbe8" opacity={.25} filter="url(#blur30)" />
+  {/* окно: рама с переплётом, подоконник, батарея; за стеклом рассвет, ветки берёзы, снег */}
+  <g transform="translate(700 220)">
+    <defs><clipPath id="hwin"><rect x={0} y={0} width={320} height={460} /></clipPath><linearGradient id="dawn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#4a6aa8" /><stop offset=".55" stopColor="#e8a8a0" /><stop offset="1" stopColor="#ffd8a0" /></linearGradient></defs>
+    <g clipPath="url(#hwin)">
+      <rect width={320} height={460} fill="url(#dawn)" />
+      <circle cx={90} cy={420} r={46} fill="#fff0c8" opacity={.9} /><circle cx={90} cy={420} r={110} fill="#ffe0b0" opacity={.35} filter="url(#blur30)" />
+      <path d="M0 440 Q80 420 160 436 T320 430 L320 460 L0 460Z" fill="#f4f0f4" opacity={.8} />
+      <path d="M250 460 C246 360 262 260 250 0" stroke="#f0eee8" strokeWidth={22} fill="none" />{[60, 140, 220, 320, 400].map((y, i) => <rect key={i} x={240} y={y} width={18} height={5} fill="#2a2a2a" />)}
+      {[[250, 120, -1], [252, 230, -1], [250, 330, 1], [254, 60, 1]].map(([x, y, sd], i) => <path key={i} d={`M${x} ${y} q${sd * 60} ${10} ${sd * 120} ${50 + Math.sin(t * .8 + i) * 4}`} stroke="#5a4a40" strokeWidth={4} fill="none" />)}
+      {Array.from({ length: 26 }).map((_, i) => { const y = ((t * 40 + h1(i) * 460) % 480) - 10, x = (h1(i * 3) * 320 + Math.sin(t + i) * 12); return <circle key={i} cx={x} cy={y} r={2 + h1(i * 7) * 2.5} fill="#fff" opacity={.85} />; })}
+    </g>
+    <rect x={-14} y={-14} width={348} height={488} fill="none" stroke="#f4f6f6" strokeWidth={22} /><rect x={154} y={0} width={12} height={460} fill="#f4f6f6" /><rect x={0} y={200} width={320} height={12} fill="#f4f6f6" />
+    <rect x={-30} y={474} width={380} height={26} rx={4} fill="#eef2f2" stroke="#b8c4c2" strokeWidth={3} />
+    {/* жалюзи приподняты */}
+    <rect x={-10} y={-10} width={340} height={70} fill="#e8ecea" opacity={.9} />{[0, 1, 2, 3].map(i => <line key={i} x1={-10} x2={330} y1={0 + i * 16} y2={0 + i * 16} stroke="#c0c8c6" strokeWidth={3} />)}
+    <rect x={0} y={530} width={320} height={130} rx={10} fill="#e8ecea" stroke="#b0bcba" strokeWidth={4} />{Array.from({ length: 9 }).map((_, i) => <rect key={i} x={20 + i * 33} y={545} width={16} height={100} rx={6} fill="#d8dedc" />)}
+  </g>
+  {/* дверь со стеклом и шторка на карнизе */}
+  <rect x={40} y={340} width={210} height={900} fill="#d8ccb8" stroke="#a89c88" strokeWidth={6} /><rect x={80} y={400} width={130} height={220} fill="#bfd0dc" stroke="#a89c88" strokeWidth={5} /><circle cx={225} cy={820} r={14} fill="#9a9a9a" />
+  <line x1={20} x2={600} y1={150} y2={150} stroke="#b0b8b8" strokeWidth={8} />
+  <path d="M480 150 Q470 600 500 1180 L600 1180 Q570 600 590 150Z" fill="#9ec0c8" opacity={.9} />{[500, 530, 560].map((x, i) => <path key={i} d={`M${x} 160 Q${x - 10} 600 ${x + 10} 1170`} stroke="#86aab4" strokeWidth={4} fill="none" />)}
+  {/* панель над кроватью: розетки, кислород, лампа */}
+  <rect x={300} y={560} width={480} height={70} rx={8} fill="#eef2f2" stroke="#a8b4b2" strokeWidth={4} />{[340, 400, 460].map((x, i) => <rect key={i} x={x} y={578} width={36} height={36} rx={6} fill="#fff" stroke="#9aa4a2" strokeWidth={3} />)}
+  <circle cx={560} cy={596} r={14} fill="#3a8a5a" /><circle cx={620} cy={596} r={14} fill="#3a5a9a" /><rect x={680} y={584} width={70} height={24} rx={6} fill="#fffbe8" />
+  {/* монитор на кронштейне */}
+  <line x1={860} y1={630} x2={860} y2={760} stroke="#8a9492" strokeWidth={10} />
+  <rect x={760} y={760} width={220} height={150} rx={10} fill="#0a1410" stroke="#3a4448" strokeWidth={8} />
+  <path d={`M778 840 ${Array.from({ length: 17 }).map((_, i) => { const x = 778 + i * 11, u = ((i / 17) - beep + 1) % 1; return `L${x} ${840 - (u < .07 ? 46 : u < .12 ? -24 : 0)}`; }).join(' ')}`} stroke="#3aff8a" strokeWidth={4} fill="none" filter="url(#glow)" />
+  <text x={960} y={790} textAnchor="end" fontFamily="JBM, monospace" fontSize={22} fill="#3aff8a">72</text>
+  {/* капельница */}
+  <line x1={200} y1={420} x2={200} y2={1330} stroke="#9aa4a2" strokeWidth={8} /><line x1={160} y1={430} x2={240} y2={430} stroke="#9aa4a2" strokeWidth={6} />
+  <path d="M180 440 h44 v100 q-22 24 -44 0Z" fill="#e8f4f8" stroke="#8ab0c0" strokeWidth={3} opacity={.9} /><rect x={184} y={480} width={36} height={56} fill="#cfe8f0" opacity={.8} />
+  <path d="M202 560 C230 760 330 860 380 980" stroke="#c0d8e0" strokeWidth={4} fill="none" />
+  {[0, 1].map(i => <circle key={i} cx={202} cy={548 + ((t * 60 + i * 10) % 14)} r={2.5} fill="#8ab0c0" />)}
+  {/* тумбочка: стакан воды, мандарины */}
+  <rect x={800} y={1080} width={220} height={260} rx={8} fill="#e8e0d0" stroke="#b0a890" strokeWidth={5} /><line x1={800} y1={1160} x2={1020} y2={1160} stroke="#b0a890" strokeWidth={4} />
+  <rect x={830} y={1020} width={40} height={62} rx={4} fill="#d8eef4" opacity={.8} stroke="#9ab8c4" strokeWidth={3} />
+  {[[920, 1064], [956, 1068], [938, 1048]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r={18} fill="#ff9a2a" stroke="#c8701a" strokeWidth={3} />)}
+</g>;
+// j1 (v5): Кирилл лежит (вид от изножья): открывает глаза, проводит рукой по боку — раны нет; Настя спит, уронив голову на край кровати, — просыпается: «Кирилл?.. Ты очнулся!»
+export const J1: React.FC<SP> = ({ t }) => {
+  const c = caps('j1'), open = ease(t, .8, 1.8), wake = c?.[1] ? ease(t, c[1][2] - .7, c[1][2]) : 0, feel = ease(t, 2.0, 2.8) * (1 - ease(t, 3.3, 3.8)), beep = (t * 1.1) % 1;
+  return <Frame t={t} grade="#2a3040" gradeK={.05}>
+    <g transform={cam(1.0 + t * .015, 540, 1000, 0, 0)}>
+      <HospitalRoom t={t} beep={beep} />
+      {/* кровать в перспективе: изголовье, матрас, одеяло */}
+      <rect x={300} y={640} width={480} height={200} rx={20} fill="#9aa8b4" stroke="#5a6874" strokeWidth={6} />
+      <path d="M300 820 L780 820 L960 1560 L120 1560Z" fill="#f4f6f8" stroke="#9aa4ae" strokeWidth={6} />
+      <path d="M120 1560 L960 1560 L960 1640 L120 1640Z" fill="#7a8894" />{[160, 920].map(x => <rect key={x} x={x - 10} y={1640} width={20} height={100} fill="#5a6874" />)}
+      {/* подушка */}
+      <path d="M360 830 Q540 790 720 830 Q740 930 720 960 Q540 990 360 960 Q340 920 360 830Z" fill="#ffffff" stroke="#b8c2cc" strokeWidth={5} />
+      <path d="M380 950 Q540 975 700 950" stroke="#d8e0e8" strokeWidth={8} fill="none" />
+      {/* Кирилл: голова на подушке, плечи в голубой пижаме */}
+      <path d="M380 1010 Q540 940 700 1010 L730 1100 L350 1100Z" fill="#7ea6c8" stroke="#3a5a7a" strokeWidth={5} />
+      <path d="M500 990 L540 1040 L580 990" stroke="#3a5a7a" strokeWidth={4} fill="none" />
+      <g transform={`translate(540 ${900 + Math.sin(t * 1.8) * 2}) scale(2.3)`}><Head t={t} L={{ ...LK.kirill4, bruise: false }} expr={wake > .5 ? 'sad' : open > .5 ? 'scared' : 'calm'} seed={3} lid={open} noBlink={open < 1} lookX={wake > .3 ? -.7 : 0} lookY={feel > .3 ? .8 : 0} tears={wake * .5} /></g>
+      {/* одеяло — тёмно-бирюзовое, складки, дыхание */}
+      <path d={`M330 ${1080 + Math.sin(t * 1.8) * 4} Q540 ${1040 + Math.sin(t * 1.8) * 6} 750 ${1080 + Math.sin(t * 1.8) * 4} L930 1540 L150 1540Z`} fill="#3a7a86" stroke="#1e4a54" strokeWidth={6} />
+      <path d="M330 1080 Q540 1040 750 1080 L760 1120 Q540 1080 320 1120Z" fill="#f4f6f8" stroke="#9aa4ae" strokeWidth={4} />
+      {[[400, 1200, 300, 1500], [560, 1180, 560, 1520], [700, 1200, 800, 1500]].map(([a, b, c2, d2], i) => <path key={i} d={`M${a} ${b} Q${(a + c2) / 2 + 30} ${(b + d2) / 2} ${c2} ${d2}`} stroke="#2a6470" strokeWidth={6} fill="none" opacity={.7} />)}
+      {/* правая рука: поверх одеяла (с катетером), затем — к боку */}
+      <path d={`M700 1100 Q${790 - feel * 60} ${1220 - feel * 40} ${740 - feel * 120} ${1320 - feel * 140}`} stroke="#7ea6c8" strokeWidth={56} strokeLinecap="round" fill="none" />
+      <circle cx={740 - feel * 120} cy={1320 - feel * 140} r={32} fill="#f0d4c4" stroke={INK} strokeWidth={4} /><rect x={712 - feel * 120} y={1290 - feel * 140} width={30} height={16} fill="#fff" opacity={.9} />
+      {feel > .5 && <g opacity={(feel - .5) * 2}><rect x={560} y={1120} width={110} height={44} rx={10} fill="#f0d4c4" stroke="#c8a090" strokeWidth={3} /><text x={615} y={1100} textAnchor="middle" fontFamily="Mont" fontWeight={800} fontSize={30} fill="#2a8a4a">ни шрама</text></g>}
+      {/* Настя: стул слева, спала головой на руках у края кровати — поднимает голову */}
+      <rect x={20} y={1360} width={190} height={26} rx={6} fill="#6a5a4a" /><rect x={20} y={1110} width={24} height={270} fill="#6a5a4a" />
+      <g transform={`translate(${210 + wake * 20} ${1290 - wake * 140}) rotate(${-40 + wake * 40})`}>
+        <path d="M-70 60 Q0 0 70 60 L90 240 L-90 240Z" fill="#d86a8a" stroke="#a04a6a" strokeWidth={5} />
+        <g transform="translate(0 -20) scale(2.1)"><Head t={t} L={LK.nastya} expr={wake > .5 ? 'cry' : 'calm'} seed={9} lid={wake} noBlink={wake < .5} tears={wake} mouth={talk(t, c, 'НАСТЯ')} lookX={.7} /></g>
+      </g>
+      <path d={`M${250 - wake * 10} ${1340 - wake * 60} L${360} ${1300 - wake * 120}`} stroke="#d86a8a" strokeWidth={46} strokeLinecap="round" opacity={1 - wake * .6} />
+    </g>
+  </Frame>;
+};
