@@ -18,7 +18,7 @@ GORE = lambda n=1: L(f'oc-GORESqsh_BloodSquishSlimy_OS_0{n}', .9)
 BONE = lambda n=1: L(f'oc-GOREBone_BonesBreaking_OS_0{n}', .8)
 F = lambda n, g=.9, **k: L('fs-' + n, g, **k)
 C = {
- 'a0': [(0, F('drone-space', .6, dur=3.2)), (0, S('hum', .35, dur=1.3)), (.3, F('laugh', .35)), (.6, L('oc-VOXWhsp_WhispersCreepyReverb_OS_01', .4)), (1.1, F('trailer-sub', 1.0)), (1.18, F('flesh-carcass', 1.0)), (1.2, F('flesh-rip', .9)), (1.2, F('gore-splat', 1.0)), (1.22, BONE(1)), (1.25, L('oc-CREAHmn_GiantDeathScream_OS_01', .6)), (1.9, F('bodyfall-1', .8))],
+ 'a0': [(0, F('drone-space', .7, dur=3.0)), (0, S('hum', .45, dur=1.3)), (.1, L('oc-VOXWhsp_WhispersCreepyReverb_OS_01', .7)), (.3, F('laugh', .5)), (.5, L('oc-VOXWhsp_WhispersCreepy_OS_01', .6)), (.8, F('laugh-2', .45, rate=.8)), (1.1, F('trailer-sub', 1.0)), (1.18, F('flesh-carcass', 1.0)), (1.2, F('flesh-rip', 1.0)), (1.2, F('gore-splat', 1.0)), (1.22, BONE(1)), (1.25, BONE(2)), (1.25, L('oc-CREAHmn_GiantDeathScream_OS_01', .7)), (1.4, L('oc-VOXFem_Female01DeathScream_OS_01', .45)), (1.5, L('oc-CREAHmn_OgreDeathScream_OS_01', .45, rate=.8)), (1.6, L('oc-CREAHmn_TrollDeathScream_OS_01', .4, rate=1.2)), (1.7, GORE(3)), (1.9, F('bodyfall-1', .8)), (2.0, F('growl-hybrid', .5, rate=.7))],
  'a2': [(.3, L('whoosh-medium-hard', .6, rate=.8)), (.55, L('cinematic-drum-massive', 1.0)), (.55, L('impact-deep-hard', .6)), (.6, S('charge', .3, dur=1.0))],
  'b0': [(0, S('hum', .35, dur=4.2)), (0, F('drone-archi', .4, dur=4.2)), (1.0, S('step', .4)), (1.9, S('step', .4))],
  'b1': [(0, S('hum', .3, dur=2.6)), (0, L('oc-VOXWhsp_WhispersCreepy_OS_01', .3))],
@@ -28,8 +28,11 @@ C = {
  'a3': [(0, S('rattle', .3, dur=1.0)), (.2, L('oc-TRNDoor_TrainDoorsOpen_OS_01', .8)), (.4, S('hum', .7, dur=3.8)), (.6, L('bsb-heartbeat-slow', .6)), (2.6, S('step', .7, pitch=.7)), (3.0, S('step', .8, pitch=.7)), (3.0, L('impact-deep-hard', .5))],
  'a4': [(0, S('hum', .7, dur=3.4)), (0, L('bsb-heartbeat-slow', .6)), (.5, L('oc-VOXWhsp_WhispersCreepyReverb_OS_01', .35))] + [(.2 + i * .18, L('click-tap-firm', .25)) for i in range(6)],
  'e5': [(0, S('hum', 1.0, dur=2.4)), (.2, S('breath_in', .5)), (.5, S('breath_in', .4, pitch=1.2)), (.8, S('breath_in', .45, pitch=.8)), (0, L('bsb-heartbeat-fast', .8))],
- 'i3b': [(.3, F('flesh-rip', .7)), (.3, L('impact-heavy-hard', .8)), (.4, S('skid', .5)), (0, S('wind', .5, dur=3.6)), (1.0, S('breath_in', .6)), (2.0, GORE(1))],
+ 'i3b': [(2.6, F('flesh-rip', 1.0)), (2.6, F('gore-splat', .9)), (2.6, L('impact-heavy-hard', .9)), (.3, F('flesh-rip', .7)), (.3, L('impact-heavy-hard', .8)), (.4, S('skid', .5)), (0, S('wind', .5, dur=3.6)), (1.0, S('breath_in', .6)), (2.0, GORE(1))],
  'j1b': [(0, F('monitor', .35)), (0, S('chord', .25, notes=[45, 52, 57], dur=4.8))],
+ 'g1b': [(0, F('drone-archi', .5, dur=5.2)), (.3, S('step', .4)), (1.0, L('click-tap-medium', .3)), (2.0, L('foley-glass-touch', .0)), (2.0, S('tinkle', .3, dur=.6)), (2.2, L('bsb-heartbeat-slow', .6))] + [(3.0 + i * .5, L('oc-METLImpt_HammerAnvil_OS_01', .3 + i * .1)) for i in range(5)],
+ 'i2a': [(0, S('wind', .5, dur=3.0)), (0, S('rattle', .6, dur=3.0)), (.5, F('glass-axe', .9)), (.9, GORE(1)), (1.0, S('skid', .6)), (1.8, GORE(2)), (1.9, S('skid', .6)), (1.2, L('oc-VOXWhsp_WhispersCreepyReverb_OS_01', .4))],
+ 'j0': [(0, F('monitor', .6)), (.2, S('hum', .12, dur=2.4))],
  'b6w': [(0, S('hum', .9, dur=2.4)), (0, S('chord', .3, notes=[50, 53, 57], dur=2.4)), (.3, F('laugh-2', .25))],
  'g9': [(0, S('drone', .2, dur=3.6)), (.2, L('bsb-heartbeat-slow', .5))],
  'i5b': [(0, S('charge', .6, dur=.6)), (.5, L('whoosh-medium-hard', .9, rate=.6)), (1.05, F('trailer-sub', 1.0)), (1.05, L('cinematic-metal-massive', 1.0)), (1.05, S('debris', .9, dur=1.5)), (1.1, L('impact-deep-hard', 1.0)), (1.8, S('hiss', .3, dur=1.2))],
@@ -58,8 +61,8 @@ C = {
  'h1': [(0, S('rattle', .5, dur=4.6)), (0, S('engine', .4, dur=4.6)), (.4, S('glitch', .4))],
  'h2': [(0, S('wind', .7, dur=4.8)), (0, L('bass-rumble-long', .8)), (.4, S('skid', .6)), (.5, L('oc-TRNElec_TrainPassby_OS_01', .7)), (2.6, F('growl-deep', .7, rate=.6)), (2.8, F('trailer-sub', .8))],
  'i2': [(0, S('wind', .5, dur=2.8)), (0, S('rattle', .6, dur=2.8)), (.8, F('glass-axe', 1.0)), (.8, L('cinematic-drum-big', .8)), (1.0, F('flesh-rip', .7)), (1.1, L('oc-CREAHmn_GiantDeathScream_OS_01', .5, rate=1.4)), (1.4, F('gore-splat', .9))],
- 'i3': [(0, S('wind', .4, dur=3.6)), (0, S('hum', .6, dur=3.6)), (.5, GORE(3)), (1.5, GORE(4)), (0, L('bsb-heartbeat-fast', .6))],
- 'i4': [(.5, S('hiss', .6, dur=1.5)), (1.0, F('flesh-rip', 1.0)), (1.0, L('impact-heavy-hard', .9)), (1.02, F('gore-splat', .8)), (2.0, L('whoosh-medium-hard', 1.0))],
+ 'i3': [(0, S('skid', .3)), (.5, S('skid', .3)), (1.2, S('skid', .3)), (0, S('wind', .4, dur=3.6)), (0, S('hum', .6, dur=3.6)), (.5, GORE(3)), (1.5, GORE(4)), (0, L('bsb-heartbeat-fast', .6))],
+ 'i4': [(.2, S('hiss', .7, dur=1.4)), (1.3, L('whoosh-medium-hard', 1.0)), (1.6, F('growl-deep', .7))],
  'i5': [(0, S('wind', .6, dur=2.4)), (.3, F('growl-hybrid', 1.0, rate=.7)), (1.2, F('growl-deep', 1.0, rate=.6)), (2.4, L('cinematic-drum-massive', 1.0)), (2.4, S('charge', .6, dur=1.0)), (2.5, S('tinkle', .4, dur=1.2))],
  'i6': [(4.6, S('powerdown', .5)), (4.6, L('click-tap-firm', .5)), (0, S('debris', .4, dur=1.0)), (0, L('bsb-heartbeat-slow', .9)), (2.0, S('drone', .3, dur=1.6))],
  'i7': [(.3, L('click-tap-firm', .5)), (.3, S('chord', .3, notes=[57, 61, 64], dur=3.5)), (2.4, L('cinematic-drum-big', .7)), (2.4, S('charge', .5, dur=1.0))],

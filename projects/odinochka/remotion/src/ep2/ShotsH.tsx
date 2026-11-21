@@ -203,7 +203,7 @@ export const I6: React.FC<SP> = ({ t, d }) => {
 export const J1b: React.FC<SP> = ({ t }) => (
   <Frame t={t} grade="#1a2a3a" gradeK={.1}>
     <rect width={1080} height={1920} fill="#cfd6de" />
-    <g transform={cam(1.0 + t * .03, 540, 900)}><g transform="translate(540 1050) scale(5.4)"><Head t={t} L={{ ...LK.kirill4, bruise: false }} expr="sad" seed={3} lookX={.5} lookY={-.1} tears={ease(t, 2.0, 3.5)} /></g></g>
+    <g transform={cam(1.0 + t * .03, 540, 900)}><g transform="translate(540 1050) scale(5.4)"><Head t={t} L={{ ...LK.kWeak, plaster: false, tired: false }} expr="sad" seed={3} lookX={.5} lookY={-.1} tears={ease(t, 2.0, 3.5)} /></g></g>
     {['МИХАЛЫЧ', 'ЛЁХА', 'ЖОРА', 'СЕРЁГА'].map((n, i) => { const k = ease(t, .5 + i * .45, .8 + i * .45), off = ease(t, 3.2 + i * .25, 3.6 + i * .25); return <g key={n} opacity={k * (1 - off * .7)} transform={`translate(${200 + (i % 2) * 680} ${300 + Math.floor(i / 2) * 140})`}>
       <rect x={-150} y={-44} width={300} height={70} rx={10} fill="#06182e" opacity={.8} stroke="#8a9ab0" strokeWidth={3} /><text y={4} textAnchor="middle" fontFamily="Oswald" fontWeight={600} fontSize={42} letterSpacing={6} fill="#e8f0f8">{n}</text>
       {off > 0 && <line x1={-130} x2={-130 + 260 * off} y1={-6} y2={-6} stroke="#ff4a5a" strokeWidth={5} />}</g>; })}
@@ -274,7 +274,7 @@ export const J1: React.FC<SP> = ({ t }) => {
       {/* Кирилл: голова на подушке, плечи в голубой пижаме */}
       <path d="M450 985 Q540 950 630 985 L650 1060 L430 1060Z" fill="#7ea6c8" stroke="#3a5a7a" strokeWidth={4} />
       <path d="M522 970 L540 994 L558 970" stroke="#3a5a7a" strokeWidth={3} fill="none" />
-      <g transform={`translate(540 ${905 + Math.sin(t * 1.8) * 1.5}) scale(1.0)`}><Head t={t} L={{ ...LK.kirill4, bruise: false }} expr={wake > .5 ? 'sad' : open > .5 ? 'scared' : 'calm'} seed={3} lid={open} noBlink={open < 1} lookX={wake > .3 ? -.7 : 0} lookY={feel > .3 ? .8 : 0} tears={wake * .5} /></g>
+      <g transform={`translate(540 ${905 + Math.sin(t * 1.8) * 1.5}) scale(1.0)`}><Head t={t} L={{ ...LK.kWeak, plaster: false, tired: false }} expr={wake > .5 ? 'sad' : open > .5 ? 'scared' : 'calm'} seed={3} lid={open} noBlink={open < 1} lookX={wake > .3 ? -.7 : 0} lookY={feel > .3 ? .8 : 0} tears={wake * .5} /></g>
       {/* одеяло — тёмно-бирюзовое, складки, дыхание */}
       <path d={`M330 ${1040 + Math.sin(t * 1.8) * 4} Q540 ${1010 + Math.sin(t * 1.8) * 6} 750 ${1040 + Math.sin(t * 1.8) * 4} L930 1540 L150 1540Z`} fill="#3a7a86" stroke="#1e4a54" strokeWidth={6} />
       <path d="M330 1040 Q540 1010 750 1040 L760 1080 Q540 1050 320 1080Z" fill="#f4f6f8" stroke="#9aa4ae" strokeWidth={4} />

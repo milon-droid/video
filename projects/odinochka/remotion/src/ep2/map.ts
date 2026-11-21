@@ -7,4 +7,5 @@ import * as D from './ShotsD';
 import * as E from './ShotsE';
 import * as G from './ShotsG';
 import * as HH from './ShotsH';
-export const MAP: Record<string, React.FC<SP>> = Object.fromEntries(Object.entries({ ...A, ...B, ...C, ...D, ...E, ...G, ...HH }).filter(([k]) => /^[A-K]\d[a-z]?$/.test(k)).map(([k, v]) => [k.toLowerCase(), v as React.FC<SP>]));
+import * as II from './ShotsI';
+export const MAP: Record<string, React.FC<SP>> = Object.fromEntries(Object.entries({ ...A, ...B, ...C, ...D, ...E, ...G, ...HH, ...II }).filter(([k]) => /^[A-K]\d[a-z]?$/.test(k)).map(([k, v]) => [k.toLowerCase(), v as React.FC<SP>]));

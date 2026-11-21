@@ -13,17 +13,18 @@ export const typed = (s: string, t: number, t0: number, cps = 28) => s.slice(0, 
 export const SysWin: React.FC<{ t: number; t0: number; x?: number; y?: number; w?: number; title?: string; lines: string[]; size?: number; color?: string; t1?: number; cps?: number; center?: boolean }> = ({ t, t0, x = 540, y = 700, w = 860, title, lines, size = 52, color = SYS, t1, cps = 30, center = true }) => {
   if (t < t0) return null;
   const open = spr(t, t0, { damping: 14, stiffness: 160 }), close = t1 !== undefined ? clamp(1 - (t - t1) / .25) : 1;
-  const lh = size * 1.35, h = (title ? 90 : 30) + lines.length * lh + 40, sy = open * close;
+  const fit = Math.min(size, ...lines.map(l => (w - 90) / Math.max(1, l.length * .6))), tsz = title ? Math.min(40, (w - 100) / (title.length * .8)) : 40;
+  const lh = fit * 1.35, h = (title ? 90 : 30) + lines.length * lh + 40, sy = open * close;
   let acc = 0; const t2 = t0 + .25;
   return (
     <g transform={`translate(${x} ${y}) scale(${.6 + .4 * open} ${sy})`} opacity={close}>
       <rect x={-w / 2} y={-h / 2} width={w} height={h} fill="#06182e" opacity={.72} />
       <rect x={-w / 2} y={-h / 2} width={w} height={h} fill="none" stroke={color} strokeWidth={3} opacity={.9} filter="url(#glow)" />
       {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sy2], i) => <path key={i} d={`M${sx * w / 2} ${sy2 * h / 2 - sy2 * 40} V${sy2 * h / 2} H${sx * w / 2 - sx * 40}`} transform={`translate(${sx * 8} ${sy2 * 8})`} stroke={color} strokeWidth={7} fill="none" filter="url(#glow)" />)}
-      {title && <g><text x={0} y={-h / 2 + 62} textAnchor="middle" fill={color} fontFamily={FONT} fontWeight={800} fontSize={40} letterSpacing={6} filter="url(#glow)">{title}</text>
+      {title && <g><text x={0} y={-h / 2 + 62} textAnchor="middle" fill={color} fontFamily={FONT} fontWeight={800} fontSize={tsz} letterSpacing={tsz * .15} filter="url(#glow)">{title}</text>
         <line x1={-w / 2 + 50} x2={w / 2 - 50} y1={-h / 2 + 88} y2={-h / 2 + 88} stroke={color} strokeWidth={2} opacity={.6} /></g>}
       {lines.map((l, i) => { const s = typed(l, t, t2 + acc / cps, cps); acc += l.length + 6;
-        return <text key={i} x={center ? 0 : -w / 2 + 50} y={-h / 2 + (title ? 110 : 30) + lh * (i + .8)} textAnchor={center ? 'middle' : 'start'} fill="#e8f8ff" fontFamily={FONT} fontWeight={700} fontSize={size} filter="url(#glow)">{s}</text>; })}
+        return <text key={i} x={center ? 0 : -w / 2 + 50} y={-h / 2 + (title ? 110 : 30) + lh * (i + .8)} textAnchor={center ? 'middle' : 'start'} fill="#e8f8ff" fontFamily={FONT} fontWeight={700} fontSize={fit} filter="url(#glow)">{s}</text>; })}
     </g>
   );
 };

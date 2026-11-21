@@ -78,7 +78,7 @@ export const C6: React.FC<SP> = ({ t }) => {
       <DarkCar t={t} k={.7} />
       <ellipse cx={120} cy={500} rx={500} ry={500} fill={WARM} opacity={.2} filter="url(#blur30)" />
       <rect x={760} y={520} width={260} height={360} rx={10} fill="#e8e8e0" stroke="#2a2e38" strokeWidth={6} />
-      <text x={890} y={570} textAnchor="middle" fontFamily="Mont" fontWeight={800} fontSize={24} fill="#c81e2a">МОЛОТОК ДЛЯ</text><text x={890} y={600} textAnchor="middle" fontFamily="Mont" fontWeight={800} fontSize={24} fill="#c81e2a">РАЗБИВАНИЯ СТЕКЛА</text>
+      <text x={890} y={566} textAnchor="middle" fontFamily="Mont" fontWeight={800} fontSize={22} fill="#c81e2a">МОЛОТОК</text><text x={890} y={596} textAnchor="middle" fontFamily="Mont" fontWeight={700} fontSize={17} fill="#c81e2a">ДЛЯ СТЕКЛА</text>
       <rect x={800} y={620} width={180} height={230} rx={6} fill="none" stroke="#c81e2a" strokeWidth={4} strokeDasharray="12 8" />
       {t < rip && <Hammer x={890} y={720} s={.8} />}
       <Figure x={560} y={2060} s={1.7} t={t} L={KL} C={KC} pose={pose} expr="determined" lookX={t < 1 ? .8 : 0} lookY={t < 1 ? -.3 : 0} seed={3} rim={WARM} lid={1 - close} noBlink={close > 0} prop={t >= rip ? inHand(pose, -20) : undefined} />
@@ -95,7 +95,7 @@ export const C7b: React.FC<SP> = ({ t }) => {
       <DarkCar t={t} />
       <Cone x={540} x0={540} y0={520} k={fl} w={560} />
       <Machinist x={620} y={1260} s={.75} t={t} k={fl} />
-      <g transform={`translate(${620 + 0} ${1260 - 600 * .75})`}><LanternHead t={t} x={0} y={0} s={.75} k={fl} face={1} /></g>
+      <g transform={`translate(${620 + 0} ${1260 - 600 * .75})`}><LanternHead t={t} x={0} y={0} s={.75} k={fl} /></g>
       <Figure x={330 + dist * .4} y={2000 - dist * .6} s={1.45 - dist * .0015} t={t} L={KL} C={KC} pose={pose} expr="pain" lid={0} noBlink turn={.5} seed={3} sweat={1} rim={WARM} prop={inHand(pose, -10)} />
     </g>
   </Frame>;
@@ -125,7 +125,7 @@ export const C8: React.FC<SP> = ({ t }) => {
   return <Frame t={t} vign={1} impact={isImpact(t, boom, 3)} over={<g><Flash t={t} t0={hit} dur={.12} color="#fff" max={.6} /><Flash t={t} t0={boom} dur={.45} color="#fff8e0" max={1} /></g>}>
     <rect width={1080} height={1920} fill={t < boom ? '#120e08' : '#040306'} />
     <g transform={cam(t < boom ? 1 + sw * .1 : 1.1, 540, 900, sx, sy)}>
-      {t < boom && <LanternHead t={t} x={540} y={900} s={4} k={1.4} crack={crack} face={1} />}
+      {t < boom && <LanternHead t={t} x={540} y={900} s={4} k={1.4} crack={crack} />}
       {t >= boom && <g>
         <LanternHead t={t} x={540} y={900} s={4} broken />
         {Array.from({ length: 40 }).map((_, i) => { const a = h1(i * 3.1) * Math.PI * 2, sp = 300 + h1(i * 7.7) * 1100, x = 540 + Math.cos(a) * sp * q, y = 900 + Math.sin(a) * sp * q + q * q * 600, r = 14 + h1(i * 5) * 50;
@@ -400,7 +400,7 @@ export const J1: React.FC<SP> = ({ t }) => {
       <path d={`M100 520 ${Array.from({ length: 20 }).map((_, i) => { const x = 100 + i * 11, u = ((i / 20) - beep + 1) % 1; return `L${x} ${520 - (u < .06 ? 60 : u < .1 ? -30 : 0)}`; }).join(' ')}`} stroke="#3aff8a" strokeWidth={4} fill="none" filter="url(#glow)" />
       {/* кровать */}
       <rect x={120} y={1200} width={860} height={140} rx={20} fill="#e8eef4" stroke="#8a949e" strokeWidth={6} /><rect x={120} y={1340} width={860} height={40} fill="#6a747e" />
-      <g transform="translate(300 1120) rotate(-90)"><Head t={t} L={{ ...LK.kirill4, bruise: false }} expr="calm" seed={3} lid={open} noBlink={open < 1} /></g>
+      <g transform="translate(300 1120) rotate(-90)"><Head t={t} L={{ ...LK.kWeak, plaster: false, tired: false }} expr="calm" seed={3} lid={open} noBlink={open < 1} /></g>
       <path d="M380 1130 Q640 1080 960 1150 L960 1220 L380 1220Z" fill="#f4f8fc" stroke="#a8b2bc" strokeWidth={4} />
       {/* повязка приподнимается — под ней чистая кожа */}
       <g transform={`translate(560 ${1150 - lift * 40})`}><rect x={-60} y={-30} width={120} height={50} rx={8} fill="#f8f0e8" stroke="#c8b8a8" strokeWidth={3} opacity={1 - lift * .3} /></g>
@@ -415,7 +415,7 @@ export const J1: React.FC<SP> = ({ t }) => {
 export const J2: React.FC<SP> = ({ t }) => (
   <Frame t={t} grade="#0a1a3a" gradeK={.15}>
     <rect width={1080} height={1920} fill="#0c1424" />
-    <g transform={cam(1.0 + t * .04, 540, 1300)}><g transform="translate(540 1400) scale(5)"><Head t={t} L={{ ...LK.kirill4, bruise: false }} expr="scared" seed={3} lookY={-.8} glow={ease(t, 1.2, 2.2) * .6} /></g></g>
+    <g transform={cam(1.0 + t * .04, 540, 1300)}><g transform="translate(540 1400) scale(5)"><Head t={t} L={{ ...LK.kWeak, plaster: false, tired: false }} expr="scared" seed={3} lookY={-.8} glow={ease(t, 1.2, 2.2) * .6} /></g></g>
     <ellipse cx={540} cy={600} rx={600} ry={400} fill="#1a6aff" opacity={.25} filter="url(#blur30)" />
     <SysWin t={t} t0={.4} y={560} w={880} title="ИГРОК" lines={['Кирилл Волков', 'Уровень 1', 'Ежедневное задание: получено']} size={54} />
   </Frame>
