@@ -10,6 +10,7 @@ import { G, H, KL } from '../ep1/ShotsF';
 import { TrainInterior } from '../bg/places';
 import { caps, talk } from './timeline';
 import { Cone, DarkCar, WARM } from './ShotsA';
+import { Tag } from './ShotsE';
 
 // брызги крови из точки: капли летят по дуге и падают
 export const Spray: React.FC<{ t: number; t0: number; x: number; y: number; n?: number; dir?: number; spread?: number; pow?: number; seed?: number }> = ({ t, t0, x, y, n = 46, dir = 0, spread = 1.4, pow = 900, seed = 1 }) => {
@@ -29,17 +30,24 @@ export const Splat: React.FC<{ t: number; t0: number; n?: number; seed?: number;
 // лужа крови под телом
 export const Pool: React.FC<{ x: number; y: number; k: number; w?: number }> = ({ x, y, k, w = 260 }) => k <= 0 ? null : <ellipse cx={x} cy={y} rx={w * k} ry={w * .28 * k} fill="#5a0610" opacity={.9} />;
 
+// куски (тёмно-красные ошмётки) разлетаются по дуге и падают с отскоком
+const Chunks: React.FC<{ t: number; t0: number; x: number; y: number; s: number; seed: number }> = ({ t, t0, x, y, s, seed }) => { const q = t - t0; if (q < 0) return null;
+  return <g>{Array.from({ length: 12 }).map((_, i) => { const a = -Math.PI / 2 + (h1(i * 5 + seed) - .5) * 2.6, v = 700 * s * (.5 + h1(i * 9 + seed)), fl = y + 520 * s + h1(i) * 60;
+    let px = x + Math.cos(a) * v * Math.min(q, 1.2), py = y + Math.sin(a) * v * q + 1600 * q * q; if (py > fl) py = fl; const r = (10 + h1(i * 3 + seed) * 22) * s;
+    return <path key={i} d={`M${px - r} ${py} q${r * .4} ${-r} ${r} ${-r * .6} q${r * .8} ${r * .2} ${r * .3} ${r * 1.2}Z`} fill={i % 3 ? '#6a0a12' : '#3a0408'} stroke="#1a0204" strokeWidth={2} />; })}</g>; };
 // смерть в свете: фигуру приподнимает, свет прожигает её до белого, вспышка + кровь, тело падает бледным
 const Taken: React.FC<{ t: number; t0: number; x: number; y: number; s: number; L: any; C: any; seed: number; flip?: boolean }> = ({ t, t0, x, y, s, L, C, seed }) => {
-  const lift = ease(t, t0, t0 + .6), burn = ease(t, t0 + .2, t0 + .7), fall = clamp((t - t0 - .75) / .4) ** 2, dead = t > t0 + .75;
+  const lift = ease(t, t0, t0 + .6), burn = ease(t, t0 + .2, t0 + .7), fq = clamp((t - t0 - .75) / .35), fall = fq < 1 ? fq * fq : 1 + Math.sin((t - t0 - 1.1) * 18) * Math.exp(-(t - t0 - 1.1) * 7) * .08, dead = t > t0 + .75;
+  const jerk = !dead && t > t0 + .15 ? Math.sin(t * 60) * 10 * burn : 0;
   return <g>
     <Pool x={x + 160 * s} y={y + 10} k={ease(t, t0 + 1.1, t0 + 2.4)} w={260 * s} />
-    <g transform={dead ? `rotate(${fall * 86} ${x} ${y})` : `translate(0 ${-lift * 90 * s})`}>
+    <g transform={dead ? `rotate(${fall * 86} ${x} ${y})` : `translate(${jerk} ${-lift * 90 * s}) rotate(${jerk * .4} ${x} ${y})`}>
       <Figure x={x} y={y} s={s} t={dead ? t0 : t} L={dead ? { ...L, skin: '#d8d4d0', skinSh: '#a8a4a0' } : L} C={C} pose={dead ? POSES.fallen : { ...POSES.bothUp, armL: [-120, 30], armR: [120, -30], head: -20 }}
         expr={dead ? 'pain' : 'shout'} lid={dead ? 0 : 1} noBlink seed={seed} rim={WARM} lookY={-1} mouth={dead ? 0 : .8} />
       {!dead && <ellipse cx={x} cy={y - 420 * s} rx={260 * s} ry={480 * s} fill="#fffbe8" opacity={burn * .85} filter="url(#blur30)" />}
     </g>
     <Spray t={t} t0={t0 + .7} x={x} y={y - 560 * s} seed={seed} pow={1100 * s} />
+    <Chunks t={t} t0={t0 + .72} x={x} y={y - 500 * s} s={s} seed={seed} />
   </g>;
 };
 
@@ -69,6 +77,7 @@ export const E1: React.FC<SP> = ({ t }) => {
       <H t={t} w="timur" dx={420} pose={{ ...POSES.stand, armR: [120, -10], lean: 10 }} expr="cry" lookY={-.6} />
       <H t={t} w="kirill" pose={PK(t, [[0, 'stand'], [1.3, { armR: [110, -10], lean: 8 }]])} expr={t > 1.3 ? 'shout' : 'scared'} mouth={talk(t, c, 'КИРИЛЛ')} lookX={.5} />
     </g>
+    <Tag t={t} t0={.2} x={420} y={760} name="ЖОРА" /><Tag t={t} t0={.5} x={300} y={1000} name="СЕРЁГА" />
   </Frame>;
 };
 

@@ -12,6 +12,7 @@ import { Frame, SP } from '../ep1/common';
 import { Boom, H, KL, Shock } from '../ep1/ShotsF';
 import { caps, talk } from './timeline';
 import { Spray, Splat } from './ShotsC';
+import { Tag } from './ShotsE';
 
 // Обходчик: тощий великан, рваный оранжевый жилет путейца, длинные руки, в правой — молот; голова-череп с вертикальной пастью.
 // open 0..1 — пасть раскрывается; swing 0..1 — замах молотом сверху вниз; crouch — присел на лапы
@@ -64,7 +65,9 @@ export const G1: React.FC<SP> = ({ t }) => {
       <rect x={-ease(t, 0, .6) * 300} y={0} width={300} height={1920} fill="#5a5e68" opacity={.9} /><rect x={780 + ease(t, 0, .6) * 300} y={0} width={300} height={1920} fill="#4a4e58" opacity={.9} />
       <H t={t} w="timur" dx={300} pose={POSES.tense} expr="scared" mouth={talk(t, c, 'ТИМУР')} turn={.4} lookX={.5} sweat={1} />
       <H t={t} w="mikh" dx={-120} pose={POSES.guard} expr="angry" turn={-.2} />
+      <H t={t} w="r2" dx={-80} pose={POSES.guard} expr="scared" turn={.3} />
     </g>
+    <Tag t={t} t0={.8} x={380} y={1000} name="ЛЁХА" sub="ранг D · молния" />
     {tap && <circle cx={540} cy={1100} r={180} fill="none" stroke="#ff4a3a" strokeWidth={4} opacity={.4} />}
   </Frame>;
 };
@@ -162,7 +165,6 @@ export const H1: React.FC<SP> = ({ t }) => {
     <g transform={cam(1.05 + t * .03, 540, 1050, sx, sy - 120)}>
       <TrainInterior t={t} flicker={1} shake={6} />
       <rect width={1080} height={1920} fill="#05050a" opacity={.35} />
-      <H t={t} w="mikh" pose={{ ...POSES.stand, crouch: 40, armR: [160, -10], armL: [-30, 80] }} expr="pain" turn={-.3} lookY={-.4} />
       <H t={t} w="timur" dx={150} pose={{ ...POSES.stand, crouch: 60, armR: [150, -10] }} expr="scared" />
       <H t={t} w="r2" pose={{ ...POSES.stand, armL: [-160, 10] }} expr="scared" />
       <H t={t} w="kirill" pose={{ ...POSES.stand, armR: [165, -5] }} expr="determined" lookX={.5} />
