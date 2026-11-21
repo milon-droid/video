@@ -8,7 +8,8 @@ import { Head } from '../chars/head';
 import { Machinist } from '../chars/monsters';
 import { LK, CS } from '../chars/cast';
 import { Frame, SP } from '../ep1/common';
-import { G, H, KL } from '../ep1/ShotsF';
+import { KL } from '../ep1/ShotsF';
+import { G, H } from './team';
 import { caps, talk } from './timeline';
 import { DarkCar, WARM } from './ShotsA';
 

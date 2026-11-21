@@ -12,7 +12,8 @@ import { LK, CS } from '../chars/cast';
 import { Gate, Vysotka } from '../bg/moscow';
 import { MetroStation, TrainInterior } from '../bg/places';
 import { Frame, SP } from '../ep1/common';
-import { G, H, KL } from '../ep1/ShotsF';
+import { KL } from '../ep1/ShotsF';
+import { G, H } from './team';
 import { caps, talk } from './timeline';
 import { Cone, DarkCar, WARM } from './ShotsA';
 import { Pool, Spray, Splat } from './ShotsC';
@@ -118,7 +119,7 @@ export const F1: React.FC<SP> = ({ t }) => {
       <rect width={1080} height={1920} fill="#14040a" opacity={.45} />
       {[[300, 1580], [640, 1500]].map(([x, y], i) => <g key={i}><Pool x={x + 40} y={y + 10} k={1} w={180} />
         <path d={`M${x - 150} ${y} Q${x - 120} ${y - 70} ${x} ${y - 80} Q${x + 130} ${y - 70} ${x + 160} ${y}Z`} fill={i ? '#3a4a5a' : '#5a2a2a'} stroke="#0c0d18" strokeWidth={5} /></g>)}
-      <H t={t} w="mikh" pose={board > 0 ? { ...POSES.stand, armR: [150, -10] } : { ...POSES.stand, crouch: 30, armL: [-20, 40], armR: [20, -40] }} expr={board > 0 ? 'angry' : 'sad'} mouth={talk(t, c, 'МИХАЛЫЧ')} turn={-.3} lookY={board > 0 ? -.8 : .5} />
+      <H t={t} w="mikh" pose={board > 0 ? { ...POSES.stand, armR: [150, -10] } : { ...POSES.stand, crouch: 30, armL: [-20, 40], armR: [20, -40] }} expr={board > 0 ? 'scared' : 'pain'} mouth={talk(t, c, 'МИХАЛЫЧ')} turn={-.3} lookY={board > 0 ? -.8 : .5} />
       <H t={t} w="timur" dx={150} pose={{ ...POSES.stand, crouch: 120, armL: [-40, 120], armR: [40, -120] }} expr="cry" tears={1} lookY={.6} />
       <H t={t} w="r2" pose={{ ...POSES.stand, armL: [-20, 60] }} expr="sad" lookY={.5} />
       <H t={t} w="kirill" pose={{ ...POSES.stand, armR: [20, -10] }} expr="sad" lookY={.4} prop={inHand({ ...POSES.stand, armR: [20, -10] }, 0)} />
@@ -186,7 +187,7 @@ export const I1: React.FC<SP> = ({ t }) => {
 };
 
 // ---------- поезд падает (v3): крупные сцепленные вагоны, кувырок, обломки ----------
-const BigCar: React.FC<{ x: number; y: number; s: number; rot: number; head?: boolean; dmg?: number }> = ({ x, y, s, rot, head, dmg = 0 }) => <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
+export const BigCar: React.FC<{ x: number; y: number; s: number; rot: number; head?: boolean; dmg?: number }> = ({ x, y, s, rot, head, dmg = 0 }) => <g transform={`translate(${x} ${y}) rotate(${rot}) scale(${s})`}>
   <rect x={-260} y={-110} width={520} height={220} rx={26} fill="#2e5a80" stroke="#0a0c14" strokeWidth={9} />
   <rect x={-260} y={-110} width={520} height={46} rx={22} fill="#4a7aa4" /><rect x={-260} y={8} width={520} height={12} fill="#c81e2a" />
   {[0, 1, 2, 3].map(j => <rect key={j} x={-226 + j * 116} y={-62} width={92} height={74} rx={8} fill={j === 1 && dmg > 0 ? '#0a0606' : '#fff0c0'} opacity={.8} />)}
@@ -288,10 +289,11 @@ export const J1: React.FC<SP> = ({ t }) => {
       {/* кровать с поднятой спинкой */}
       <path d="M200 780 L330 780 L420 1180 L300 1180Z" fill="#e8eef4" stroke="#8a949e" strokeWidth={6} />
       <Figure x={430} y={1660} s={.95} t={t} L={{ ...LK.kirill4, bruise: false }} C={{ ...CS.hoodieWeak, top: '#dde6ee', topSh: '#b8c4ce', hood: false }} pose={kp} expr={wake > .5 ? 'calm' : 'scared'} lookX={wake > .3 ? .7 : 0} lookY={lift > 0 && lift < 1 ? .8 : 0} seed={3} turn={wake > .3 ? .5 : 0} />
-      <rect x={240} y={1180} width={760} height={150} rx={20} fill="#e8eef4" stroke="#8a949e" strokeWidth={6} /><rect x={240} y={1330} width={760} height={40} fill="#6a747e" />
+      <rect x={240} y={1180} width={760} height={150} rx={20} fill="#e8eef4" stroke="#8a949e" strokeWidth={6} /><rect x={240} y={1330} width={760} height={380} fill="#8a949e" stroke="#5a646e" strokeWidth={6} />
       <path d="M300 1190 Q620 1120 990 1190 L990 1250 L300 1250Z" fill="#f4f8fc" stroke="#a8b2bc" strokeWidth={4} />
       {lift > .5 && <g opacity={ease(t, 2.2, 2.6)}><rect x={400} y={1150} width={80} height={46} rx={10} fill="#f0d4c4" /><text x={440} y={1130} textAnchor="middle" fontFamily="Mont" fontWeight={800} fontSize={30} fill="#2a8a4a">ни шрама</text></g>}
-      <Figure x={830} y={1720} s={.92} t={t} L={LK.nastya} C={CS.nastya} pose={{ ...POSES.stand, crouch: 230 - wake * 80, lean: -40 + wake * 30, armL: [-150 + wake * 100, 60], armR: [-120 + wake * 90, 50] }} expr={wake > .5 ? 'cry' : 'calm'} lid={wake} noBlink={wake < .5} tears={wake} mouth={talk(t, c, 'НАСТЯ')} seed={9} turn={-.5} lookX={-.8} />
+      <rect x={760} y={1420} width={200} height={30} rx={8} fill="#6a5a4a" /><rect x={930} y={1180} width={28} height={260} fill="#6a5a4a" /><rect x={770} y={1450} width={20} height={250} fill="#4a3a2a" /><rect x={930} y={1450} width={20} height={250} fill="#4a3a2a" />
+      <Figure x={850} y={1700} s={.92} t={t} L={LK.nastya} C={CS.nastya} pose={{ ...POSES.stand, crouch: 280, lean: -34 + wake * 30, legL: [-60, 110], legR: [-40, 100], armL: [-150 + wake * 100, 60], armR: [-120 + wake * 90, 50] }} expr={wake > .5 ? 'cry' : 'calm'} lid={wake} noBlink={wake < .5} tears={wake} mouth={talk(t, c, 'НАСТЯ')} seed={9} turn={-.5} lookX={-.8} />
     </g>
   </Frame>;
 };

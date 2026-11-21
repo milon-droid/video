@@ -6,7 +6,8 @@ import { Figure, PK, POSES, walkPose } from '../chars/body';
 import { Machinist } from '../chars/monsters';
 import { LK, CS } from '../chars/cast';
 import { Frame, SP } from '../ep1/common';
-import { G, H, KL } from '../ep1/ShotsF';
+import { KL } from '../ep1/ShotsF';
+import { G, H } from './team';
 import { TrainInterior } from '../bg/places';
 import { caps, talk } from './timeline';
 import { Cone, DarkCar, WARM } from './ShotsA';
@@ -21,8 +22,8 @@ export const Spray: React.FC<{ t: number; t0: number; x: number; y: number; n?: 
 };
 // кляксы крови на «стекле камеры» (держатся и медленно стекают)
 export const Splat: React.FC<{ t: number; t0: number; n?: number; seed?: number; k?: number }> = ({ t, t0, n = 9, seed = 1, k = 1 }) => {
-  if (t < t0) return null; const q = t - t0, grow = ease(t, t0, t0 + .12);
-  return <g opacity={k}>{Array.from({ length: n }).map((_, i) => { const x = h1(i * 3 + seed) * 1080, y = h1(i * 7 + seed) * 1500 + 100, r = (40 + h1(i * 11 + seed) * 120) * grow, drip = q * 60 * h1(i + seed);
+  if (t < t0 + .15) return null; const q = t - t0 - .15, grow = ease(t, t0 + .15, t0 + .3);
+  return <g opacity={k}>{Array.from({ length: n }).map((_, i) => { const x = h1(i * 3 + seed) * 1080, y = h1(i * 7 + seed) * 1500 + 100, r = (14 + h1(i * 11 + seed) * 46) * grow, drip = q * 60 * h1(i + seed);
     return <g key={i}><ellipse cx={x} cy={y} rx={r} ry={r * .85} fill="#8a0a14" opacity={.85} />
       {[0, 1, 2].map(j => <circle key={j} cx={x + (h1(i * 13 + j) - .5) * r * 2.4} cy={y + (h1(i * 17 + j) - .5) * r * 2} r={r * .18} fill="#8a0a14" opacity={.8} />)}
       <rect x={x - r * .12} y={y} width={r * .24} height={r * .6 + drip} rx={r * .12} fill="#7a0810" opacity={.85} /></g>; })}</g>;
@@ -73,11 +74,12 @@ export const E1: React.FC<SP> = ({ t }) => {
       <Cone x={540} x0={540} y0={480} k={1.1} w={420} />
       <Figure x={620} y={1640 - dz * .5} s={.95 - dz * .0008} t={t} L={LK.zhora} C={CS.zhora} pose={walkPose(dz)} expr="smirk" lookY={-.6} seed={7} rim={WARM} turn={0} />
       <Figure x={420} y={1680 - ds * .5} s={.9 - ds * .0008} t={t} L={LK.r1} C={CS.r1} pose={walkPose(ds)} expr="calm" lookY={-.6} lid={.5} noBlink seed={21} rim={WARM} />
+      <H t={t} w="r2" pose={POSES.tense} expr="scared" lookY={-.5} />
       <H t={t} w="mikh" dx={40} pose={{ ...POSES.hold, armL: [-40, 100], armR: [-60, 60] }} expr="pain" turn={-.4} />
       <H t={t} w="timur" dx={420} pose={{ ...POSES.stand, armR: [120, -10], lean: 10 }} expr="cry" lookY={-.6} />
       <H t={t} w="kirill" pose={PK(t, [[0, 'stand'], [1.3, { armR: [110, -10], lean: 8 }]])} expr={t > 1.3 ? 'shout' : 'scared'} mouth={talk(t, c, 'КИРИЛЛ')} lookX={.5} />
     </g>
-    <Tag t={t} t0={.2} x={420} y={760} name="ЖОРА" /><Tag t={t} t0={.5} x={300} y={1000} name="СЕРЁГА" />
+    <Tag t={t} t0={.2} x={660} y={600} name="ЖОРА" /><Tag t={t} t0={.5} x={380} y={680} name="СЕРЁГА" />
   </Frame>;
 };
 

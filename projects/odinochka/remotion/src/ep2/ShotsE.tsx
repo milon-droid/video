@@ -11,7 +11,8 @@ import { LK, CS } from '../chars/cast';
 import { Gate, Vysotka } from '../bg/moscow';
 import { MetroStation, TrainInterior } from '../bg/places';
 import { Frame, SP } from '../ep1/common';
-import { Faceless, G, H, KL } from '../ep1/ShotsF';
+import { Faceless, KL } from '../ep1/ShotsF';
+import { G, H } from './team';
 import { caps, talk } from './timeline';
 import { Cone, DarkCar, WARM } from './ShotsA';
 import { Hammer } from './ShotsB';
@@ -32,14 +33,16 @@ export const Tag: React.FC<{ t: number; t0: number; x: number; y: number; name: 
   </g>;
 };
 // голова-фонарь (разбитая или целая): crack 0..1 — трещины, broken — без стекла, мерцает
-const LanternHead: React.FC<{ t: number; x: number; y: number; s: number; k?: number; crack?: number; broken?: boolean; face?: number }> = ({ t, x, y, s, k = 1, crack = 0, broken, face = 0 }) => {
+export const LanternHead: React.FC<{ t: number; x: number; y: number; s: number; k?: number; crack?: number; broken?: boolean; face?: number }> = ({ t, x, y, s, k = 1, crack = 0, broken, face = 0 }) => {
   const fl = broken ? (noise('lh', t, 14) > .2 ? .55 : .1) : k;
   return <g transform={`translate(${x} ${y}) scale(${s})`}>
     <circle r={190} fill={broken ? '#ff6a3a' : WARM} opacity={.3 * fl} filter="url(#blur30)" />
     <rect x={-70} y={-80} width={140} height={150} rx={20} fill="#2a2a30" stroke={INK} strokeWidth={5} />
     <rect x={-80} y={-100} width={160} height={24} rx={6} fill="#1a1a20" /><rect x={-50} y={-120} width={100} height={22} fill="#1a1a20" /><circle cx={0} cy={-108} r={10} fill="#c8a85a" />
     {!broken && <circle r={52} fill="#fff6d8" opacity={k} />}
-    {!broken && face > 0 && <g opacity={face * .6}><circle cx={-16} cy={-8} r={6} fill="#5a4a3a" /><circle cx={16} cy={-8} r={6} fill="#5a4a3a" /><path d="M-14 18 Q0 26 14 18" stroke="#5a4a3a" strokeWidth={4} fill="none" /></g>}
+    {!broken && face > 0 && <g opacity={face}><defs><clipPath id="lhFace"><rect x={-62} y={-72} width={124} height={134} rx={16} /></clipPath></defs>
+      <g clipPath="url(#lhFace)"><rect x={-62} y={-72} width={124} height={134} fill="#fff4d8" /><g transform="translate(0 4) scale(1.05)"><Head t={t} L={LK.father} expr="sad" seed={12} lookY={.2} noBlink /></g>
+        <rect x={-62} y={-72} width={124} height={134} fill="#fff0c0" opacity={.35} /></g></g>}
     {crack > 0 && <g stroke="#2a2018" strokeWidth={3} fill="none">{Array.from({ length: 9 }).map((_, i) => { const a = i / 9 * Math.PI * 2 + .3, L = 52 * crack;
       return <path key={i} d={`M8 -6 L${8 + Math.cos(a) * L * .5 + (h1(i) - .5) * 10} ${-6 + Math.sin(a) * L * .5} L${8 + Math.cos(a + .2) * L} ${-6 + Math.sin(a + .2) * L}`} />; })}</g>}
     {broken && <g><circle r={52} fill="#140c08" /><path d="M-40 -20 L-10 -50 L10 -10 L40 -40 L30 20 L-20 30Z" fill="none" stroke="#c8d0e0" strokeWidth={4} />
@@ -92,7 +95,7 @@ export const C7b: React.FC<SP> = ({ t }) => {
       <DarkCar t={t} />
       <Cone x={540} x0={540} y0={520} k={fl} w={560} />
       <Machinist x={620} y={1260} s={.75} t={t} k={fl} />
-      <g transform={`translate(${620 + 0} ${1260 - 600 * .75})`}><LanternHead t={t} x={0} y={0} s={.75} k={fl} face={ease(t, .6, 1.4)} /></g>
+      <g transform={`translate(${620 + 0} ${1260 - 600 * .75})`}><LanternHead t={t} x={0} y={0} s={.75} k={fl} face={1} /></g>
       <Figure x={330 + dist * .4} y={2000 - dist * .6} s={1.45 - dist * .0015} t={t} L={KL} C={KC} pose={pose} expr="pain" lid={0} noBlink turn={.5} seed={3} sweat={1} rim={WARM} prop={inHand(pose, -10)} />
     </g>
   </Frame>;
@@ -122,7 +125,7 @@ export const C8: React.FC<SP> = ({ t }) => {
   return <Frame t={t} vign={1} impact={isImpact(t, boom, 3)} over={<g><Flash t={t} t0={hit} dur={.12} color="#fff" max={.6} /><Flash t={t} t0={boom} dur={.45} color="#fff8e0" max={1} /></g>}>
     <rect width={1080} height={1920} fill={t < boom ? '#120e08' : '#040306'} />
     <g transform={cam(t < boom ? 1 + sw * .1 : 1.1, 540, 900, sx, sy)}>
-      {t < boom && <LanternHead t={t} x={540} y={900} s={4} k={1.4} crack={crack} />}
+      {t < boom && <LanternHead t={t} x={540} y={900} s={4} k={1.4} crack={crack} face={1} />}
       {t >= boom && <g>
         <LanternHead t={t} x={540} y={900} s={4} broken />
         {Array.from({ length: 40 }).map((_, i) => { const a = h1(i * 3.1) * Math.PI * 2, sp = 300 + h1(i * 7.7) * 1100, x = 540 + Math.cos(a) * sp * q, y = 900 + Math.sin(a) * sp * q + q * q * 600, r = 14 + h1(i * 5) * 50;
@@ -152,7 +155,7 @@ export const C8b: React.FC<SP> = ({ t }) => {
 };
 
 // Депо: фон станции (из ShotsD нет экспорта Depot — повторяем коротко тёмные своды)
-const DepotBg: React.FC<{ t: number }> = ({ t }) => <g>
+export const DepotBg: React.FC<{ t: number }> = ({ t }) => <g>
   <rect width={1080} height={1920} fill="#0c0808" />
   {[0, 1, 2, 3].map(i => { const s = Math.pow(.75, i); return <path key={i} d={`M${540 - 620 * s} ${1100 + 700 * s} L${540 - 620 * s} ${1100 - 500 * s} Q540 ${1100 - 1000 * s} ${540 + 620 * s} ${1100 - 500 * s} L${540 + 620 * s} ${1100 + 700 * s}`} fill="none" stroke="#2a1c1c" strokeWidth={30 * s} />; })}
   <path d="M0 1920 L1080 1920 L600 1100 L480 1100Z" fill="#160e0c" />
@@ -221,7 +224,7 @@ export const I1: React.FC<SP> = ({ t }) => {
 
 // ---------- пропасть заново ----------
 // бездна: слои скал по краям (параллакс), туман, красное сердце-воронка внизу с глазом, щупальца
-const Vortex: React.FC<{ t: number; x: number; y: number; s: number; eye?: number }> = ({ t, x, y, s, eye = 1 }) => <g transform={`translate(${x} ${y}) scale(${s} ${s * .5})`}>
+export const Vortex: React.FC<{ t: number; x: number; y: number; s: number; eye?: number }> = ({ t, x, y, s, eye = 1 }) => <g transform={`translate(${x} ${y}) scale(${s} ${s * .5})`}>
   <circle r={620} fill="#5a0610" opacity={.5} filter="url(#blur30)" />
   {Array.from({ length: 7 }).map((_, j) => <g key={j} transform={`rotate(${t * (20 + j * 6) * (j % 2 ? 1 : -1)})`}>{Array.from({ length: 6 }).map((_, i) => { const r0 = 80 + j * 75;
     return <path key={i} d={`M${r0} 0 A${r0} ${r0} 0 0 1 ${r0 * Math.cos(1)} ${r0 * Math.sin(1)}`} transform={`rotate(${i * 60})`} stroke={j % 2 ? '#ff3a2a' : '#a80c18'} strokeWidth={22 - j * 2} fill="none" opacity={.8 - j * .08} filter={j < 2 ? 'url(#glow)' : undefined} />; })}</g>)}
