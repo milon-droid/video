@@ -53,8 +53,8 @@ export const A4: React.FC<SP> = ({ t }) => (
       <Cone x={540} x0={540} y0={300} k={1.2} w={620} />
       {TEAM6.map(w => <H key={w} t={t} w={w} pose={POSES.stand} expr={w === 'timur' ? 'scared' : 'calm'} lookY={-.4 - ease(t, 1.5, 2.6) * .5} rim={WARM} />)}
     </g>
-    {TEAM6.map((w, i) => { const [x, y, s] = G[w], back = i < 3, sx = x, head = y - 150 - 820 * s, tagY = back ? head - 120 : y - 150 + 70, k = ease(t, .2 + i * .18, .5 + i * .18);
-      return <g key={w}><line x1={sx} x2={sx} y1={back ? tagY + 30 : tagY - 40} y2={back ? head - 10 : y - 160} stroke="#5fd2ff" strokeWidth={3} opacity={k * .8} /><Tag t={t} t0={.2 + i * .18} x={Math.min(900, Math.max(180, sx))} y={tagY} name={NAMES[w]} /></g>; })}
+    {TEAM6.map((w, i) => { const [x, y, s] = G[w], back = i < 3, sx = x, head = y - 150 - 820 * s, tagY = back ? head - 120 : y - 150 - 90, k = ease(t, .2 + i * .18, .5 + i * .18);
+      return <g key={w}><line x1={sx} x2={sx} y1={back ? tagY + 30 : tagY - 40} y2={back ? head - 10 : y - 150 - 300} stroke="#5fd2ff" strokeWidth={3} opacity={k * .8} /><Tag t={t} t0={.2 + i * .18} x={Math.min(900, Math.max(180, sx))} y={tagY} name={NAMES[w]} /></g>; })}
   </Frame>
 );
 
@@ -62,11 +62,21 @@ export const A4: React.FC<SP> = ({ t }) => (
 export const C7b: React.FC<SP> = ({ t, d }) => {
   const dist = ease(t, 0, d, (k: number) => k) * 260, fl = 1 + ease(t, 1.0, 2.0) * .6 + noise('c7', t, 10) * .2, scr = t > d - 1.0 && t < d - .82;
   const sw = Math.sin(dist / 40) * 14; const pose: any = { ...POSES.stand, armR: [30, -110], legL: [-10 + sw, 4], legR: [10 - sw, -4] };
-  if (scr) return <Frame t={t} vign={1} impact>
-    <rect width={1080} height={1920} fill="#fff4d8" />
-    <g transform="translate(540 900) scale(7)"><Head t={t} L={{ ...LK.father, skin: '#e8d8c0', skinSh: '#a08060' }} expr="shout" seed={12} glow={1} mouth={1} noBlink /></g>
-    <rect width={1080} height={1920} fill="#ff2a1a" opacity={.25} style={{ mixBlendMode: 'multiply' }} />
-  </Frame>;
+  if (scr) { const j = (h1(Math.floor(t * 30)) - .5) * 30; return <Frame t={t} vign={1}>
+    <rect width={1080} height={1920} fill="#1a0404" /><circle cx={540} cy={860} r={700} fill="#ffd8a0" opacity={.35} filter="url(#blur30)" />
+    <g transform={`translate(${540 + j} 880) scale(2.2)`}>
+      <path d="M-200 -260 C-240 -40 -210 160 -120 280 C-60 360 60 360 120 280 C210 160 240 -40 200 -260 C110 -360 -110 -360 -200 -260Z" fill="#c8b8a0" stroke="#1a0604" strokeWidth={8} />
+      <path d="M-200 -260 C-120 -320 120 -320 200 -260 L180 -150 C80 -200 -80 -200 -180 -150Z" fill="#8a7a64" opacity={.6} />
+      {[-1, 1].map(sd => <g key={sd}><path d={`M${sd * 30} -110 C${sd * 60} -170 ${sd * 160} -170 ${sd * 170} -90 C${sd * 150} -30 ${sd * 60} -30 ${sd * 30} -70Z`} fill="#050000" />
+        <circle cx={sd * 100} cy={-92} r={16} fill="#ff1a10" filter="url(#glow)" /><circle cx={sd * 100} cy={-92} r={6} fill="#fff" /></g>)}
+      <path d="M-120 40 Q0 0 120 40 Q100 260 0 290 Q-100 260 -120 40Z" fill="#0a0000" stroke="#1a0604" strokeWidth={6} />
+      {Array.from({ length: 9 }).map((_, i) => { const u = i / 8 - .5, x = u * 210; return <g key={i}><path d={`M${x - 11} ${44 + Math.abs(u) * 20} L${x + 11} ${44 + Math.abs(u) * 20} L${x} ${100 - Math.abs(u) * 30}Z`} fill="#e8dcc8" />
+        <path d={`M${x - 10} ${262 - Math.abs(u) * 50} L${x + 10} ${262 - Math.abs(u) * 50} L${x} ${206 - Math.abs(u) * 30}Z`} fill="#d8ccb8" /></g>; })}
+      <path d="M-150 -220 L-90 -150 L-120 -60 M140 40 L100 120 L150 200 M-20 -300 L10 -220" stroke="#3a0a04" strokeWidth={5} fill="none" />
+      <path d="M-40 -20 L-20 20 L0 -10 L20 20 L40 -20" stroke="#3a1a10" strokeWidth={6} fill="none" />
+    </g>
+    <rect width={1080} height={1920} fill="#ff1a0a" opacity={.2} style={{ mixBlendMode: 'multiply' }} />
+  </Frame>; }
   return <Frame t={t} grade="#2a2418" gradeK={.1}>
     <g transform={cam(1.0 + t * .05, 540, 1000, 0, -120)}>
       <DarkCar t={t} />
@@ -115,7 +125,6 @@ export const G1b: React.FC<SP> = ({ t, d }) => {
         <text y={-30} textAnchor="middle" fontFamily="Oswald" fontWeight={500} fontSize={30} letterSpacing={4} fill="#3a2a10">РАНГ B · № 0417</text>
         <path d="M-160 -10 L160 -220" stroke="#5a1010" strokeWidth={6} opacity={.5} />
       </g>
-      {[[300, 1250], [780, 1250]].map(([x, y], i) => <g key={i}><ellipse cx={x} cy={y} rx={70} ry={50} fill="#ecd2c4" stroke={INK} strokeWidth={5} /></g>)}
     </g>}
   </Frame>;
 };

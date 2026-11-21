@@ -264,6 +264,9 @@ export const J1: React.FC<SP> = ({ t }) => {
   return <Frame t={t} grade="#2a3040" gradeK={.05}>
     <g transform={cam(1.0 + t * .015, 540, 1000, 0, 0)}>
       <HospitalRoom t={t} beep={beep} />
+      <g opacity={ease(t, .1, .5) * (1 - ease(t, 1.9, 2.4))}><rect x={240} y={330} width={600} height={170} rx={16} fill="#1a2430" opacity={.75} />
+        <text x={540} y={420} textAnchor="middle" fontFamily="Oswald" fontWeight={600} fontSize={84} letterSpacing={14} fill="#f4f8fa">СРЕДА</text>
+        <text x={540} y={475} textAnchor="middle" fontFamily="Oswald" fontWeight={400} fontSize={36} letterSpacing={8} fill="#b8c8d8">07:40 · ТРИ ДНЯ СПУСТЯ</text></g>
       {/* кровать в перспективе: изголовье, матрас, одеяло */}
       <rect x={300} y={640} width={480} height={200} rx={20} fill="#9aa8b4" stroke="#5a6874" strokeWidth={6} />
       <path d="M300 820 L780 820 L960 1560 L120 1560Z" fill="#f4f6f8" stroke="#9aa4ae" strokeWidth={6} />
