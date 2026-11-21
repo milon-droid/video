@@ -61,7 +61,7 @@ C = {
  'i3': [(0, S('wind', .4, dur=3.6)), (0, S('hum', .6, dur=3.6)), (.5, GORE(3)), (1.5, GORE(4)), (0, L('bsb-heartbeat-fast', .6))],
  'i4': [(.5, S('hiss', .6, dur=1.5)), (1.0, F('flesh-rip', 1.0)), (1.0, L('impact-heavy-hard', .9)), (1.02, F('gore-splat', .8)), (2.0, L('whoosh-medium-hard', 1.0))],
  'i5': [(0, S('wind', .6, dur=2.4)), (.3, F('growl-hybrid', 1.0, rate=.7)), (1.2, F('growl-deep', 1.0, rate=.6)), (2.4, L('cinematic-drum-massive', 1.0)), (2.4, S('charge', .6, dur=1.0)), (2.5, S('tinkle', .4, dur=1.2))],
- 'i6': [(0, S('debris', .4, dur=1.0)), (0, L('bsb-heartbeat-slow', .9)), (2.0, S('drone', .3, dur=1.6))],
+ 'i6': [(4.6, S('powerdown', .5)), (4.6, L('click-tap-firm', .5)), (0, S('debris', .4, dur=1.0)), (0, L('bsb-heartbeat-slow', .9)), (2.0, S('drone', .3, dur=1.6))],
  'i7': [(.3, L('click-tap-firm', .5)), (.3, S('chord', .3, notes=[57, 61, 64], dur=3.5)), (2.4, L('cinematic-drum-big', .7)), (2.4, S('charge', .5, dur=1.0))],
  'j1': [(0, F('monitor', .7)), (0, S('hum', .15, dur=4.6))],
  'j2': [(.4, S('charge', .5, dur=1.0)), (.4, L('click-tap-firm', .5)), (0, F('monitor', .4))],

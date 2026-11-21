@@ -181,12 +181,12 @@ export const I5: React.FC<SP> = ({ t, d }) => {
   </Frame>;
 };
 
-// i6 (v4): Кирилл лежит на плитке; Тимур на коленях (лоб в крови) зажимает ему рану ладонями: «Кирилл! Не умирай!» → «Я умирал. Я это чувствовал.»
+// i6 (v4): Кирилл лежит в разбитом вагоне (поезд выбросило на «Северную»); Тимур на коленях (лоб в крови) зажимает ему рану ладонями: «Кирилл! Не умирай!» → «Я умирал. Я это чувствовал.»
 export const I6: React.FC<SP> = ({ t, d }) => {
   const c = caps('i6'), dark = ease(t, d - 1.6, d - .2), press = Math.sin(t * 6) * 6;
   return <Frame t={t} grade="#1a1a2a" gradeK={.15} over={<Lids k={dark * .9} />}>
-    <rect width={1080} height={1920} fill="#2a2c34" />
-    {Array.from({ length: 6 }).map((_, i) => <line key={i} x1={0} y1={300 + i * 300} x2={1080} y2={260 + i * 300} stroke="#1a1c22" strokeWidth={6} />)}
+    <g transform="translate(540 960) rotate(-6) scale(1.2) translate(-540 -960)"><TrainInterior t={t} flicker={.7} red={1.2} /></g>
+    <rect width={1080} height={1920} fill="#0a0408" opacity={.45} />
     <g transform={cam(1.0 + t * .02, 540, 1000)}>
       <Pool x={560} y={1380} k={.6 + ease(t, 0, d) * .4} w={380} />
       {/* Кирилл лежит на спине (вид сбоку) */}
