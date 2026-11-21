@@ -1,0 +1,155 @@
+{
+ "roles": {
+  "kirill": {
+   "instruct": "Young Russian man, about 22, quiet and tired, low husky voice, restrained emotions, inner monologue, intimate close-mic delivery, natural slow-medium pace.",
+   "ref": "Меня зовут Кирилл. Я никогда не хотел быть охотником.",
+   "f0": 120,
+   "fit": true
+  },
+  "father": {
+   "instruct": "Exhausted hoarse Russian man, about 50, weak broken voice, disbelief and tenderness, very quiet, slow.",
+   "ref": "Сколько же я здесь… Я уже не помню, какой сейчас год."
+  },
+  "timur": {
+   "instruct": "Russian teenage boy, 17, nervous shaky voice, scared, speaking quietly and fast.",
+   "ref": "Я… я в первый раз. Я не знаю, что делать."
+  },
+  "mikh": {
+   "instruct": "Old Russian man, about 55, gravelly warm voice, grumpy but caring, smoker's rasp, fatherly, medium pace.",
+   "ref": "Ну что, Кирюха, живой? Давай, собирайся, время не ждёт."
+  },
+  "zhora": {
+   "instruct": "Loud brash Russian man, about 35, rough arrogant voice, mocking and cocky, energetic.",
+   "ref": "Чего встал, ранг Е? Шевелись давай!"
+  },
+  "announcer": {
+   "instruct": "Calm formal Russian male metro announcer, neutral emotionless voice, measured slow pace, clear diction.",
+   "ref": "Станция Северная. Переход на кольцевую линию."
+  }
+ },
+ "lines": [
+  {
+   "id": "w01",
+   "role": "father",
+   "text": "Кирилл… Сынок… Иди ко мне."
+  },
+  {
+   "id": "w03",
+   "role": "timur",
+   "text": "Мама?.."
+  },
+  {
+   "id": "w04",
+   "role": "mikh",
+   "text": "Галя?.. Ты же… умерла."
+  },
+  {
+   "id": "w15",
+   "role": "kirill",
+   "text": "Смотреть нельзя. Значит — вслепую."
+  },
+  {
+   "id": "w16",
+   "role": "kirill",
+   "text": "Гудит. Слева. Ближе…"
+  },
+  {
+   "id": "w17",
+   "role": "kirill",
+   "text": "Твоя конечная."
+  },
+  {
+   "id": "w00",
+   "role": "kirill",
+   "text": "В ту ночь фонарь забрал двоих."
+  },
+  {
+   "id": "w02b",
+   "role": "kirill",
+   "text": "Под фонарём стоял папа. Но папа пропал пять лет назад."
+  },
+  {
+   "id": "w05b",
+   "role": "zhora",
+   "text": "Братуха?.. Живой!",
+   "say": "Бр+атуха?.. Живой!"
+  },
+  {
+   "id": "w06b",
+   "role": "kirill",
+   "text": "Каждый видел того, кого потерял."
+  },
+  {
+   "id": "w25",
+   "role": "kirill",
+   "text": "Жора, стой!"
+  },
+  {
+   "id": "w26",
+   "role": "kirill",
+   "text": "Кто шёл на свет — умирал."
+  },
+  {
+   "id": "w27",
+   "role": "kirill",
+   "text": "Не смотрите на свет! Закройте глаза!"
+  },
+  {
+   "id": "w28",
+   "role": "mikh",
+   "text": "Жора… и Серёга."
+  },
+  {
+   "id": "w29",
+   "role": "mikh",
+   "text": "Сказали — одна остановка. Всё, выходим."
+  },
+  {
+   "id": "w30",
+   "role": "announcer",
+   "text": "Следующая станция — Депо.",
+   "fx": "radio"
+  },
+  {
+   "id": "w31",
+   "role": "mikh",
+   "text": "Какое ещё депо?.."
+  },
+  {
+   "id": "w32",
+   "role": "timur",
+   "text": "Что это… стучит?"
+  },
+  {
+   "id": "w33",
+   "role": "mikh",
+   "text": "К бою!"
+  },
+  {
+   "id": "w34",
+   "role": "kirill",
+   "text": "Не берёт!"
+  },
+  {
+   "id": "w35",
+   "role": "mikh",
+   "text": "Все в вагон!"
+  },
+  {
+   "id": "w36",
+   "role": "announcer",
+   "text": "Следующая станция — Конечная.",
+   "fx": "dead"
+  },
+  {
+   "id": "w37",
+   "role": "kirill",
+   "text": "Но конечной не было. Была пропасть."
+  },
+  {
+   "id": "w38",
+   "role": "kirill",
+   "text": "И чтобы выжить, нужно было разгадать её правило."
+  }
+ ]
+}

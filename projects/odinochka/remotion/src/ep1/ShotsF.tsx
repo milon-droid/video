@@ -13,12 +13,12 @@ import { CS, LK } from '../chars/cast';
 import { Frame, SP, talk } from './common';
 import { SHOTS } from './timeline';
 const caps = (id: string) => SHOTS.find(s => s.id === id)?.caps;
-const KL = LK.kWeakHurt, KC = CS.porterY, VP = 820;
+export const KL = LK.kWeakHurt, KC = CS.porterY, VP = 820;
 
 // ряды пассажиров вдоль стен (места постоянные). st(j) → {bow, look, rise, dissolve}
 type PS = { bow?: number; look?: number; rise?: number; dissolve?: number };
 const HAIR = ['#2a2420', '#5a4a3a', '#8a8a8a', '#1a1818', '#6a3a2a'];
-const Rows: React.FC<{ t: number; st?: (j: number, sd: number) => PS; big?: number }> = ({ t, st = () => ({ bow: 1 }), big = 1 }) => {
+export const Rows: React.FC<{ t: number; st?: (j: number, sd: number) => PS; big?: number }> = ({ t, st = () => ({ bow: 1 }), big = 1 }) => {
   const out: React.ReactNode[] = [];
   for (let i = 4; i >= 0; i--) { const k = Math.pow(.78, i), y = VP + 640 * k;
     for (const sd of [-1, 1]) { const j = i * 2 + (sd > 0 ? 1 : 0), p = st(j, sd);
@@ -27,17 +27,17 @@ const Rows: React.FC<{ t: number; st?: (j: number, sd: number) => PS; big?: numb
   return <g>{out}</g>;
 };
 // отряд у дверей (передний план, одни и те же места)
-const G: Record<string, number[]> = { mikh: [780, 1900, 1.02], zhora: [950, 1940, 1.1], r1: [610, 1870, .9], r2: [460, 1860, .88], kirill: [300, 1930, 1.0], timur: [150, 1960, .92] };
-const H: React.FC<{ t: number; w: string; pose?: Pose; dx?: number; [k: string]: any }> = ({ t, w, pose = POSES.stand, dx = 0, ...p }) => {
+export const G: Record<string, number[]> = { mikh: [780, 1900, 1.02], zhora: [950, 1940, 1.1], r1: [610, 1870, .9], r2: [460, 1860, .88], kirill: [300, 1930, 1.0], timur: [150, 1960, .92] };
+export const H: React.FC<{ t: number; w: string; pose?: Pose; dx?: number; [k: string]: any }> = ({ t, w, pose = POSES.stand, dx = 0, ...p }) => {
   const [x, y, s] = G[w]; return <Figure x={x + dx} y={y} s={s} t={t} L={w === 'kirill' ? KL : LK[w]} C={w === 'kirill' ? KC : CS[w]} pose={pose} seed={{ mikh: 6, zhora: 7, r1: 21, r2: 22, kirill: 3, timur: 41 }[w]} {...p} />;
 };
-const TEAM = ['timur', 'r2', 'r1', 'kirill', 'mikh', 'zhora'];
+export const TEAM = ['timur', 'r2', 'r1', 'kirill', 'mikh', 'zhora'];
 // в бою отряд меньше и ниже — чтобы были видны безликие и эффекты сил
 const Low: React.FC<{ children: React.ReactNode }> = ({ children }) => <g transform="translate(540 2080) scale(.8) translate(-540 -1920)">{children}</g>;
 
 
 // стоящий безликий: высокий силуэт в пальто, длинные руки, бледная голова без лица. lift 0..1 — поднимает голову, lunge 0..1 — тянет руки вперёд
-const Faceless: React.FC<{ x: number; y: number; s: number; t: number; seed: number; lift?: number; lunge?: number; dissolve?: number; grin?: number; eyes?: number }> = ({ x, y, s, t, seed, lift = 1, lunge = 0, dissolve = 0, grin = 0, eyes = 0 }) => {
+export const Faceless: React.FC<{ x: number; y: number; s: number; t: number; seed: number; lift?: number; lunge?: number; dissolve?: number; grin?: number; eyes?: number }> = ({ x, y, s, t, seed, lift = 1, lunge = 0, dissolve = 0, grin = 0, eyes = 0 }) => {
   if (dissolve >= 1) return null; const sw = noise('fl' + seed, t, .5) * 3, coat = ['#2a2a32', '#30282a', '#262c30', '#2c2a24'][seed % 4];
   return <g transform={`translate(${x} ${y}) scale(${s})`} opacity={1 - dissolve}>
     <path d={`M-70 0 L-62 -420 C-66 -500 -40 -540 0 -548 C40 -540 66 -500 62 -420 L70 0Z`} fill={coat} stroke="#0c0d18" strokeWidth={5} />
@@ -60,7 +60,7 @@ const Crowd: React.FC<{ t: number; adv?: number; lift?: (i: number) => number; l
 };
 // темнота с «дырками» света: лучи фонаря и пятна (огонь, вспышки)
 type Hole = { beam?: [number, number, number, number, number]; spot?: [number, number, number] };
-const Dark: React.FC<{ id: string; k?: number; holes?: Hole[] }> = ({ id, k = .93, holes = [] }) => <g>
+export const Dark: React.FC<{ id: string; k?: number; holes?: Hole[] }> = ({ id, k = .93, holes = [] }) => <g>
   <defs><mask id={id}><rect width={1080} height={1920} fill="#fff" />
     {holes.map((h, i) => h.beam ? <polygon key={i} points={`${h.beam[0]},${h.beam[1]} ${h.beam[2] - h.beam[4]},${h.beam[3]} ${h.beam[2] + h.beam[4]},${h.beam[3]}`} fill="#000" filter="url(#blur30)" />
       : h.spot ? <circle key={i} cx={h.spot[0]} cy={h.spot[1]} r={h.spot[2]} fill="#000" filter="url(#blur30)" /> : null)}</mask></defs>
@@ -76,7 +76,7 @@ const Fireball: React.FC<{ t: number; t0: number; x0: number; y0: number; x1: nu
     {Array.from({ length: 8 }).map((_, i) => { const a = t * 20 + i * .8, rr = 40 + (i % 3) * 12; return <ellipse key={i} cx={x + Math.cos(a) * rr * .6} cy={y + Math.sin(a) * rr * .6} rx={18} ry={34} fill={i % 2 ? '#ffb040' : '#ff6a1a'} transform={`rotate(${a * 57} ${x + Math.cos(a) * rr * .6} ${y + Math.sin(a) * rr * .6})`} opacity={.85} filter="url(#glow)" />; })}
     <circle cx={x} cy={y} r={58} fill="#ffcf5a" filter="url(#glowBig)" /><circle cx={x} cy={y} r={30} fill="#fff6d0" /></g>;
 };
-const Boom: React.FC<{ t: number; t0: number; x: number; y: number; c?: string; r?: number }> = ({ t, t0, x, y, c = '#ff8a2a', r = 220 }) => {
+export const Boom: React.FC<{ t: number; t0: number; x: number; y: number; c?: string; r?: number }> = ({ t, t0, x, y, c = '#ff8a2a', r = 220 }) => {
   const q = clamp((t - t0) / .5); if (t < t0 || q >= 1) return null;
   return <g opacity={1 - q}><circle cx={x} cy={y} r={r * (.3 + q)} fill={c} filter="url(#blur30)" /><circle cx={x} cy={y} r={r * .5 * (.3 + q)} fill="#fff4d0" opacity={.8} /></g>;
 };
@@ -96,12 +96,12 @@ const Rifle: React.FC<{ x: number; y: number; ang?: number }> = ({ x, y, ang = -
 
 
 // ударная волна — расходящиеся кольца
-const Shock: React.FC<{ t: number; t0: number; x: number; y: number; c?: string; r?: number }> = ({ t, t0, x, y, c = '#ffd890', r = 600 }) => {
+export const Shock: React.FC<{ t: number; t0: number; x: number; y: number; c?: string; r?: number }> = ({ t, t0, x, y, c = '#ffd890', r = 600 }) => {
   const q = clamp((t - t0) / .45); if (t < t0 || q >= 1) return null;
   return <g opacity={1 - q}>{[0, .15].map((d, i) => <ellipse key={i} cx={x} cy={y} rx={r * Math.max(0, q - d)} ry={r * .45 * Math.max(0, q - d)} fill="none" stroke={i ? '#fff' : c} strokeWidth={30 * (1 - q)} filter="url(#glow)" />)}</g>;
 };
 // пепел: частицы летят вверх и в стороны из точки (безликий рассыпается)
-const Ash: React.FC<{ t: number; t0: number; x: number; y: number; n?: number; spread?: number; c?: string }> = ({ t, t0, x, y, n = 40, spread = 260, c = '#1a1a22' }) => {
+export const Ash: React.FC<{ t: number; t0: number; x: number; y: number; n?: number; spread?: number; c?: string }> = ({ t, t0, x, y, n = 40, spread = 260, c = '#1a1a22' }) => {
   const q = clamp((t - t0) / 1.4); if (t < t0 || q >= 1) return null;
   return <g>{Array.from({ length: n }).map((_, i) => { const a = h1(i * 3.3) * Math.PI * 2, sp = spread * (.3 + h1(i * 7.1)), px = x + Math.cos(a) * sp * q + Math.sin(t * 3 + i) * 10, py = y + Math.sin(a) * sp * q * .6 - q * 260 * h1(i * 5);
     const ember = i % 5 === 0; return <rect key={i} x={px} y={py} width={(ember ? 6 : 10) * (1 - q * .6)} height={(ember ? 6 : 10) * (1 - q * .6)} fill={ember ? '#ffb040' : c} opacity={(1 - q) * (ember ? 1 : .9)} transform={`rotate(${q * 300 * (h1(i) - .5)} ${px} ${py})`} filter={ember ? 'url(#glow)' : undefined} />; })}</g>;
@@ -170,7 +170,7 @@ export const F18c: React.FC<SP> = ({ t }) => {
 
 
 // секундная отсылка: каменное лицо с жуткой улыбкой (своя прорисовка, синий свет, красные зрачки, штриховка, трещины)
-const BossGrin: React.FC<{ t: number; k: number }> = ({ t, k }) => {
+export const BossGrin: React.FC<{ t: number; k: number }> = ({ t, k }) => {
   const sh = Math.sin(t * 50) * 4 * k;
   return <g opacity={k} transform={`translate(${540 + sh} 900) scale(${1 + (1 - k) * .1})`}>
     <defs><radialGradient id="bgFace" cx=".5" cy=".4" r=".7"><stop offset="0" stopColor="#4fa8e8" /><stop offset="1" stopColor="#0e2a5a" /></radialGradient></defs>
