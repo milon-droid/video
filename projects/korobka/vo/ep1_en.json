@@ -10,14 +10,14 @@
   {
    "id": "e1",
    "role": "kb_hero_en",
-   "text": "I got a package. From me.",
-   "emo": "Puzzled, flat, a little suspicious."
+   "text": "I got a package. From me?",
+   "emo": "Puzzled. The last two words 'From me?' are a surprised question with clearly rising intonation."
   },
   {
    "id": "e2",
    "role": "kb_hero_en",
-   "text": "Inside — my room. And me.",
-   "emo": "Amazed whisper, slow."
+   "text": "Inside — my room. And me?",
+   "emo": "Amazed, quiet. The last two words 'And me?' are a stunned question with clearly rising intonation."
   },
   {
    "id": "e3",
@@ -30,6 +30,12 @@
    "role": "kb_hero_en",
    "text": "You can cheat the future!",
    "emo": "Pleased and confident, quiet smug smile, not shouting, clear words."
+  },
+  {
+   "id": "e4b",
+   "role": "kb_hero_en",
+   "text": "Which means... lottery numbers. Exam answers. Wow.",
+   "emo": "Excited and scheming, quick, ends with a delighted soft 'Wow'."
   },
   {
    "id": "e5",
@@ -46,14 +52,8 @@
   {
    "id": "e7",
    "role": "kb_hero_en",
-   "text": "When did you last look up?",
-   "emo": "Slow, quiet, eerie, addressing the listener directly, every word clear."
-  },
-  {
-   "id": "e8",
-   "role": "kb_hero_en",
-   "text": "What would you do with three seconds?",
-   "emo": "Calm, intimate, slightly mysterious question."
+   "text": "Someone up there is watching me. Just like I watched him.",
+   "emo": "Slow, scared whisper, with a long clear pause between the two sentences."
   }
  ]
 }

@@ -22,9 +22,12 @@ const T = {
     [8.3, [850, 1305]], [8.6, [790, 900], 'out'], [9.3, [790, 900]], [9.7, [850, 1305]],
     [17.1, [850, 1305]], [17.35, [760, 720], 'out'], [19.5, [760, 720]], [20.05, [846, 1300], 'back'], [24.5, [846, 1300]], [25.0, [880, 1220]]]),
 };
-function heroPose(t, br) {
+const PLAN0 = 20.6, PLAN = 3;                 // «планы» героя: время героя стоит, он мечтает
+const warp = t => t < PLAN0 ? t : t < PLAN0 + PLAN ? PLAN0 : t - PLAN;
+function heroPose(tr, br) {
+  const t = warp(tr), pl = tr > PLAN0 && tr < PLAN0 + PLAN ? sstep(PLAN0, PLAN0 + .3, tr) * (1 - sstep(PLAN0 + PLAN - .3, PLAN0 + PLAN, tr)) : 0;
   const P = {
-    t, lean: T.lean(t) + T.sneeze(t), dk: T.dk(t), headUp: T.headUp(t), tilt: T.tilt(t), lookX: T.lookX(t), lookY: T.lookY(t),
+    t: tr, lean: T.lean(t) + T.sneeze(t), dk: T.dk(t), headUp: T.headUp(t), tilt: T.tilt(t), lookX: T.lookX(t), lookY: T.lookY(t),
     eyeOpen: T.eyeOpen(t), wide: T.wide(t), browUp: T.browUp(t), furrow: T.furrow(t), smile: T.smile(t), mouthOpen: T.mouthOpen(t),
     mouthO: T.mouthO(t), tremble: T.tremble(t), sweat: T.sweat(t), hA: T.hA(t), hB: T.hB(t),
     cutter: t > 3.55 && t < 4.5, glow: sstep(4.6, 5.6, t) * (1 - sstep(17, 17.3, t)) + sstep(19.8, 20.3, t) * sstep(4.6, 5.6, t) * 0,
@@ -32,6 +35,15 @@ function heroPose(t, br) {
     squeeze: t > 13.1 && t < 13.7,
   };
   if (t > 19.6) P.glow = sstep(19.6, 20.2, t);
+  if (pl > 0) {                                  // мечтает: глаза вверх-вправо, считает на пальцах
+    const u = tr - PLAN0, cnt = Math.floor(u / .7) % 3;
+    P.lookX = lerp(P.lookX, .55, pl); P.lookY = lerp(P.lookY, -.7, pl); P.smile = lerp(P.smile, 1, pl);
+    P.mouthOpen = lerp(P.mouthOpen, .25 + .15 * Math.abs(Math.sin(u * 7)), pl); P.tilt = lerp(P.tilt, .12 + .04 * Math.sin(u * 2), pl);
+    P.browUp = lerp(P.browUp, .7, pl); P.furrow = lerp(P.furrow, 0, pl);
+    const hb = [790 + cnt * 12, 880 - Math.abs(Math.sin(u * 4.5)) * 30];
+    P.hB = [lerp(P.hB[0], hb[0], pl), lerp(P.hB[1], hb[1], pl)];
+    if (u > 2.3) { const w = sstep(2.3, 2.5, u); P.mouthO = w * pl; P.wide = w * .8 * pl; }   // «Вау»
+  }
   P.hB = [P.hB[0] + (t > 8.6 && t < 9.3 ? Math.sin((t - 8.6) * 18) * 26 : 0), P.hB[1]];
   if (br === 'A' && t > 14.6) {        // будущее, которого не случилось: не заметил, получил горшком
     Object.assign(P, { lean: 1, dk: 0, wide: 0, mouthO: 0, browUp: .3, furrow: 0, smile: .7, mouthOpen: .25, lookX: -.6, lookY: .8, tremble: 0, sweat: 0, eyeOpen: 1,
