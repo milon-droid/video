@@ -64,3 +64,7 @@ function star(ctx, x, y, r, rot = 0) {
 }
 function stroke(ctx, w, c = OUT) { ctx.lineWidth = w; ctx.strokeStyle = c; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke(); }
 function fill(ctx, c) { ctx.fillStyle = c; ctx.fill(); }
+
+// Язык кадра: scene.html — русский, scene_en.html задаёт window.LANG = 'en'
+const EN = (typeof window !== 'undefined' && window.LANG === 'en');
+const TX = (ru, en) => EN ? en : ru;

@@ -58,14 +58,14 @@ function worldToScreen(cam, k, x, y) {
 
 // ---------- титры ----------
 const CAPS = [
-  [1.6, 4.2, ['Мне пришла посылка.', 'От меня.'], 0, 215],
-  [7.45, 10.1, ['Внутри — моя комната.', 'И я.'], 0, 215],
-  [13.7, 15.6, ['Он на 3 секунды', 'впереди.'], 0, 215],
-  [19.7, 21.3, ['Будущее можно обмануть!'], 0, 215],
-  [21.3, 23.4, ['Тогда почему', 'он смотрит вверх?'], 0, 215],
-  [26.05, 28.0, ['Я тоже в коробке.'], 0, 830],
-  [28.95, 31.8, ['А ты давно', 'смотрел вверх?'], 0, 830],
-  [32.6, 34.7, ['Что бы ты успел', 'за 3 секунды?'], 1, 905],
+  [1.6, 4.2, TX(['Мне пришла посылка.', 'От меня.'], ['I got a package.', 'From me.']), 0, 215],
+  [7.45, 10.1, TX(['Внутри — моя комната.', 'И я.'], ['Inside — my room.', 'And me.']), 0, 215],
+  [13.7, 15.6, TX(['Он на 3 секунды', 'впереди.'], ["He's 3 seconds", 'ahead.']), 0, 215],
+  [19.7, 21.3, TX(['Будущее можно обмануть!'], ['You can cheat the future!']), 0, 215],
+  [21.3, 23.4, TX(['Тогда почему', 'он смотрит вверх?'], ['Then why is he', 'looking up?']), 0, 215],
+  [26.05, 28.0, TX(['Я тоже в коробке.'], ["I'm in a box too."]), 0, 930],
+  [28.95, 31.8, TX(['А ты давно', 'смотрел вверх?'], ['When did you', 'last look up?']), 0, 830],
+  [32.6, 34.7, TX(['Что бы ты успел', 'за 3 секунды?'], ['What would you do', 'with 3 seconds?']), 1, 905],
 ];
 function caption(ctx, t) {
   for (const [t0, t1, lines, kind, yc] of CAPS) {
@@ -107,17 +107,28 @@ function overlays(ctx, t, cam) {
     ctx.fillStyle = g; ctx.fillRect(0, 0, CW, CH); ctx.globalCompositeOperation = 'source-over';
   }
   // звукоподражания
-  let [x, y] = worldToScreen(cam, 1, 640, 700); bigWord(ctx, 'апчхи!', clamp(x, 160, 560), clamp(y, 200, 700), t, 10.2, .8, 64, -.12, ink(.9, 0, .8));
-  bigWord(ctx, 'АПЧХИ!', 330, 330, t, 13.22, .9, 110, -.08, ink(1, 0, .9));
-  bigWord(ctx, 'ФФФУХ!', 300, 300, t, 16.2, .8, 92, .1, ink(0, .9, .2));
-  [x, y] = worldToScreen(cam, 0, 720, 1180); bigWord(ctx, 'БАМ!', clamp(x, 170, 520), clamp(y, 260, 700), t, HIT_B, .8, 140, -.1, ink(1, 0, 1));
+  let [x, y] = worldToScreen(cam, 1, 640, 700); bigWord(ctx, TX('апчхи!', 'achoo!'), clamp(x, 160, 560), clamp(y, 200, 700), t, 10.2, .8, 64, -.12, ink(.9, 0, .8));
+  bigWord(ctx, TX('АПЧХИ!', 'ACHOO!'), 330, 330, t, 13.22, .9, 110, -.08, ink(1, 0, .9));
+  bigWord(ctx, TX('ФФФУХ!', 'WHOOSH!'), 300, 300, t, 16.2, .8, 92, .1, ink(0, .9, .2));
+  [x, y] = worldToScreen(cam, 0, 720, 1180); bigWord(ctx, TX('БАМ!', 'BAM!'), clamp(x, 170, 520), clamp(y, 260, 700), t, HIT_B, .8, 140, -.1, ink(1, 0, 1));
   for (const [n, t0] of [['3', 21.9], ['2', 22.7], ['1', 23.5]]) bigWord(ctx, n, 470, 700, t, t0, .72, 220, (+n - 2) * .08, ink(1, 0, 1));
+  // стрелка «это я» — маленький я в коробке великана
+  if (t > 26.2 && t < 27.7) {
+    const [hx, hy] = worldToScreen(cam, 0, 680, 760), u = E.back(clamp((t - 26.2) / .25)), al = clamp((27.7 - t) / .2);
+    ctx.save(); ctx.globalAlpha = al; ctx.translate(hx, hy);
+    ctx.beginPath(); ctx.arc(0, 0, 60 * u, 0, 7); ctx.lineWidth = 6; ctx.strokeStyle = ink(1, 0, .9); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(130 * u, -120 * u); ctx.quadraticCurveTo(90 * u, -40 * u, 46 * u, -20 * u); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(46 * u, -20 * u); ctx.lineTo(70 * u, -42 * u); ctx.moveTo(46 * u, -20 * u); ctx.lineTo(76 * u, -12 * u); ctx.stroke();
+    ctx.font = '900 44px Inter'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = ink(1, 0, .9);
+    ctx.lineWidth = 9; ctx.strokeStyle = PAPER; ctx.strokeText(TX('Я', 'ME'), 120 * u, -150 * u); ctx.fillText(TX('Я', 'ME'), 120 * u, -150 * u);
+    ctx.restore();
+  }
   // перемотка
   if (t > 28 && t < 34.9) {
     const al = sstep(28, 28.4, t) * (Math.floor(t * 4) % 2 ? 1 : .55);
     ctx.globalAlpha = al; ctx.fillStyle = ink(1, 0, .9);
     for (const o of [0, 38]) { ctx.beginPath(); ctx.moveTo(110 + o, 200); ctx.lineTo(70 + o, 225); ctx.lineTo(110 + o, 250); ctx.fill(); }
-    ctx.font = '900 40px Inter'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('ПЕРЕМОТКА', 168, 226);
+    ctx.font = '900 40px Inter'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(TX('ПЕРЕМОТКА', 'REWIND'), 168, 226);
     ctx.globalAlpha = 1;
   }
 }

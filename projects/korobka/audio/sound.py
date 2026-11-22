@@ -160,10 +160,11 @@ amb = lpv(noise(NE / SR), 500) * .6 + lpv(noise(NE / SR), 120) * 1.2
 put(amb[:N] * .05, 0, 1, 0, 'amb')
 
 # ---------- голос героя ----------
-VO = json.load(open(os.path.join(os.path.dirname(__file__), 'vo_times.json')))
+LNG = sys.argv[1] if len(sys.argv) > 1 else 'ru'
+VO = json.load(open(os.path.join(os.path.dirname(__file__), 'vo_times.json' if LNG == 'ru' else 'vo_times_en.json')))
 vo = np.zeros((NE, 2)); act = np.zeros(NE)
 for vid, t0 in VO.items():
-    f = os.path.join(os.path.dirname(__file__), '../assets/vo/ep1', vid + '.wav')
+    f = os.path.join(os.path.dirname(__file__), '../assets/vo/ep1' + ('' if LNG == 'ru' else '_en'), vid + '.wav')
     raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', f, '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True).stdout
     x = np.frombuffer(raw, np.float32).astype(float); x /= np.abs(x).max() + 1e-9
     x = x - lpv(x, 90) * .9                                   # убрать гул
@@ -180,7 +181,7 @@ for vid, t0 in VO.items():
 tail = M[N:].copy(); M = M[:N]; M[:len(tail)] += tail          # бесшовная петля по звуку
 k = int(.03 * SR); M[:k] *= 1; 
 M /= np.abs(M).max() * 1.12
-out = os.path.join(os.path.dirname(__file__), 'mix.wav')
+out = os.path.join(os.path.dirname(__file__), 'mix.wav' if LNG == 'ru' else 'mix_en.wav')
 import wave
 with wave.open(out, 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((M * 32767).astype('<i2').tobytes())

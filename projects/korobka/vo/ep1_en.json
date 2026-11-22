@@ -1,0 +1,19 @@
+{
+ "roles": {
+  "kb_hero_en": {
+   "instruct": "Young American man, about 24, soft slightly husky light baritone, intimate close-mic first-person narration, dry deadpan humor, a little bewildered, natural conversational pace, clear diction.",
+   "ref": "So I don't usually get packages. And then there's this box. With my name on it.",
+   "f0": 120
+  }
+ },
+ "lines": [
+  {"id": "e1", "role": "kb_hero_en", "text": "I got a package. From me.", "emo": "Puzzled, flat, a little suspicious."},
+  {"id": "e2", "role": "kb_hero_en", "text": "Inside — my room. And me.", "emo": "Amazed whisper, slow."},
+  {"id": "e3", "role": "kb_hero_en", "text": "He's three seconds ahead.", "emo": "Sudden realization, excited."},
+  {"id": "e4", "role": "kb_hero_en", "text": "You can cheat the future!", "emo": "Triumphant, cocky grin."},
+  {"id": "e5", "role": "kb_hero_en", "text": "Then why is he looking up?", "emo": "Nervous, voice getting quiet and scared."},
+  {"id": "e6", "role": "kb_hero_en", "text": "I'm in a box too.", "emo": "Terrified, breathless whisper."},
+  {"id": "e7", "role": "kb_hero_en", "text": "When did you last look up?", "emo": "Quiet, eerie, addressing the listener directly."},
+  {"id": "e8", "role": "kb_hero_en", "text": "What would you do with three seconds?", "emo": "Calm, intimate, slightly mysterious question."}
+ ]
+}
