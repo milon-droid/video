@@ -62,8 +62,8 @@ export const night = (() => {
   const neon = new THREE.Group(); neon.visible = false;
   const signTex = canvasTex(1024, 300, (c) => { c.fillStyle = '#0a0612'; c.fillRect(0, 0, 1024, 300); c.strokeStyle = '#ff3a8a'; c.lineWidth = 14; c.shadowColor = '#ff3a8a'; c.shadowBlur = 30; c.strokeRect(20, 20, 984, 260); c.font = '800 98px Unb'; c.textAlign = 'center'; c.fillStyle = '#ffd0e8'; c.fillText('ПРОФСОЮЗ', 512, 140); c.fillText('ТЕНЕЙ', 512, 250); });
   const sign = mesh(G.plane(2.6, .76), new THREE.MeshBasicMaterial({ map: signTex, toneMapped: false }), false, false); add(neon, sign, .2, 3.35, -2.13);
-  const sign2Tex = canvasTex(1024, 160, (c) => { c.font = '800 84px Unb'; c.textAlign = 'center'; c.fillStyle = '#7af0ff'; c.shadowColor = '#7af0ff'; c.shadowBlur = 26; c.fillText('ЗАБАСТОВКА — ЗАВТРА', 512, 110); });
-  const sign2 = mesh(G.plane(2.6, .4), new THREE.MeshBasicMaterial({ map: sign2Tex, transparent: true, toneMapped: false }), false, false); add(neon, sign2, .2, 2.75, -2.13);
+  const sign2Tex = canvasTex(1024, 160, (c) => { c.font = '800 60px Unb'; c.textAlign = 'center'; c.fillStyle = '#7af0ff'; c.shadowColor = '#7af0ff'; c.shadowBlur = 26; c.fillText('ЗАБАСТОВКА — ЗАВТРА', 512, 100); });
+  const sign2 = mesh(G.plane(2.1, .33), new THREE.MeshBasicMaterial({ map: sign2Tex, transparent: true, toneMapped: false }), false, false); add(neon, sign2, .1, 2.78, -2.13);
   const door = mesh(G.rbox(1.0, 2.0, .1, .03), clay('#120e22'), false, true); add(neon, door, .2, 1.0, -2.12);
   const dfr = mesh(G.rbox(1.15, 2.1, .08, .02), clay('#3a3260'), false, true); add(neon, dfr, .2, 1.05, -2.14);
   const nl = new THREE.PointLight('#ff3a8a', 6, 6, 1.5); nl.position.set(.2, 3.0, -1.4); neon.add(nl);

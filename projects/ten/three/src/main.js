@@ -253,7 +253,7 @@ S.S15 = (t) => { useSet('night'); hideAll(); night.neon.visible = true;
   const dx = hx - night.lampX, dz = 1.2 - night.lampZ, yaw = Math.atan2(dx, dz);
   applyPose(shade, t < 2.6 ? pose : keys(t, [[2.6, 'stand'], [2.85, 'shrug']]), t, { mood: t < 2.6 ? 'calm' : 'sly', look: 1 }, 3);
   placeShade(shade, { x: hx, z: 1.2, rise: 0, len: 1.15 + Math.hypot(dx, dz) * .25, yaw, turn: (t < 1.6 ? Math.PI / 2 : Math.PI) - yaw });
-  const [jx, jy] = hh(t, .02); cam(-.2 + jx, 1.8 + jy, lerp(8.4, 7.6, ease(t, 0, 4.4)), -.2, 1.35, -1.8, 38);
+  const [jx, jy] = hh(t, .02); cam(.2 + jx, 1.9 + jy, lerp(9.8, 9.0, ease(t, 0, 4.4)), .2, 1.55, -1.8, 40);
   FX = { fy: .45, fw: .3, blur: 6, bloom: .55, warm: -.04 };
   return () => narr(t, 2.8, 4.4, 'Завтра уходят все.', { y: 1450, size: 86, accent: ['все'] });
 };
