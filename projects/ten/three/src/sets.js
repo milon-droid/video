@@ -62,8 +62,8 @@ export const night = (() => {
   const neon = new THREE.Group(); neon.visible = false;
   const signTex = canvasTex(1024, 300, (c) => { c.fillStyle = '#0a0612'; c.fillRect(0, 0, 1024, 300); c.strokeStyle = '#ff3a8a'; c.lineWidth = 14; c.shadowColor = '#ff3a8a'; c.shadowBlur = 30; c.strokeRect(20, 20, 984, 260); c.font = '800 98px Unb'; c.textAlign = 'center'; c.fillStyle = '#ffd0e8'; c.fillText('ПРОФСОЮЗ', 512, 140); c.fillText('ТЕНЕЙ', 512, 250); });
   const sign = mesh(G.plane(2.6, .76), new THREE.MeshBasicMaterial({ map: signTex, toneMapped: false }), false, false); add(neon, sign, .2, 3.35, -2.13);
-  const sign2Tex = canvasTex(1024, 160, (c) => { c.font = '800 84px Unb'; c.textAlign = 'center'; c.fillStyle = '#7af0ff'; c.shadowColor = '#7af0ff'; c.shadowBlur = 26; c.fillText('ЗАБАСТОВКА — ЗАВТРА', 512, 110); });
-  const sign2 = mesh(G.plane(2.6, .4), new THREE.MeshBasicMaterial({ map: sign2Tex, transparent: true, toneMapped: false }), false, false); add(neon, sign2, .2, 2.75, -2.13);
+  const sign2Tex = canvasTex(1024, 160, (c) => { c.font = '800 60px Unb'; c.textAlign = 'center'; c.fillStyle = '#7af0ff'; c.shadowColor = '#7af0ff'; c.shadowBlur = 26; c.fillText('ЗАБАСТОВКА — ЗАВТРА', 512, 100); });
+  const sign2 = mesh(G.plane(2.1, .33), new THREE.MeshBasicMaterial({ map: sign2Tex, transparent: true, toneMapped: false }), false, false); add(neon, sign2, .1, 2.78, -2.13);
   const door = mesh(G.rbox(1.0, 2.0, .1, .03), clay('#120e22'), false, true); add(neon, door, .2, 1.0, -2.12);
   const dfr = mesh(G.rbox(1.15, 2.1, .08, .02), clay('#3a3260'), false, true); add(neon, dfr, .2, 1.05, -2.14);
   const nl = new THREE.PointLight('#ff3a8a', 6, 6, 1.5); nl.position.set(.2, 3.0, -1.4); neon.add(nl);
@@ -230,7 +230,7 @@ export const day = (() => {
 export const plaza = (() => {
   const g = new THREE.Group();
   g.add(new THREE.HemisphereLight('#c8e4ff', '#d0a880', 1.0));
-  const sun = new THREE.DirectionalLight('#fff0cc', 4.2); sun.position.set(4, 4.6, -7); sun.target.position.set(0, 0, 0); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: .5, far: 30 }); sun.shadow.bias = -.0005; sun.shadow.radius = 3; g.add(sun, sun.target);
+  const sun = new THREE.DirectionalLight('#fff0cc', 4.2); sun.position.set(7, 4.6, -1); sun.target.position.set(0, 0, 0); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: .5, far: 30 }); sun.shadow.bias = -.0005; sun.shadow.radius = 3; g.add(sun, sun.target);
   const pav = canvasTex(256, 256, (c) => { c.fillStyle = '#e2c8a0'; c.fillRect(0, 0, 256, 256); for (let r = 0; r < 8; r++) for (let k = 0; k < 8; k++) { c.fillStyle = `hsl(32,${30 + h1(r * 8 + k) * 15}%,${70 + h1(k * 3 + r) * 10}%)`; c.fillRect(k * 32 + 1 + (r % 2) * 16, r * 32 + 1, 30, 30); } });
   pav.wrapS = pav.wrapT = THREE.RepeatWrapping; pav.repeat.set(16, 16);
   const ground = mesh(G.plane(60, 60), new THREE.MeshStandardMaterial({ map: pav, roughness: .9 }), false, true); ground.rotation.x = -Math.PI / 2; g.add(ground);
@@ -278,11 +278,12 @@ export const roof = (() => {
   // бак и антенна — силуэты
   const tank = mesh(G.cyl(.7, .7, 1.4, 24), clay('#6a4a5a')); add(g, tank, -4.5, 1.6, -1.2); add(g, mesh(G.box(.06, 1.0, .06), clay('#3a2a3a')), -4.8, .5, -1.2); add(g, mesh(G.box(.06, 1.0, .06), clay('#3a2a3a')), -4.2, .5, -1.2);
   const ant = mesh(G.cyl(.02, .03, 3), clay('#2a1a2a')); add(g, ant, -2.8, 1.5, -1.8);
+  const fill = new THREE.PointLight('#ffc89a', 0, 9, 1.2); fill.position.set(1.0, 2.2, 1.6); g.add(fill);
   // птицы
   const birds = []; for (let i = 0; i < 6; i++) { const b = mesh(new THREE.TorusGeometry(.18, .025, 4, 8, Math.PI), clay('#2a1428'), false, false); g.add(b); birds.push(b); }
   const paint = fn => { const c = C.getContext('2d'); c.fillStyle = '#d8b0a0'; c.fillRect(0, 0, 1024, 768); for (let i = 0; i < 400; i++) { c.fillStyle = `rgba(90,50,40,${h1(i) * .12})`; c.fillRect(h1(i + 1) * 1024, h1(i + 2) * 768, 4, 4); } fn(c); tex.needsUpdate = true; };
   reg('roof', g, skyTex([[0, '#2a1e5a'], [.35, '#9a3a7a'], [.62, '#ff7a4a'], [.8, '#ffc07a'], [1, '#ffe0a0']]), new THREE.Fog('#ff9a6a', 20, 95));
-  return { g, sunL, vent, paint, birds, sunDisk };
+  return { g, sunL, vent, paint, birds, sunDisk, fill };
 })();
 
 export { makeShade, placeShade, applyPose, lerp, clamp };

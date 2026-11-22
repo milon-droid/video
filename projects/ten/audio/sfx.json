@@ -237,6 +237,12 @@
 "align": "start"
 },
 {
+"t": 15.2,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.8
+},
+{
 "t": 16.0,
 "type": "lib",
 "id": "click-clap-medium",
@@ -711,16 +717,16 @@
 "align": "start"
 },
 {
-"t": 65.4,
+"t": 65.35,
 "type": "lib",
-"id": "click-clap-firm",
-"gain": 0.9
+"id": "impact-light-soft",
+"gain": 0.8
 },
 {
-"t": 65.4,
+"t": 65.35,
 "type": "lib",
 "id": "shimmer-medium-bright",
-"gain": 0.35,
+"gain": 0.45,
 "align": "start"
 },
 {

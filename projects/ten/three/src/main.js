@@ -41,13 +41,13 @@ S.S1 = (t) => { useSet('night'); hideAll(); night.neon.visible = false;
   const cx = lerp(.25, .75, ease(t, 0, 3.2, sm)); cam(cx + jx, lerp(3.1, 2.6, ck) + jy, lerp(4.4, 3.6, ck), cx + .05, lerp(.45, .2, ck), lerp(.2, .6, ck), 38, 0);
   FX = { fy: .58, fw: .3, blur: 6, bloom: .35, warm: .05 };
   return () => { if (t > SNAP && t < SNAP + .5) { const [sx, sy] = toScreen((px + hx(SNAP)) / 2, .05, Z); burst(t - SNAP, sx, sy, '#07060c', 18); }
-    narr(t, .1, 3.2, 'В 23:47 от меня ушла тень.', { y: 300, size: 82, n: 16, accent: ['тень'] }); };
+    narr(t, .1, 3.2, 'В 23:47 от меня съебалась тень.', { y: 290, size: 80, n: 17, accent: ['съебалась', 'тень'] }); };
 };
 // 2. Тень встаёт на стену, просыпается, потягивается, уходит
 S.S2 = (t) => { useSet('night'); hideAll(); night.neon.visible = false;
   const rise = ease(t, .35, 1.3, k => back(k) * .98 + k * .02); const wk = Math.max(0, t - 2.9); const x = .3 - wk * .9;
-  const pose = t < 2.9 ? keys(t, [[1.4, 'stand'], [1.95, 'stand'], [2.2, 'armsUp'], [2.6, 'armsUp'], [2.85, 'stand']]) : walk(wk * .9, 0);
-  applyPose(shade, pose, t, { mood: t < 2.0 ? 'calm' : t < 2.9 ? 'happy' : 'sly', open: ease(t, 1.4, 1.6), look: t < 1.9 ? ease(t, 1.55, 1.85) : -1 }, 3);
+  const pose = t < 2.9 ? keys(t, [[1.4, 'stand'], [1.95, 'stand'], [2.2, 'armsUp'], [2.6, 'armsUp'], [2.85, 'stand']]) : walk(wk * .9, 0, { aR: [0, -2.6, .35] });
+  applyPose(shade, pose, t, { mood: t < 2.0 ? 'calm' : t < 2.9 ? 'happy' : 'sly', open: ease(t, 1.4, 1.6), look: t < 1.9 ? ease(t, 1.55, 1.85) : -1, finger: t > 3.0 }, 3);
   placeShade(shade, { x, z: night.wallZ + .02, rise: clamp(rise), len: 1.15, yaw: 0, turn: t < 2.9 ? 0 : -Math.PI / 2, scale: 1.05 });
   const [jx, jy] = hh(t, .02); cam(.3 + jx, 1.15 + jy, lerp(3.6, 3.3, ease(t, 0, 4)), .3, 1.0, -2.1, 32);
   FX = { fy: .5, fw: .26, bloom: .35 };
@@ -67,13 +67,15 @@ S.S3 = (t) => { useSet('kitchen'); hideAll();
     narr(t, 2.95, 5.2, 'У меня — нет.', { y: 1320, size: 104, accent: ['нет'] }); };
 };
 // письмо на стене коридора (общая функция для S4/S6)
-const LET1 = ['УВОЛЬНЯЮСЬ.'], LET2 = ['26 ЛЕТ ХОЖУ', 'ЗА ТОБОЙ,', 'А ТЫ НИКУДА', 'НЕ ХОДИШЬ.'], PS = ['P.S. Без тени ты', 'продержишься до заката.', 'Потом станешь как я.'];
+const LET1 = ['УВОЛЬНЯЮСЬ.'], LET2 = ['26 лет хожу за тобой,', 'а ты никуда', 'не ходишь.'], PS = ['P.S. Без тени ты продержишься', 'до заката. Потом станешь как я.', 'Удачи, лох.'];
 const paintLetter = (t, t0, psT0 = 1e9) => hall.paint(c => {
-  handLines(c, LET1, { x: 400, y: 150, size: 128, reveal: (t - t0) * 16, drips: ease(t, t0 + .8, t0 + 2.5), seed: 1 });
-  handLines(c, LET2, { x: 400, y: 300, size: 92, lh: .95, reveal: (t - t0 - 1.0) * 20, drips: ease(t, t0 + 2.5, t0 + 4), seed: 5, rot: -.03 });
-  handLines(c, ['— Тень'], { x: 470, y: 720, size: 80, reveal: (t - t0 - 3.8) * 10, seed: 9, rot: -.08 });
-  if (t > t0 + 3.6) { c.save(); c.globalAlpha = clamp((t - t0 - 3.6) * 5); c.fillStyle = '#0a0910'; c.translate(640, 690); c.rotate(-.2); c.beginPath(); c.ellipse(0, 0, 40, 48, 0, 0, 7); c.fill(); [[-34, -52, .5], [-12, -70, .2], [12, -72, -.1], [34, -58, -.4], [-52, -2, 1.1]].forEach(([x, y, r]) => { c.save(); c.translate(x, y); c.rotate(r); c.beginPath(); c.ellipse(0, 0, 11, 30, 0, 0, 7); c.fill(); c.restore(); }); c.restore(); }
-  handLines(c, PS, { x: 400, y: 850, size: 50, lh: 1.05, reveal: (t - psT0) * 26, seed: 13, rot: -.02 });
+  handLines(c, LET1, { x: 400, y: 140, size: 122, reveal: (t - t0) * 16, drips: ease(t, t0 + .8, t0 + 2.5), seed: 1 });
+  handLines(c, LET2, { x: 400, y: 265, size: 74, lh: 1.0, reveal: (t - t0 - .9) * 24, drips: ease(t, t0 + 2.5, t0 + 4), seed: 5, rot: -.03 });
+  handLines(c, ['ЗАЕБАЛ.'], { x: 400, y: 575, size: 176, reveal: (t - t0 - 2.6) * 12, drips: ease(t, t0 + 2.9, t0 + 4.2) * 1.6, seed: 7, rot: -.07 });
+  if (t > t0 + 3.2) { c.save(); c.globalAlpha = clamp((t - t0 - 3.2) * 4); c.fillStyle = '#0a0910'; c.translate(400, 600); c.rotate(-.07); c.fillRect(-300, 0, 600 * clamp((t - t0 - 3.2) * 3), 12); c.restore(); }
+  handLines(c, ['— Тень'], { x: 330, y: 720, size: 74, reveal: (t - t0 - 3.9) * 10, seed: 9, rot: -.08 });
+  if (t > t0 + 3.7) { c.save(); c.globalAlpha = clamp((t - t0 - 3.7) * 5); c.fillStyle = '#0a0910'; c.translate(560, 695); c.rotate(-.2); c.beginPath(); c.ellipse(0, 0, 40, 48, 0, 0, 7); c.fill(); [[-34, -52, .5], [-12, -70, .2], [12, -72, -.1], [34, -58, -.4], [-52, -2, 1.1]].forEach(([x, y, r]) => { c.save(); c.translate(x, y); c.rotate(r); c.beginPath(); c.ellipse(0, 0, 11, 30, 0, 0, 7); c.fill(); c.restore(); }); c.restore(); }
+  handLines(c, PS, { x: 400, y: 830, size: 40, lh: 1.05, reveal: (t - psT0) * 30, seed: 13, rot: -.02 });
 });
 // 4. Письмо: УВОЛЬНЯЮСЬ (со спины → лицо)
 S.S4 = (t) => { useSet('hall'); hideAll(); paintLetter(t, .2);
@@ -84,7 +86,7 @@ S.S4 = (t) => { useSet('hall'); hideAll(); paintLetter(t, .2);
   } else { const tt = t - 4.3;
     heroAt(.75, 1.1, .25, { ...POSE.scared, headX: -.3 }, t, { expr: 'sad', lookY: .8, mouth: .35 + talk(t, 4.6, 5.4) * 0 });
     cam(.82, 1.0, 2.35, .78, 1.13, 1.1, 32); FX = { fy: .42, fw: .25, blur: 9 }; }
-  return () => { if (t > 4.3) narr(t, 4.45, 6.0, '…серьёзно?', { y: 1330, size: 80, who: 'СЕНЯ' }); };
+  return () => { if (t > 4.3) narr(t, 4.45, 6.0, '…охуеть.', { y: 1330, size: 84, who: 'СЕНЯ' }); };
 };
 // 5. Миниатюра: дом → работа → дом, 9 490 раз
 S.S5 = (t) => { useSet('loop'); hideAll();
@@ -140,7 +142,7 @@ S.S7 = (t) => {
   const pose = tt < .9 ? keys(tt, [[0, 'phone'], [.5, 'phone'], [.85, { ...POSE.stand, crouch: .08, lean: .2, aL: [-.5, .2, 1.4], aR: [.6, -.2, 1.4] }]]) : walk(hx + 3, 1);
   heroAt(hx, 1.6, tt < .9 ? lerp(0, Math.PI / 2, ease(tt, .55, .9)) : Math.PI / 2, pose, t, { expr: 'determined', lookX: .6 }, { phoneOn: tt < .6, sat: .9 });
   cam(-2.6 + run * 1.5, 1.15, 3.9, -2.9 + run * 2.5, .95, 1.6, 34); FX = { fy: .43, fw: .25, blur: 8, bloom: .15 };
-  return () => { if (tt > .9) speedLines(t, ease(tt, .9, 1.2)); narr(t, 2.85, 4.8, 'Нашёл.', { y: 1330, size: 110, who: 'СЕНЯ' }); };
+  return () => { if (tt > .9) speedLines(t, ease(tt, .9, 1.2)); narr(t, 2.85, 4.8, 'Ну всё, сука.', { y: 1330, size: 96, who: 'СЕНЯ' }); };
 };
 // 8. Погоня: тень катается на борту автобуса; Сеня перепрыгивает ограждение
 S.S8 = (t) => { useSet('day'); hideAll(); day.fence.position.x = 5.4;
@@ -151,11 +153,12 @@ S.S8 = (t) => { useSet('day'); hideAll(); day.fence.position.x = 5.4;
   heroAt(hx, 1.6, Math.PI / 2, pose, t, { expr: 'determined', mouth: .4 }, { sat: .82, alpha: .97 }); hero.root.position.y = jk >= 0 ? Math.sin(jk * Math.PI) * .55 : 0;
   // тень на борту автобуса (серфинг)
   applyPose(shade, { ...POSE.stand, aL: [0, 1.5, .1], aR: [0, -1.5, .1], lL: [.4, .5], lR: [-.3, .3], crouch: .05, lean: -.1, headZ: Math.sin(t * 4) * .15, hipsZ: Math.sin(t * 4) * .08 }, t, { mood: 'happy', look: -1 }, 3);
+  if (t > 1.6 && t < 4.2) { const k = ease(t, 1.6, 1.85); shade.aR.sh.rotation.set(0, 0, lerp(-1.5, -2.5, k)); shade.aR.el.rotation.set(-lerp(.1, .4, k), 0, 0); shade.aR.fing.visible = true; }
   placeShade(shade, { x: bx - .3, y: .62, z: -2.2 + .615, rise: 1, scale: .62 });
   const [jx, jy] = hh(t, .03); cam(camX + jx, 1.35 + jy, 7.4, camX, .85, -.5, 40, -.07);
   FX = { fy: .52, fw: .26, blur: 7, bloom: .15, warm: .04 };
   return () => { if (jk > .95 && jk < 1.4) {} if (t > J1 && t < J1 + .5) { const [sx, sy] = toScreen(5.9, .02, 1.6); burst(t - J1, sx, sy, '#cfc0a8', 12); }
-    narr(t, .3, 4.9, 'Она каталась на чужих автобусах…', { y: 400, size: 68, n: 18, accent: ['автобусах'] }); };
+    narr(t, .3, 4.9, 'Она каталась на чужих автобусах…', { y: 330, size: 66, n: 18, accent: ['автобусах'] }); shadowSay(t, 1.7, 4.6, ['Догони, овощ!'], { y: 600, size: 92 }); };
 };
 // танец по кругу (для танцоров, тени и Сени)
 const DANCE = [{ aL: [0, 2.6, .3], aR: [0, -.4, .2], crouch: .05, hipsZ: .1 }, { aL: [.3, .6, 1.8], aR: [.3, -.6, 1.8], crouch: .1, lean: .1, lL: [.5, .6] }, { aL: [0, .4, .2], aR: [0, -2.6, .3], crouch: .05, hipsZ: -.1 }, { aL: [1.4, .2, .2], aR: [-.6, -.3, .2], twist: .4, lR: [.6, .4] }];
@@ -165,20 +168,20 @@ S.S9 = (t) => { useSet('plaza'); hideAll();
   const pos = [[-.5, -.5], [.55, -1.0], [1.35, -.35]]; plaza.dancers.forEach((d, i) => { d.root.visible = true; d.root.position.set(pos[i][0], 0, pos[i][1]); d.root.rotation.y = .1 - i * .1; applyPose(d, dance(t, i * .25), t, { expr: 'happy', mouth: .3 }, 10 + i); });
   plaza.crowd.forEach((d, i) => { d.root.visible = true; const a = -1 + i / 6 * 2; d.root.position.set(Math.sin(a) * 3.6, 0, -2.6 - Math.cos(a) * .6); d.root.rotation.y = -a * .5; d.root.scale.setScalar(.92);
     const up = Math.floor(t * 4 + i) % 2; applyPose(d, { ...POSE.stand, aL: [1.2, .1, up ? 1.4 : 1.0], aR: [1.2, -.1, up ? 1.4 : 1.0] }, t, { expr: 'happy', mouth: .25 }, 20 + i); });
-  const sunYaw = Math.atan2(-4, 7);
+  const sunYaw = Math.atan2(-7, 1);
   applyPose(shade, dance(t * 1.15, .6), t, { mood: 'happy' }, 3); placeShade(shade, { x: -.35, z: .7, rise: 0, len: 1.1, yaw: sunYaw, turn: 0 });
   const enter = ease(t, 1.1, 2.1, sm); const hx = lerp(-3.6, -1.6, enter);
   const pose = t < 2.1 ? walk(hx + 3.6, 1) : t < 2.5 ? keys(t, [[2.1, 'stand'], [2.4, { ...POSE.shrug }]]) : dance(t * .95, .1);
   heroAt(hx, .6, t < 2.1 ? Math.PI / 2 : .5, pose, t, { expr: t < 2.5 ? 'determined' : 'happy', mouth: t > 2.5 ? .5 : .2 }, { sat: .72, alpha: .92 });
   const [jx, jy] = hh(t, .02); cam(-.55 + jx, 2.2 + jy, lerp(8.6, 8.0, ease(t, 0, 5)), -.55, .55, -.5, 38);
   FX = { fy: .55, fw: .25, blur: 7, bloom: .12, warm: .05 };
-  return () => narr(t, .3, 4.9, '…танцевала с чужими тенями…', { y: 390, size: 68, n: 18, accent: ['тенями'] });
+  return () => { narr(t, .3, 4.9, '…танцевала с чужими тенями…', { y: 330, size: 66, n: 18, accent: ['тенями'] }); shadowSay(t, 2.7, 4.95, ['Смотри и учись,', 'бревно.'], { y: 560, size: 84 }); };
 };
 // 10. Фонтан: бежит через струи, смеётся; руки уже прозрачные
 S.S10 = (t, T) => { useSet('plaza'); hideAll(); plaza.dancers.forEach(d => d.root.visible = false); plaza.crowd.forEach(d => d.root.visible = false);
   const hx = 1.4 + t * 1.25; const pose = walk(hx * 1.1, 1);
-  heroAt(hx, .55, Math.PI / 2, pose, t, { expr: 'happy', mouth: .8, smile: 1 }, { sat: .55, alpha: .8 });
-  const sunYaw = Math.atan2(-4, 7); applyPose(shade, walk(hx * 1.1 + 3, 1), t, { mood: 'happy', look: 1 }, 3); placeShade(shade, { x: hx + 1.9, z: 1.0, rise: 0, len: 1.0, yaw: sunYaw, turn: Math.PI / 2 - sunYaw });
+  heroAt(hx, .55, Math.PI / 2, pose, t, { expr: 'happy', mouth: .8, smile: 1 }, { sat: .55, alpha: .88 });
+  const sunYaw = Math.atan2(-7, 1); applyPose(shade, walk(hx * 1.1 + 3, 1), t, { mood: 'happy', look: 1 }, 3); placeShade(shade, { x: hx + 1.9, z: 1.0, rise: 0, len: 1.0, yaw: sunYaw, turn: Math.PI / 2 - sunYaw });
   // струи фонтана
   const M = new THREE.Matrix4(), c0 = plaza.fountain.position; for (let i = 0; i < plaza.N; i++) { const ph = (t * .55 + h1(i)) % 1, a = h1(i + 7) * Math.PI * 2, r = 2.1 * ph * (.8 + h1(i + 3) * .4);
     M.makeTranslation(c0.x + Math.cos(a) * r, .85 + Math.sin(ph * Math.PI) * 1.4 - ph * .4, c0.z + Math.sin(a) * r * .9); plaza.drops.setMatrixAt(i, M); } plaza.drops.instanceMatrix.needsUpdate = true; plaza.drops.visible = true;
@@ -187,20 +190,20 @@ S.S10 = (t, T) => { useSet('plaza'); hideAll(); plaza.dancers.forEach(d => d.roo
   return () => { const [sx, sy] = toScreen(hx, .9, .55); if (Math.abs(hx - plaza.fountain.position.x) < 1.6) motesSplash(t, sx, sy); sunHud(t, T, { y: 330 }); narr(t, .4, 4.9, '…а я впервые за год бежал.', { y: 470, size: 68, n: 18, accent: ['бежал'] }); };
 };
 // 11. Крыша на закате: тень на парапете; Сеня почти прозрачный
-S.S11 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true;
+S.S11 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 0;
   const hx = lerp(-3.0, -.7, ease(t, 0, 1.7, sm)); const pose = t < 1.7 ? walk(hx + 3, 0, { lean: .25 }) : keys(t, [[1.7, 'tired'], [2.6, 'tired'], [3.0, 'stand'], [3.3, 'reach']]);
-  heroAt(hx, -.3, t < 1.7 ? Math.PI / 2 : lerp(Math.PI / 2, .6, ease(t, 1.7, 2.6)), pose, t, { expr: t < 3 ? 'sad' : 'scared', mouth: Math.max(talk(t, 3.4, 4.6), t < 2.8 && t > 1.7 ? .5 : 0), lookX: .8 }, { sat: .25, alpha: .55 });
+  heroAt(hx, -.3, t < 1.7 ? Math.PI / 2 : lerp(Math.PI / 2, .6, ease(t, 1.7, 2.6)), pose, t, { expr: t < 3 ? 'sad' : 'scared', mouth: Math.max(talk(t, 3.4, 4.6), t < 2.8 && t > 1.7 ? .5 : 0), lookX: .8 }, { sat: .25, alpha: .72 });
   applyPose(shade, keys(t, [[0, 'stand'], [3.5, 'stand'], [3.9, { ...POSE.stand, headZ: .25, headX: .15 }]]), t, { mood: t < 3.6 ? 'calm' : 'sad', look: -1 }, 3);
   placeShade(shade, { x: 1.0, y: .55, z: -2.2, rise: 1, scale: 1.0 });
   roof.birds.forEach((b, i) => { b.position.set(-6 + ((t * 1.2 + i * 2.1) % 14), 4 + h1(i) * 2 + Math.sin(t * 3 + i) * .1, -12 - i); b.rotation.set(0, 0, Math.sin(t * 12 + i) * .4); });
   const [jx, jy] = hh(t, .02); cam(.15 + jx, 1.45 + jy, lerp(6.4, 6.0, ease(t, 0, 6)), .15, 1.05, -1.8, 40);
   FX = { fy: .5, fw: .26, blur: 7, bloom: .4, warm: .12 };
-  return () => { sunHud(t, T, { y: 330 }); narr(t, 3.3, 6.0, 'Вернись. Я исчезаю.', { y: 1380, size: 76, who: 'СЕНЯ' }); };
+  return () => { sunHud(t, T, { y: 330 }); narr(t, 3.3, 4.9, 'Вернись. Я исчезаю.', { y: 1380, size: 76, who: 'СЕНЯ' }); shadowSay(t, 4.9, 6.0, ['А мне похуй.'], { y: 560, size: 100 }); };
 };
 // 12. Тень складывается в буквы → город → лицо
 const VENT = (() => { const yaw = -.5, cx = 2.6 + Math.sin(yaw) * .62, cz = -.8 + Math.cos(yaw) * .62; return { yaw, cx, cz, nx: Math.sin(yaw), nz: Math.cos(yaw) }; })();
-const ventLetters = (t, t0, fadeOut = 1) => roof.paint(c => { c.globalAlpha = fadeOut; handLines(c, ['Ты гнался', 'за мной весь день.', 'Видел город?'], { x: 512, y: 200, size: 138, lh: 1.0, reveal: (t - t0) * 26, seed: 21, rot: -.03, drips: .4 }); c.globalAlpha = 1; });
-S.S12 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true;
+const ventLetters = (t, t0, fadeOut = 1) => roof.paint(c => { c.globalAlpha = fadeOut; handLines(c, ['Ты, долбоёб,', 'весь день', 'гнался за мной.', 'Город видел?'], { x: 512, y: 150, size: 120, lh: .95, reveal: (t - t0) * 30, seed: 21, rot: -.03, drips: .4 }); c.globalAlpha = 1; });
+S.S12 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = t < 2.5 ? 7 : 0;
   if (t < 2.5) { ventLetters(t, .5);
     applyPose(shade, POSE.stand, t, { mood: 'happy' }, 3); const melt = ease(t, .3, 1.4);
     placeShade(shade, { x: VENT.cx + VENT.nx * .01, y: 0, z: VENT.cz + VENT.nz * .01, yaw: VENT.yaw, rise: 1, scale: lerp(1, .2, melt), op: 1 - melt }); shade.holder.position.x += -.6 * VENT.nz * 0;
@@ -208,19 +211,19 @@ S.S12 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true;
     const d = 7.8; cam(VENT.cx + VENT.nx * d, 1.0, VENT.cz + VENT.nz * d, VENT.cx, .95, VENT.cz, 32); FX = { fy: .5, fw: .26, blur: 6, warm: .1, bloom: .2 };
     return () => {}; }
   ventLetters(t, -10);
-  if (t < 4.4) { const tt = t - 2.5; heroAt(-.2, -1.0, Math.PI, { ...POSE.stand, headX: -.1 }, t, {}, { sat: .3, alpha: .6 });
+  if (t < 4.4) { const tt = t - 2.5; heroAt(-.2, -1.0, Math.PI, { ...POSE.stand, headX: -.1 }, t, {}, { sat: .3, alpha: .75 });
     cam(.35, 1.45, lerp(2.2, 1.9, ease(tt, 0, 1.9)), -1.6, 1.3, -20, 40); FX = { fy: .5, fw: .3, blur: 6, warm: .14, bloom: .5 };
     return () => narr(t, 2.7, 4.4, 'Я этот город ни разу не видел.', { y: 1420, size: 64, n: 18 }); }
-  heroAt(-.2, -1.0, Math.PI, { ...POSE.stand, headX: -.12 }, t, { expr: 'happy', smile: lerp(.2, 1, ease(t, 4.6, 5.3)), wide: true, lookY: .3 }, { sat: .35, alpha: .65 });
+  heroAt(-.2, -1.0, Math.PI, { ...POSE.stand, headX: -.12 }, t, { expr: 'happy', smile: lerp(.2, 1, ease(t, 4.6, 5.3)), wide: true, lookY: .3 }, { sat: .35, alpha: 1 });
   cam(-.15, 1.12, -2.45, -.2, 1.06, -1.0, 32); FX = { fy: .42, fw: .25, blur: 9, warm: .16, bloom: .35 };
   return () => narr(t, 4.5, 6.0, 'Ни разу.', { y: 1400, size: 80 });
 };
 // 13. Тень возвращается: ложится к пяткам — цвет волной
-S.S13 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; ventLetters(t, -10, 1 - ease(t, 0, 1));
+S.S13 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 3; ventLetters(t, -10, 1 - ease(t, 0, 1));
   const CL = 2.0; const col = ease(t, CL, CL + .8);
   const rise = 1 - ease(t, 1.35, CL, sm); const wx = lerp(2.2, .0, ease(t, 0, 1.35, sm));
   const hp = t < CL ? keys(t, [[0, 'stand'], [1.0, { ...POSE.stand, headY: .4 }], [1.8, 'stand'], [2.3, { ...POSE.armsUp }], [2.9, 'stand']]) : keys(t, [[2.0, 'stand'], [2.3, 'armsUp'], [2.9, 'stand']]);
-  heroAt(0, -1.0, 0, hp, t, { expr: t < CL ? 'surprised' : 'happy', smile: col, mouth: t > CL && t < 2.6 ? .7 : 0, lookX: t < 1.4 ? .8 : 0 }, { sat: lerp(.3, 1, col), alpha: lerp(.6, 1, col) });
+  heroAt(0, -1.0, 0, hp, t, { expr: t < CL ? 'surprised' : 'happy', smile: col, mouth: t > CL && t < 2.6 ? .7 : 0, lookX: t < 1.4 ? .8 : 0 }, { sat: lerp(.3, 1, col), alpha: lerp(.75, 1, col) });
   const shPose = t < 1.35 ? walk((2.2 - wx) * 1.2, 0) : hp;
   applyPose(shade, shPose, t, { mood: 'happy', look: -1 }, 3);
   placeShade(shade, { x: wx, z: -1.0, rise, len: 1.25, yaw: 0, turn: t < 1.35 ? -Math.PI / 2 : 0 });
@@ -228,18 +231,17 @@ S.S13 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; ventLet
   FX = { fy: .52, fw: .28, blur: 6, warm: .12, bloom: .35 + (t > CL && t < CL + .4 ? .6 : 0) };
   return () => { if (t > CL && t < CL + .35) { ctx.fillStyle = `rgba(255,240,210,${(CL + .35 - t) * 2.2})`; ctx.fillRect(0, 0, 1080, 1920); }
     if (t < CL + .2) sunHud(t, T, { y: 330, k: 1 - ease(t, CL, CL + .2) });
-    shadowSay(t, 2.75, 5.2, ['Новые условия:', 'раз в неделю — туда,', 'где мы ещё не были.'], { y: 420, size: 82 }); };
+    shadowSay(t, 2.6, 5.2, ['Новые условия:', 'раз в неделю — туда,', 'где мы ещё не были.', 'Иначе — нахуй.'], { y: 400, size: 80 }); };
 };
 // 14. Ладонь к ладони
-S.S14 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.paint(() => {});
-  const touch = ease(t, .3, 1.0, sm); const pr = { ...POSE.stand, aL: [lerp(.1, 1.3, touch), lerp(.12, .7, touch), lerp(.15, .3, touch)], headX: -.05, headY: .3 };
-  const TX = Math.cos(VENT.yaw), TZ = -Math.sin(VENT.yaw); const fx = VENT.cx + VENT.nx * .55 + TX * .42, fz = VENT.cz + VENT.nz * .55 + TZ * .42;
-  heroAt(fx, fz, VENT.yaw + Math.PI, pr, t, { expr: 'happy' }, { cast: false });
-  applyPose(shade, { ...POSE.stand, aL: [lerp(.1, 1.5, touch) * 0 + lerp(0, 0, 0), lerp(.12, 1.45, touch), lerp(.15, .2, touch)], headX: -.05 }, t, { mood: 'happy' }, 3);
-  placeShade(shade, { x: VENT.cx + VENT.nx * .012 - TX * .2, z: VENT.cz + VENT.nz * .012 - TZ * .2, yaw: VENT.yaw, rise: 1, scale: 1.02 });
-  const d = 3.6; cam(fx + VENT.nx * d + VENT.nz * 2.0, 1.2, fz + VENT.nz * d - VENT.nx * 2.0, VENT.cx + VENT.nz * .15, 1.0, VENT.cz, 32);
-  FX = { fy: .48, fw: .26, blur: 7, warm: .12, bloom: .3 };
-  return () => { if (t > 1.0 && t < 1.5) { const [sx, sy] = toScreen(VENT.cx + VENT.nz * -.2, 1.1, VENT.cz); burst(t - 1.0, sx, sy, '#fff2c8', 16); ctx.fillStyle = `rgba(255,240,200,${(1.25 - t) * 1.2})`; if (t < 1.25) ctx.fillRect(0, 0, 1080, 1920); }
+S.S14 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 10; roof.paint(() => {});
+  const k = ease(t, .25, .95, sm); const bump = t > .95 ? Math.exp(-(t - .95) * 8) * Math.sin((t - .95) * 30) * .08 : 0;
+  heroAt(-.42 + k * .05, -1.0, Math.PI / 2, { ...POSE.stand, aL: [lerp(.1, 1.45, k) + bump, .1, lerp(.15, .1, k)], lean: .05 }, t, { expr: 'happy', smile: 1, mouth: t > 1 ? .5 : 0 }, { cast: false });
+  applyPose(shade, { ...POSE.stand, aR: [lerp(.1, 1.45, k) + bump, -.1, lerp(.15, .1, k)], lean: .05 }, t, { mood: 'happy' }, 3);
+  placeShade(shade, { x: .48 - k * .05, z: -1.0, rise: 1, scale: 1, turn: -Math.PI / 2 });
+  const [jx, jy] = hh(t, .015); cam(.03 + jx, 1.15 + jy, lerp(3.3, 3.0, ease(t, 0, 2.2)), .03, .85, -1.0, 34);
+  FX = { fy: .5, fw: .26, blur: 7, warm: .12, bloom: .35 };
+  return () => { if (t > .95 && t < 1.45) { const [sx, sy] = toScreen(.03, .82, -1.0); burst(t - .95, sx, sy, '#fff2c8', 18); if (t < 1.2) { ctx.fillStyle = `rgba(255,240,200,${(1.2 - t) * 1.6})`; ctx.fillRect(0, 0, 1080, 1920); } }
     narr(t, 1.0, 2.2, 'Договорились.', { y: 1400, size: 84, who: 'СЕНЯ' }); };
 };
 // 15. Крючок: «ПРОФСОЮЗ ТЕНЕЙ. ЗАБАСТОВКА — ЗАВТРА»
@@ -253,9 +255,9 @@ S.S15 = (t) => { useSet('night'); hideAll(); night.neon.visible = true;
   const dx = hx - night.lampX, dz = 1.2 - night.lampZ, yaw = Math.atan2(dx, dz);
   applyPose(shade, t < 2.6 ? pose : keys(t, [[2.6, 'stand'], [2.85, 'shrug']]), t, { mood: t < 2.6 ? 'calm' : 'sly', look: 1 }, 3);
   placeShade(shade, { x: hx, z: 1.2, rise: 0, len: 1.15 + Math.hypot(dx, dz) * .25, yaw, turn: (t < 1.6 ? Math.PI / 2 : Math.PI) - yaw });
-  const [jx, jy] = hh(t, .02); cam(-.2 + jx, 1.8 + jy, lerp(8.4, 7.6, ease(t, 0, 4.4)), -.2, 1.35, -1.8, 38);
+  const [jx, jy] = hh(t, .02); cam(.2 + jx, 1.9 + jy, lerp(9.8, 9.0, ease(t, 0, 4.4)), .2, 1.55, -1.8, 40);
   FX = { fy: .45, fw: .3, blur: 6, bloom: .55, warm: -.04 };
-  return () => narr(t, 2.8, 4.4, 'Завтра уходят все.', { y: 1450, size: 86, accent: ['все'] });
+  return () => { narr(t, 2.8, 4.4, 'Завтра уходят все.', { y: 1450, size: 86, accent: ['все'] }); shadowSay(t, 3.0, 4.4, ['Ну а хули.'], { y: 1180, size: 84 }); };
 };
 // 16. Финальная плашка
 S.S16 = (t) => { useSet('night'); hideAll(); renderer.setClearColor('#000'); FX = { skip: true };
