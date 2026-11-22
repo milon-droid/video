@@ -178,12 +178,12 @@ S.S8 = (t) => { useSet('day'); hideAll(); day.fence.position.x = 5.4;
 const DANCE = [{ aL: [0, 2.6, .3], aR: [0, -.4, .2], crouch: .05, hipsZ: .1 }, { aL: [.3, .6, 1.8], aR: [.3, -.6, 1.8], crouch: .1, lean: .1, lL: [.5, .6] }, { aL: [0, .4, .2], aR: [0, -2.6, .3], crouch: .05, hipsZ: -.1 }, { aL: [1.4, .2, .2], aR: [-.6, -.3, .2], twist: .4, lR: [.6, .4] }];
 const dance = (t, ph = 0) => { const k = (t + ph) * 1.7; const i = Math.floor(k) % 4; return keys(k % 1, [[0, DANCE[i]], [.45, DANCE[(i + 1) % 4]]]); };
 // 9. Площадь: тени танцоров + тень Сени без хозяина; Сеня врывается в круг
-S.S9 = (t) => { useSet('plaza'); hideAll(); plaza.sun.position.set(7, 4.6, -1); plaza.sun.target.position.set(0, 0, 0);
+S.S9 = (t) => { useSet('plaza'); hideAll(); plaza.sun.position.set(6, 3.6, -.8); plaza.sun.target.position.set(0, 0, 0);
   const pos = [[-.5, -.5], [.55, -1.0], [1.35, -.35]]; plaza.dancers.forEach((d, i) => { d.root.visible = true; d.root.position.set(pos[i][0], 0, pos[i][1]); d.root.rotation.y = .1 - i * .1; applyPose(d, dance(t, i * .25), t, { expr: 'happy', mouth: .3 }, 10 + i); });
   plaza.crowd.forEach((d, i) => { d.root.visible = true; const a = -1 + i / 6 * 2; d.root.position.set(Math.sin(a) * 3.6, 0, -2.6 - Math.cos(a) * .6); d.root.rotation.y = -a * .5; d.root.scale.setScalar(.92);
     const up = Math.floor(t * 4 + i) % 2; applyPose(d, { ...POSE.stand, aL: [1.2, .1, up ? 1.4 : 1.0], aR: [1.2, -.1, up ? 1.4 : 1.0] }, t, { expr: 'happy', mouth: .25 }, 20 + i); });
-  // тень Сени: встала с земли и танцует среди танцоров — плоская, чёрная, с глазами, круче всех
-  const d = bigDance(t, 1.9); applyPose(shade, d.pose, t, { mood: 'happy' }, 3); placeShade(shade, { x: -.15, z: .35, rise: 1, scale: 1.05, turn: d.turn, op: 1 }); shade.holder.position.y = d.hop;
+  // тень Сени лежит на земле, как тени танцоров (той же длины и направления), и танцует без хозяина
+  const sunYaw = Math.atan2(-6, .8); applyPose(shade, dance(t * 1.15, .6), t, { mood: 'happy' }, 3); placeShade(shade, { x: .95, z: .35, rise: 0, len: 1.7, yaw: sunYaw, turn: 0, op: 1 });
   const enter = ease(t, 1.1, 2.1, sm); const hx = lerp(-3.6, -1.6, enter);
   const pose = t < 2.1 ? walk(hx + 3.6, 1) : t < 2.5 ? keys(t, [[2.1, 'stand'], [2.4, { ...POSE.shrug }]]) : dance(t * .95, .1);
   heroAt(hx, .6, t < 2.1 ? Math.PI / 2 : .5, pose, t, { expr: t < 2.5 ? 'determined' : 'happy', mouth: t > 2.5 ? .5 : .2 }, { sat: .72, alpha: .92 }); fadeHand(hero.aL.el, .9);
