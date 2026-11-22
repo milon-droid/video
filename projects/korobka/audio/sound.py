@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """КОРОБКА — звук: своя музыкальная шкатулка + часы + синтез чихов + SFX из библиотек. → mix.wav (48 кГц, стерео)."""
 import json, subprocess, numpy as np, os, sys
-SR = 48000; DUR = 36.4; N = int(SR * DUR)
+SR = 48000; DUR = 35 + 4 / 30; N = int(SR * DUR); NE = N + 4 * SR   # хвост после конца заворачивается в начало (петля)
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
 LIB = os.path.join(ROOT, 'assets/sfx-library'); IDX = {e['id']: e for e in json.load(open(os.path.join(LIB, 'index.json')))}
 rng = np.random.default_rng(7)
-mix = np.zeros((N, 2)); bus = {'mus': np.zeros((N, 2)), 'sfx': np.zeros((N, 2)), 'amb': np.zeros((N, 2))}
+mix = np.zeros((N, 2)); bus = {'mus': np.zeros((NE, 2)), 'sfx': np.zeros((NE, 2)), 'amb': np.zeros((NE, 2))}
 
 def load(i):
     f = os.path.join(LIB, IDX[i]['file'])
@@ -13,8 +13,8 @@ def load(i):
     x = np.frombuffer(raw, np.float32).astype(float); return x / (np.abs(x).max() + 1e-9)
 def put(x, t, g=1., pan=0., b='sfx'):
     i = int(t * SR); x = np.asarray(x)
-    if i >= N: return
-    x = x[:N - i]; l, r = np.cos((pan + 1) * np.pi / 4), np.sin((pan + 1) * np.pi / 4)
+    if i >= NE: return
+    x = x[:NE - i]; l, r = np.cos((pan + 1) * np.pi / 4), np.sin((pan + 1) * np.pi / 4)
     bus[b][i:i + len(x), 0] += x * g * l * 1.41; bus[b][i:i + len(x), 1] += x * g * r * 1.41
 def rs(x, k):            # перепитч ресемплингом (k>1 — выше и короче)
     n = int(len(x) / k); return np.interp(np.arange(n) * k, np.arange(len(x)), x)
@@ -77,7 +77,6 @@ rev = fw[::-1]; T = 7.4; n = int(SR * T); u = np.arange(n) / n
 pos = np.cumsum(.8 + 4.5 * u ** 2); pos = pos / pos[-1] * (len(rev) - 1)
 seg = np.interp(pos, np.arange(len(rev)), rev) * np.minimum(1, u * 6)
 put(seg, 27.6, .5, 0, 'mus')
-play([(35.25, 57, .9), (35.25 + 1 / 3, 60, .8), (35.25 + 2 / 3, 64, .8)], .45, dec=2.2)  # петля
 
 # ---------- часы ----------
 def tick(hi=True, g=1.):
@@ -107,7 +106,7 @@ s0 = sneeze(1.0); put(s0, 13.22 - .55, .85, .1)                                 
 g = verb(lpv(rs(sneeze(1.0), .5), 2500), 2.2, .5); put(g, 16.2 - .55 / .5, 1.0, 0)     # великан сверху
 def gasp(g=1.):
     n = int(SR * .28); t = np.arange(n) / SR; return bp(noise(.28), 900, 3200) * np.sin(np.pi * t / t[-1]) ** 1.5 * g
-put(gasp(), 14.86, .5, .1); put(gasp(.8), 6.6, .45, .1); put(gasp(.7), 24.05, .5, 0)
+put(gasp(), 15.35, .5, .1); put(gasp(.8), 6.6, .45, .1); put(gasp(.7), 24.05, .5, 0)
 
 # ---------- SFX из библиотек ----------
 L = lambda i: load(i)
@@ -157,22 +156,29 @@ for k in range(9):
     put(rs(L('whoosh-fast-medium'), 1 + k * .08), tk, .3, (-1) ** k * .3)
 put(L('cinematic-slam-big'), 34.95, .9); put(L('impact-deep-hard'), 35.0, .8); put(thump(), 35.0, .8)
 # ночная комната: тихий шум и далёкий город на всё время
-amb = lpv(noise(DUR), 500) * .6 + lpv(noise(DUR), 120) * 1.2
+amb = lpv(noise(NE / SR), 500) * .6 + lpv(noise(NE / SR), 120) * 1.2
 put(amb[:N] * .05, 0, 1, 0, 'amb')
 
 # ---------- голос героя ----------
 VO = json.load(open(os.path.join(os.path.dirname(__file__), 'vo_times.json')))
-vo = np.zeros((N, 2)); act = np.zeros(N)
+vo = np.zeros((NE, 2)); act = np.zeros(NE)
 for vid, t0 in VO.items():
     f = os.path.join(os.path.dirname(__file__), '../assets/vo/ep1', vid + '.wav')
     raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', f, '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True).stdout
     x = np.frombuffer(raw, np.float32).astype(float); x /= np.abs(x).max() + 1e-9
     x = x - lpv(x, 90) * .9                                   # убрать гул
-    i = int(t0 * SR); x = x[:N - i]; vo[i:i + len(x), 0] += x; vo[i:i + len(x), 1] += x; act[i:i + len(x)] = 1
-duck = 1 - .68 * np.clip(lpv(act, 4) * 1.6, 0, 1)                # музыка и фон под голосом ≈ −10 дБ
-for b, k in (('mus', 1), ('amb', 1), ('sfx', .55)):
+    i = int(t0 * SR); x = x[:NE - i]; vo[i:i + len(x), 0] += x; vo[i:i + len(x), 1] += x; act[i:i + len(x)] = 1
+duck = 1 - .82 * np.clip(lpv(act, 4) * 1.6, 0, 1)                # музыка и фон под голосом ≈ −10 дБ
+for b, k in (('mus', 1), ('amb', 1), ('sfx', .8)):
     bus[b] *= (1 - (1 - duck) * k)[:, None]
-M = bus['mus'] * .9 + bus['sfx'] * 1.0 + bus['amb'] * 1.0 + vo * .62
+M = bus['mus'] * .9 + bus['sfx'] * 1.0 + bus['amb'] * 1.0 + vo * 1.0
+bg = bus['mus'] * .9 + bus['sfx'] + bus['amb']
+for vid, t0 in VO.items():
+    i, j = int(t0 * SR), int((t0 + 1.2) * SR)
+    r = lambda a: 20 * np.log10(np.sqrt(np.mean(a[i:j] ** 2)) + 1e-9)
+    print(vid, 'голос−фон', round(r(vo * 1.0) - r(bg), 1), 'дБ')
+tail = M[N:].copy(); M = M[:N]; M[:len(tail)] += tail          # бесшовная петля по звуку
+k = int(.03 * SR); M[:k] *= 1; 
 M /= np.abs(M).max() * 1.12
 out = os.path.join(os.path.dirname(__file__), 'mix.wav')
 import wave

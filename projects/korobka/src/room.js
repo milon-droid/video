@@ -164,7 +164,6 @@ function drawBox(ctx, k, tau, t) {
   } else {
     ctx.save(); ctx.translate(x0, y0); drawLabel(ctx, tau, ctx.getTransform().a); ctx.restore();
     ctx.strokeStyle = OUT; ctx.lineWidth = 5; ctx.strokeRect(x0, y0, BW, BH);
-    if (bs.cut < .5) { ctx.fillStyle = ink(.12, .02, .35); ctx.fillRect(468, y0, 26, 44); }
   }
 }
 
