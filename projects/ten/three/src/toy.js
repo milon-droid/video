@@ -60,7 +60,8 @@ export function makeToy(L = LOOK.senya, { shadow = false, uniq = false } = {}) {
     const cuff = mesh(G.cyl(.05, .05, .03), M(L.top2)); cuff.position.y = -.14; el.add(cuff);
     const hand = P(0, -.18, 0); el.add(hand); const hb = mesh(G.sph(.058, 16), M(L.skin)); hb.scale.set(.9, 1, .75); hand.add(hb);
     const th = mesh(G.cap(.02, .03), M(L.skin)); th.position.set(-s * .0 + .0, -.0, .05); th.rotation.x = .8; hand.add(th);
-    return { sh, el, hand }; };
+    const fing = mesh(G.cap(.022, .09), M(L.skin)); fing.position.set(0, -.1, 0); fing.visible = false; hand.add(fing);
+    return { sh, el, hand, fing }; };
   const leg = s => { const hp = P(s * .085, -.02, 0); hips.add(hp);
     const th = mesh(G.cap(.07, .1), M(L.pants)); th.position.y = -.08; hp.add(th);
     const kn = P(0, -.17, 0); hp.add(kn); const sn = mesh(G.cap(.062, .09), M(L.pants)); sn.position.y = -.07; kn.add(sn);
@@ -107,6 +108,7 @@ export function applyPose(T, pose, t, face = {}, seed = 1) {
   setA(T.aL, p.aL, -1); setA(T.aR, p.aR, 1);
   const setL = (Lg, [hip, knee]) => { Lg.hp.rotation.x = -hip - p.crouch * 2.2; Lg.kn.rotation.x = knee + p.crouch * 4; Lg.ft.rotation.x = -(knee + p.crouch * 4) + hip + p.crouch * 2.2; };
   setL(T.lL, p.lL); setL(T.lR, p.lR);
+  T.aR.fing.visible = !!face.finger; T.aL.fing.visible = !!face.fingerL;
   // лицо
   if (T.shadow) { const b = blinkK(t, seed + 9) * (face.open ?? 1); const m = face.mood || 'calm';
     T.eyes.forEach((e, i) => { const s = i ? 1 : -1; e.children.forEach(c => c.scale.set(1.25, (m === 'happy' ? .35 : m === 'wide' ? 1.1 : .7) * Math.max(.06, b), .3)); e.rotation.z = m === 'angry' ? s * .4 : m === 'sly' ? s * -.25 : m === 'sad' ? s * -.35 : 0; e.position.x = s * .085 + (face.look || 0) * .03; e.position.y = .02 + (m === 'happy' ? .01 : 0); });
