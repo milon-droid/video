@@ -9,6 +9,17 @@ items = [("probe2/q1.wav", "senya", .12, 1.0), ("probe2/q2.wav", "senya", 12.65,
 PICK = json.load(open(os.path.join(VO, 'ep1-pick.json'))) if os.path.exists(os.path.join(VO, 'ep1-pick.json')) else {}
 items += [(f"ep1/{PICK.get(l['id'], l['id'])}.wav", l['role'], l['t'], 1.0) for l in cfg['lines']]
 TRIM = PICK.get('_trim', {})  # id -> секунда, с которой начинать (отрезать слово-разгон «Так.»)
+# раздвинуть наложения: каждая реплика начинается не раньше конца предыдущей + 0,12 с
+import wave
+def dur(f, k, ss):
+    w = wave.open(os.path.join(VO, f)); return (w.getnframes() / w.getframerate() - (ss or 0)) * k
+items.sort(key=lambda x: x[2]); fixed = []; end = 0
+for f, role, t, tempo in items:
+    if not os.path.exists(os.path.join(VO, f)): continue
+    lid = os.path.basename(f).split('_')[0].replace('.wav', ''); t2 = max(t, end + .12); end = t2 + dur(f, (1 / 1.07 / .98 if role == 'senya' else 1 / .9 / 1.08) / tempo, TRIM.get(lid))
+    if t2 - t > .05: print(f'  {lid}: {t:.2f} → {t2:.2f}')
+    fixed.append((f, role, t2, tempo))
+items = fixed
 ins, flt = [], []
 for i, (f, role, t, tempo) in enumerate(items):
     p = os.path.join(VO, f)
