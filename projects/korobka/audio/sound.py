@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """КОРОБКА — звук: своя музыкальная шкатулка + часы + синтез чихов + SFX из библиотек. → mix.wav (48 кГц, стерео)."""
 import json, subprocess, numpy as np, os, sys
-SR = 48000; DUR = 39.5; N = int(SR * DUR); NE = N + 15 * SR   # хвост после конца заворачивается в начало (петля)
+SR = 48000; DUR = 40.5; N = int(SR * DUR); NE = N + 15 * SR   # хвост после конца заворачивается в начало (петля)
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
 LIB = os.path.join(ROOT, 'assets/sfx-library'); IDX = {e['id']: e for e in json.load(open(os.path.join(LIB, 'index.json')))}
 rng = np.random.default_rng(7)
@@ -59,7 +59,7 @@ def play(ev, gain=1., pan=0., dec=1.8, cut=None):
         put(tine(m, v, dec, det=(hash((t, m)) % 7 - 3) * 4e-4), t, gain, pan + (m - 60) / 40, 'mus')
 
 play(theme_notes(1.6, 11), .5, cut=13.0)                                   # знакомство
-play([(38.25, 57, .8), (38.25 + 1 / 3, 60, .7), (38.25 + 2 / 3, 64, .7), (38.25 + 1.0, 45, .6)], .4, dec=.5)   # закрывающая фраза — затихает до стыка
+play([(39.25, 57, .8), (39.25 + 1 / 3, 60, .7), (39.25 + 2 / 3, 64, .7), (39.25 + 1.0, 45, .6)], .4, dec=.5)   # закрывающая фраза — затихает до стыка
 play([(t, m + 12, v * .6) for t, m, v in theme_notes(7.4, 4, beat=1 / 6)], .25, cut=9.7)   # блеск при наезде
 play(theme_notes(13.5, 2, shift=12), .38, cut=15.0)                        # «он впереди» — выше
 # заводная шкатулка кончается: ноты реже и ниже
@@ -69,7 +69,7 @@ for i, m in enumerate([64, 62, 60, 59, 57, 56, 55]):
 play([(19.65 + i * .16, m, 1.) for i, m in enumerate([60, 64, 67, 72, 76])], .6, dec=1.4)   # триумф
 play([(19.65 + .8, 48, .8), (19.65 + .8, 55, .5), (19.65 + .8, 64, .6), (19.65 + .8, 72, .7)], .5, dec=2.5)
 # жуткая шкатулка внизу на раскрытии
-play([(t, m - 12, v) for t, m, v in theme_notes(28.4, 2, beat=.5)], .5, dec=3.0, cut=30.8)
+play([(t, m - 12, v) for t, m, v in theme_notes(29.4, 2, beat=.5)], .5, dec=3.0, cut=31.8)
 # перемотка: тема задом наперёд с ускорением
 fw = np.zeros(int(SR * 11))
 for t, m, v in theme_notes(0, 10, beat=1 / 3):
@@ -77,18 +77,18 @@ for t, m, v in theme_notes(0, 10, beat=1 / 3):
 rev = fw[::-1]; T = 7.4; n = int(SR * T); u = np.arange(n) / n
 pos = np.cumsum(.8 + 4.5 * u ** 2); pos = pos / pos[-1] * (len(rev) - 1)
 seg = np.interp(pos, np.arange(len(rev)), rev) * np.minimum(1, u * 6)
-put(seg, 30.6, .5, 0, 'mus')
+put(seg, 31.6, .5, 0, 'mus')
 
 # ---------- часы ----------
 def tick(hi=True, g=1.):
     n = int(SR * .05); t = np.arange(n) / SR
     y = bp(noise(.05), 1800, 5200 if hi else 3800) * np.exp(-t / .006) + np.sin(2 * np.pi * (2100 if hi else 1500) * t) * np.exp(-t / .01) * .4
     return y * g
-for s in range(0, 39):
-    if 24 <= s <= 27: continue
-    loud = .1 if s < 24 else .07
+for s in range(0, 40):
+    if 25 <= s <= 28: continue
+    loud = .1 if s < 25 else .07
     put(tick(s % 2 == 0), s + .5, loud, .35, 'amb')
-for t0 in (24.9, 25.7, 26.5):
+for t0 in (25.9, 26.7, 27.5):
     put(tick(True, 1), t0, .55, 0); put(rs(tick(False, 1), .5), t0, .4, 0)
 
 # ---------- синтез чихов и вдохов ----------
@@ -113,7 +113,7 @@ put(loadf('sneeze-d1bd38.mp3', .6, 2.4), 13.22 - (1.29 - .6), .9, .1)
 g = verb(lpv(rs(loadf('man-sneezing-sneeze-694a72.mp3', .5, 2.0), .62), 3000), 2.2, .45); put(g, 16.2 - (1.17 - .5) / .62, 1.0, 0)
 def gasp(g=1.):
     n = int(SR * .28); t = np.arange(n) / SR; return bp(noise(.28), 900, 3200) * np.sin(np.pi * t / t[-1]) ** 1.5 * g
-put(gasp(), 15.35, .5, .1); put(gasp(.8), 6.6, .45, .1); put(gasp(.7), 27.05, .5, 0)
+put(gasp(), 15.35, .5, .1); put(gasp(.8), 6.6, .45, .1); put(gasp(.7), 28.05, .5, 0)
 
 # ---------- SFX из библиотек ----------
 L = lambda i: load(i)
@@ -142,24 +142,24 @@ put(rs(loadf('breaking-pot-low-5b77f8.mp3', 1.3, 2.4), 1.7), 14.81 - .065, .35, 
 dirt = bp(noise(.6), 300, 2500) * np.exp(-np.arange(int(SR * .6)) / SR / .15); put(dirt, 17.97, .5, .1)
 put(L('pop-large-in'), 19.7, .4); put(L('impact-light-firm'), 20.05, .55); put(rs(L('impact-light-firm'), .9), 20.08, .5)
 # страх: сердце, гул, звон
-hb = L('bsb-heartbeat-slow'); put(hb[:int(SR * 3.4)] * np.linspace(.3, 1, int(SR * 3.4))[:len(hb[:int(SR * 3.4)])], 24.0, .7)
+hb = L('bsb-heartbeat-slow'); put(hb[:int(SR * 3.4)] * np.linspace(.3, 1, int(SR * 3.4))[:len(hb[:int(SR * 3.4)])], 25, .7)
 n = int(SR * 3.4); tdr = np.arange(n) / SR
 drone = (np.sin(2 * np.pi * 55 * tdr) + .5 * np.sin(2 * np.pi * 58.3 * tdr) + .3 * np.sin(2 * np.pi * 110.7 * tdr)) * (tdr / 3.4) ** 2
-put(drone, 23.9, .35, 0, 'amb')
-ring = np.sin(2 * np.pi * 6200 * tdr) * (tdr / 3.4) ** 3 * .05; put(ring, 23.9, .5)
-put(L('sting-airy-short'), 24.0, .25)
+put(drone, 24.9, .35, 0, 'amb')
+ring = np.sin(2 * np.pi * 6200 * tdr) * (tdr / 3.4) ** 3 * .05; put(ring, 24.9, .5)
+put(L('sting-airy-short'), 25, .25)
 # взгляд вверх → тишина → удар
-put(L('cinematic-thunder-big'), 27.62, .55); put(L('impact-deep-hard'), 27.62, .8)
+put(L('cinematic-thunder-big'), 28.62, .55); put(L('impact-deep-hard'), 28.62, .8)
 n = int(SR * 3); tp = np.arange(n) / SR
 pad = sum(np.sin(2 * np.pi * mtof(m) * tp + i) for i, m in enumerate([45, 52, 57, 60, 64])) * np.minimum(1, tp / 1.2) * np.exp(-np.maximum(0, tp - 2) * 2)
-put(lpv(pad, 1500) * .12, 28.3, .8, 0, 'mus')
-put(L('whoosh-slow-soft'), 28.4, .5); put(L('whoosh-slow-soft'), 29.95, .4)
+put(lpv(pad, 1500) * .12, 29.3, .8, 0, 'mus')
+put(L('whoosh-slow-soft'), 29.4, .5); put(L('whoosh-slow-soft'), 30.95, .4)
 # перемотка
-cas = L('bsb-cassette-rewind'); put(cas[:int(SR * 7.4)], 30.6, .5)
+cas = L('bsb-cassette-rewind'); put(cas[:int(SR * 7.4)], 31.6, .5)
 for k in range(9):
-    tk = 30.6 + 7.4 * np.sqrt((k + 1) / 9) - .12
+    tk = 31.6 + 7.4 * np.sqrt((k + 1) / 9) - .12
     put(rs(L('whoosh-fast-medium'), 1 + k * .08), tk, .3, (-1) ** k * .3)
-put(L('cinematic-slam-big')[:int(1.3 * SR)] * np.linspace(1, 0, int(1.3 * SR)) ** 2, 37.95, .9); put(L('impact-deep-hard'), 38.0, .8); put(thump(), 38.0, .8)
+put(L('cinematic-slam-big')[:int(1.3 * SR)] * np.linspace(1, 0, int(1.3 * SR)) ** 2, 38.95, .9); put(L('impact-deep-hard'), 39, .8); put(thump(), 39, .8)
 # ночная комната: тихий шум и далёкий город на всё время
 amb = lpv(noise(NE / SR), 500) * .6 + lpv(noise(NE / SR), 120) * 1.2
 put(amb[:N] * .05, 0, 1, 0, 'amb')

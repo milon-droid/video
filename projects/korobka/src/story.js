@@ -22,7 +22,7 @@ const T = {
     [8.3, [850, 1305]], [8.6, [790, 900], 'out'], [9.3, [790, 900]], [9.7, [850, 1305]],
     [17.1, [850, 1305]], [17.35, [760, 720], 'out'], [19.5, [760, 720]], [20.05, [846, 1300], 'back'], [24.5, [846, 1300]], [25.0, [880, 1220]]]),
 };
-const PLAN0 = 20.6, PLAN = 3;                 // «планы» героя: время героя стоит, он мечтает
+const PLAN0 = 20.6, PLAN = 4;                 // «планы» героя: время героя стоит, он мечтает
 const warp = t => t < PLAN0 ? t : t < PLAN0 + PLAN ? PLAN0 : t - PLAN;
 function heroPose(tr, br) {
   const t = warp(tr), pl = tr > PLAN0 && tr < PLAN0 + PLAN ? sstep(PLAN0, PLAN0 + .3, tr) * (1 - sstep(PLAN0 + PLAN - .3, PLAN0 + PLAN, tr)) : 0;
@@ -42,7 +42,7 @@ function heroPose(tr, br) {
     P.browUp = lerp(P.browUp, .7, pl); P.furrow = lerp(P.furrow, 0, pl);
     const hb = [790 + cnt * 12, 880 - Math.abs(Math.sin(u * 4.5)) * 30];
     P.hB = [lerp(P.hB[0], hb[0], pl), lerp(P.hB[1], hb[1], pl)];
-    if (u > 2.3) { const w = sstep(2.3, 2.5, u); P.mouthO = w * pl; P.wide = w * .8 * pl; }   // «Вау»
+    if (u > 3.65) { const w = sstep(3.65, 3.8, u); P.mouthO = w * pl; P.wide = w * .8 * pl; }   // «Вау»
   }
   P.hB = [P.hB[0] + (t > 8.6 && t < 9.3 ? Math.sin((t - 8.6) * 18) * 26 : 0), P.hB[1]];
   if (br === 'A' && t > 14.6) {        // будущее, которого не случилось: не заметил, получил горшком

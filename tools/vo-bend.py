@@ -8,14 +8,14 @@
 """
 import argparse, subprocess, numpy as np, shutil, re
 ap = argparse.ArgumentParser(); ap.add_argument("wav"); ap.add_argument("word"); ap.add_argument("--peak", type=float, default=3.5)
-ap.add_argument("--at", type=float, default=.45); ap.add_argument("--tail", type=float, default=1.0); a = ap.parse_args()
+ap.add_argument("--at", type=float, default=.45); ap.add_argument("--tail", type=float, default=1.0); ap.add_argument("--lang", default="ru"); a = ap.parse_args()
 from faster_whisper import WhisperModel
 pcm = np.frombuffer(subprocess.run(["ffmpeg", "-v", "error", "-i", a.wav, "-ac", "1", "-ar", "16000", "-f", "f32le", "-"], capture_output=True, check=True).stdout, np.float32)
-segs, _ = WhisperModel("small", device="cpu", compute_type="int8").transcribe(pcm, language="ru", word_timestamps=True)
+segs, _ = WhisperModel("small", device="cpu", compute_type="int8").transcribe(pcm, language=a.lang, word_timestamps=True)
 key = a.word.lower().replace("ё", "е"); hit = None
 for s in segs:
     for w in s.words:
-        if re.sub(r"[^а-яё]", "", w.word.lower()).replace("ё", "е") == key: hit = (w.start, w.end)
+        if re.sub(r"[^a-zа-яё]", "", w.word.lower()).replace("ё", "е") == key: hit = (w.start, w.end)
 if not hit: raise SystemExit(f"слово «{a.word}» не найдено")
 s0, s1 = hit; L = s1 - s0
 pts = [(s0 - .02, 0), (s0 + L * a.at * .5, a.peak * .45), (s0 + L * a.at, a.peak), (s0 + L * min(.95, a.at + .3), (a.peak + a.tail) / 2), (s1, a.tail), (s1 + .15, 0)]
