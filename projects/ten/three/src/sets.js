@@ -123,9 +123,9 @@ export function poseCat(C, t, hiss = 0) {
 // ===== КУХНЯ =====
 export const kitchen = (() => {
   const g = new THREE.Group();
-  g.add(new THREE.HemisphereLight('#fff0dc', '#a8785a', .28));
-  const sun = new THREE.DirectionalLight('#fff0c8', 8.0); sun.position.set(-5, 2.4, 1.6); sun.target.position.set(.6, 0, -.3); sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -3.5, right: 3.5, top: 3.5, bottom: -3.5, near: .5, far: 20 }); sun.shadow.bias = -.0004; sun.shadow.radius = 2; g.add(sun, sun.target);
+  g.add(new THREE.HemisphereLight('#fff0dc', '#a8785a', .9));
+  const sun = new THREE.DirectionalLight('#fff0c8', 4.2); sun.position.set(-5, 4.2, 2.2); sun.target.position.set(.6, 0, -.3); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: .5, far: 20 }); sun.shadow.bias = -.0005; sun.shadow.radius = 3; g.add(sun, sun.target);
   const planks = canvasTex(512, 512, (c) => { for (let i = 0; i < 8; i++) { c.fillStyle = `hsl(28,${40 + h1(i) * 10}%,${46 + h1(i + 3) * 8}%)`; c.fillRect(0, i * 64, 512, 62); c.fillStyle = 'rgba(80,40,20,.25)'; c.fillRect(0, i * 64 + 62, 512, 2); } });
   planks.wrapS = planks.wrapT = THREE.RepeatWrapping; planks.repeat.set(3, 3);
   const floor = mesh(G.plane(10, 10), new THREE.MeshStandardMaterial({ map: planks, roughness: .8 }), false, true); floor.rotation.x = -Math.PI / 2; g.add(floor);
@@ -155,11 +155,15 @@ export const kitchen = (() => {
   const toast = mesh(G.rbox(.3, .2, .18, .04), clay('#d8dce4', { roughness: .35 })); add(g, toast, 1.95, 1.06, -1.42);
   // лампа-абажур сверху
   const shade = mesh(G.cyl(.12, .3, .25, 24, 1), clay('#ffcf6a')); add(g, shade, .2, 3.3, -.4);
-  const cat = makeCat(); g.add(cat.g); cat.g.position.set(.95, 0, .55); cat.g.rotation.y = .3;
+  const cat = makeCat(); g.add(cat.g); cat.g.position.set(1.25, 0, .25); cat.g.rotation.y = .3;
+  // пар над чайником: комки, отбрасывают тень на стену
+  const steam = Array.from({ length: 7 }, () => { const m = mesh(G.sph(.07, 12), new THREE.MeshStandardMaterial({ color: '#ffffff', transparent: true, opacity: .55, roughness: 1 }), false, false); g.add(m); return m; });
+  const blobTex = canvasTex(64, 64, (c) => { const gr = c.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(40,22,12,1)'); gr.addColorStop(.6, 'rgba(40,22,12,.6)'); gr.addColorStop(1, 'rgba(60,35,20,0)'); c.fillStyle = gr; c.fillRect(0, 0, 64, 64); });
+  const steamSh = steam.map(() => { const m = mesh(G.plane(.3, .3), new THREE.MeshBasicMaterial({ map: blobTex, transparent: true, depthWrite: false, opacity: .5 }), false, false); g.add(m); return m; });
   // коврик
   const rug = mesh(G.cyl(.9, .9, .02, 40), clay('#7a8ac8'), false, true); rug.scale.set(1, 1, .6); add(g, rug, .2, .01, .3);
   reg('kitchen', g, new THREE.Color('#f6dcb8'));
-  return { g, cat, kettle, sun };
+  return { g, cat, kettle, sun, steam, steamSh };
 })();
 
 // ===== КОРИДОР (стена-холст для писем) =====
@@ -259,8 +263,8 @@ export const plaza = (() => {
   const cols = ['#f0a878', '#f6d48a', '#9ad0c8', '#e88a9a', '#a8b8f0'];
   for (let i = 0; i < 9; i++) building(g, -13 + i * 3.3, -8, 3.0, 4 + h1(i + 40) * 4, 2.5, cols[i % 5], '#fff6dc', 60 + i, .5);
   // светлая стена дома за площадью (на неё ложатся тени танцоров)
-  const FZ = -3.2; const fac = mesh(G.box(20, 6, .3), new THREE.MeshStandardMaterial({ map: canvasTex(256, 96, (c) => { c.fillStyle = '#f4e4c8'; c.fillRect(0, 0, 256, 96); for (let i = 0; i < 300; i++) { c.fillStyle = `rgba(160,120,80,${h1(i) * .08})`; c.fillRect(h1(i + 1) * 256, h1(i + 2) * 96, 3, 3); } c.fillStyle = 'rgba(160,120,90,.25)'; c.fillRect(0, 88, 256, 8); }), roughness: .95 }), true, true); add(g, fac, 0, 3, FZ - .15);
-  [-6, -3.6, 3.6, 6].forEach(x => { add(g, mesh(G.rbox(1.1, 1.5, .1, .04), clay('#8ab0d0', { roughness: .2 })), x, 3.6, FZ + .02); add(g, mesh(G.rbox(1.25, .12, .25, .03), clay('#c8a888')), x, 2.8, FZ + .08); });
+  const FZ = -3.2; const fac = mesh(G.box(20, 6, .3), new THREE.MeshStandardMaterial({ map: canvasTex(256, 96, (c) => { c.fillStyle = '#f4e4c8'; c.fillRect(0, 0, 256, 96); for (let i = 0; i < 300; i++) { c.fillStyle = `rgba(160,120,80,${h1(i) * .08})`; c.fillRect(h1(i + 1) * 256, h1(i + 2) * 96, 3, 3); } c.fillStyle = 'rgba(160,120,90,.25)'; c.fillRect(0, 88, 256, 8); }), roughness: .95 }), true, true); add(g, fac, 0, 3, FZ - .15); fac.visible = false;
+  [].forEach(x => { add(g, mesh(G.rbox(1.1, 1.5, .1, .04), clay('#8ab0d0', { roughness: .2 })), x, 3.6, FZ + .02); add(g, mesh(G.rbox(1.25, .12, .25, .03), clay('#c8a888')), x, 2.8, FZ + .08); });
   // фонтан
   const fnt = new THREE.Group(); add(fnt, mesh(G.cyl(1.6, 1.7, .35, 48), clay('#c8c0c8')), 0, .175, 0); const water = mesh(G.cyl(1.45, 1.45, .05, 48), new THREE.MeshStandardMaterial({ color: '#7ac8f0', roughness: .15, metalness: .1 }), false, true); add(fnt, water, 0, .3, 0);
   add(fnt, mesh(G.cyl(.18, .25, .7, 20), clay('#c8c0c8')), 0, .5, 0);
@@ -309,6 +313,34 @@ export const roof = (() => {
   const paint = fn => { const c = C.getContext('2d'); c.fillStyle = '#d8b0a0'; c.fillRect(0, 0, 1024, 768); for (let i = 0; i < 400; i++) { c.fillStyle = `rgba(90,50,40,${h1(i) * .12})`; c.fillRect(h1(i + 1) * 1024, h1(i + 2) * 768, 4, 4); } fn(c); tex.needsUpdate = true; };
   reg('roof', g, skyTex([[0, '#2a1e5a'], [.35, '#9a3a7a'], [.62, '#ff7a4a'], [.8, '#ffc07a'], [1, '#ffe0a0']]), new THREE.Fog('#ff9a6a', 20, 95));
   return { g, sunL, vent, paint, birds, sunDisk, fill };
+})();
+
+// ===== КЛУБ (видео в телефоне): тёмный зал, прожектора, диско-шар, светлое пятно на стене — там танцует тень =====
+export const club = (() => {
+  const g = new THREE.Group(); const WZ = -2.2;
+  g.add(new THREE.HemisphereLight('#6a4aff', '#200a30', .35));
+  const floor = mesh(G.plane(30, 30), clay('#140c20', { roughness: .35, metalness: .3 }), false, true); floor.rotation.x = -Math.PI / 2; g.add(floor);
+  const wall = mesh(G.box(14, 6, .2), clay('#6a6080'), false, true); add(g, wall, 0, 3, WZ - .1);
+  const stage = mesh(G.rbox(6, .35, 1.4, .04), clay('#2a1a3a'), true, true); add(g, stage, 0, .175, WZ + .7);
+  // главный прожектор — белое пятно на стене за тенью
+  const key = new THREE.SpotLight('#fff4e8', 170, 14, .2, .3, 1.2); key.position.set(0, 1.6, 4.5); key.target.position.set(0, 1.4, WZ); g.add(key, key.target);
+  const cols = ['#ff3a9a', '#3ad8ff', '#ffd23a', '#9a5aff']; const spots = cols.map((c, i) => { const sp = new THREE.SpotLight(c, 160, 16, .22, .4, 1.2); sp.position.set(-3 + i * 2, 4.6, 1.5); g.add(sp, sp.target); return sp; });
+  // лучи (аддитивные конусы)
+  const beamM = c => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+  const beams = cols.map(c => { const b = new THREE.Mesh(new THREE.ConeGeometry(.9, 6, 24, 1, true), beamM(c)); g.add(b); return b; });
+  // диско-шар
+  const ball = new THREE.Group(); ball.add(mesh(G.sph(.35, 24), new THREE.MeshStandardMaterial({ color: '#c8c8d8', metalness: 1, roughness: .15 }), false, false));
+  for (let i = 0; i < 60; i++) { const a = h1(i) * Math.PI * 2, b = Math.acos(h1(i + 7) * 2 - 1); const d = mesh(G.sph(.03, 6), glow('#ffffff', 1.5), false, false); d.position.set(Math.sin(b) * Math.cos(a) * .36, Math.cos(b) * .36, Math.sin(b) * Math.sin(a) * .36); ball.add(d); }
+  add(g, ball, 0, 3.9, -.4);
+  // толпа силуэтами на переднем плане
+  const crowd = Array.from({ length: 9 }, (_, i) => { const p = new THREE.Group(); add(p, mesh(G.cap(.22, .5), clay('#0a0610')), 0, .55, 0); add(p, mesh(G.sph(.2), clay('#0a0610')), 0, 1.15, 0); add(g, p, (i < 5 ? -3.4 + i * .45 : 1.6 + (i - 5) * .45), 0, .2 + h1(i) * .4); p.scale.setScalar(.8); return p; });
+  reg('club', g, new THREE.Color('#0a0612'), new THREE.Fog('#1a0a2a', 12, 26));
+  const update = t => {
+    spots.forEach((sp, i) => { const x = Math.sin(t * 1.3 + i * 1.7) * 2.2, y = 1.6 + Math.cos(t * 1.1 + i) * .8; sp.target.position.set(x, y, WZ); const b = beams[i]; const from = sp.position, to = new THREE.Vector3(x, y, WZ);
+      const mid = from.clone().add(to).multiplyScalar(.5), len = from.distanceTo(to); b.position.copy(mid); b.scale.set(1, len / 6, 1); b.lookAt(to); b.rotateX(-Math.PI / 2); });
+    ball.rotation.y = t * .8; crowd.forEach((p, i) => { p.position.y = Math.abs(Math.sin(t * 4.2 + i)) * .12; });
+  };
+  return { g, update, wallZ: WZ };
 })();
 
 export { makeShade, placeShade, applyPose, lerp, clamp };

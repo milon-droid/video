@@ -29,18 +29,23 @@ function scribbleOval(cx, cy, rx, ry, k, color = RED) { if (k <= 0) return; ctx.
 function shadowDoodle(x, y, s, t) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(0, -30, 26, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(-26, -8); ctx.quadraticCurveTo(0, -18, 26, -8); ctx.lineTo(34, 50); ctx.lineTo(-34, 50); ctx.fill();
   const b = (t * 1.3) % 3 < .12 ? .15 : 1; ctx.fillStyle = '#fff'; [-1, 1].forEach(sd => { ctx.beginPath(); ctx.ellipse(sd * 10, -32, 7, 3.5 * b, sd * -.2, 0, 7); ctx.fill(); }); ctx.restore(); }
 
-// записка P.S. (отдельное «окно»): акцент на «ДО ЗАКАТА»
+// «окно»-правило (не слова тени): официальная карточка «ЗАКОН ТЕНЕЙ», акцент — «ДО ЗАКАТА»
 export function psNote(t, t0, out = 99) {
   if (t < t0) return; const o = 1 - ease(t, out, out + .25); if (o <= 0) return; ctx.save(); ctx.globalAlpha = o;
-  const done = paperCard(t, t0, 860, 820, 540, 860 + ease(t, out, out + .25) * 600, -.05);
-  hand('P.S.', -370, -270, 150, RED);
-  const a = t0 + .35; hand(typed('Без тени ты продержишься', t, a, 30), -380, -150, 80);
-  const k2 = ease(t, a + .85, a + 1.05, back); ctx.save(); ctx.translate(-20, -20); ctx.scale(k2, k2); hand('ДО ЗАКАТА.', 0, 0, 160, RED, 'center'); ctx.restore();
-  scribbleOval(-20, -66, 370, 96, ease(t, a + 1.0, a + 1.5));
-  hand(typed('Потом станешь как я.', t, a + 1.35, 32), -380, 120, 80); if (t > a + 1.9) shadowDoodle(320, 80, 2.0 * clamp((t - a - 1.9) * 5), t);
-  const w4 = hand(typed('Удачи, лох.', t, a + 2.0, 30), -380, 260, 90);
-  if (t > a + 2.4) { ctx.strokeStyle = INK; ctx.lineWidth = 5; ctx.beginPath(); for (let i = 0; i <= 20; i++) { const xx = -380 + i / 20 * w4 * clamp((t - a - 2.4) * 4); ctx.lineTo(xx, 285 + Math.sin(i * 1.4) * 6); } ctx.stroke(); }
-  done(); ctx.restore();
+  const k = spring(t, t0, 1.6, 6.5), sc = lerp(.4, 1, clamp(k, 0, 1.15)); ctx.translate(540, 900 + ease(t, out, out + .25) * 700); ctx.rotate(lerp(.25, -.03, clamp(k))); ctx.scale(sc, sc);
+  const W = 880, Hh = 900; ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(-W / 2 + 18, -Hh / 2 + 22, W, Hh);
+  ctx.fillStyle = '#f6efe0'; ctx.fillRect(-W / 2, -Hh / 2, W, Hh); ctx.fillStyle = '#1a1424'; ctx.fillRect(-W / 2, -Hh / 2, W, 150);
+  ctx.textAlign = 'center'; ctx.fillStyle = '#f6efe0'; ctx.font = '800 60px Unb'; ctx.fillText('ЗАКОН ТЕНЕЙ', 0, -Hh / 2 + 95);
+  ctx.fillStyle = '#ffcf4a'; ctx.font = '600 26px Unb'; ctx.fillText('ПРАВИЛО № 1', 0, -Hh / 2 + 132);
+  const a = t0 + .3; ctx.fillStyle = INK; ctx.font = '700 64px Unb';
+  [['Человек без тени', -210], ['держится', -125]].forEach(([l, y], i) => { const kk = ease(t, a + i * .25, a + i * .25 + .25); ctx.globalAlpha = o * kk; ctx.fillText(l, 0, y); }); ctx.globalAlpha = o;
+  const k2 = ease(t, a + .6, a + .85, back); ctx.save(); ctx.translate(0, 0); ctx.scale(k2, k2); ctx.fillStyle = RED; ctx.font = '900 112px Unb'; ctx.fillText('ДО ЗАКАТА', 0, 20); ctx.restore();
+  scribbleOval(0, -18, 380, 92, ease(t, a + .85, a + 1.35));
+  [['Потом он сам', 150], ['становится тенью.', 230]].forEach(([l, y], i) => { const kk = ease(t, a + 1.3 + i * .25, a + 1.55 + i * .25); ctx.globalAlpha = o * kk; ctx.fillStyle = INK; ctx.font = '700 60px Unb'; ctx.fillText(l, 0, y); }); ctx.globalAlpha = o;
+  // песочные часы-солнце и печать
+  if (t > a + 1.9) { const kk = ease(t, a + 1.9, a + 2.1); ctx.save(); ctx.translate(250, 345); ctx.rotate(-.2); ctx.scale(lerp(2.4, 1, kk), lerp(2.4, 1, kk)); ctx.globalAlpha = o * kk; ctx.strokeStyle = RED; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(0, 0, 70, 0, 7); ctx.stroke(); ctx.fillStyle = RED; ctx.font = '800 22px Unb'; ctx.fillText('БЕЗ', 0, -14); ctx.fillText('ИСКЛЮ-', 0, 12); ctx.fillText('ЧЕНИЙ', 0, 36); ctx.restore(); }
+  ctx.globalAlpha = o; ctx.fillStyle = '#ffb84a'; ctx.beginPath(); ctx.arc(-330, 340, 34, Math.PI, 0); ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(-390, 342); ctx.lineTo(-270, 342); ctx.stroke();
+  ctx.restore();
 }
 
 // записка «Новые условия» (то же «окно»), переходит в договор
@@ -94,9 +99,9 @@ export function feedUI(t, r) {
   icon(665, yy => { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(col - 18, yy + 12); ctx.quadraticCurveTo(col - 14, yy - 10, col + 6, yy - 8); ctx.lineTo(col + 6, yy - 18); ctx.lineTo(col + 22, yy - 2); ctx.lineTo(col + 6, yy + 14); ctx.lineTo(col + 6, yy + 4); ctx.quadraticCurveTo(col - 8, yy + 2, col - 18, yy + 12); ctx.fill(); }, 'Поделиться');
   // летящие сердечки
   for (let i = 0; i < 6; i++) { const ph = (t * .9 + i / 6) % 1; ctx.globalAlpha = 1 - ph; ctx.fillStyle = i % 2 ? '#ff6a9a' : '#ff2a5a'; const hx = col - 10 - Math.sin(ph * 6 + i) * 18, hy = 500 - ph * 220; ctx.beginPath(); ctx.moveTo(hx, hy + 7); ctx.bezierCurveTo(hx - 15, hy - 5, hx - 9, hy - 16, hx, hy - 8); ctx.bezierCurveTo(hx + 9, hy - 16, hx + 15, hy - 5, hx, hy + 7); ctx.fill(); } ctx.globalAlpha = 1;
-  ctx.textAlign = 'left'; ctx.fillStyle = '#fff'; ctx.font = '800 20px Unb'; ctx.fillText('@kryshi_goroda', 18, 760);
-  ctx.font = '500 18px Unb'; ctx.fillText('тень танцует сама по себе', 18, 790); ctx.fillText('это вообще нормально?? 😳'.replace(' 😳', ''), 18, 815);
-  ctx.font = '500 15px Unb'; ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillText('♫ крыша ТЦ «Ласточка»', 18, 845);
+  ctx.textAlign = 'left'; ctx.fillStyle = '#fff'; ctx.font = '800 20px Unb'; ctx.fillText('@club_lastochka', 18, 760);
+  ctx.font = '500 18px Unb'; ctx.fillText('в клубе танцует тень. без человека', 18, 790); ctx.fillText('это вообще нормально?? 😳'.replace(' 😳', ''), 18, 815);
+  ctx.font = '500 15px Unb'; ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillText('♫ клуб «Ласточка» · вчера ночью', 18, 845);
   ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(0, 872, 440, 4); ctx.fillStyle = '#fff'; ctx.fillRect(0, 872, 440 * ((t * .35) % 1), 4);
   ctx.restore();
 }
