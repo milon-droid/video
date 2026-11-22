@@ -136,6 +136,7 @@ export function placeShade(Sh, { x = 0, y = 0, z = 0, rise = 1, len = 1.3, yaw =
 // растворение героя: sat 0…1 (обесцвечивание), alpha — прозрачность, cast — отбрасывает ли настоящую тень
 export function setFade(T, sat = 1, alpha = 1, cast = false) {
   T.root.traverse(o => { if (!o.isMesh) return; const m = o.material; if (!m.color) return; if (!m.userData.c0) m.userData.c0 = m.color.clone();
+    if (m.emissive) m.emissiveIntensity = 0;
     const c = m.userData.c0, g = c.r * .3 + c.g * .59 + c.b * .11; m.color.setRGB(lerp(g, c.r, sat) * lerp(1.15, 1, sat), lerp(g, c.g, sat) * lerp(1.15, 1, sat), lerp(g, c.b, sat) * lerp(1.25, 1, sat));
     const tr = alpha < .999; if (m.alphaHash !== tr) { m.alphaHash = tr; m.needsUpdate = true; } m.transparent = false; m.opacity = alpha; o.castShadow = cast; });
 }

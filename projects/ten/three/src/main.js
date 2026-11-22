@@ -107,7 +107,7 @@ S.S6 = (t, T) => { useSet('hall'); hideAll(); paintLetter(t + 10, .2, .2 + 10);
   const tt = t - 2.3; const pose = { ...POSE.stand, aR: [1.35, -.35, 1.25], headX: .15, headY: .15 };
   heroAt(0, .4, .15, pose, t, { expr: 'scared', lookX: .5, lookY: .2, wide: true, mouth: .3 }, {});
   // растворение кисти
-  hero.aR.hand.traverse(o => { if (o.isMesh) { o.material.alphaHash = true; o.material.transparent = false; o.material.opacity = 1 - ease(tt, .3, 2.2) * .65; o.material.emissive = new THREE.Color('#5a7aff'); o.material.emissiveIntensity = ease(tt, .3, 2.2) * .5; } });
+  hero.aR.hand.traverse(o => { if (o.isMesh && o.material.emissive) { if (!o.material.alphaHash) { o.material.alphaHash = true; o.material.needsUpdate = true; } o.material.opacity = 1 - ease(tt, .3, 2.2) * .65; o.material.emissive.set('#5a7aff'); o.material.emissiveIntensity = ease(tt, .3, 2.2) * .5; } });
   const hp = worldOf(hero.aR.hand), hd = worldOf(hero.head); const mid = hp.clone().lerp(hd, .45); cam(mid.x + .45, mid.y + .05, mid.z + 1.35, mid.x, mid.y, mid.z, 34);
   FX = { fy: .45, fw: .2, blur: 10, bloom: .3, warm: -.06 };
   return () => { const [sx, sy] = toScreen(hp.x, hp.y + .03, hp.z); sparkles(t, sx, sy - 60, ease(tt, .3, 2)); sunHud(tt, T, { t0: .5, y: 330 }); narr(t, 2.5, 5.0, 'Пальцы уже просвечивают.', { y: 1560, size: 66, accent: ['просвечивают'] }); };
@@ -283,7 +283,7 @@ window.renderFrame = async T => {
   let i = SHOTS.length - 1; for (let j = 0; j < SHOTS.length; j++) if (T < starts[j] + SHOTS[j][1]) { i = j; break; }
   const t = T - starts[i]; FX = {};
   const over = S[SHOTS[i][0]](t, T);
-  if (!FX.skip) { scene.updateMatrixWorld(true); renderer.render(scene, camera); }
+  if (!FX.skip) { scene.updateMatrixWorld(true); try { renderer.render(scene, camera); } catch (e) { scene.traverse(o => { if (o.material) [].concat(o.material).forEach(m => m.needsUpdate = true); }); renderer.render(scene, camera); } }
   composite({ t: T, tilt: FX.skip ? 0 : 1, fy: FX.fy ?? .5, fw: FX.fw ?? .24, blur: FX.blur ?? 7, bloom: FX.bloom ?? 0, warm: FX.warm ?? 0, vign: .45, grain: .05 });
   over && over();
   for (const w of WIPES) { const k = (T - (w - .38)) / .76; if (k > 0 && k < 1) shadowWipe(sm(k), 1, true); }
