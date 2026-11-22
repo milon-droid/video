@@ -50,3 +50,7 @@ projects/*/vo/*.log
 assets/voices/vosk-model-*/
 projects/popal/assets/vo/*/_cands/
 projects/*/remotion/public/audio/
+
+# «Тень»: сборка и звук генерируются (score.py, build_sfx.py)
+projects/ten/three/dist/
+projects/ten/audio/*.wav
