@@ -163,7 +163,7 @@ def mumble(t0, dur, base=105, v=1.):
         f1, f2 = VOW[rng.integers(len(VOW))]; s = bp(saw, f1 * .8, f1 * 1.25) + bp(saw, f2 * .85, f2 * 1.2) * .5
         s *= np.sin(np.pi * t / d) ** .6 * (1 + .3 * np.sin(2 * np.pi * 28 * t))
         put(s * 2.2, tt, .55 * v, -.15, .15); tt += d + (rng.uniform(.03, .12) if rng.uniform() < .25 else .01); k += 1
-for t0, d in [(33.4, 1.0), (35.75, .9), (39.9, 1.3), (61.8, 1.6), (12.7, .5)]: mumble(t0, d)
+# бормотание заменено настоящим голосом тени (vo/ep1, v6)
 
 # реверб: экспоненциальный шум 2.4 с
 ir_t = T(2.4); ir = rng.uniform(-1, 1, len(ir_t)) * np.exp(-ir_t * 2.4); ir = lp(ir, 5000); ir /= np.abs(ir).sum() ** .5 * 6
