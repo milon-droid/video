@@ -125,7 +125,7 @@ export const F1: React.FC<SP> = ({ t }) => {
       <H t={t} w="kirill" pose={{ ...POSES.stand, armR: [20, -10] }} expr="sad" lookY={.4} prop={inHand({ ...POSES.stand, armR: [20, -10] }, 0)} />
       <rect width={1080} height={1920} fill="#ff1a2a" opacity={.05 * em} />
     </g>
-    {board > 0 && <g transform={`translate(540 360) scale(${.8 + board * .2})`} opacity={board}>
+    {false && <g transform={`translate(540 360) scale(${.8 + board * .2})`} opacity={board}>
       <rect x={-420} y={-110} width={840} height={220} rx={14} fill="#e8e8e0" stroke="#2a2e38" strokeWidth={8} />
       <text y={-20} textAnchor="middle" fontFamily="Mont" fontWeight={800} fontSize={56} fill="#c81e2a" letterSpacing={6}>СЕВЕРНАЯ → КОНЕЧНАЯ</text>
       <text y={60} textAnchor="middle" fontFamily="Mont" fontWeight={700} fontSize={44} fill="#2a2e38">1 остановка · без пересадок</text>
@@ -198,9 +198,9 @@ export const BigCar: React.FC<{ x: number; y: number; s: number; rot: number; he
 </g>;
 export const H2: React.FC<SP> = ({ t }) => {
   const q = ease(t, 0, 4.6, (k: number) => k), tilt = ease(t, 1.4, 4.4), camY = tilt * 820;
-  const path = (u: number) => { const s = Math.max(0, u); return [120 + s * 1100, 900 + Math.max(0, s - .25) ** 2 * 2600]; };
+  const path = (u: number) => { const s = Math.max(0, u); return [60 + s * 1500, 900 + Math.max(0, s - .25) ** 2 * 2600]; };
   const ang = (u: number) => { const a = path(u), b = path(u + .02); return Math.atan2(b[1] - a[1], b[0] - a[0]) * 57; };
-  const cars = [0, 1, 2].map(i => { const u = q * 1.1 - i * .5; return { u, p: path(u), a: ang(u) + Math.max(0, u - .4) * (i % 2 ? -40 : 60) }; });
+  const cars = [0, 1, 2].map(i => { const u = q * 1.1 - i * .52; return { u, p: path(u), a: ang(u) + Math.max(0, u - .4) * (i % 2 ? -40 : 60) }; });
   return <Frame t={t} vign={.8} grade="#2a0a10" gradeK={.08}>
     <g transform={`translate(0 ${-camY})`}>
       <rect y={-200} width={1080} height={3400} fill="#05030a" />
@@ -217,8 +217,8 @@ export const H2: React.FC<SP> = ({ t }) => {
       <path d="M200 1030 L380 1030" stroke="#7a6a60" strokeWidth={12} /><path d="M380 1030 q30 10 50 70 M370 1030 q20 30 10 100" stroke="#7a6a60" strokeWidth={9} fill="none" />
       {q > .05 && q < .4 && Array.from({ length: 16 }).map((_, i) => { const a = -.6 - h1(i + Math.floor(t * 20)) * 1.4, r = 40 + h1(i * 3 + Math.floor(t * 20)) * 160; return <line key={i} x1={380} y1={1030} x2={380 + Math.cos(a) * r} y2={1030 + Math.sin(a) * r} stroke="#ffd080" strokeWidth={4} filter="url(#glow)" />; })}
       {/* сцепки */}
-      {[0, 1].map(i => cars[i + 1].u > 0 && <line key={'c' + i} x1={cars[i].p[0] - Math.cos(cars[i].a / 57) * 170} y1={cars[i].p[1] - Math.sin(cars[i].a / 57) * 170} x2={cars[i + 1].p[0] + Math.cos(cars[i + 1].a / 57) * 170} y2={cars[i + 1].p[1] + Math.sin(cars[i + 1].a / 57) * 170} stroke="#3a3a44" strokeWidth={14} />)}
-      {[2, 1, 0].map(i => cars[i].u > 0 && <BigCar key={i} x={cars[i].p[0]} y={cars[i].p[1]} s={.65} rot={cars[i].a} head={i === 0} dmg={i === 1 ? 1 : 0} />)}
+      {[0, 1].map(i => cars[i + 1].u > 0 && <line key={'c' + i} x1={cars[i].p[0] - Math.cos(cars[i].a / 57) * 275} y1={cars[i].p[1] - Math.sin(cars[i].a / 57) * 275} x2={cars[i + 1].p[0] + Math.cos(cars[i + 1].a / 57) * 275} y2={cars[i + 1].p[1] + Math.sin(cars[i + 1].a / 57) * 275} stroke="#3a3a44" strokeWidth={14} />)}
+      {[2, 1, 0].map(i => cars[i].u > 0 && <BigCar key={i} x={cars[i].p[0]} y={cars[i].p[1]} s={1.05} rot={cars[i].a} head={i === 0} dmg={i === 1 ? 1 : 0} />)}
       {/* обломки */}
       {q > .35 && Array.from({ length: 14 }).map((_, i) => { const c0 = cars[i % 3].p, k = (t * .9 + h1(i)) % 1; return <rect key={'d' + i} x={c0[0] + (h1(i * 3) - .5) * 300} y={c0[1] + k * 500} width={14 + h1(i) * 20} height={10} fill="#4a5a6a" transform={`rotate(${t * 300 * (h1(i * 7) - .5)} ${c0[0]} ${c0[1] + k * 500})`} opacity={1 - k} />; })}
     </g>

@@ -7,10 +7,12 @@ import { ease, spr } from '../anim';
 import { MAP } from './map';
 const Ph: React.FC<{ id: string }> = ({ id }) => <AbsoluteFill style={{ background: '#111', color: '#fff', fontSize: 80, justifyContent: 'center', alignItems: 'center' }}>{id}</AbsoluteFill>;
 const Host: React.FC<{ i: number }> = ({ i }) => { const f = useCurrentFrame(); const S = MAP[SHOTS[i].id]; return S ? <S t={f / 30} d={SHOTS[i].d} /> : <Ph id={SHOTS[i].id} />; };
+const LOWCAP = new Set(['k2', 'k4', 'k5', 'k6', 'k7', 'h4d']);
+const HIDE = new Set(['b1', 'b2', 'b3', 'b6', 'h7', 'k6', 'j1b', 'c7c', 'h4d']);
 const FIRST = (() => { for (const s of SHOTS) for (const c of s.caps || []) if (c[0].startsWith('КИРИЛЛ (')) return c[4]; return ''; })();
 const Caps: React.FC = () => { const T = useCurrentFrame() / 30;
   return <AbsoluteFill><svg width={1080} height={1920}><defs><filter id="glow"><feGaussianBlur stdDeviation="6" /></filter></defs>
-    {SHOTS.map((s, i) => (s.caps || []).map(([who, text, a, b, id], j) => <Caption key={i + '-' + j} t={T} t0={starts[i] + a} t1={starts[i] + b} who={who.startsWith('КИРИЛЛ (') && id !== FIRST ? undefined : who} text={text} color={who.startsWith('КИРИЛЛ (') ? '#9fdcff' : '#ffd76a'} italic={who.startsWith('КИРИЛЛ (')} />))}
+    {SHOTS.map((s, i) => (s.caps || []).map(([who, text, a, b, id], j) => <Caption key={i + '-' + j} t={T} t0={starts[i] + a} t1={starts[i] + b} who={who.startsWith('КИРИЛЛ (') && id !== FIRST ? undefined : who} text={text} color={who.startsWith('КИРИЛЛ (') ? '#9fdcff' : '#ffd76a'} italic={who.startsWith('КИРИЛЛ (')} y={LOWCAP.has(s.id) ? 1640 : 1290} />))}
   </svg></AbsoluteFill>; };
 // счётчик выживших (как интерфейс Системы): 6 → 4 (фонарь) → 3 (Михалыч) → 2 (Лёха) → 1 (Кирилл теряет сознание) → 2 (принял контракт) → исчезает
 const S0 = (id: string) => { const i = SHOTS.findIndex(s => s.id === id); return { a: starts[i], d: SHOTS[i].d, c: SHOTS[i].caps }; };
@@ -18,7 +20,7 @@ const EV = (() => { const i6 = S0('i6'), i7 = S0('i7'); const yes = i7.c?.[0] ? 
   return { show: S0('a4').a + 1.2, ev: [[S0('e2').a + 1.2, 5], [S0('e3').a + 1.05, 4], [S0('h7').a + .5, 3], [S0('k4').a + 1.5, 2], [i6.a + i6.d - 1.0, 1], [i7.a + yes + .5, 2]] as [number, number][], hide: i7.a + i7.d - .1 }; })();
 const Counter: React.FC = () => { const T = useCurrentFrame() / 30; if (T < EV.show || T > EV.hide + .6) return null;
   let n = 6, last = -9; for (const [t0, v] of EV.ev) if (T >= t0) { n = v; last = t0; }
-  const k = ease(T, EV.show, EV.show + .4) * (1 - ease(T, EV.hide, EV.hide + .6)), hit = spr(T, last, { damping: 9 }), fresh = T - last < .8, up = n === 2 && last === EV.ev[5][0];
+  const cur = SHOTS[starts.findIndex((a, i) => T >= a && T < a + SHOTS[i].d)]?.id || '', k = ease(T, EV.show, EV.show + .4) * (1 - ease(T, EV.hide, EV.hide + .6)) * (HIDE.has(cur) ? .0 : 1), hit = spr(T, last, { damping: 9 }), fresh = T - last < .8, up = n === 2 && last === EV.ev[5][0];
   const col = fresh ? (up ? '#7fe0ff' : '#ff4a5a') : n <= 1 ? '#ff4a5a' : '#5fd2ff', blink = n === 1 && Math.floor(T * 3) % 2 === 0;
   return <AbsoluteFill><svg width={1080} height={1920}><defs><filter id="cglow"><feGaussianBlur stdDeviation="5" /></filter></defs>
     <g transform={`translate(70 230) scale(${1 + (fresh ? (1 - hit) * .25 : 0)})`} opacity={k * (blink ? .55 : 1)}>

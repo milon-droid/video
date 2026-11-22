@@ -45,6 +45,12 @@
   "machinist": {
    "instruct": "Calm formal Russian male metro announcer, neutral emotionless voice, measured slow pace, clear diction.",
    "ref": "Станция Северная. Переход на кольцевую линию."
+  },
+  "lekha": {
+   "instruct": "Young Russian man, about 28, calm reliable fighter, slightly rough voice.",
+   "ref": "Слушай, не кипишуй. Сейчас разберёмся, всё будет нормально.",
+   "f0": 266,
+   "fit": true
   }
  },
  "lines": [
@@ -372,12 +378,57 @@
   {
    "id": "xm3",
    "role": "kirill",
-   "text": "Фонарь… полз за нами."
+   "text": "Фонарь полз вперёд. К кабине. Будто его звали."
   },
   {
    "id": "xm4",
    "role": "kirill",
    "text": "В кабину!"
+  },
+  {
+   "id": "xn1",
+   "role": "kirill",
+   "text": "Раньше они рассыпались от одного удара. Теперь — нет."
+  },
+  {
+   "id": "xn2",
+   "role": "kirill",
+   "text": "Их кормил фонарь."
+  },
+  {
+   "id": "xn3",
+   "role": "mikh",
+   "text": "Он жжёт! Не удержать!"
+  },
+  {
+   "id": "xn4",
+   "role": "lekha",
+   "text": "Всё… пусто. Больше не могу."
+  },
+  {
+   "id": "xn6",
+   "role": "mikh",
+   "text": "Пока держу огонь — идите. Остановите поезд."
+  },
+  {
+   "id": "xn7",
+   "role": "lekha",
+   "text": "Не тормозит!"
+  },
+  {
+   "id": "xn8",
+   "role": "kirill",
+   "text": "Лёха!"
+  },
+  {
+   "id": "xn9",
+   "role": "kirill",
+   "text": "Фонарь сам полз к щупальцу. Оно искало не нас. Оно искало фонарь."
+  },
+  {
+   "id": "xn10",
+   "role": "lekha",
+   "text": "Держу! Идите!"
   }
  ]
 }

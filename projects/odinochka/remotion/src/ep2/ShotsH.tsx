@@ -190,8 +190,8 @@ export const I6: React.FC<SP> = ({ t, d }) => {
     <g transform={cam(1.0 + t * .02, 540, 1000)}>
       <Pool x={560} y={1380} k={.6 + ease(t, 0, d) * .4} w={380} />
       {/* Кирилл лежит на спине (вид сбоку) */}
-      <g transform="rotate(-90 760 1400)"><Figure x={760} y={1400} s={.95} t={t} L={{ ...KL, bruise: true, skin: '#e0ccc4' }} C={KC} pose={{ ...POSES.stand, armL: [-20, 10], armR: [30, -10] }} expr="pain" lid={Math.max(0, .5 - dark * .5)} noBlink seed={3} breathe={false} /></g>
-      <rect x={480} y={1300} width={120} height={70} rx={20} fill="#a80c18" opacity={.85} />
+      <g transform="rotate(-90 1000 1420)"><Figure x={1000} y={1420} s={.95} t={t} L={{ ...KL, bruise: true, skin: '#e0ccc4' }} C={KC} pose={{ ...POSES.stand, armL: [-20, 10], armR: [30, -10] }} expr="pain" lid={Math.max(0, .5 - dark * .5)} noBlink seed={3} breathe={false} /></g>
+      <rect x={560} y={1330} width={120} height={70} rx={20} fill="#a80c18" opacity={.85} />
       {/* Тимур на коленях, руки на ране */}
       <Figure x={560} y={1360} s={.95} t={t} L={LK.timur} C={CS.timur} pose={{ ...POSES.stand, crouch: 250, lean: 30, armL: [-20, 60 + press], armR: [10, -50 - press], legL: [-50, 120], legR: [40, -100] }} expr="cry" tears={1} mouth={talk(t, c, 'ТИМУР')} seed={41} lookY={.8} turn={-.2} />
       <TimurCut x={560} y={1360 - 820 * .95 + 250 + 40} s={.95} />
