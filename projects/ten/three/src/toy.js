@@ -132,6 +132,7 @@ export function placeShade(Sh, { x = 0, y = 0, z = 0, rise = 1, len = 1.3, yaw =
   Sh.holder.position.set(x, y + .004, z); Sh.holder.rotation.set(0, yaw, 0);
   Sh.flat.rotation.set((1 - rise) * Math.PI / 2, 0, 0); Sh.flat.scale.set(scale, scale * lerp(len, 1, rise), .03 * scale);
   Sh.root.rotation.y = turn; Sh.root.position.z = 0;
+  Sh.eyes.forEach(e => { e.children[0].visible = rise >= .5; e.children[1].visible = rise < .5; });
   Sh.holder.visible = op > 0.01; Sh.root.traverse(o => { if (o.isMesh && o.material.transparent) o.material.opacity = o.material.color && o.material.color.r < .1 ? op : 1; });
 }
 

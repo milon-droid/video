@@ -4,7 +4,8 @@
 python3 score.py out.wav"""
 import sys, numpy as np
 from scipy.signal import butter, sosfilt, fftconvolve
-SR = 44100; DUR = 73.6
+SR = 44100; DUR = 75.8
+SHIFT_AT, SHIFT = 66.6, 2.2   # с серии v4: договор удлинил план 14 на 2,2 с
 L = np.zeros(int(SR * (DUR + 3))); R = np.zeros_like(L); VERB = np.zeros_like(L)
 rng = np.random.default_rng(7)
 NOTES = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
@@ -13,12 +14,13 @@ def hz(n):
     if n[i] in '#b': k += 1 if n[i] == '#' else -1; i += 1
     return 440 * 2 ** ((k + 12 * (int(n[i:]) + 1) - 69) / 12)
 def put(sig, t, gain=1., pan=0., verb=.2):
+    if t >= SHIFT_AT: t += SHIFT
     i = int(t * SR)
     if i >= len(L): return
     j = min(len(L), i + len(sig)); s = sig[:j - i] * gain
     L[i:j] += s * np.sqrt((1 - pan) / 2) * 1.41; R[i:j] += s * np.sqrt((1 + pan) / 2) * 1.41; VERB[i:j] += s * verb
 def env(n, a=.005, r=.1, sus=1.):
-    e = np.ones(n) * sus; na = max(1, int(a * SR)); nr = max(1, int(r * SR)); e[:na] = np.linspace(0, sus, na); e[-nr:] *= np.linspace(1, 0, nr); return e
+    e = np.ones(n) * sus; na = max(1, min(n // 2, int(a * SR))); nr = max(1, min(n // 2, int(r * SR))); e[:na] = np.linspace(0, sus, na); e[-nr:] *= np.linspace(1, 0, nr); return e
 def lp(x, f, o=2): return sosfilt(butter(o, f / (SR / 2), 'low', output='sos'), x)
 def hp(x, f, o=2): return sosfilt(butter(o, f / (SR / 2), 'high', output='sos'), x)
 def bp(x, a, b, o=2): return sosfilt(butter(o, [a / (SR / 2), b / (SR / 2)], 'band', output='sos'), x)
@@ -128,9 +130,9 @@ for i in range(5): put(heart(.55), 47.6 + i * 1.15, .6, 0, .1)
 for n, o in [('E5', .6), ('C5', 1.9), ('A4', 3.2), ('B4', 4.6)]: put(celesta(hz(n), 2.2), 47.2 + o, .2, .25, .8)
 # ===== F. ЭМОЦИЯ (53.2–66.6): фортепиано и струнные, расцвет на 61.2 =====
 PROG = [(53.2, ['C3', 'G3', 'E4'], 'C2'), (54.9, ['B2', 'G3', 'D4'], 'G1'), (56.5, ['A2', 'E3', 'C4'], 'A1'), (58.2, ['F2', 'C3', 'A3'], 'F1'),
-        (59.8, ['G2', 'D3', 'B3'], 'G1'), (61.2, ['C3', 'G3', 'E4', 'C5'], 'C2'), (62.8, ['F2', 'C3', 'A3', 'F4'], 'F1'), (64.4, ['C3', 'G3', 'E4', 'G4'], 'C2')]
+        (59.8, ['G2', 'D3', 'B3'], 'G1'), (61.2, ['C3', 'G3', 'E4', 'C5'], 'C2'), (62.8, ['F2', 'C3', 'A3', 'F4'], 'F1'), (64.4, ['C3', 'G3', 'E4', 'G4'], 'C2'), (65.5, ['A2', 'E3', 'C4', 'E4'], 'A1'), (66.55, ['F2', 'C3', 'A3', 'F4'], 'F1')]
 for i, (t0, ch, bs) in enumerate(PROG):
-    d = (PROG[i + 1][0] if i + 1 < len(PROG) else 66.6) - t0
+    d = (PROG[i + 1][0] if i + 1 < len(PROG) else 66.59) - t0
     big = 1.6 if t0 >= 61.2 else 1.0
     put(pad([hz(n) for n in ch], d + .6, .5 if t0 != 61.2 else .05, .7, 1600 if t0 < 61.2 else 2600, .004), t0, .32 * big, 0, .55)
     put(piano(hz(bs), 3, .9), t0, .45, -.1, .4)
@@ -139,7 +141,9 @@ MEL = [(53.6, 'E5'), (54.3, 'G5'), (55.2, 'D5'), (56.0, 'E5'), (56.8, 'C5'), (57
 for t0, n in MEL: put(piano(hz(n), 2.2, .8), t0, .3, .15, .55)
 put(swell(1.4, .9), 59.8, .6, 0, .4); put(boom(.5, 3), 61.2, .5, 0, .5)
 for k2, n in enumerate(['C6', 'E6', 'G6', 'C7']): put(celesta(hz(n), 1.6), 61.25 + k2 * .09, .2, -.3 + k2 * .2, .7)
-put(celesta(hz('C6'), 1.2), 65.35, .25, .3, .5); put(celesta(hz('G6'), 1.2), 65.55, .25, -.3, .5)   # хлопок ладоней 65.4
+for k3 in range(4): put(pluck(hz(['C5', 'E5', 'G5', 'C6'][k3]), .5, .9), 65.0 + k3 * .42, .3, .2, .3)   # галочки в договоре
+put(celesta(hz('C6'), 1.2), 66.5 - SHIFT + SHIFT, .0)   # хлопок ладоней 65.4
+put(celesta(hz('C6'), 1.4), 66.1, .3, .3, .5); put(celesta(hz('G6'), 1.4), 66.25, .3, -.3, .5); put(boom(.35, 1.5), 66.1, .4, 0, .3)  # кулачок → 68.3
 # ===== G. КРЮЧОК (66.6–71): тёмный гул, неон, удар =====
 put(drone(hz('D1') * 2, 4.8, 1.2), 66.6, .8, 0, .3)
 put(pad([hz('D2'), hz('Ab2'), hz('D3')], 4.6, .1, 1.2, 700), 66.6, .45, 0, .4)
@@ -159,7 +163,7 @@ def mumble(t0, dur, base=105, v=1.):
         f1, f2 = VOW[rng.integers(len(VOW))]; s = bp(saw, f1 * .8, f1 * 1.25) + bp(saw, f2 * .85, f2 * 1.2) * .5
         s *= np.sin(np.pi * t / d) ** .6 * (1 + .3 * np.sin(2 * np.pi * 28 * t))
         put(s * 2.2, tt, .55 * v, -.15, .15); tt += d + (rng.uniform(.03, .12) if rng.uniform() < .25 else .01); k += 1
-for t0, d in [(33.9, 1.1), (39.9, 1.3), (52.1, .8), (61.8, 2.3), (69.6, .7), (12.7, .5)]: mumble(t0, d)
+# бормотание заменено настоящим голосом тени (vo/ep1, v6)
 
 # реверб: экспоненциальный шум 2.4 с
 ir_t = T(2.4); ir = rng.uniform(-1, 1, len(ir_t)) * np.exp(-ir_t * 2.4); ir = lp(ir, 5000); ir /= np.abs(ir).sum() ** .5 * 6
