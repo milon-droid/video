@@ -1,0 +1,19 @@
+{
+ "roles": {
+  "kb_hero": {
+   "instruct": "Young Russian man, about 24, soft slightly husky light baritone, intimate close-mic first-person storytelling, dry deadpan humor, a little bewildered, natural conversational medium pace, clear diction.",
+   "ref": "Знаешь, я обычно не получаю посылок. А тут коробка. И на ней моё имя.",
+   "f0": 125
+  }
+ },
+ "lines": [
+  {"id": "l1", "role": "kb_hero", "text": "Мне пришла посылка. От меня."},
+  {"id": "l2", "role": "kb_hero", "text": "Внутри — моя комната. И я."},
+  {"id": "l3", "role": "kb_hero", "text": "Он на три секунды впереди.", "say": "Он на три секунды вперед+и."},
+  {"id": "l4", "role": "kb_hero", "text": "Будущее можно обмануть!"},
+  {"id": "l5", "role": "kb_hero", "text": "Тогда почему он смотрит вверх?"},
+  {"id": "l6", "role": "kb_hero", "text": "Я тоже в коробке."},
+  {"id": "l7", "role": "kb_hero", "text": "А ты давно смотрел вверх?"},
+  {"id": "l8", "role": "kb_hero", "text": "Что бы ты успел за три секунды?"}
+ ]
+}

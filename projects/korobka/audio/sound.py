@@ -160,7 +160,19 @@ put(L('cinematic-slam-big'), 34.95, .9); put(L('impact-deep-hard'), 35.0, .8); p
 amb = lpv(noise(DUR), 500) * .6 + lpv(noise(DUR), 120) * 1.2
 put(amb[:N] * .05, 0, 1, 0, 'amb')
 
-M = bus['mus'] * .9 + bus['sfx'] * 1.0 + bus['amb'] * 1.0
+# ---------- голос героя ----------
+VO = json.load(open(os.path.join(os.path.dirname(__file__), 'vo_times.json')))
+vo = np.zeros((N, 2)); act = np.zeros(N)
+for vid, t0 in VO.items():
+    f = os.path.join(os.path.dirname(__file__), '../assets/vo/ep1', vid + '.wav')
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', f, '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True).stdout
+    x = np.frombuffer(raw, np.float32).astype(float); x /= np.abs(x).max() + 1e-9
+    x = x - lpv(x, 90) * .9                                   # убрать гул
+    i = int(t0 * SR); x = x[:N - i]; vo[i:i + len(x), 0] += x; vo[i:i + len(x), 1] += x; act[i:i + len(x)] = 1
+duck = 1 - .68 * np.clip(lpv(act, 4) * 1.6, 0, 1)                # музыка и фон под голосом ≈ −10 дБ
+for b, k in (('mus', 1), ('amb', 1), ('sfx', .55)):
+    bus[b] *= (1 - (1 - duck) * k)[:, None]
+M = bus['mus'] * .9 + bus['sfx'] * 1.0 + bus['amb'] * 1.0 + vo * .62
 M /= np.abs(M).max() * 1.12
 out = os.path.join(os.path.dirname(__file__), 'mix.wav')
 import wave

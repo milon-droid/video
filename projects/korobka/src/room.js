@@ -103,8 +103,7 @@ function drawLabel(ctx, tau, a) {
   ctx.fillText('КОМУ:  тебе', 38, 140); ctx.fillText('ОТ:  тебя', 38, 162);
   for (let i = 0; i < 34; i++) { ctx.fillStyle = OUT; ctx.fillRect(40 + i * 4.6, 286, hash(i) > .5 ? 3 : 1.5, 22); }
   const st = (txt, x, y, r, col, size, t0) => {
-    if (tau < t0) return;
-    const k = 1 + .5 * Math.max(0, 1 - (tau - t0) / .09);
+    const k = 1 + .5 * Math.max(0, 1 - Math.abs(tau - t0) / .09) * (tau >= t0 ? 1 : 0);
     ctx.save(); ctx.translate(x, y); ctx.rotate(r); ctx.scale(k, k);
     ctx.font = `900 ${size}px Inter`; ctx.textAlign = 'center';
     const lines = txt.split('\n'), w = Math.max(...lines.map(l => ctx.measureText(l).width)) + 22, h = lines.length * size * 1.05 + 14;
@@ -132,7 +131,7 @@ function drawBox(ctx, k, tau, t) {
   else {
     fill(ctx, KRAFT_L); stroke(ctx, 5);
     ctx.beginPath(); ctx.moveTo(x0 + dx / 2, y0 + dy / 2); ctx.lineTo(x1 + dx / 2, y0 + dy / 2); stroke(ctx, 18, ink(.12, .02, .35));
-    if (bs.cut > 0) { const xc = x1 + dx / 2 - bs.cut * (BW); ctx.beginPath(); ctx.moveTo(x1 + dx / 2, y0 + dy / 2); ctx.lineTo(xc, y0 + dy / 2); stroke(ctx, 3, OUT); }
+    if (bs.cut > 0) { const xc = Math.max(x0 + dx / 2, x1 + dx / 2 - bs.cut * (BW)); ctx.beginPath(); ctx.moveTo(x1 + dx / 2, y0 + dy / 2); ctx.lineTo(xc, y0 + dy / 2); stroke(ctx, 3, OUT); }
   }
   if (f > 0) {                                                             // боковые клапаны
     for (const s of [-1, 1]) {
@@ -190,12 +189,12 @@ function drawLevel(ctx, k, a, e, f, t) {
   const P = heroPose(tau, br), G = heroGeom(P), ps = potState(tau, br);
   if (ps.ok) drawPot(ctx, ps, br, tau);
   drawChairBack(ctx); drawLegs(ctx, G, P); drawTorso(ctx, G, P); drawHead(ctx, G, P);
-  const front = !(k === -10 && t > 34.6) && P.dk <= .05 && ((tau > 3.4 && tau < 5.9) || (tau > 8.3 && tau < 9.7));
-  if (!front) drawArms(ctx, G, P);
+  if (P.dk > .05) drawArms(ctx, G, P);
   drawTable(ctx);
-  if (!P.cutter) { ctx.save(); ctx.translate(tau < 3.5 ? 885 : 560, 1302); ctx.rotate(1.4); rr(ctx, -10, -40, 20, 64, 5); fill(ctx, ink(.1, 0, 1)); stroke(ctx, 4); ctx.restore(); }
+  if (!P.cutter) { ctx.save(); ctx.translate(tau < 3.5 ? 885 : 905, 1302); ctx.rotate(1.4); rr(ctx, -10, -40, 20, 64, 5); fill(ctx, ink(.1, 0, 1)); stroke(ctx, 4); ctx.restore(); }
+  if (P.dk <= .05) drawArms(ctx, G, P);
   drawBox(ctx, k, tau, t);
-  if (front) drawArms(ctx, G, P);
+  if (P.dk <= .05) drawHandsTop(ctx, G, P);
   if (!ps.ok) drawPot(ctx, ps, br, tau);
   // порыв ветра сверху
   const gu = (tau - 16.2) / .7;

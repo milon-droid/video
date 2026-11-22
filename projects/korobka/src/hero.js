@@ -147,14 +147,32 @@ function drawHead(ctx, G, P) {
 }
 
 function ik(s, h, side, hx) {
-  const L = 178; let dx = h[0] - s[0], dy = h[1] - s[1], d = Math.hypot(dx, dy);
+  const L = 206; let dx = h[0] - s[0], dy = h[1] - s[1], d = Math.hypot(dx, dy);
   if (d > 2 * L - 2) { const k = (2 * L - 2) / d; dx *= k; dy *= k; d = 2 * L - 2; }
   const a = Math.acos(clamp(d / (2 * L), -1, 1)), b = Math.atan2(dy, dx);
   const c1 = [s[0] + Math.cos(b + a) * L, s[1] + Math.sin(b + a) * L], c2 = [s[0] + Math.cos(b - a) * L, s[1] + Math.sin(b - a) * L];
-  const e = (side * (c1[0] - c2[0]) > 0) ? c1 : c2;
+  const sc = c => side * c[0] + .9 * c[1];
+  const e = sc(c1) > sc(c2) ? c1 : c2;
   return [e, [s[0] + dx, s[1] + dy]];
 }
 
+function onBox(h) { return h[1] < 905 && h[0] > 330 && h[0] < 680; }
+function drawHand(ctx, h, side, P) {
+  if (side > 0 && P.cutter) {                      // нож лезвием вниз, к ленте
+    ctx.save(); ctx.translate(h[0], h[1]);
+    rr(ctx, -11, -6, 22, 42, 6); fill(ctx, ink(.1, 0, 1)); stroke(ctx, 5);
+    ctx.beginPath(); ctx.moveTo(-5, 34); ctx.lineTo(0, 58); ctx.lineTo(5, 34); fill(ctx, PAPER); stroke(ctx, 4);
+    ctx.restore();
+  }
+  ctx.beginPath(); ctx.arc(h[0], h[1], 31, 0, 7); fill(ctx, SKIN); stroke(ctx, 6);
+  ctx.beginPath(); ctx.arc(h[0] - side * 24, h[1] - 12, 13, 0, 7); fill(ctx, SKIN); stroke(ctx, 5);
+}
+function drawHandsTop(ctx, G, P) {             // кисти, лежащие на крышке коробки, — поверх неё
+  for (const [side, hand] of [[-1, P.hA], [1, P.hB]]) {
+    const h = [hand[0], hand[1] + G.dy];
+    if (onBox(h)) drawHand(ctx, h, side, P);
+  }
+}
 function drawArms(ctx, G, P) {
   for (const [side, hand] of [[-1, P.hA], [1, P.hB]]) {
     const s = [G.shX + side * 104, G.shY + 22];
@@ -163,13 +181,6 @@ function drawArms(ctx, G, P) {
     stroke(ctx, 66); stroke(ctx, 54, HOOD);
     const k = 30 / Math.hypot(h[0] - e[0], h[1] - e[1]);
     ctx.beginPath(); ctx.moveTo(h[0] - (h[0] - e[0]) * k, h[1] - (h[1] - e[1]) * k); ctx.lineTo(h[0], h[1]); stroke(ctx, 56, HOOD_D);
-    if (side > 0 && P.cutter) {
-      ctx.save(); ctx.translate(h[0], h[1]); ctx.rotate(-.5);
-      rr(ctx, -12, -70, 24, 80, 6); fill(ctx, ink(.1, 0, 1)); stroke(ctx, 5);
-      ctx.beginPath(); ctx.moveTo(-6, -70); ctx.lineTo(0, -98); ctx.lineTo(6, -70); fill(ctx, PAPER); stroke(ctx, 4);
-      ctx.restore();
-    }
-    ctx.beginPath(); ctx.arc(h[0], h[1], 31, 0, 7); fill(ctx, SKIN); stroke(ctx, 6);
-    ctx.beginPath(); ctx.arc(h[0] - side * 24, h[1] - 12, 13, 0, 7); fill(ctx, SKIN); stroke(ctx, 5);
+    drawHand(ctx, h, side, P);
   }
 }
