@@ -1,5 +1,5 @@
 // Камера, титры, эффекты печати, кадр.
-const DUR = 35 + 4 / 30;            // обрыв через 4 кадра после хлопка — петля в первый кадр
+const DUR = 36.5;                    // хлопок в 35.0, 1.5 с наезда на этикетку → первый кадр (стык ≈3 с)
 window.SCENE = { duration: DUR, fps: 30, width: CW, height: CH };
 const V = (cx, cy, vw) => ({ cx, cy, vw });
 const atLevel = (c, z) => V(PX + (c.cx - PX) * Math.pow(S, -z), PY + (c.cy - PY) * Math.pow(S, -z), c.vw * Math.pow(S, -z));
@@ -31,17 +31,17 @@ const SHOTS = [
 function camera(t) {
   let c;
   if (t >= 27.6) {
-    const u = clamp((t - 27.6) / 7.4), z = -1 - 9 * u * u, b = sstep(0, 1, u);
+    const u = clamp((t - 27.6) / 7.4), z = -1 - 9 * u * u - .045 * sstep(.8, 1, u), b = sstep(0, 1, u);
     const C0 = V(570, 1010, 590);
     c = atLevel(V(lerp(C0.cx, F1.cx, b), lerp(C0.cy, F1.cy, b), Math.exp(lerp(Math.log(C0.vw), Math.log(F1.vw), b))), z);
     c.ks = Math.floor(z + 1e-6);
-    if (t > 35) { c = atLevel(F1, -10); c.ks = -10; }
+    if (t > 35) { c = atLevel(V(F1.cx, F1.cy, F1.vw * (1 + .07 * Math.pow(1 - clamp((t - 35) / 1.5), 2))), -10); c.ks = -10; }
   } else {
     const s = SHOTS.find(s => t >= s[0] && t < s[1]) || SHOTS[SHOTS.length - 1];
     c = camLerp(s[2], s[3], E[s[4]](clamp((t - s[0]) / (s[1] - s[0]))));
   }
   c.ks = c.ks ?? (t < 25.4 ? 0 : -1);
-  const [x, y] = shake(t, [[.15, 12, .35], [.9, 8, .3], [6.82, 7, .4], [13.22, 9, .35], [16.2, 16, .7], [HIT_B, 16, .5], [35.0, 18, .5, 7], [-4 / 30, 18, .5, 7]]);
+  const [x, y] = shake(t, [[.15, 12, .35], [.9, 8, .3], [6.82, 7, .4], [13.22, 9, .35], [16.2, 16, .7], [HIT_B, 16, .5], [35.0, 18, .5]]);
   return Object.assign(V(c.cx + x * c.vw / CW, c.cy + y * c.vw / CW, c.vw), { ks: c.ks });
 }
 FLAP_OVERRIDE = (k, t) => {
@@ -59,18 +59,18 @@ function worldToScreen(cam, k, x, y) {
 // ---------- титры ----------
 const CAPS = [
   [1.6, 4.2, TX(['Мне пришла посылка.', 'От меня.'], ['I got a package.', 'From me.']), 0, 215],
-  [7.45, 10.1, TX(['Внутри — моя комната.', 'И я.'], ['Inside — my room.', 'And me.']), 0, 215],
+  [7.3, TX(10.1, 11.0), TX(['Внутри — моя комната.', 'И я.'], ['Inside — my room.', 'And me.']), 0, 215],
   [13.7, 15.6, TX(['Он на 3 секунды', 'впереди.'], ["He's 3 seconds", 'ahead.']), 0, 215],
   [19.7, 21.3, TX(['Будущее можно обмануть!'], ['You can cheat the future!']), 0, 215],
   [21.3, 23.4, TX(['Тогда почему', 'он смотрит вверх?'], ['Then why is he', 'looking up?']), 0, 215],
   [26.05, 28.0, TX(['Я тоже в коробке.'], ["I'm in a box too."]), 0, 930],
   [28.95, 31.8, TX(['А ты давно', 'смотрел вверх?'], ['When did you', 'last look up?']), 0, 830],
-  [32.6, 34.7, TX(['Что бы ты успел', 'за 3 секунды?'], ['What would you do', 'with 3 seconds?']), 1, 905],
+  [32.6, 36.3, TX(['Что бы ты успел', 'за 3 секунды?'], ['What would you do', 'with 3 seconds?']), 1, 905],
 ];
 function caption(ctx, t) {
   for (const [t0, t1, lines, kind, yc] of CAPS) {
     if (t < t0 || t > t1) continue;
-    const u = clamp((t - t0) / .18), out = clamp((t1 - t) / .15);
+    const u = clamp((t - t0) / .18), out = clamp((t1 - t) / .25);
     ctx.save();
     ctx.font = '900 46px Inter'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
     const lh = 60, y0 = yc - (lines.length - 1) * lh / 2;
@@ -165,6 +165,5 @@ window.renderFrame = async t => {
   if (t > 27.6 && t < 35) mis = Math.max(mis, 1 + 2.2 * sstep(27.6, 33, t));
   if (t > 35 && t < 35.15) mis = 10;
   if (t < .25 && t > .15) mis = 6;
-  if (t < .1) mis = 10;
   Riso.print(dens, t, mis);
 };

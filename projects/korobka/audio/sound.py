@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """КОРОБКА — звук: своя музыкальная шкатулка + часы + синтез чихов + SFX из библиотек. → mix.wav (48 кГц, стерео)."""
 import json, subprocess, numpy as np, os, sys
-SR = 48000; DUR = 35 + 4 / 30; N = int(SR * DUR); NE = N + 4 * SR   # хвост после конца заворачивается в начало (петля)
+SR = 48000; DUR = 36.5; N = int(SR * DUR); NE = N + 15 * SR   # хвост после конца заворачивается в начало (петля)
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
 LIB = os.path.join(ROOT, 'assets/sfx-library'); IDX = {e['id']: e for e in json.load(open(os.path.join(LIB, 'index.json')))}
 rng = np.random.default_rng(7)
@@ -58,7 +58,7 @@ def play(ev, gain=1., pan=0., dec=1.8, cut=None):
         if cut and t >= cut: continue
         put(tine(m, v, dec, det=(hash((t, m)) % 7 - 3) * 4e-4), t, gain, pan + (m - 60) / 40, 'mus')
 
-play(theme_notes(1.6, 11), .5, cut=13.0)                                   # знакомство
+play(theme_notes(DUR - 1.25, 15), .5, cut=DUR + 13.0)                      # шкатулка начинается в конце и идёт через стык (петля)
 play([(t, m + 12, v * .6) for t, m, v in theme_notes(7.4, 4, beat=1 / 6)], .25, cut=9.7)   # блеск при наезде
 play(theme_notes(13.5, 2, shift=12), .38, cut=15.0)                        # «он впереди» — выше
 # заводная шкатулка кончается: ноты реже и ниже
@@ -83,10 +83,10 @@ def tick(hi=True, g=1.):
     n = int(SR * .05); t = np.arange(n) / SR
     y = bp(noise(.05), 1800, 5200 if hi else 3800) * np.exp(-t / .006) + np.sin(2 * np.pi * (2100 if hi else 1500) * t) * np.exp(-t / .01) * .4
     return y * g
-for s in range(1, 36):
+for s in range(0, 36):
     if 21 <= s <= 24: continue
     loud = .1 if s < 21 else .07
-    put(tick(s % 2 == 0), s, loud, .35, 'amb')
+    put(tick(s % 2 == 0), s + .5, loud, .35, 'amb')
 for t0 in (21.9, 22.7, 23.5):
     put(tick(True, 1), t0, .55, 0); put(rs(tick(False, 1), .5), t0, .4, 0)
 
@@ -159,16 +159,20 @@ put(L('cinematic-slam-big'), 34.95, .9); put(L('impact-deep-hard'), 35.0, .8); p
 amb = lpv(noise(NE / SR), 500) * .6 + lpv(noise(NE / SR), 120) * 1.2
 put(amb[:N] * .05, 0, 1, 0, 'amb')
 
+# петля: всё, что звучит после конца, слышно в начале
+for b in bus:
+    tl = bus[b][N:].copy(); bus[b] = bus[b][:N]; bus[b][:len(tl)] += tl
 # ---------- голос героя ----------
 LNG = sys.argv[1] if len(sys.argv) > 1 else 'ru'
 VO = json.load(open(os.path.join(os.path.dirname(__file__), 'vo_times.json' if LNG == 'ru' else 'vo_times_en.json')))
-vo = np.zeros((NE, 2)); act = np.zeros(NE)
+vo = np.zeros((N, 2)); act = np.zeros(N)
 for vid, t0 in VO.items():
     f = os.path.join(os.path.dirname(__file__), '../assets/vo/ep1' + ('' if LNG == 'ru' else '_en'), vid + '.wav')
     raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', f, '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True).stdout
     x = np.frombuffer(raw, np.float32).astype(float); x /= np.abs(x).max() + 1e-9
-    x = x - lpv(x, 90) * .9                                   # убрать гул
-    i = int(t0 * SR); x = x[:NE - i]; vo[i:i + len(x), 0] += x; vo[i:i + len(x), 1] += x; act[i:i + len(x)] = 1
+    x = x - lpv(x, 90) * .9
+    x *= {'l6': 1.5, 'e6': 1.9, 'e7': 1.5}.get(vid, 1.)                                   # убрать гул
+    i = int(t0 * SR); x = x[:N - i]; vo[i:i + len(x), 0] += x; vo[i:i + len(x), 1] += x; act[i:i + len(x)] = 1
 duck = 1 - .82 * np.clip(lpv(act, 4) * 1.6, 0, 1)                # музыка и фон под голосом ≈ −10 дБ
 for b, k in (('mus', 1), ('amb', 1), ('sfx', .8)):
     bus[b] *= (1 - (1 - duck) * k)[:, None]
@@ -178,7 +182,6 @@ for vid, t0 in VO.items():
     i, j = int(t0 * SR), int((t0 + 1.2) * SR)
     r = lambda a: 20 * np.log10(np.sqrt(np.mean(a[i:j] ** 2)) + 1e-9)
     print(vid, 'голос−фон', round(r(vo * 1.0) - r(bg), 1), 'дБ')
-tail = M[N:].copy(); M = M[:N]; M[:len(tail)] += tail          # бесшовная петля по звуку
 k = int(.03 * SR); M[:k] *= 1; 
 M /= np.abs(M).max() * 1.12
 out = os.path.join(os.path.dirname(__file__), 'mix.wav' if LNG == 'ru' else 'mix_en.wav')
