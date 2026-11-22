@@ -95,7 +95,7 @@ float waxField(vec3 p, out float heat, out float mouth){
     vec3 q=p-uB[i].xyz;
     float bnd=length(q)-r*max(uBS[i].x,max(uBS[i].y,uBS[i].z));
     float di = bnd>0.25 ? bnd : sdEll(q, r*uBS[i].xyz);
-    if(uBX[i].x>.5) di=max(di, gBot+0.006);
+    if(uBX[i].x>.5) di=max(di, gBot+0.013);
     float k=max(uBX[i].y,0.001);
     d=smin(d,di,k);
     float w=exp(-14.*max(di,0.)); hs+=w*uBS[i].w; ws+=w;
@@ -113,7 +113,7 @@ uniform vec4 uFF[NF];   // ось вперёд, высота нижнего ве
 uniform vec4 uFM[NF];   // центр рта, рот открыт
 uniform vec4 uFMs[NF];  // радиусы рта, зрачок
 uniform vec4 uFL[NF];   // взгляд, внутри лампы
-float gEyeD; vec3 gEyeC; vec3 gEyeL; float gEyeP; float gMouthD;
+float gEyeD; vec3 gEyeC; vec3 gEyeL; float gEyeP; float gMouthD; float gEyeR;
 float faces(vec3 p, float wax){
   gEyeD=1e5; gMouthD=1e5;
   for(int f=0;f<NF;f++){
@@ -131,15 +131,15 @@ float faces(vec3 p, float wax){
       vec4 E=uFE[f*2+s]; float er=E.w; if(er<=0.) continue;
       vec3 q=p-E.xyz;
       float de=length(q)-er;
-      if(ins) de=max(de, gBot+0.004);
+      if(ins) de=max(de, gBot+0.0075);
       float qx=dot(q,R), qyy=dot(q,U);
       float a=uFR[f].w*(s==0?-1.:1.);
       float qy=qyy*cos(a)+qx*sin(a);
       float shell=length(q)-er*1.13;
       float lid=min(max(shell,uFU[f].w-qy),max(shell,qyy-uFF[f].w));
-      if(ins) lid=max(lid, gBot+0.006);
+      if(ins) lid=max(lid, gBot+0.010);
       wax=smin(wax,lid,er*.03+.002);
-      if(de<gEyeD){ gEyeD=de; gEyeC=E.xyz; gEyeL=uFL[f].xyz; gEyeP=uFMs[f].w; }
+      if(de<gEyeD){ gEyeD=de; gEyeC=E.xyz; gEyeL=uFL[f].xyz; gEyeP=uFMs[f].w; gEyeR=er; }
     }
   }
   return wax;
@@ -334,8 +334,9 @@ vec3 waxShade(vec3 p, vec3 n, vec3 rd, float heat, bool inside, float fogT){
   return c;
 }
 vec3 eyeShade(vec3 p, vec3 n, vec3 rd, bool inside){
-  vec3 nl=normalize(p-gEyeC);
-  float d=dot(nl,gEyeL);
+  vec3 q=p-gEyeC;
+  float lat=length(q-dot(q,gEyeL)*gEyeL)/max(gEyeR,1e-4);
+  float d=dot(q,gEyeL)>-.35*gEyeR? sqrt(max(1.-lat*lat,0.)) : -1.;  // как cos угла, но устойчиво к сплющенному глазу
   float pa=cos(.42*gEyeP+.08);
   vec3 alb=vec3(.96,.94,.92);
   alb=mix(alb,vec3(.10,.05,.03),smoothstep(pa-.035,pa-.02,d));
@@ -463,9 +464,9 @@ void main(){
   // единое затенение попадания (снаружи или внутри)
   if(hit==1){
     map(hp, hin?1:2); // gHeat, gMouthD, глаз
-    float hh=gHeat; float mD=gMouthD; vec3 eC=gEyeC, eL=gEyeL; float eP=gEyeP;
+    float hh=gHeat; float mD=gMouthD; vec3 eC=gEyeC, eL=gEyeL; float eP=gEyeP, eR=gEyeR;
     vec3 n=nrmF(hp, hm<2.5?0:2);
-    gHeat=hh; gEyeC=eC; gEyeL=eL; gEyeP=eP;
+    gHeat=hh; gEyeC=eC; gEyeL=eL; gEyeP=eP; gEyeR=eR;
     vec3 c;
     if(hm<1.5){ c=waxShade(hp,n,rd,hh,hin,1.); if(mD<.006) c=vec3(.05,.008,.012)+c*.04; }
     else if(hm<2.5) c=eyeShade(hp,n,rd,hin);

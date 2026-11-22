@@ -240,10 +240,10 @@ shot(46.0, 49.0, (t, lt) => {
   return { cam: { ...cam, ro: add(cam.ro, shake(t, 48.8, .035)) },
     hero: { p: [.02, 1.74, hz], r: .12, heat: .85, k: .06, s: sp },
     heroFace: { up: K(lt, [[0, .62], [.9, .62], [1.1, 0, 'o']]), lo: 0, eye: .34, pu: K(lt, [[1.0, .8], [1.3, .55]]), ly: K(lt, [[0, -.15], [1.2, .5], [1.8, 0]]), mo: lt > 2.8 ? .75 : 0, mw: .25 },
-    env: [1, 1, 0, 0], fade: lt > 2.85 ? 0 : 1 };
+    env: [1, 1, 0, 0] };
 });
 
-window.DURATION = 49.0;
+window.DURATION = 48.75;
 window.SHOTS = SHOTS;
 
 window.STORY = function(t){
