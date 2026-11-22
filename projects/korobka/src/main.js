@@ -111,7 +111,7 @@ function overlays(ctx, t, cam) {
   bigWord(ctx, 'АПЧХИ!', 330, 330, t, 13.22, .9, 110, -.08, ink(1, 0, .9));
   bigWord(ctx, 'ФФФУХ!', 300, 300, t, 16.2, .8, 92, .1, ink(0, .9, .2));
   [x, y] = worldToScreen(cam, 0, 720, 1180); bigWord(ctx, 'БАМ!', clamp(x, 170, 520), clamp(y, 260, 700), t, HIT_B, .8, 140, -.1, ink(1, 0, 1));
-  for (const [n, t0] of [['3', 21.9], ['2', 22.7], ['1', 23.5]]) bigWord(ctx, n, 150, 330, t, t0, .72, 200, (+n - 2) * .08, ink(1, 0, 1));
+  for (const [n, t0] of [['3', 21.9], ['2', 22.7], ['1', 23.5]]) bigWord(ctx, n, 470, 700, t, t0, .72, 220, (+n - 2) * .08, ink(1, 0, 1));
   // перемотка
   if (t > 28 && t < 34.9) {
     const al = sstep(28, 28.4, t) * (Math.floor(t * 4) % 2 ? 1 : .55);

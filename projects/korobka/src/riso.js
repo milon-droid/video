@@ -10,10 +10,10 @@ const Riso = (() => {
   float scr(vec2 px, float a){ float c=cos(a), s=sin(a); vec2 q = mat2(c,-s,s,c)*px/uCell;
     return .5 + .25*(cos(6.2832*q.x) + cos(6.2832*q.y)); }
   float cov(float d, vec2 px, float a, float k){
-    d *= .86 + .14*n(px/34. + k*17. + uSeed*3.1);                 // неровный накат краски
-    float thr = mix(1. - scr(px, a), h(px + k*91. + uSeed), .3);   // растр + стохастика
+    d *= .86 + .14*n(px/34. + k*17.);                 // неровный накат краски
+    float thr = mix(1. - scr(px, a), h(px + k*91.), .3);   // растр + стохастика
     float c = smoothstep(thr - .07, thr + .07, d*1.13 - .045);
-    c *= step(.022, h(px*1.37 + k*7. + uSeed*1.7));               // белые крапинки
+    c *= step(.022, h(px*1.37 + k*7.));               // белые крапинки
     return c;
   }
   void main(){

@@ -37,4 +37,4 @@ Oculus Audio Pack (CC BY 4.0) — скрип и керамика.
 Превью: `node tools/render.mjs projects/korobka/src/scene.html --still T`. Рендер — без `--scale` (холст уже 720×1280).
 
 ## Статус
-- v1 собран, отдан на фидбек.
+- v1 собран (36,4 с, 720p), отдан на фидбек: render/korobka_v1_light.mp4 (15 МБ), korobka_v1.mp4 (35 МБ, crf 30). Зерно печати неподвижное, иначе файл 217 МБ.
