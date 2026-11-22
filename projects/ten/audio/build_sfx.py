@@ -61,5 +61,17 @@ for i in range(4): lib(66.7 + i * .4, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 
 lib(69.45, "shimmer-medium-bright", .25, align="start", rate=.7)
 # 16 финал: хвост атмосферы до конца
 lib(71.0, "oc-AMBForst_Night_LOOP_01", .2, dur=2.6, align="start")
+# v4: план 14 удлинён на 2,2 с — всё с 66.6 сдвигается; удар кулачков и договор — заново
+OLD_BUMP = [c for c in C if abs(c["t"] - 65.35) < .01]
+for c in OLD_BUMP: C.remove(c)
+for c in C:
+    if c["t"] >= 66.6 - .41: c["t"] = round(c["t"] + 2.2, 3)
+lib(22.45, "impact-light-soft", .7); lib(22.45, "foley-card-slide", .6, align="start"); lib(23.55, "writing-marker-draw", .5, align="start")
+lib(61.75, "impact-light-soft", .6); lib(61.75, "foley-card-slide", .5, align="start"); lib(62.6, "writing-marker-tick", .5)
+lib(64.4, "whoosh-medium-soft", .6, align="start")
+for i in range(4): lib(65.0 + i * .42, "writing-marker-tick", .7); lib(64.8 + i * .42, "pop-small-bubble", .4)
+lib(66.55, "writing-scribble", .55, align="start"); lib(66.85, "impact-heavy-soft", .7); lib(67.1, "impact-deep-hard", .6); lib(67.3, "whoosh-fast-soft", .6, align="start")
+lib(68.3, "impact-light-soft", .8); lib(68.3, "shimmer-medium-bright", .45, align="start")
+lib(35.55, "impact-heavy-firm", .5)
 json.dump(C, open("sfx.json", "w"), ensure_ascii=False, indent=0)
 print(len(C), "cues")
