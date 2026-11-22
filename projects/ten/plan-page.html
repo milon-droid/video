@@ -1,0 +1,149 @@
+<title>Тень уволилась — сериал</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Caveat:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Макет: «стена» со шкалой заката сверху, серии — листы-записки, приклеенные к кирпичной ночи; один тёмный мир (сознательно без светлой темы) */
+:root {
+  color-scheme: dark;
+  --night: #120d1f; --brick: #1d1530; --paper: #f3e7d3; --ink: #0a0910;
+  --neon: #ff4f9a; --sun: #ffb84a; --muted: #a99cc4; --line: #3a2d55;
+  --f-display: 'Unbounded', 'Inter', system-ui, sans-serif; --f-hand: 'Caveat', 'Comic Sans MS', cursive; --f-body: 'Inter', system-ui, sans-serif;
+}
+body { background: var(--night); color: var(--paper); font-family: var(--f-body); font-size: 16px; line-height: 1.55;
+  background-image: repeating-linear-gradient(0deg, transparent 0 46px, rgba(255,255,255,.025) 46px 48px), repeating-linear-gradient(90deg, transparent 0 118px, rgba(255,255,255,.02) 118px 120px); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-family: var(--f-display); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--neon); }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 6vw, 54px); line-height: 1.05; margin: 0; text-wrap: balance; }
+h1 .eyes { display: inline-flex; gap: 10px; vertical-align: middle; margin-left: 10px; }
+h1 .eyes i { width: 26px; height: 10px; border-radius: 50%; background: #f4f8ff; box-shadow: 0 0 14px #fff; animation: blink 4.2s infinite; }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1) } 96% { transform: scaleY(.1) } }
+@media (prefers-reduced-motion: reduce) { h1 .eyes i { animation: none } }
+.lead { color: var(--muted); max-width: 62ch; margin: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; color: var(--paper); }
+.sunline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.sunline span { height: 6px; border-radius: 3px; background: var(--line); }
+.sunline span.on { background: linear-gradient(90deg, var(--sun), var(--neon)); }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+.ep { background: var(--paper); color: var(--ink); border-radius: 4px; padding: 20px 20px 18px; display: grid; gap: 10px; position: relative; min-width: 0;
+  box-shadow: 10px 12px 0 rgba(0,0,0,.45); }
+.ep:nth-child(odd) { transform: rotate(-.6deg); } .ep:nth-child(even) { transform: rotate(.5deg); }
+.ep::before { content: ""; position: absolute; top: -10px; left: 50%; width: 90px; height: 22px; transform: translateX(-50%) rotate(-3deg); background: rgba(255,240,200,.55); }
+.ep .num { font-family: var(--f-display); font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; display: flex; justify-content: space-between; gap: 8px; }
+.status { font-family: var(--f-body); letter-spacing: 0; text-transform: none; font-weight: 600; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #e3d6c0; }
+.status.done { background: #1f7a4d; color: #fff; } .status.next { background: var(--ink); color: var(--paper); }
+.ep h2 { font-family: var(--f-hand); font-weight: 700; font-size: 38px; line-height: 1; margin: 0; }
+.ep p { margin: 0; }
+.ep dl { margin: 0; display: grid; gap: 6px; }
+.ep dt { font-family: var(--f-display); font-weight: 700; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #6a5a7a; }
+.ep dd { margin: 0 0 4px; }
+.ep .hook { font-family: var(--f-hand); font-size: 24px; line-height: 1.15; }
+.fb { display: grid; gap: 6px; margin-top: 4px; }
+.fb label { font-family: var(--f-display); font-weight: 700; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #6a5a7a; }
+textarea { width: 100%; box-sizing: border-box; min-height: 84px; resize: vertical; font: 16px/1.4 var(--f-body); color: var(--ink); background: #fffaf0; border: 1.5px solid #cdbda3; border-radius: 6px; padding: 10px; }
+textarea:focus-visible, button:focus-visible { outline: 3px solid var(--neon); outline-offset: 2px; }
+.row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+button { font: 600 14px var(--f-body); background: var(--ink); color: var(--paper); border: 0; border-radius: 6px; padding: 9px 16px; cursor: pointer; }
+button:disabled { opacity: .45; cursor: default; }
+.note { font-size: 13px; color: #6a5a7a; }
+.general { background: var(--brick); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: grid; gap: 10px; }
+.general h2 { font-family: var(--f-display); font-size: 20px; margin: 0; }
+.general textarea { background: #1a1428; color: var(--paper); border-color: var(--line); }
+.general .note, .general label { color: var(--muted); }
+.general button { background: var(--neon); color: var(--ink); }
+.offline { color: var(--sun); font-size: 14px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Мини-сериал · 4 серии · 9:16</div>
+    <h1>Тень уволилась<span class="eyes" aria-hidden="true"><i></i><i></i></span></h1>
+    <p class="lead">Городская комедия с теплом. Тени — живые «сотрудники»: устают от скучных хозяев и уходят. Без тени человек держится до заката, потом выцветает. Стиль — пластилиновые 3D-игрушки, настоящие тени, своя музыка, тень хамит и матерится.</p>
+    <div class="facts"><span class="chip">4 серии по 1:10–1:30</span><span class="chip">720p, TikTok / Reels</span><span class="chip">готово: серия 1 (v3)</span></div>
+    <div class="sunline" aria-label="Прогресс: серия 1 из 4"><span class="on"></span><span></span><span></span><span></span></div>
+  </header>
+
+  <p id="state" class="offline" hidden>Отзывы сейчас не сохраняются (страница открыта без входа). Напишите их в чат.</p>
+
+  <section class="grid" aria-label="Серии">
+    <article class="ep" data-ep="ep1">
+      <div class="num"><span>Серия 1</span><span class="status done">готова, v3 — правки идут</span></div>
+      <h2>«Заявление»</h2>
+      <p>Ночью тень Сени уходит и пишет на стене «УВОЛЬНЯЮСЬ… ЗАЕБАЛ.». До заката Сеня гонится за ней через город: автобус, танцы, фонтан. На крыше — примирение и договор «раз в неделю — туда, где мы ещё не были».</p>
+      <dl><dt>Крючок</dt><dd class="hook">«ПРОФСОЮЗ ТЕНЕЙ. ЗАБАСТОВКА — ЗАВТРА»</dd></dl>
+      <div class="fb"><label for="fb-ep1">Ваш отзыв по серии 1</label><textarea id="fb-ep1" placeholder="Что поправить, что оставить…"></textarea><div class="row"><button type="button" data-save="ep1">Сохранить</button><span class="note" data-msg="ep1"></span></div></div>
+    </article>
+
+    <article class="ep" data-ep="ep2">
+      <div class="num"><span>Серия 2</span><span class="status next">следующая</span></div>
+      <h2>«Забастовка»</h2>
+      <p>В 8:00 весь город просыпается без теней. Метро, офис, кафе — все выцветают к закату. Сеня — единственный человек с тенью, к нему выстраивается очередь «одолжить». Его тень выбирают делегатом профсоюза: она теперь знает, как «исправить» хозяина.</p>
+      <dl><dt>Хук</dt><dd class="hook">«В 8:00 у миллиона людей пропали тени. У меня — нет.»</dd>
+        <dt>Новое в кадре</dt><dd>Город-миниатюра сверху, толпа выцветших людей, митинг теней на стене ТЦ с плакатами.</dd>
+        <dt>Крючок</dt><dd class="hook">Требование профсоюза: «Люди должны жить, а не ходить по кругу». Подписать должен начальник.</dd></dl>
+      <div class="fb"><label for="fb-ep2">Ваш отзыв по серии 2</label><textarea id="fb-ep2" placeholder="Идея, шутки, что добавить…"></textarea><div class="row"><button type="button" data-save="ep2">Сохранить</button><span class="note" data-msg="ep2"></span></div></div>
+    </article>
+
+    <article class="ep" data-ep="ep3">
+      <div class="num"><span>Серия 3</span><span class="status">план</span></div>
+      <h2>«Тень начальника»</h2>
+      <p>Глава профсоюза — тень Пал Палыча, начальника Сени: 30 лет не видела солнца. Переговоры срываются. Сеня с тенью устраивают Пал Палычу «день жизни» — тот впервые за годы смеётся.</p>
+      <dl><dt>Хук</dt><dd class="hook">«Самая злая тень в городе — тень моего начальника.»</dd>
+        <dt>Новое в кадре</dt><dd>Офис-лабиринт, огромная тень-босс на всю стену, погоня по эскалатору.</dd>
+        <dt>Крючок</dt><dd class="hook">Тень начальника отказывается возвращаться: «Я лучше останусь одна».</dd></dl>
+      <div class="fb"><label for="fb-ep3">Ваш отзыв по серии 3</label><textarea id="fb-ep3" placeholder="Что думаете о начальнике и его тени…"></textarea><div class="row"><button type="button" data-save="ep3">Сохранить</button><span class="note" data-msg="ep3"></span></div></div>
+    </article>
+
+    <article class="ep" data-ep="ep4">
+      <div class="num"><span>Серия 4</span><span class="status">план, финал</span></div>
+      <h2>«Выходной»</h2>
+      <p>Город объявляет первый Выходной Теней: все идут туда, где ещё не были. Тени возвращаются одна за другой. Последней — тень начальника, к закату.</p>
+      <dl><dt>Хук</dt><dd class="hook">«Сегодня в городе отменили работу. Из-за теней.»</dd>
+        <dt>Новое в кадре</dt><dd>Каскад возвращения: тысячи теней прыгают под ноги людям, закат над городом.</dd>
+        <dt>Финал</dt><dd class="hook">Утро. На стене у Сени: «Увольняюсь… шучу. Куда идём в субботу?» Вопрос зрителям.</dd></dl>
+      <div class="fb"><label for="fb-ep4">Ваш отзыв по серии 4</label><textarea id="fb-ep4" placeholder="Какой финал хотите…"></textarea><div class="row"><button type="button" data-save="ep4">Сохранить</button><span class="note" data-msg="ep4"></span></div></div>
+    </article>
+  </section>
+
+  <section class="general">
+    <h2>Общий отзыв о сериале</h2>
+    <label for="fb-all">Количество серий, стиль, герои, озвучка — всё, что важно</label>
+    <textarea id="fb-all" placeholder="Например: сделай 5 серий, добавь…"></textarea>
+    <div class="row"><button type="button" data-save="all">Сохранить</button><span class="note" data-msg="all"></span></div>
+    <p class="note">Сохранённые отзывы Claude читает сам: после сохранения напишите в чате «посмотри окно».</p>
+  </section>
+</div>
+
+<script>
+(async () => {
+  const msg = (k, t) => { const el = document.querySelector(`[data-msg="${k}"]`); if (el) el.textContent = t; };
+  const buttons = [...document.querySelectorAll('[data-save]')];
+  buttons.forEach(b => b.disabled = true);
+  const timer = setTimeout(() => { document.getElementById('state').hidden = false; }, 10000);
+  const db = window.claude ? await window.claude.use('db') : null;
+  if (!db) { clearTimeout(timer); document.getElementById('state').hidden = false; return; }
+  const box = k => document.getElementById('fb-' + k);
+  const keys = ['ep1', 'ep2', 'ep3', 'ep4', 'all'];
+  let loaded = 0;
+  keys.forEach(k => {
+    db.doc('feedback/' + k).onSnapshot(snap => {
+      clearTimeout(timer);
+      const d = snap && snap.exists ? snap.data() : null;
+      const ta = box(k);
+      if (d && document.activeElement !== ta && !ta.dataset.dirty) ta.value = d.text || '';
+      if (d && d.savedAt) msg(k, 'Сохранено ' + new Date(d.savedAt).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }));
+      if (++loaded <= keys.length) document.querySelector(`[data-save="${k}"]`).disabled = false;
+    }, () => { clearTimeout(timer); document.getElementById('state').hidden = false; });
+    box(k).addEventListener('input', () => { box(k).dataset.dirty = '1'; msg(k, 'Не сохранено'); });
+  });
+  buttons.forEach(b => b.addEventListener('click', async () => {
+    const k = b.dataset.save; b.disabled = true; msg(k, 'Сохраняю…');
+    try { await db.doc('feedback/' + k).set({ text: box(k).value.trim(), savedAt: Date.now() }); delete box(k).dataset.dirty; msg(k, 'Сохранено'); }
+    catch (e) { msg(k, 'Не получилось сохранить: ' + (e && e.code === 'not_granted' ? 'нет прав на запись' : 'попробуйте ещё раз') + '.'); }
+    finally { b.disabled = false; }
+  }));
+})();
+</script>

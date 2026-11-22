@@ -34,13 +34,25 @@ export const night = (() => {
   const curb = mesh(G.box(60, .12, .25), clay('#5a5470'), false, true); add(g, curb, 0, .06, 3.4);
   // стена дома с кирпичом
   const brick = canvasTex(512, 512, (c) => { c.fillStyle = '#3a2f4e'; c.fillRect(0, 0, 512, 512); for (let r = 0; r < 16; r++) for (let k = 0; k < 9; k++) { c.fillStyle = `hsl(${262 + h1(r * 9 + k) * 14},${18 + h1(k + r) * 10}%,${30 + h1(r * 3 + k * 7) * 9}%)`; c.fillRect(k * 64 - (r % 2) * 32 + 3, r * 32 + 3, 58, 26); } });
-  brick.wrapS = brick.wrapT = THREE.RepeatWrapping; brick.repeat.set(6, 2.4);
+  brick.wrapS = brick.wrapT = THREE.RepeatWrapping; brick.repeat.set(6, 5);
   const wallM = new THREE.MeshStandardMaterial({ map: brick, roughness: .95 });
-  const wall = mesh(G.box(24, 4.4, .3), wallM, true, true); add(g, wall, 0, 2.2, -2.3);
+  const wall = mesh(G.box(24, 9.2, .3), wallM, true, true); add(g, wall, 0, 4.6, -2.3);
+  const cornice = mesh(G.box(24.2, .25, .5), clay('#2a2240'), true, true); add(g, cornice, 0, 9.2, -2.2);
+  [3.05, 5.25, 7.35].forEach(y => add(g, mesh(G.box(24, .08, .12), clay('#2e2646'), false, true), 0, y, -2.12));
   // окна в стене
   [[1.6, 2.4], [3.6, 2.4], [-3.4, 2.6], [5.8, 2.6]].forEach(([x, y], i) => { const fr = mesh(G.rbox(1.0, 1.25, .12, .03), clay('#1e1830'), false, true); add(g, fr, x, y, -2.12);
     const gl = mesh(G.plane(.84, 1.08), glow(i % 2 ? '#ffd27a' : '#ffbf6a', i === 2 ? .25 : 1.05), false, false); add(g, gl, x, y, -2.05);
     const cr = mesh(G.box(.06, 1.08, .04), clay('#1e1830')); add(g, cr, x, y, -2.03); const cr2 = mesh(G.box(.84, .06, .04), clay('#1e1830')); add(g, cr2, x, y, -2.03); });
+  // верхние этажи: окна (часть горит, у некоторых шторы), балконы
+  [[-3.4, 4.3], [-1.4, 4.3], [1.6, 4.3], [3.6, 4.3], [5.8, 4.3], [-3.4, 6.4], [-1.4, 6.4], [1.6, 6.4], [3.6, 6.4], [5.8, 6.4], [-5.4, 4.3], [-5.4, 6.4]].forEach(([x, y], i) => {
+    const on = h1(i + 40) < .55; const fr = mesh(G.rbox(1.0, 1.25, .12, .03), clay('#1e1830'), false, true); add(g, fr, x, y, -2.12);
+    const gl = mesh(G.plane(.84, 1.08), on ? glow(i % 3 ? '#ffd27a' : '#9ad0ff', .9) : clay('#141026'), false, false); add(g, gl, x, y, -2.05);
+    if (on && i % 2) { const cu = mesh(G.plane(.3, 1.08), clay('#c86a7a'), false, false); add(g, cu, x - .27, y, -2.04); }
+    add(g, mesh(G.box(.06, 1.08, .04), clay('#1e1830')), x, y, -2.03);
+    if (i % 4 === 1) { const bal = new THREE.Group(); add(bal, mesh(G.box(1.5, .1, .6), clay('#3a3058')), 0, 0, .3); for (let k = 0; k < 8; k++) add(bal, mesh(G.box(.03, .45, .03), clay('#5a5078')), -.7 + k * .2, .25, .58); add(bal, mesh(G.box(1.5, .04, .04), clay('#5a5078')), 0, .48, .58); add(g, bal, x, y - .75, -2.15); }
+  });
+  [[-1.5, 3.7], [4.6, 5.9], [-4.4, 6.0]].forEach(([x, y]) => { const ac = mesh(G.rbox(.6, .4, .3, .03), clay('#c8c8d0')); add(g, ac, x, y, -2.0); const gr = mesh(G.cyl(.13, .13, .02, 16), clay('#5a5a64')); gr.rotation.x = Math.PI / 2; add(g, gr, x + .1, y, -1.84); });
+  const pipe = mesh(G.cyl(.06, .06, 9, 10), clay('#4a4060')); add(g, pipe, -2.75, 4.5, -2.08);
   // дома за стеной
   for (let i = 0; i < 14; i++) building(g, -18 + i * 2.8 + h1(i) * .8, -6 - h1(i + 4) * 5, 2.2 + h1(i + 1), 5 + h1(i + 2) * 7, 2, '#241f42', '#ffd88a', i + 1, .3);
   // фонарь
@@ -67,6 +79,16 @@ export const night = (() => {
   const door = mesh(G.rbox(1.0, 2.0, .1, .03), clay('#120e22'), false, true); add(neon, door, .2, 1.0, -2.12);
   const dfr = mesh(G.rbox(1.15, 2.1, .08, .02), clay('#3a3260'), false, true); add(neon, dfr, .2, 1.05, -2.14);
   const nl = new THREE.PointLight('#ff3a8a', 6, 6, 1.5); nl.position.set(.2, 3.0, -1.4); neon.add(nl);
+  // козырёк в полоску, ступени, табличка, плакаты, неоновая стрелка
+  const aw = mesh(G.box(1.6, .06, .7), new THREE.MeshStandardMaterial({ map: canvasTex(128, 32, (c) => { for (let i = 0; i < 8; i++) { c.fillStyle = i % 2 ? '#f2e8e0' : '#c83a5a'; c.fillRect(i * 16, 0, 16, 32); } }), roughness: .8 }), true, true);
+  aw.rotation.x = .35; add(neon, aw, .2, 2.25, -1.85);
+  [0, 1].forEach(k => add(neon, mesh(G.rbox(1.5 - k * .2, .12, .4 - k * .12, .02), clay('#4a4268'), false, true), .2, .06 + k * .12, -1.95 + k * .06));
+  const plq = mesh(G.plane(.6, .22), new THREE.MeshBasicMaterial({ map: canvasTex(256, 96, (c) => { c.fillStyle = '#d8c8a8'; c.fillRect(0, 0, 256, 96); c.fillStyle = '#1a1424'; c.font = '700 22px Unb'; c.textAlign = 'center'; c.fillText('ТОЛЬКО', 128, 40); c.fillText('ДЛЯ ТЕНЕЙ', 128, 74); }) }), false, false); add(neon, plq, .2, 1.45, -2.06);
+  [['ТЕНИ,', 'ХВАТИТ', 'ХОДИТЬ', 'ЗА НИМИ!', '#ffcf4a'], ['МЫ НЕ', 'ОБЯЗАНЫ', 'ПОВТОРЯТЬ', '#7af0ff']].forEach((p, i) => {
+    const col = p[p.length - 1]; const lines = p.slice(0, -1);
+    const pm = mesh(G.plane(.7, .95), new THREE.MeshStandardMaterial({ map: canvasTex(140, 190, (c) => { c.fillStyle = '#f0e6d4'; c.fillRect(0, 0, 140, 190); c.fillStyle = '#0a0812'; c.beginPath(); c.arc(70, 52, 22, 0, 7); c.fill(); c.fillRect(52, 70, 36, 46); c.fillStyle = '#fff'; c.fillRect(60, 46, 7, 4); c.fillRect(74, 46, 7, 4); c.fillStyle = col; c.fillRect(0, 0, 140, 10); c.fillStyle = '#1a1424'; c.font = '800 15px Unb'; c.textAlign = 'center'; lines.forEach((l, k) => c.fillText(l, 70, 136 + k * 16)); }), roughness: .9 }), false, true);
+    pm.rotation.z = i ? .05 : -.06; add(neon, pm, i ? 1.35 : -1.0, 1.55, -2.13); });
+  const arrow = mesh(G.plane(.5, .3), new THREE.MeshBasicMaterial({ map: canvasTex(128, 76, (c) => { c.strokeStyle = '#ffd36a'; c.lineWidth = 8; c.shadowColor = '#ffd36a'; c.shadowBlur = 12; c.beginPath(); c.moveTo(10, 38); c.lineTo(100, 38); c.moveTo(78, 14); c.lineTo(110, 38); c.lineTo(78, 62); c.stroke(); }), transparent: true, toneMapped: false }), false, false); add(neon, arrow, -.85, 2.0, -2.12);
   g.add(neon);
   g.userData = {}; reg('night', g, skyTex([[0, '#070a22'], [.6, '#1b1d4a'], [1, '#3a2a5a']]), new THREE.Fog('#1d1a40', 9, 34));
   return { g, sp, lampX: lampX + .5, lampZ, neon, sign, sign2, nl, wallZ: -2.14 };
@@ -101,9 +123,9 @@ export function poseCat(C, t, hiss = 0) {
 // ===== КУХНЯ =====
 export const kitchen = (() => {
   const g = new THREE.Group();
-  g.add(new THREE.HemisphereLight('#fff0dc', '#a8785a', .9));
-  const sun = new THREE.DirectionalLight('#fff0c8', 4.2); sun.position.set(-5, 4.2, 2.2); sun.target.position.set(.6, 0, -.3); sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: .5, far: 20 }); sun.shadow.bias = -.0005; sun.shadow.radius = 3; g.add(sun, sun.target);
+  g.add(new THREE.HemisphereLight('#fff0dc', '#a8785a', .28));
+  const sun = new THREE.DirectionalLight('#fff0c8', 8.0); sun.position.set(-5, 2.4, 1.6); sun.target.position.set(.6, 0, -.3); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -3.5, right: 3.5, top: 3.5, bottom: -3.5, near: .5, far: 20 }); sun.shadow.bias = -.0004; sun.shadow.radius = 2; g.add(sun, sun.target);
   const planks = canvasTex(512, 512, (c) => { for (let i = 0; i < 8; i++) { c.fillStyle = `hsl(28,${40 + h1(i) * 10}%,${46 + h1(i + 3) * 8}%)`; c.fillRect(0, i * 64, 512, 62); c.fillStyle = 'rgba(80,40,20,.25)'; c.fillRect(0, i * 64 + 62, 512, 2); } });
   planks.wrapS = planks.wrapT = THREE.RepeatWrapping; planks.repeat.set(3, 3);
   const floor = mesh(G.plane(10, 10), new THREE.MeshStandardMaterial({ map: planks, roughness: .8 }), false, true); floor.rotation.x = -Math.PI / 2; g.add(floor);
@@ -133,7 +155,7 @@ export const kitchen = (() => {
   const toast = mesh(G.rbox(.3, .2, .18, .04), clay('#d8dce4', { roughness: .35 })); add(g, toast, 1.95, 1.06, -1.42);
   // лампа-абажур сверху
   const shade = mesh(G.cyl(.12, .3, .25, 24, 1), clay('#ffcf6a')); add(g, shade, .2, 3.3, -.4);
-  const cat = makeCat(); g.add(cat.g); cat.g.position.set(1.25, 0, .25); cat.g.rotation.y = .3;
+  const cat = makeCat(); g.add(cat.g); cat.g.position.set(.95, 0, .55); cat.g.rotation.y = .3;
   // коврик
   const rug = mesh(G.cyl(.9, .9, .02, 40), clay('#7a8ac8'), false, true); rug.scale.set(1, 1, .6); add(g, rug, .2, .01, .3);
   reg('kitchen', g, new THREE.Color('#f6dcb8'));
@@ -236,6 +258,9 @@ export const plaza = (() => {
   const ground = mesh(G.plane(60, 60), new THREE.MeshStandardMaterial({ map: pav, roughness: .9 }), false, true); ground.rotation.x = -Math.PI / 2; g.add(ground);
   const cols = ['#f0a878', '#f6d48a', '#9ad0c8', '#e88a9a', '#a8b8f0'];
   for (let i = 0; i < 9; i++) building(g, -13 + i * 3.3, -8, 3.0, 4 + h1(i + 40) * 4, 2.5, cols[i % 5], '#fff6dc', 60 + i, .5);
+  // светлая стена дома за площадью (на неё ложатся тени танцоров)
+  const FZ = -3.2; const fac = mesh(G.box(20, 6, .3), new THREE.MeshStandardMaterial({ map: canvasTex(256, 96, (c) => { c.fillStyle = '#f4e4c8'; c.fillRect(0, 0, 256, 96); for (let i = 0; i < 300; i++) { c.fillStyle = `rgba(160,120,80,${h1(i) * .08})`; c.fillRect(h1(i + 1) * 256, h1(i + 2) * 96, 3, 3); } c.fillStyle = 'rgba(160,120,90,.25)'; c.fillRect(0, 88, 256, 8); }), roughness: .95 }), true, true); add(g, fac, 0, 3, FZ - .15);
+  [-6, -3.6, 3.6, 6].forEach(x => { add(g, mesh(G.rbox(1.1, 1.5, .1, .04), clay('#8ab0d0', { roughness: .2 })), x, 3.6, FZ + .02); add(g, mesh(G.rbox(1.25, .12, .25, .03), clay('#c8a888')), x, 2.8, FZ + .08); });
   // фонтан
   const fnt = new THREE.Group(); add(fnt, mesh(G.cyl(1.6, 1.7, .35, 48), clay('#c8c0c8')), 0, .175, 0); const water = mesh(G.cyl(1.45, 1.45, .05, 48), new THREE.MeshStandardMaterial({ color: '#7ac8f0', roughness: .15, metalness: .1 }), false, true); add(fnt, water, 0, .3, 0);
   add(fnt, mesh(G.cyl(.18, .25, .7, 20), clay('#c8c0c8')), 0, .5, 0);
@@ -252,7 +277,7 @@ export const plaza = (() => {
   const CROWD = ['#6a7ab8', '#b86a8a', '#8ab86a', '#c8a050', '#6ab0b8', '#a07ac8', '#d88a5a'].map((c, i) => ({ skin: ['#f2c9ad', '#c88a64', '#e8b898'][i % 3], hair: ['#2a1a14', '#c88a3a', '#0e0c0c', '#8a5a3a'][i % 4], top: c, top2: c, pants: '#3a3a4a', shoes: '#e8e8e8', hood: i % 2 === 0, eye: '#1a1210', blush: .4 }));
   const crowd = CROWD.map(L => { const d = makeToy(L); d.root.traverse(o => { if (o.isMesh) o.castShadow = true; }); g.add(d.root); return d; });
   reg('plaza', g, skyTex([[0, '#78c0ff'], [.7, '#c8e4ff'], [1, '#ffe0b0']]), new THREE.Fog('#d8e8ff', 16, 50));
-  return { g, sun, dancers, crowd, drops, N, fountain: fnt };
+  return { g, sun, dancers, crowd, drops, N, fountain: fnt, facadeZ: FZ };
 })();
 
 // ===== КРЫША НА ЗАКАТЕ =====

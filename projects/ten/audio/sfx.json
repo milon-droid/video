@@ -152,7 +152,7 @@
 "align": "start"
 },
 {
-"t": 66.2,
+"t": 68.4,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.8,
@@ -717,27 +717,14 @@
 "align": "start"
 },
 {
-"t": 65.35,
-"type": "lib",
-"id": "impact-light-soft",
-"gain": 0.8
-},
-{
-"t": 65.35,
-"type": "lib",
-"id": "shimmer-medium-bright",
-"gain": 0.45,
-"align": "start"
-},
-{
-"t": 66.6,
+"t": 68.8,
 "type": "hum50",
 "gain": 0.25,
 "dur": 4.6,
 "attack": 0.1
 },
 {
-"t": 66.6,
+"t": 68.8,
 "type": "lib",
 "id": "oc-AMBForst_Night_LOOP_01",
 "gain": 0.25,
@@ -745,47 +732,47 @@
 "align": "start"
 },
 {
-"t": 68.6,
+"t": 70.8,
 "type": "zap",
 "gain": 0.45,
 "dur": 0.5
 },
 {
-"t": 68.9,
+"t": 71.1,
 "type": "zap",
 "gain": 0.3,
 "dur": 0.3
 },
 {
-"t": 66.7,
+"t": 68.9,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 67.1,
+"t": 69.3,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 67.5,
+"t": 69.7,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 67.9,
+"t": 70.1,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 69.45,
+"t": 71.65,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.25,
@@ -793,11 +780,150 @@
 "rate": 0.7
 },
 {
-"t": 71.0,
+"t": 73.2,
 "type": "lib",
 "id": "oc-AMBForst_Night_LOOP_01",
 "gain": 0.2,
 "dur": 2.6,
 "align": "start"
+},
+{
+"t": 22.45,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.7
+},
+{
+"t": 22.45,
+"type": "lib",
+"id": "foley-card-slide",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 23.55,
+"type": "lib",
+"id": "writing-marker-draw",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 61.75,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.6
+},
+{
+"t": 61.75,
+"type": "lib",
+"id": "foley-card-slide",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 62.6,
+"type": "lib",
+"id": "writing-marker-tick",
+"gain": 0.5
+},
+{
+"t": 64.4,
+"type": "lib",
+"id": "whoosh-medium-soft",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 65.0,
+"type": "lib",
+"id": "writing-marker-tick",
+"gain": 0.7
+},
+{
+"t": 64.8,
+"type": "lib",
+"id": "pop-small-bubble",
+"gain": 0.4
+},
+{
+"t": 65.42,
+"type": "lib",
+"id": "writing-marker-tick",
+"gain": 0.7
+},
+{
+"t": 65.22,
+"type": "lib",
+"id": "pop-small-bubble",
+"gain": 0.4
+},
+{
+"t": 65.84,
+"type": "lib",
+"id": "writing-marker-tick",
+"gain": 0.7
+},
+{
+"t": 65.64,
+"type": "lib",
+"id": "pop-small-bubble",
+"gain": 0.4
+},
+{
+"t": 66.26,
+"type": "lib",
+"id": "writing-marker-tick",
+"gain": 0.7
+},
+{
+"t": 66.06,
+"type": "lib",
+"id": "pop-small-bubble",
+"gain": 0.4
+},
+{
+"t": 66.55,
+"type": "lib",
+"id": "writing-scribble",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 66.85,
+"type": "lib",
+"id": "impact-heavy-soft",
+"gain": 0.7
+},
+{
+"t": 67.1,
+"type": "lib",
+"id": "impact-deep-hard",
+"gain": 0.6
+},
+{
+"t": 67.3,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 68.3,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.8
+},
+{
+"t": 68.3,
+"type": "lib",
+"id": "shimmer-medium-bright",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 35.55,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.5
 }
 ]
