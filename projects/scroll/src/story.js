@@ -27,13 +27,13 @@ function zoomAt(t) { for (let i = 1; i < ZK.length; i++) if (t <= ZK[i][0]) { co
 const FACE = [[12.0, 12.8, .1], [21.0, 21.8, .45]];                 // крупно лицо (склейка)
 // ЕДИНОЕ ВРЕМЯ: сколько часов прошло с 23:59 первой ночи. От него — счётчик, календарь, часы, телефон, возраст, пёс, цветок.
 const HY = 8766;                                                     // часов в году
-const EK = [[0, 0], [10.2, 10.2 / 3600], [11.8, 6], [12.8, 6], [16.4, 6.4], [17.0, 6.4], [21.0, 9 * HY], [21.8, 9 * HY], [25.6, 9.3 * HY], [26.2, 9.3 * HY], [30.4, 47 * HY]];
+const END_H = 17167 * 24;                                            // ≈47 лет ровно в сутках → в конце снова 23:59 (петля)
+const EK = [[0, 0], [10.2, 10.2 / 3600], [11.8, 6], [12.8, 6], [16.4, 6.4], [17.0, 6.4], [21.0, 9 * HY], [21.8, 9 * HY], [25.6, 9.3 * HY], [26.2, 9.3 * HY], [30.4, END_H]];
 function elapsed(t) {
-  if (t >= 40.6) return 0;                                           // стык петли — снова та же ночь
-  if (t >= 30.4) return 47 * HY;
+  if (t >= 30.4) return END_H;                                       // до самого стыка — 2073, комната старая
   for (let i = 1; i < EK.length; i++) if (t <= EK[i][0]) { const [a, va] = EK[i - 1], [b, vb] = EK[i], u = clamp((t - a) / (b - a));
     return va > 1000 || vb > 1000 ? Math.exp(lerp(Math.log(va + 1), Math.log(vb + 1), u)) - 1 : lerp(va, vb, u); }
-  return 47 * HY;
+  return END_H;
 }
 const yearsAt = t => elapsed(t) / HY;
 function raAt(t) { return clamp(yearsAt(t) / 47); }
