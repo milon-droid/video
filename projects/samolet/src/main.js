@@ -25,11 +25,11 @@ function camera(t) {
 }
 // титры (английский)
 const CAPS = [
-  [1.35, 3.2, ['“It goes fast.', 'Have fun”?']],
+  [1.35, 3.6, ['“It goes fast.', 'Have fun”?']],
   [5.25, 6.6, ['Hello, future me!']],
   [31.95, 33.0, ['“Hello, future me.”']],
-  [33.0, 34.3, ['Heh. Hi, kid.']],
-  [34.45, 36.4, ['It goes fast.', 'Have fun.']],
+  [33.0, 34.4, ['Ha! Hi, kid.']],
+  [34.45, 37.2, ['It goes fast.', 'Have fun.']],
 ];
 function caption(ctx, t) {
   for (const [t0, t1, lines] of CAPS) {

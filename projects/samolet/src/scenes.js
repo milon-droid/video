@@ -112,10 +112,10 @@ function particles(ctx, cam, t) {             // лепестки / листья
   const kind = s < .8 ? 0 : s < 2.8 ? -1 : s < 3.6 ? 1 : 2; if (kind < 0) return;
   const col = [ink(.6, 0, .1), ink(.7, .05, .95), PAPER][kind], n = [26, 22, 60][kind];
   for (let i = 0; i < n; i++) {
-    const sp = [.12, .16, .1][kind], u = (t * sp + hash(i)) % 1;
-    const x = cam.cx - cam.vw / 2 + ((hash(i + 3) * cam.vw + Math.sin(t * 1.3 + i) * 60 - (kind === 2 ? 0 : t * 90)) % cam.vw + cam.vw) % cam.vw;
+    const TAU = 2 * Math.PI / DUR, sp = Math.round([.12, .16, .1][kind] * DUR) / DUR, u = ((t * sp + hash(i)) % 1 + 1) % 1;   // всё периодично по длине ролика — петля без скачка
+    const x = cam.cx - cam.vw / 2 + ((hash(i + 3) * cam.vw + Math.sin(t * TAU * 9 + i) * 60 - (kind === 2 ? 0 : (t / DUR) * cam.vw * 3)) % cam.vw + cam.vw) % cam.vw;
     const y = top + u * h, r = cam.vw * (kind === 2 ? .006 : .009) * (.6 + hash(i + 5));
-    ctx.save(); ctx.translate(x, y); ctx.rotate(t * 2 + i);
+    ctx.save(); ctx.translate(x, y); ctx.rotate(t * TAU * 14 + i);
     ctx.beginPath(); ctx.ellipse(0, 0, r, r * (kind === 2 ? 1 : .55), 0, 0, 7); fill(ctx, col); if (kind !== 2) stroke(ctx, r * .25);
     ctx.restore();
   }

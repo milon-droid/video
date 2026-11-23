@@ -19,7 +19,7 @@ function ikArm(s, h, L, side) {
 
 function personGeom(P) {
   const R = P.R, [leg, tor, shw] = BODY[P.kind], sit = P.sit || 0;
-  const br = Math.sin(P.t * 1.8 + (P.seed || 0)) * .03 * R;
+  const br = Math.sin(P.t * 2 * Math.PI * 12 / DUR + (P.seed || 0)) * .03 * R;
   const hipY = P.y - leg * R * (1 - .52 * sit) + (P.bob || 0), hx = P.x;
   const shY = hipY - tor * R * (1 - .08 * (P.lean || 0)) + br + (P.kind === 'old' ? .15 * R : 0);
   const shX = hx + (P.lean2 || 0) * R;
@@ -109,7 +109,7 @@ function drawHeadP(ctx, G, P, lw) {
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(s * 54 + f * 30, 30, 15, 0, 7); fill(ctx, ink(.55, 0, .12, P.blow ? 1 : .75)); }
   if (P.age < 20) for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc((i % 3 - 1) * 12 + (i < 3 ? -52 : 52) + f * 30, 18 + Math.floor(i % 2) * 8, 3, 0, 7); fill(ctx, ink(.6, .1, .7)); }
   // глаза
-  const op = clamp((P.eye ?? 1) * blink(P.t + (P.seed || 0))), ex0 = f * 30;
+  const op = clamp((P.eye ?? 1) * blink(((P.t % DUR) + DUR) % DUR * .999 + (P.seed || 0) + .7)), ex0 = f * 30;
   for (const s of [-1, 1]) {
     const ex = s * 34 + ex0, ey = -6, rx = 19, ry = 23 * (1 + .2 * (P.wide || 0));
     if (op < .15) { ctx.beginPath(); ctx.moveTo(ex - rx, ey + 2); ctx.quadraticCurveTo(ex, ey + (P.happyEyes ? -10 : 10), ex + rx, ey + 2); stroke(ctx, 6); }
