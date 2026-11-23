@@ -255,11 +255,18 @@
    "say": "And she's a ten. In every light."
   },
   {
-   "id": "cl1",
+   "id": "of1",
+   "role": "shadow2_en",
+   "t": 71.75,
+   "text": "Oh, fuck!",
+   "say": "Oh... fuck!"
+  },
+  {
+   "id": "sm1",
    "role": "senya_en",
-   "t": 72.75,
-   "text": "Oh no. Not again.",
-   "say": "Oh no. Not again."
+   "t": 73.0,
+   "text": "Smooth. Real smooth.",
+   "say": "Smooth. Real smooth."
   }
  ]
 }

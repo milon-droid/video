@@ -334,14 +334,17 @@ S.S15 = (t) => { useSet('night'); hideAll(); night.neon.visible = false;
   // их тени на стене (от фонаря позади зрителя)
   applyPose(girlSh, t > 2.6 && t < 3.6 ? { ...POSE.wave } : walk((3.4 - gx) * 1.6, 0), t, { mood: t > 2.7 && t < 3.6 ? 'sly' : 'happy', look: -1 }, 7);
   placeShade(girlSh, { x: gx + .3, z: W0, rise: 1, scale: 1.3, turn: t > 2.6 && t < 3.6 ? 0 : -Math.PI / 2, op: 1 });
-  const leave = ease(t, 3.7, 4.6, sm); const sx = lerp(hx + .3, gx + .3 - .9, leave);
-  applyPose(shade, t < 3.7 ? { ...hp, aR: t > 2.8 ? [0, -2.4, .9] : hp.aR } : walk((sx - hx) * 2, 1), t, { mood: t > 2.7 ? 'happy' : 'calm', look: 1 }, 3);
-  placeShade(shade, { x: sx, z: W0 + .005, rise: 1, scale: 1.3, turn: t < 3.7 ? (t < 1.6 ? Math.PI / 2 : 0) : -Math.PI / 2, op: 1 });
+  // тень Сэма видит её → «Oh, fuck!» → удирает обратно и прячется за Сэмом, выглядывает
+  const back = ease(t, 3.55, 4.05, sm); const baseX = hx + .3; const sx = lerp(baseX, hx - .35, back);
+  const flinch = t > 2.95 && t < 3.55 ? { ...POSE.scared, lean: -.15 } : null;
+  const hide = t >= 4.05 ? { ...POSE.stand, crouch: .16, aL: [.9, .3, 2.0], aR: [.9, -.3, 2.0], headX: .1 } : null;
+  applyPose(shade, flinch || hide || (t >= 3.55 ? walk((baseX - sx) * 2.4, 1) : { ...hp, aR: t > 2.6 ? [0, -2.4, .9] : hp.aR }), t, { mood: t > 2.95 ? 'wide' : t > 2.6 ? 'happy' : 'calm', look: t > 4.05 ? 1 : 1 }, 3);
+  placeShade(shade, { x: sx, z: W0 + .005, rise: 1, scale: 1.3, turn: t >= 3.55 && t < 4.05 ? Math.PI / 2 : (t < 1.6 ? Math.PI / 2 : 0), op: 1 });
   const [jx, jy] = hh(t, .02); cam(.2 + jx, 1.6 + jy, lerp(8.0, 7.4, ease(t, 0, 5.5)), .2, 1.4, -1.8, 38);
   FX = { fy: .5, fw: .3, blur: 6, bloom: .45, warm: -.02 };
-  return () => { if (t > 2.6 && t < 3.6) { const [ex, ey] = toScreen(gx + .3, 1.5 * 1.3, W0); heartsFloat(t - 2.6, ex, ey, .6); }
-    if (t > 3.7) heartsFloat(t, 540, 1100, .5);
-    narr(t, 3.95, 5.5, 'Oh no. Not again.', { y: 1450, size: 80, who: 'SAM' }); };
+  return () => { if (t > 2.6) { const [ex, ey] = toScreen(gx + .3, 1.5 * 1.3, W0); heartsFloat(t - 2.6, ex, ey, .6); }
+    shadowSay(t, 2.95, 3.9, ['Oh, fuck!'], { y: 560, size: 120 });
+    narr(t, 4.2, 5.5, 'Smooth. Real smooth.', { y: 1450, size: 80, who: 'SAM' }); };
 };
 // 16. Финальная плашка
 S.S16 = (t) => { useSet('night'); hideAll(); renderer.setClearColor('#000'); FX = { skip: true };
