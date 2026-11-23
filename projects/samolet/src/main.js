@@ -3,17 +3,17 @@ window.SCENE = { duration: REAL_DUR, fps: 30, width: CW, height: CH };
 var CUR_T = 0;
 const V = (cx, cy, vw) => ({ cx, cy, vw });
 const mixC = (a, b, u) => V(lerp(a.cx, b.cx, u), lerp(a.cy, b.cy, u), Math.exp(lerp(Math.log(a.vw), Math.log(b.vw), u)));
-const C0 = V(720, 1020, 1200), C1 = V(600, 1235, 600), C2 = V(700, 1080, 1050);
+const C0 = V(720, 1020, 1200), C1 = V(600, 1235, 600), C2 = V(700, 1080, 1050), C2b = V(640, 1200, 820);
 const B0 = V(BENCH_X + 100, 1250, 1060), B1 = V(BENCH_X + 95, 1300, 700), B2 = V(BENCH_X - 120, 1180, 1100);
 function follow(t) {
   const p = planeAt(t); if (!p.fly) return null;
-  const fwd = p.dir > 0;
+  const fwd = p.dir > 0; if (fwd) { const b = planeBase(t); p.x = b.x; p.y = b.y; }     // камера идёт за курсом, не за петлёй сердца
   return V(p.x + (fwd ? 170 : -220), clamp(1080 + (p.y - 950) * .4, 980, 1200), fwd ? 1060 : 1500);
 }
 function camera(t) {
   const s = sOf(t);
   let c;
-  if (s < .75 && (t < 5 || t >= DUR - LOOP)) c = C0;
+  if (s < .75 && (t < 5 || t >= DUR - LOOP)) c = s >= 0 ? C2b : C0;
   else if (t < 4.6) c = mixC(C0, mixC(C1, V(590, 1235, 560), sstep(1.2, 4.6, s)), sstep(.75, 1.2, s));
   else if (t < 5.7) c = mixC(V(590, 1235, 560), C2, sstep(4.6, 5.2, t));
   else if (t < 30.0) c = mixC(C2, follow(t), sstep(5.7, 6.9, t));
@@ -97,9 +97,8 @@ async function setup() {
 }
 const CLOSE = V(BENCH_X + 130, 1260, 600), HEARTCAM = V(HEART_X, 1080, 1180);
 function holdCam(h, t) {
-  if (h.i === HP) return C0;
+  if (h.i === HP) return V(IX + 20, 1080, 980);
   if (h.i === HK) return mixC(camera(3.2), V(600, 1170, 520), sstep(0, .4, h.u) * (1 - sstep(1.25, 1.6, h.u)));
-  if (h.i === HH) return mixC(camera(HEART_T), HEARTCAM, sstep(0, .5, h.u) * (1 - sstep(2.1, 2.6, h.u)));
   return h.u < 5.65 ? mixC(B1, V(BENCH_X + 120, 1250, 620), sstep(1.6, 2.3, h.u)) : CLOSE;
 }
 window.renderFrame = async T => {
@@ -113,10 +112,11 @@ window.renderFrame = async T => {
   ctx.setTransform(a, 0, 0, a, -(cam.cx - cam.vw / 2) * a, -(cam.cy - cam.vw * 8 / 9) * a);
   background(ctx, cam, t);
   const L = cam.cx - cam.vw, R = cam.cx + cam.vw;
-  if (L < 1400) school(ctx, t, h && h.i === HK ? kidHold(h.u) : h && h.i === HP ? kidLoop(h.u) : kidPose(t));
-  BLOCKS.forEach((b, bi) => { if (b.x0 + b.w > L && b.x0 < R) { const p = planeAt(t); const px = p.fly ? p.x : (t < 20 ? 0 : 99999); b.draw(ctx, b.x0, fl && fl[1] === bi ? fl[3] : h && h.i === HH && bi === 2 ? lerp(.42, .78, h.u / HEART_LEN) : clamp((px - b.x0) / b.w), t); } });
+  if (h && h.i === HP) interior(ctx, h.u);
+  else if (L < 1400) school(ctx, t, h && h.i === HK ? kidHold(h.u) : kidPose(t));
+  BLOCKS.forEach((b, bi) => { if (b.x0 + b.w > L && b.x0 < R) { const p = planeAt(t); const px = p.fly ? p.x : (t < 20 ? 0 : 99999); b.draw(ctx, b.x0, fl && fl[1] === bi ? fl[3] : clamp(((p.fly && p.dir > 0 ? planeBase(t).x : px) - b.x0) / b.w), t); } });
   if (fl && typeof fl[1] === 'string') card(ctx, fl[1], T);
-  ground(ctx, cam);
+  if (!(h && h.i === HP)) ground(ctx, cam);
   let OG = null; if (R > 10600 && R < 20000) OG = bench(ctx, t, h && h.i === HO ? oldHold(h.u) : oldPose(t), null);
   let sh = sheetAt(t);
   if (h && h.i === HK && sh) { const k = sstep(0, .3, h.u) * (1 - sstep(1.3, 1.6, h.u)); sh.cx = lerp(sh.cx, 545, k); sh.cy = lerp(sh.cy, 1370, k); }   // опускает лист — видно лицо
@@ -133,14 +133,12 @@ window.renderFrame = async T => {
   if (t >= 38.2 && t < 38.8) { const O = oldPose(t), h = O.hA; plane(ctx, h[0] - 10, h[1] - 25, 140, .2, 0, -1); }
   if (t >= 31.0 && t < 31.5) plane(ctx, BENCH_X, 1320, 140, 0, 0, 1);
   const p = h && (h.i === HP || h.i === HH) ? { fly: false } : planeAt(t);
-  if (h && h.i === HP) { const q = loopPlane(h.u), q2 = loopPlane(h.u - .03); plane(ctx, q.x, q.y, 150, Math.atan2(q.y - q2.y, Math.abs(q.x - q2.x) + 1) * .8 * (q.x < q2.x ? -1 : 1), q.a, q.x < q2.x ? -1 : 1); }
-  if (h && h.i === HH) heartFlight(ctx, h.u);
   if (p.fly) {
     const pts = []; for (let i = 1; i < 14; i++) { const q = planeAt(t - i * .035); if (q.fly) pts.push([q.x - 60 * q.dir, q.y + 6]); }
-    wake(ctx, pts); plane(ctx, p.x, p.y, 140, p.ang, p.bank, p.dir);
+    if (p.heart > 0 && p.dir > 0) heartTrail(ctx, t, p.heart); else wake(ctx, pts);
+    plane(ctx, p.x, p.y, 140, p.ang, p.bank, p.dir);
   }
-  foreground(ctx, cam);
-  particles(ctx, cam, t);
+  if (!(h && h.i === HP)) { foreground(ctx, cam); particles(ctx, cam, T); }
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (fl) {                                   // рамка «фотографии» вокруг воспоминания
     const m = 46, age = fl[2];
@@ -151,23 +149,42 @@ window.renderFrame = async T => {
     ctx.restore();
   }
   if (!fl && !h) overlays(ctx, t, cam); caption(ctx, t, h);
+  if (h && h.i === HP) { const q = inPlane(h.u); if (q.vis) { const [x, y] = toScreen(cam, q.x, q.y); ctx.globalAlpha = sstep(.5, .8, h.u); stampS(ctx, 'FROM: YOU, AGE 80', clamp(x, 220, 500), y - 90, -.08, ink(1, .05, .95), 34); ctx.globalAlpha = 1; } }
   let mis = 1;
   if (fl && h.u - fl[0] < .07) mis = 6;
   if (t > 39.5 && t < 43.8) mis = 1 + 2 * Math.sin(Math.PI * (t - 39.5) / 4.3);
   Riso.print(dens, T, mis);
 };
 
-function heartFlight(ctx, u) {            // самолётик рисует сердце над молодыми, след остаётся
-  const v = clamp(u / (HEART_LEN - .5)), fade = 1 - sstep(HEART_LEN - .35, HEART_LEN, u);
-  ctx.beginPath(); for (let i = 0; i <= 80; i++) { const w = v * i / 80, q = HEART(w); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }
-  ctx.globalAlpha = fade; ctx.setLineDash([26, 18]); stroke(ctx, 12, ink(1, 0, .45)); ctx.setLineDash([]); ctx.globalAlpha = 1;
-  if (v >= 1) {                            // конфетти, когда сердце замкнулось
-    const k = (u - (HEART_LEN - .5)) / .5;
-    for (let i = 0; i < 40; i++) { const a = hash(i) * 6.28, r = 60 + k * (200 + hash(i + 3) * 260), x = HEART_X + Math.cos(a) * r, y = 900 + Math.sin(a) * r * .7 + k * k * 160;
-      ctx.save(); ctx.translate(x, y); ctx.rotate(i + k * 8); ctx.fillStyle = [ink(1, 0, .3), ink(0, .8, .1), ink(0, 0, 1), PAPER][i % 4]; ctx.fillRect(-10, -6, 20, 12); ctx.restore(); }
-  }
-  const q = HEART(v), q2 = HEART(Math.max(0, v - .01)), dir = q[0] >= q2[0] ? 1 : -1;
-  plane(ctx, q[0], q[1], 140, Math.atan2(q[1] - q2[1], Math.abs(q[0] - q2[0]) + .5) * .9 * dir, u * 3, dir);
+function heartTrail(ctx, t, w) {          // пунктир-сердце относительно курса — на экране сердце целое, мир едет дальше
+  const b = planeBase(t), fade = w >= 1 ? 1 - clamp((t - (HEART_T + HEART_LEN / 2)) / .9) : 1;
+  if (fade <= 0) return;
+  const h0 = HEART(0, 13);
+  ctx.beginPath(); for (let i = 0; i <= 70; i++) { const q = HEART(Math.min(w, 1) * i / 70, 13); i ? ctx.lineTo(b.x + q[0] - h0[0], b.y + q[1] - h0[1]) : ctx.moveTo(b.x + q[0] - h0[0], b.y + q[1] - h0[1]); }
+  ctx.globalAlpha = fade; ctx.setLineDash([24, 18]); stroke(ctx, 10, ink(1, 0, .45)); ctx.setLineDash([]); ctx.globalAlpha = 1;
+}
+// класс изнутри: мальчик влюблённо смотрит на соседку, в окне появляется самолётик
+function interior(ctx, u) {
+  const X = IX;
+  ctx.fillStyle = ink(.05, .3, .22); ctx.fillRect(X - 800, 0, 1600, 1650);
+  ctx.fillStyle = ink(.45, .2, .7); ctx.fillRect(X - 800, 1650, 1600, 600);
+  rr(ctx, X - 560, 380, 420, 270, 10); fill(ctx, ink(.4, 1, .65)); stroke(ctx, 7);
+  ctx.font = '700 40px Inter'; ctx.fillStyle = PAPER; ctx.textAlign = 'left'; ctx.fillText('2 + 2 = 4', X - 520, 460); ctx.fillText('NOV 23', X - 520, 530);
+  ctx.beginPath(); ctx.arc(X - 30, 470, 48, 0, 7); fill(ctx, PAPER); stroke(ctx, 5);
+  // окно справа: небо, цветущее дерево, распахнутая створка
+  window_(ctx, X + 230, 360, 300, 640, ink(.12, .3, .05), () => {
+    for (let i = 0; i < 7; i++) { ctx.beginPath(); ctx.arc(X + 260 + hash(i) * 260, 800 + hash(i + 4) * 200, 70, 0, 7); fill(ctx, ink(.45, 0, .1)); stroke(ctx, 5); }
+    const p = inPlane(u); if (p.vis && p.x > X + 300) plane(ctx, p.x, p.y, p.L, -.1, u * 2, -1);
+  });
+  ctx.beginPath(); ctx.moveTo(X + 230, 360); ctx.lineTo(X + 120, 300); ctx.lineTo(X + 120, 1060); ctx.lineTo(X + 230, 1000); ctx.closePath(); fill(ctx, ink(.02, .12, .1, .9)); stroke(ctx, 6);
+  drawPerson(ctx, girlIn(u)); drawPerson(ctx, kidIn(u));
+  for (const [x0, x1] of [[X - 420, X - 40], [X + 30, X + 400]]) { rr(ctx, x0, 1400, x1 - x0, 36, 6); fill(ctx, ink(.45, .12, .72)); stroke(ctx, 6); ctx.fillStyle = ink(.55, .2, .8); ctx.fillRect(x0 + 15, 1436, x1 - x0 - 30, 160); }
+  rr(ctx, X + 170, 1370, 150, 26, 4); fill(ctx, PAPER); stroke(ctx, 4);                          // тетрадь соседки
+  if (u < .9) { const k = (u * .7) % 1; ctx.globalAlpha = 1 - sstep(.6, .9, u); heart(ctx, X - 200 + Math.sin(u * 6) * 15, 980 - k * 120, 26); ctx.globalAlpha = 1; }   // влюблён
+  const p = inPlane(u);
+  if (p.vis && p.x <= X + 300) plane(ctx, p.x, p.y, p.L, Math.atan2(160, 400) * -.5, u * 2, -1);
+  if (u >= 2.0) plane(ctx, X - 190, 1392, 150, 0, 0, -1);
+  if (p.vis || u >= 2.0) { const q = u >= 2.0 ? { x: X - 190, y: 1392 } : p; return q; }
 }
 // карточки моментов, которых не было в полёте
 function card(ctx, kind, T) {
