@@ -48,11 +48,11 @@ function blink(t) {
 // Затухающая тряска от событий (в единицах уровня)
 function shake(t, events) {
   let x = 0, y = 0;
-  for (const [t0, amp, dur = .5] of events) {
+  for (const [t0, amp, dur = .5, ph = t0] of events) {
     const u = t - t0;
     if (u < 0 || u > dur) continue;
     const e = amp * Math.pow(1 - u / dur, 2);
-    x += e * Math.sin(u * 71 + t0); y += e * Math.cos(u * 57 + t0 * 3);
+    x += e * Math.sin(u * 71 + ph); y += e * Math.cos(u * 57 + ph * 3);
   }
   return [x, y];
 }
@@ -64,3 +64,7 @@ function star(ctx, x, y, r, rot = 0) {
 }
 function stroke(ctx, w, c = OUT) { ctx.lineWidth = w; ctx.strokeStyle = c; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke(); }
 function fill(ctx, c) { ctx.fillStyle = c; ctx.fill(); }
+
+// Язык кадра: scene.html — русский, scene_en.html задаёт window.LANG = 'en'
+const EN = (typeof window !== 'undefined' && window.LANG === 'en');
+const TX = (ru, en) => EN ? en : ru;

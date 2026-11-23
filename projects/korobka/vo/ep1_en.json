@@ -1,0 +1,59 @@
+{
+ "roles": {
+  "kb_hero_en": {
+   "instruct": "Young American man, about 24, soft slightly husky light baritone, intimate close-mic first-person narration, dry deadpan humor, a little bewildered, natural conversational pace, clear diction.",
+   "ref": "So I don't usually get packages. And then there's this box. With my name on it.",
+   "f0": 120
+  }
+ },
+ "lines": [
+  {
+   "id": "e1",
+   "role": "kb_hero_en",
+   "text": "I got a package. From me?",
+   "emo": "Puzzled. The last two words 'From me?' are a surprised question with clearly rising intonation."
+  },
+  {
+   "id": "e2",
+   "role": "kb_hero_en",
+   "text": "Inside — my room. And me?",
+   "emo": "Amazed, quiet. The last two words 'And me?' are a stunned question with clearly rising intonation."
+  },
+  {
+   "id": "e3",
+   "role": "kb_hero_en",
+   "text": "He's three seconds ahead.",
+   "emo": "Sudden realization, excited."
+  },
+  {
+   "id": "e4",
+   "role": "kb_hero_en",
+   "text": "You can cheat the future!",
+   "emo": "Pleased and confident, quiet smug smile, not shouting, clear words."
+  },
+  {
+   "id": "e4b",
+   "role": "kb_hero_en",
+   "text": "Lottery numbers. Exam answers. Wow.",
+   "emo": "Excited and scheming, fast, almost no pauses, ends with a delighted soft 'Wow'."
+  },
+  {
+   "id": "e5",
+   "role": "kb_hero_en",
+   "text": "Then why is he looking up?",
+   "emo": "Slow, nervous, quiet, every word clear."
+  },
+  {
+   "id": "e6",
+   "role": "kb_hero_en",
+   "text": "I'm in a box too.",
+   "emo": "Terrified, breathless whisper."
+  },
+  {
+   "id": "e7",
+   "role": "kb_hero_en",
+   "text": "Someone up there is watching me. Just like I watched him.",
+   "emo": "Slow, scared whisper, with a long clear pause between the two sentences."
+  }
+ ]
+}
