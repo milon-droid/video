@@ -12,6 +12,25 @@
   const knock = (Q) => { if (E.measure) return; const c = E.g; c.save(); c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.beginPath(); Q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fill(); c.restore(); };
   const knockC = (Q) => { if (E.measure) return; const c = E.c; c.save(); c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.beginPath(); Q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fill(); c.restore(); };
   E.knock = knock; E.knockC = knockC; E.fillG = fillG;
+  // пружина скетчбука вдоль ребра a→b: петли проволоки, пересекающие край
+  E.spiral = function (a, b, step = 11, r = 6) {
+    const L = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(2, Math.floor(L / step)), ux = (b[0] - a[0]) / L, uy = (b[1] - a[1]) / L, nx = -uy, ny = ux;
+    for (let i = 0; i < n; i++) { const t = (i + .5) / n, x = lerp(a[0], b[0], t), y = lerp(a[1], b[1], t);
+      const Q = []; for (let k = 0; k <= 10; k++) { const u = Math.PI * (k / 10) * 1.6 - .3; Q.push([x + ux * Math.cos(u) * r * .5 + nx * Math.sin(u) * r - nx * r * .3, y + uy * Math.cos(u) * r * .5 + ny * Math.sin(u) * r - ny * r * .3]); }
+      pen(Q, { w: 1.6, a: .9, sketch: false }); }
+  };
+  // обложка-подложка, стопка листов снизу/справа, пружина сверху (или слева)
+  E.skBook = function (Bk, o = {}) {
+    const off = o.off || [4, 5], back = Bk.map(p => [p[0] + off[0], p[1] + off[1]]);
+    knock(back); knockC(back);
+    if (o.blue) E.wash(back, E.PAL.blue, .85, { seed: 43, rough: 1 }); else { E.fillG(back, .55); }
+    pen(back.concat([back[0]]), { w: 2, a: .8 });
+    knock(Bk); knockC(Bk);
+    pen(Bk.concat([Bk[0]]), { w: 2.6, a: .9 });
+    for (let i = 1; i <= 2; i++) { const d = i * 1.8; pen([[Bk[3][0] + d, Bk[3][1] + d], [Bk[2][0] + d, Bk[2][1] + d], [Bk[1][0] + d, Bk[1][1] + d]], { w: 1, a: .45, sketch: false }); }
+    if (o.side === 'left') E.spiral(Bk[3], Bk[0], o.step || 10, o.r || 5); else E.spiral(Bk[0], Bk[1], o.step || 11, o.r || 6);
+  };
+
 
   // ================= ГЛАЗ, БРОВЬ, РОТ =================
   // eye(x,y,s,o): o.lx,o.ly — взгляд (-1..1), o.blink 0..1, o.lid — прикрытость (лукаво), o.lash — ресницы
@@ -102,8 +121,10 @@
       const by = lerp(150, -40, o.book), bw = 168, tilt = -.04;
       const B = [[-bw / 2, by], [bw / 2, by + bw * tilt], [bw / 2 + 4, by + 236], [-bw / 2 - 4, by + 236]];
       knock(B); knockC(B);
-      pen(B.concat([B[0]]), { w: 3.2, a: .9 }); pen([[-bw / 2 + 4, by + 9], [bw / 2 - 2, by + 9 + bw * tilt]], { w: 1.4, a: .45 });
-      E.hatch(B, { gap: 9, a: .13, ang: .5 });
+      pen(B.concat([B[0]]), { w: 3.2, a: .9 });
+      E.hatch(B, { gap: 5, a: .28, ang: .5, cross: true });
+      E.hand('SKETCH', 0, by + 120, 22, 1, { w: 2.2, a: .5 });
+      E.spiral([-bw / 2 + 8, by + 4], [bw / 2 - 8, by + 4 + bw * tilt], 13, 9);
       // пальцы на верхнем крае
       for (const sx of [-1, 1]) for (let i = 0; i < 4; i++) {
         const fx = sx * (bw / 2 - 22 - i * 13), fy = by + (sx > 0 ? bw * tilt : 0);
@@ -216,9 +237,9 @@
     const hand = bp(-bw * .5 * thin + 4, 20), el = [sh[0] + 36, sh[1] + 110 - (by < -150 ? 30 : 0)];
     pen(cr([sh, el, hand]), { w: 3, a: .85 }); pen(cr([[sh[0] + 22, sh[1] + 10], [el[0] + 16, el[1] - 8], [hand[0] + 4, hand[1] - 14]]), { w: 2.2, a: .6 });
     knock(Bk); knockC(Bk);
-    pen(Bk.concat([Bk[0]]), { w: 3, a: .9 });
+    if (mode === 'show') E.skBook(Bk, { blue: o.bookBlue, off: [-5, 5] }); else { pen(Bk.concat([Bk[0]]), { w: 2.6, a: .9 }); if (o.bookBlue) E.wash(Bk, P.blue, .85, { rough: 1 }); E.spiral(Bk[0], Bk[3], 9, 4); }
     if (o.bookText && mode === 'show' && k > .85) { E.push(bx, by, 1, 1, br); const ls = o.bookText.split('|'), sz = o.textSize || 60; ls.forEach((l, i) => E.hand(l, 0, 4 + (i - (ls.length - 1) / 2) * sz * 1.3, sz, clamp((o.textP ?? 1) * ls.length - i), { w: Math.max(2.6, sz * .1), a: 1 })); E.pop(); }
-    else E.hatch(Bk, { gap: 7, a: .2, ang: .8 });
+    else if (!o.bookBlue) E.hatch(Bk, { gap: 4, a: .3, ang: .8 });
     const Hd = ell(hand[0] + 4, hand[1], 13, 11); knock(Hd); pen(Hd, { w: 2.4, a: .85 });
     pen([[hand[0] + 10, hand[1] - 6], [hand[0] + 18, hand[1] - 9]], { w: 2, a: .7 });
     if (mode === 'draw') { // вторая рука рисует: карандаш бегает по странице
@@ -268,7 +289,7 @@
       const bw = 84, bh = 104, ang = lerp(-.2, .0, g);
       const cs = Math.cos(ang), sn = Math.sin(ang), bp = (u, v) => [hand[0] + 50 + u * cs - v * sn, hand[1] - 20 + u * sn + v * cs * lerp(1, .25, g)];
       const Bk = [bp(-bw / 2, -bh / 2), bp(bw / 2, -bh / 2), bp(bw / 2, bh / 2), bp(-bw / 2, bh / 2)];
-      knock(Bk); E.wash(Bk, P.blue, .8, { seed: 41, rough: 2 }); pen(Bk.concat([Bk[0]]), { w: 2.6, a: .85 });
+      knock(Bk); E.wash(Bk, P.blue, .8, { seed: 41, rough: 2 }); pen(Bk.concat([Bk[0]]), { w: 2.6, a: .85 }); E.spiral(Bk[0], Bk[3], 10, 4);
     }
     if (o.show) { // показывает разворот ему (и нам): лист к зрителю
       const k = E.eio(o.show), bx = lerp(40, 118, k), by = hipY - lerp(70, 160, k), bw = 176, bh = 140;
@@ -293,7 +314,7 @@
   E.blueBook = function (x, y, s = 1, rot = 0) {
     E.push(x, y, s, 1, rot);
     const B = [[-50, -12], [46, -15], [52, 9], [-46, 12]]; E.knock(B); E.knockC(B);
-    E.wash(B, E.PAL.blue, .82, { seed: 91, rough: 1.5 }); pen(B.concat([B[0]]), { w: 2.6, a: .85 }); pen([[-46, 12], [-44, 17], [54, 14], [52, 9]], { w: 1.6, a: .6 });
+    E.wash(B, E.PAL.blue, .82, { seed: 91, rough: 1.5 }); pen(B.concat([B[0]]), { w: 2.6, a: .85 }); E.spiral(B[0], B[1], 9, 3.5); pen([[-46, 12], [-44, 17], [54, 14], [52, 9]], { w: 1.6, a: .6 });
     E.pop();
   };
   // облачко мысли
