@@ -176,7 +176,7 @@ for p, e in INS:
 import wave as _w
 with _w.open('alt_cue.wav') as w: cue = np.frombuffer(w.readframes(w.getnframes()), '<i2').reshape(-1, 2).astype(float) / 32768
 i0 = int(warp(68.8 - .001) * SR); n = min(len(cue), len(L) - i0); L[i0:i0 + n] += cue[:n, 0] * .9; R[i0:i0 + n] += cue[:n, 1] * .9
-for k, (n_, o) in enumerate([('C5', 0), ('E5', .5), ('G5', 1.0), ('E5', 1.5), ('C6', 2.0)]): put(musicbox(hz(n_)), warp(73.0) + 1.0 + o, .3, .2, .6)
+for k, (n_, o) in enumerate([('C5', 0), ('E5', .5), ('G5', 1.0), ('E5', 1.5), ('C6', 2.0)]): put(musicbox(hz(n_)), warp(75.79) + .2 + o, .3, .2, .6)
 RAW = False
 
 # реверб: экспоненциальный шум 2.4 с
