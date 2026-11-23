@@ -122,7 +122,7 @@ scratch(S('S5', .0), 1.2)
 drone(S('S5', .5), S('S7', 3.5), .09, 49)
 for k in range(4): n = int(.6 * R); put(band(n, 150, 900) * env(n, .2, .3) * (np.sin(np.arange(n) / R * 50) * .5 + .5) * .22, S('S5', 1.2 + k * .6), 1, (-1) ** k * .5)  # скрип поворотов голов
 rag(S('S6', 0), S('S7', 0), beat=.7, minor=True, vel=.8)
-put(load(lib('bigsoundbank/1929.flac'))[:int(SH['S7']['d'] * R)] * .5, S('S7', 0))
+put(load(lib('bigsoundbank/1929.flac'))[:int(SH['S7']['d'] * R)] * .28, S('S7', 0))
 sweep(S('S7', SH['S7']['v'][0] + .9), 200, 900, 1.2, .05, .02)  # сползание наклейки
 scr = load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/CREAHmn_TrollDeathScream_OS_01.ogg'), 1.35)
 put(scr * .9, S('S7', SH['S7']['v'][0] + 2.1)); sting(S('S7', SH['S7']['v'][0] + 2.1), 1.2)
@@ -132,15 +132,15 @@ sweep(S('S8', .2), 900, 1800, .8, .06)
 put(load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/DOORWood_FrontDoorClose_OS_01.ogg')), S('S8', 1.4), 1.2)
 n = int(2 * R); put(band(n, 300, 2000) * (np.sin(np.arange(n) / R * 14 * np.pi) ** 2) * env(n, .1, .5) * .12, S('S8', 1.6), 1, -.3)  # тяжёлое дыхание
 drone(S('S9', 0), S('S10', 1), .12, 41); n = int(SH['S9']['v'][0] * R); put(band(n, 30, 120) * np.linspace(0, .4, n), S('S9', 0))
-sting(V('S9'), 1.3)
+sting(V('S9') + D['c02'] + .05, 1.3)
 for k in range(8): n = int(.25 * R); put(band(n, 1000, 5000) * env(n, .03, .12) * .15, S('S10', .5 + k * .32), 1, rng.uniform(-.4, .4))  # мазки кистью
 rag(S('S10', SH['S10']['v'][0] - .1), S('S11', 0), wow=1.4, vel=.8)
 rag(S('S11', 0), S('S12', 1), box=True, vel=.9)
 tear(S('S12', 1.0), 1.6, 1.)
 drone(S('S12', 1.5), S('S14', 0), .1, 46)
 sting(S('S13', SH['S13']['v'][0] + D['a05'] - .1), 1.0)
-sweep(S('S14', .2), 80, 400, 1.0, .25); sting(S('S14', .9), 1.6)
-n = int(2.5 * R); put(band(n, 200, 6000) * (np.abs(rng.standard_normal(n)) > 1.0) * np.exp(-np.arange(n) / R * 1.2) * .6, S('S14', 1.0))  # прожиг
+sweep(S('S14', .2), 80, 400, 1.0, .12); sting(S('S14', .25 + D['c03'] + .05), 1.6)
+n = int(2.5 * R); put(band(n, 200, 6000) * (np.abs(rng.standard_normal(n)) > 1.0) * np.exp(-np.arange(n) / R * 1.2) * .6, S('S14', .3 + D['c03']))  # прожиг
 # конец плёнки: хлопанье хвоста бобины
 for k in range(int(SH['END']['d'] * 9)): n = int(.03 * R); put(band(n, 500, 4000) * np.exp(-np.arange(n) / R * 90) * .35, S('END', .1 + k / 9))
 for k, m in enumerate([72, 76, 79]): put(mbox(m - (k == 2), .8), S('END', .6 + k * .45))
@@ -161,7 +161,7 @@ for lid, tt in VO:
         n = max(len(x), len(x2) + 2400, len(x3) + 4000); y = np.zeros(n); y[:len(x)] += x; y[2400:2400 + len(x2)] += x2 * .7; y[4000:4000 + len(x3)] += x3 * .6; x = y
     i = int(tt * R); x = x[:N - i]; vo[i:i + len(x)] += x / (np.abs(x).max() + 1e-9) * .5
 w_ = int(.25 * R); cs = np.cumsum(np.concatenate([np.zeros(w_), (np.abs(vo) > .01).astype(float), np.zeros(w_)])); envv = (cs[w_ + w_ // 2:w_ + w_ // 2 + N] - cs[w_ // 2:w_ // 2 + N]) / w_
-duck = 1 - .6 * np.clip(envv * 3, 0, 1)
+duck = 1 - .7 * np.clip(envv * 3, 0, 1)
 bg = (L + Rr) / 2
 for lid, tt in VO:
     i0 = int(tt * R); i1 = i0 + int(D[lid] * STRETCH.get(lid, 1) * R); seg = vo[i0:i1]; act = np.abs(seg) > .02
