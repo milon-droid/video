@@ -17,14 +17,14 @@ const BASE = 400, X0 = 444, SPD = 80, AMP = 52, BW = 60;
 const BEATS_NOW = [452, 520];          // удары текущей развёртки
 const BEATS_OLD = [588];               // старая развёртка справа от головы
 const JERK = .95, WRITE1 = 1.62;
-const W1 = { x: 552, y: 368, s: 40 };
+const W1 = { x: 548, y: 340, s: 44 };
 const wait = () => F('wait', () => shift(textShape('wait.', 'scripts', W1.s), W1.x, W1.y));
 const headX = t => Math.min(562 + SPD * t, 562 + SPD * JERK);
 function ecgY(x, beats) { for (const b of beats) if (x >= b && x <= b + BW) return BASE - AMP * ART.ecg((x - b) / BW); return BASE; }
 function ecgPts(xa, xb, beats) { const p = []; for (let x = xa; x <= xb; x += 1.2) p.push(x, ecgY(x, beats)); p.push(xb, ecgY(xb, beats)); return p; }
 // соединение: ровная линия дёргается вверх и пишет
 const connector = () => F('conn', () => { const w = wait(); const x1 = w.x[0], y1 = w.y[0], hx = 562 + SPD * JERK;
-  return sampleD(`M${hx},${BASE} C${hx + 30},${BASE} ${hx + 6},${BASE - 70} ${hx - 40},${BASE - 60} C${hx - 90},${BASE - 50} ${x1 - 20},${y1 + 26} ${x1},${y1}`, 1.6); });
+  return sampleD(`M${hx},${BASE} C${hx + 22},${BASE} ${hx + 14},${BASE - 96} ${hx - 40},${BASE - 104} C${hx - 110},${BASE - 112} ${x1 - 40},${y1 - 30} ${x1},${y1}`, 1.6); });
 const writeShape = () => F('w1', () => cat(connector(), wait()));
 // выход героя из монитора к руке старика
 const HAND = [394, 872];

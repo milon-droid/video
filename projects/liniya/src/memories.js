@@ -289,12 +289,12 @@ function shotEnd(v, t) {
     for (let j = 0; j < 14; j++) { const y = BASE + 18 + j * 15, wd = (sr * 1.3 - j * 5) * (.8 + .2 * Math.sin(v * 3 + j * 1.7)) * dr, ox = Math.sin(v * 1.6 + j) * 8;
       if (wd > 4) line([SX - wd + ox, y, SX + wd + ox, y], { col: COL.a, al: (.75 - j * .045) * dr, head: 0, fresh: 0, w: 2.2, wob: .4 }); }
     // птицы
-    for (let j = 0; j < 3; j++) { const k = k01(v, 7.2 + j * .5, 13.5), bx = lerp(1050 + j * 40, 1640, k), by = BASE - 330 - j * 40 + Math.sin(k * 8 + j) * 10, fl = Math.sin(v * 9 + j * 2) * 6;
+    for (let j = 0; j < 3; j++) { const k = k01(v, 7.2 + j * .5, 13.5), bx = lerp(1050 + j * 40, 1640, k), by = BASE - 300 + j * 26 + Math.sin(k * 8 + j) * 10, fl = Math.sin(v * 9 + j * 2) * 6;
       if (k > 0 && k < 1) line([bx - 14, by - 4 + fl, bx - 6, by - 1, bx, by + 3, bx + 6, by - 1, bx + 14, by - 4 + fl], { col: COL.g, al: .8, head: 0, fresh: 0, w: 1.8 }); }
   }
   // финальная надпись
   const wk = ease.io(k01(v, 8.4, 10.0));
-  if (wk > 0) draw(F('say', () => shift(textShape('say it today.', 'scripts', 66), 1330, 640)), 0, wk, { col: COL.g, al: 1, head: wk < 1 ? 1.3 : 0, fresh: 90, w: 2.4, hot: .2 });
+  if (wk > 0) draw(F('say', () => shift(textShape('say it today.', 'scripts', 66), 1330, -50)), 0, wk, { col: COL.g, al: 1, head: wk < 1 ? 1.3 : 0, fresh: 90, w: 2.4, hot: .2 });
   return { cam, fade: k01(v, 12.6, 13.4) };
 }
 window.SHOTS.push([9.3, 27.6, shotMem], [27.6, 38.6, shotRoom2], [38.6, 52.0, shotEnd]);

@@ -20,4 +20,4 @@
 Превью: `node still.cjs out.png t1 t2 …` (SCALE, COLS). Рендер: `node render.cjs render/liniya.mp4`. Звук: `python3 audio/sound.py`.
 
 ## Статус
-- 2026-11-23: v1 собирается (картинка готова, звук в работе).
+- 2026-11-23: v1 сдан на фидбек (render/liniya_720.mp4, −13,4 LUFS, пик −3,9). Ждём отзыва.
