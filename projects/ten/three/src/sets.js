@@ -293,7 +293,8 @@ export const roof = (() => {
   const sunHalo = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(128, 128, (c) => { const gr = c.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, 'rgba(255,220,150,.9)'); gr.addColorStop(.4, 'rgba(255,150,90,.4)'); gr.addColorStop(1, 'rgba(255,120,90,0)'); c.fillStyle = gr; c.fillRect(0, 0, 128, 128); }), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
   sunHalo.scale.set(50, 50, 1); add(g, sunHalo, -4, 4, -88);
   // крыша
-  const tar = mesh(G.plane(30, 30), clay('#3a2440'), false, true); tar.rotation.x = -Math.PI / 2; g.add(tar);
+  const tar = mesh(G.plane(30, 20), clay('#3a2440'), false, true); tar.rotation.x = -Math.PI / 2; tar.position.z = 7.6; g.add(tar);
+  const facade = mesh(G.box(30, 16, .4), clay('#4a2a48'), false, true); facade.position.set(0, -8, -2.6); g.add(facade);
   const para = mesh(G.rbox(14, .5, .35, .05), clay('#5a3a58'), true, true); add(g, para, 0, .25, -2.2);
   const paraTop = mesh(G.rbox(14.1, .07, .42, .02), clay('#8a5a70')); add(g, paraTop, 0, .52, -2.2);
   // город внизу
@@ -310,9 +311,23 @@ export const roof = (() => {
   const fill = new THREE.PointLight('#ffc89a', 0, 9, 1.2); fill.position.set(1.0, 2.2, 1.6); g.add(fill);
   // птицы
   const birds = []; for (let i = 0; i < 6; i++) { const b = mesh(new THREE.TorusGeometry(.18, .025, 4, 8, Math.PI), clay('#2a1428'), false, false); g.add(b); birds.push(b); }
+  // === шикарный закат: горы слоями, река с золотой дорожкой, облака, парк, сад на крыше ===
+  const ridge = (seed, col, hgt, w = 1024, h = 256) => canvasTex(w, h, (c) => { c.fillStyle = col; c.beginPath(); c.moveTo(0, h); for (let x = 0; x <= w; x += 8) { const y = h - hgt * h * (.45 + .3 * Math.sin(x * .006 + seed) + .18 * Math.sin(x * .021 + seed * 3) + .07 * Math.sin(x * .07 + seed * 7)); c.lineTo(x, y); } c.lineTo(w, h); c.fill(); });
+  [[-95, '#6a3a8a', .9, 1, 36], [-82, '#4a2a6a', .75, 4, 28], [-70, '#2e1a48', .6, 9, 22]].forEach(([z, col, hgt, seed, H]) => { const m = mesh(G.plane(240, H), new THREE.MeshBasicMaterial({ map: ridge(seed, col, hgt), transparent: true, fog: false, depthWrite: false }), false, false); m.position.set(0, -14 + H / 2 - 2, z); m.renderOrder = -1; g.add(m); });
+  const haze = mesh(G.plane(240, 18), new THREE.MeshBasicMaterial({ map: canvasTex(8, 128, (c) => { const gr = c.createLinearGradient(0, 0, 0, 128); gr.addColorStop(0, 'rgba(255,180,120,0)'); gr.addColorStop(.7, 'rgba(255,170,120,.55)'); gr.addColorStop(1, 'rgba(255,200,150,.8)'); c.fillStyle = gr; c.fillRect(0, 0, 8, 128); }), transparent: true, fog: false, depthWrite: false }), false, false); haze.position.set(0, -6, -60); g.add(haze);
+  const land = mesh(G.plane(240, 120), clay('#2a2a3a'), false, true); land.rotation.x = -Math.PI / 2; land.position.set(0, -15.7, -50); g.add(land);
+  const river = mesh(G.plane(200, 9), new THREE.MeshBasicMaterial({ map: canvasTex(256, 256, (c) => { const gr = c.createLinearGradient(0, 0, 0, 256); gr.addColorStop(0, '#ffb070'); gr.addColorStop(1, '#5a2a6a'); c.fillStyle = gr; c.fillRect(0, 0, 256, 256); const g2 = c.createLinearGradient(0, 0, 256, 0); g2.addColorStop(.3, 'rgba(255,240,190,0)'); g2.addColorStop(.48, 'rgba(255,240,190,.95)'); g2.addColorStop(.66, 'rgba(255,240,190,0)'); c.fillStyle = g2; for (let y = 0; y < 256; y += 6) { c.globalAlpha = .4 + .6 * Math.random(); c.fillRect(0, y, 256, 3); } }), fog: false }), false, false);
+  river.rotation.x = -Math.PI / 2; river.rotation.z = .18; river.position.set(-6, -15.5, -48); g.add(river);
+  const cloudTex = canvasTex(256, 128, (c) => { for (let i = 0; i < 14; i++) { const x = 30 + h1(i) * 196, y = 50 + h1(i + 5) * 40, r = 20 + h1(i + 9) * 34; const gr = c.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, 'rgba(255,255,255,.95)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = gr; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); } });
+  const clouds = [[-30, 16, -88, 34, '#ffb4a0'], [22, 20, -86, 40, '#ff9ab0'], [-8, 26, -90, 30, '#ffd0a0'], [36, 11, -84, 26, '#ffc08a'], [-44, 9, -84, 24, '#ff8aa8'], [6, 34, -92, 46, '#d890c8']].map(([x, y, z, w, col]) => { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: cloudTex, color: col, transparent: true, fog: false, depthWrite: false })); sp.scale.set(w, w / 2, 1); sp.position.set(x, y, z); g.add(sp); return sp; });
+  for (let i = 0; i < 26; i++) { const x = -40 + h1(i + 300) * 80, z = -10 - h1(i + 301) * 30; const tr = new THREE.Group(); add(tr, mesh(G.cyl(.15, .2, 1.6), clay('#3a2030')), 0, .8, 0); [[0, 2.0, 0, 1.2], [.6, 1.7, .2, .8], [-.6, 1.8, -.1, .9]].forEach(([tx, ty, tz, r]) => add(tr, mesh(G.sph(r, 10), clay(h1(i) > .5 ? '#3a7a4a' : '#5a8a3a')), tx, ty, tz)); tr.position.set(x, -14, z); tr.scale.setScalar(1.6); g.add(tr); }
+  // сад на крыше: ящики с цветами и деревце
+  const flowers = ['#ff5a7a', '#ffd23a', '#ffffff', '#ff8a3a', '#c86aff'];
+  [[-2.6, -1.75], [-1.2, -1.85], [.3, -1.85]].forEach(([x, z], k) => { const box = new THREE.Group(); add(box, mesh(G.rbox(1.1, .35, .4, .04), clay('#8a5a3a')), 0, .175, 0); for (let i = 0; i < 9; i++) { add(box, mesh(G.sph(.09, 8), clay('#3a8a4a')), -.45 + i * .11, .42, (h1(i + k * 9) - .5) * .2); add(box, mesh(G.sph(.055, 8), clay(flowers[(i + k) % 5])), -.45 + i * .11, .52 + h1(i + k) * .06, (h1(i + k * 7) - .5) * .2); } add(g, box, x, 0, z); });
+  const tree = new THREE.Group(); add(tree, mesh(G.cyl(.18, .22, .5), clay('#7a4a3a')), 0, .25, 0); add(tree, mesh(G.cyl(.04, .06, .9), clay('#4a2a20')), 0, .9, 0); [[0, 1.6, 0, .5], [.3, 1.4, .1, .35], [-.3, 1.45, -.1, .38]].forEach(([x, y, z, r]) => add(tree, mesh(G.sph(r, 14), clay('#4aa86a')), x, y, z)); add(g, tree, -3.6, 0, -1.4);
   const paint = fn => { const c = C.getContext('2d'); c.fillStyle = '#d8b0a0'; c.fillRect(0, 0, 1024, 768); for (let i = 0; i < 400; i++) { c.fillStyle = `rgba(90,50,40,${h1(i) * .12})`; c.fillRect(h1(i + 1) * 1024, h1(i + 2) * 768, 4, 4); } fn(c); tex.needsUpdate = true; };
-  reg('roof', g, skyTex([[0, '#2a1e5a'], [.35, '#9a3a7a'], [.62, '#ff7a4a'], [.8, '#ffc07a'], [1, '#ffe0a0']]), new THREE.Fog('#ff9a6a', 20, 95));
-  return { g, sunL, vent, paint, birds, sunDisk, fill };
+  reg('roof', g, skyTex([[0, '#1a1650'], [.28, '#5a2a8a'], [.48, '#c83a8a'], [.64, '#ff6a4a'], [.8, '#ffb05a'], [.92, '#ffe08a'], [1, '#fff0c0']]), new THREE.Fog('#ff9a6a', 30, 120));
+  return { g, sunL, vent, paint, birds, sunDisk, fill, clouds };
 })();
 
 // ===== КЛУБ (видео в телефоне): тёмный зал, прожектора, диско-шар, светлое пятно на стене — там танцует тень =====

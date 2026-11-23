@@ -204,36 +204,47 @@ S.S10 = (t, T) => { useSet('plaza'); hideAll(); plaza.sun.position.set(7, 4.6, -
   return () => { const [sx, sy] = toScreen(hx, .9, .55); if (Math.abs(hx - plaza.fountain.position.x) < 1.6) motesSplash(t, sx, sy); sunHud(t, T, { y: 330 }); narr(t, .4, 4.9, '…and for the first time in a year, I ran.', { y: 470, size: 64, n: 20, accent: ['ran.'] }); };
 };
 // 11. Крыша на закате: тень на парапете; Сеня почти прозрачный
-S.S11 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 0;
+S.S11 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 0; roofLife(t); roof.paint(() => {});
   const hx = lerp(-3.0, -.7, ease(t, 0, 1.7, sm)); const pose = t < 1.7 ? walk(hx + 3, 0, { lean: .25 }) : keys(t, [[1.7, 'tired'], [2.6, 'tired'], [3.0, 'stand'], [3.3, 'reach']]);
   heroAt(hx, -.3, t < 1.7 ? Math.PI / 2 : lerp(Math.PI / 2, .6, ease(t, 1.7, 2.6)), pose, t, { expr: t < 3 ? 'sad' : 'scared', mouth: Math.max(talk(t, 3.4, 4.6), t < 2.8 && t > 1.7 ? .5 : 0), lookX: .8 }, { sat: .25, alpha: .72 });
   applyPose(shade, keys(t, [[0, 'stand'], [3.5, 'stand'], [3.9, { ...POSE.stand, headZ: .25, headX: .15 }]]), t, { mood: t < 3.6 ? 'calm' : 'sad', look: -1 }, 3);
   placeShade(shade, { x: 1.0, y: .55, z: -2.2, rise: 1, scale: 1.0 });
-  roof.birds.forEach((b, i) => { b.position.set(-6 + ((t * 1.2 + i * 2.1) % 14), 4 + h1(i) * 2 + Math.sin(t * 3 + i) * .1, -12 - i); b.rotation.set(0, 0, Math.sin(t * 12 + i) * .4); });
   const [jx, jy] = hh(t, .02); cam(.15 + jx, 1.45 + jy, lerp(6.4, 6.0, ease(t, 0, 6)), .15, 1.05, -1.8, 40);
   FX = { fy: .5, fw: .26, blur: 7, bloom: .4, warm: .12 };
-  return () => { sunHud(t, T, { y: 330 }); narr(t, 3.3, 6.0, 'Come back. I’m fading.', { y: 1380, size: 76, who: 'SENYA' }); };
+  return () => { sunRays(t); sunHud(t, T, { y: 330 }); narr(t, 3.3, 6.0, 'Come back. I’m fading.', { y: 1380, size: 76, who: 'SENYA' }); };
 };
 // 12. Тень складывается в буквы → город → лицо
 const VENT = (() => { const yaw = -.5, cx = 2.6 + Math.sin(yaw) * .62, cz = -.8 + Math.cos(yaw) * .62; return { yaw, cx, cz, nx: Math.sin(yaw), nz: Math.cos(yaw) }; })();
 const ventLetters = (t, t0, fadeOut = 1) => roof.paint(c => { c.globalAlpha = fadeOut; handLines(c, ['You chased me', 'all day long.', 'Did you see the city?'], { x: 512, y: 210, size: 92, lh: 1.0, reveal: (t - t0) * 26, seed: 21, rot: -.03, drips: .4 }); c.globalAlpha = 1; });
-S.S12 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = t < 2.5 ? 7 : 0;
-  if (t < 2.5) { ventLetters(t, .5);
-    applyPose(shade, POSE.stand, t, { mood: 'happy' }, 3); const melt = ease(t, .3, 1.4);
-    placeShade(shade, { x: VENT.cx + VENT.nx * .01, y: 0, z: VENT.cz + VENT.nz * .01, yaw: VENT.yaw, rise: 1, scale: lerp(1, .2, melt), op: 1 - melt }); shade.holder.position.x += -.6 * VENT.nz * 0;
+S.S12 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 0; roof.paint(() => {}); roofLife(t);
+  if (t < 2.4) { // тень с парапета обводит рукой город: «посмотри вокруг»
+    const k = ease(t, .2, .8, sm);
+    heroAt(-.7, -.3, .6, { ...POSE.stand, headX: -.1 }, t, { expr: 'sad', lookX: .8 }, { sat: .25, alpha: .72 }); fadeHand(hero.aL.el, 1);
+    applyPose(shade, { ...POSE.stand, aR: [lerp(.1, .3, k), lerp(-.12, -1.9, k), .1], aL: [0, .12, .15], headY: lerp(0, -.3, k) }, t, { mood: 'calm', look: -1 }, 3);
+    placeShade(shade, { x: 1.0, y: .55, z: -2.2, rise: 1, scale: 1.0, op: 1 });
+    const [jx, jy] = hh(t, .02); cam(.15 + jx, 1.45 + jy, lerp(5.6, 5.2, ease(t, 0, 2.4)), .15, 1.1, -1.8, 40);
+    FX = { fy: .5, fw: .26, blur: 7, bloom: .45, warm: .12 };
+    return () => { sunRays(t); shadowSay(t, .3, 2.4, ['Look around.'], { y: 420, size: 110 }); }; }
+  if (t < 4.4) { const tt = t - 2.4; // панорама: горы, река, облака, солнце
     heroAt(9, 9, 0, POSE.stand, t, {}, { show: false });
-    const d = 7.8; cam(VENT.cx + VENT.nx * d, 1.0, VENT.cz + VENT.nz * d, VENT.cx, .95, VENT.cz, 32); FX = { fy: .5, fw: .26, blur: 6, warm: .1, bloom: .2 };
-    return () => {}; }
-  ventLetters(t, -10);
-  if (t < 4.4) { const tt = t - 2.5; heroAt(-.2, -1.0, Math.PI, { ...POSE.stand, headX: -.1 }, t, {}, { sat: .3, alpha: .75 });
-    cam(.35, 1.45, lerp(2.2, 1.9, ease(tt, 0, 1.9)), -1.6, 1.3, -20, 40); FX = { fy: .5, fw: .3, blur: 6, warm: .14, bloom: .5 };
-    return () => narr(t, 2.7, 4.4, 'I’ve never actually seen this city.', { y: 1420, size: 64, n: 18 }); }
+    cam(lerp(.8, -.6, ease(tt, 0, 2, sm)), 3.0, lerp(-1.2, -1.6, ease(tt, 0, 2)), lerp(-10, 4, ease(tt, 0, 2, sm)), -3, -60, 44);
+    FX = { fy: .5, fw: .35, blur: 4, warm: .14, bloom: .6 };
+    return () => { sunRays(t); shadowSay(t, .1 + 2.4, 4.4, ['You lived more today', 'than all year.'], { y: 420, size: 88 }); }; }
   heroAt(-.2, -1.0, Math.PI, { ...POSE.stand, headX: -.12 }, t, { expr: 'happy', smile: lerp(.2, 1, ease(t, 4.6, 5.3)), wide: true, lookY: .3 }, { sat: .35, alpha: 1 });
   cam(-.15, 1.12, -2.45, -.2, 1.06, -1.0, 32); FX = { fy: .42, fw: .25, blur: 9, warm: .16, bloom: .35 };
-  return () => narr(t, 4.5, 6.0, 'Not once.', { y: 1400, size: 80 });
+  return () => shadowSay(t, 4.5, 6.0, ['Work is work.', 'But get out. Mix it up.'], { y: 1520, size: 84 });
 };
+// жизнь крыши: облака плывут, птицы
+function roofLife(t) { roof.clouds.forEach((c, i) => { c.position.x += 0; c.material.rotation = 0; c.position.x = c.userData.x0 ?? (c.userData.x0 = c.position.x); c.position.x = c.userData.x0 + t * (.6 + i * .15); });
+  roof.birds.forEach((b, i) => { b.position.set(-6 + ((t * 1.2 + i * 2.1) % 14), 4 + h1(i) * 2 + Math.sin(t * 3 + i) * .1, -12 - i); b.rotation.set(0, 0, Math.sin(t * 12 + i) * .4); }); }
+// лучи и блик от солнца (2D), если солнце в кадре
+function sunRays(t) { const p = roof.sunDisk.position; const v = new THREE.Vector3(p.x, p.y, p.z).project(camera); if (v.z > 1) return; const sx = (v.x + 1) / 2 * 1080, sy = (1 - v.y) / 2 * 1920; if (sx < -400 || sx > 1480 || sy < -400 || sy > 2300) return;
+  ctx.save(); ctx.globalCompositeOperation = 'screen';
+  for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2 + t * .05, w = .025 + h1(i) * .035, L = 800 + h1(i + 3) * 500; const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, L); g.addColorStop(0, 'rgba(255,220,160,.16)'); g.addColorStop(1, 'rgba(255,200,140,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.arc(sx, sy, L, a - w, a + w); ctx.fill(); }
+  const dx = 540 - sx, dy = 960 - sy; [[.35, 60, 'rgba(255,180,120,.25)'], [.7, 30, 'rgba(255,120,180,.3)'], [1.2, 90, 'rgba(160,140,255,.15)'], [1.6, 40, 'rgba(255,230,160,.25)']].forEach(([k, r, c]) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(sx + dx * k, sy + dy * k, r, 0, 7); ctx.fill(); });
+  ctx.restore(); }
 // 13. Тень возвращается: ложится к пяткам — цвет волной
-S.S13 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 3; ventLetters(t, -10, 1 - ease(t, 0, 1));
+S.S13 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 3; roof.paint(() => {}); roofLife(t + 6);
   const CL = 2.0; const col = ease(t, CL, CL + .8);
   const rise = 1 - ease(t, 1.35, CL, sm); const wx = lerp(2.2, .0, ease(t, 0, 1.35, sm));
   const hp = t < CL ? keys(t, [[0, 'stand'], [1.0, { ...POSE.stand, headY: .4 }], [1.8, 'stand'], [2.3, { ...POSE.armsUp }], [2.9, 'stand']]) : keys(t, [[2.0, 'stand'], [2.3, 'armsUp'], [2.9, 'stand']]);
