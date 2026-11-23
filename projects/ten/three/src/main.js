@@ -282,13 +282,13 @@ S.S14 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.
 const ROOF_SEG = [[0, 2.4], [9.4, 14.0]];
 S.S14b = (t) => {
   const TX = Math.cos(VENT.yaw), TZ = -Math.sin(VENT.yaw);
-  const onRoof = t < 2.4 || t >= 9.4;
+  const onRoof = t < 2.9 || t >= 10.0;
   if (onRoof) { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 12; roof.paint(() => {}); roofLife(t + 12);
-    const late = t >= 9.4, tt = late ? t - 9.4 : t;
+    const late = t >= 10.0, tt = late ? t - 10.0 : t;
     const hx = VENT.cx + VENT.nx * .45 + TX * .3, hz = VENT.cz + VENT.nz * .45 + TZ * .3;
     const shake = !late && t < 1.2 ? Math.sin(t * 14) * .08 : 0;
-    const hp = late ? (tt < 3.2 ? { ...POSE.stand, aR: [.2, -.12, .2], aL: [.6, .3, 1.6], headY: .1, headX: .1 } : keys(tt - 3.2, [[0, { ...POSE.stand, headY: .2 }], [.35, { ...POSE.facepalm, headY: .4 }]])) : { ...POSE.stand, aR: [1.3 + shake, -.6, .1], headY: -.25 + (t > 1.6 ? .35 : 0) };
-    heroAt(hx, hz, VENT.yaw + Math.PI - .45, hp, t, { expr: late ? (tt < 3.2 ? 'calm' : 'surprised') : t > 1.6 ? 'surprised' : 'happy', smile: late ? .3 : 1, mouth: talk(t, 1.8, 2.4) * (late ? 0 : 1) + (late ? talk(tt, .1, .9) + talk(tt, 3.3, 4.4) : 0) }, {});
+    const hp = late ? (tt < 4.4 ? { ...POSE.stand, aR: [.2, -.12, .2], aL: [.6, .3, 1.6], headY: .1, headX: .1 } : keys(tt - 4.4, [[0, { ...POSE.stand, headY: .2 }], [.35, { ...POSE.facepalm, headY: .4 }]])) : { ...POSE.stand, aR: [1.3 + shake, -.6, .1], headY: -.25 + (t > 1.6 ? .35 : 0) };
+    heroAt(hx, hz, VENT.yaw + Math.PI - .45, hp, t, { expr: late ? (tt < 4.4 ? 'calm' : 'surprised') : t > 2.0 ? 'surprised' : 'happy', smile: late ? .3 : 1, mouth: talk(t, 2.15, 2.8) * (late ? 0 : 1) + (late ? talk(tt, .1, 1.3) + talk(tt, 4.5, 5.7) : 0) }, {});
     // тень мечтательно обнимает себя и покачивается (в конце)
     const dreamy = late ? { ...POSE.stand, aL: [.9, -.2, 2.2], aR: [.9, .2, 2.2], hipsZ: Math.sin(tt * 2.4) * .12, headZ: Math.sin(tt * 2.4 + 1) * .2, headY: .2 } : { ...POSE.stand, aR: [.35 + shake, -1.45, .1], headY: .2 + (t > .4 ? Math.sin(t * 2) * .15 : 0) };
     applyPose(shade, dreamy, t, { mood: late ? 'happy' : t > .4 ? 'sly' : 'happy', look: late ? 0 : -.6 }, 3);
@@ -296,18 +296,18 @@ S.S14b = (t) => {
     const cx = VENT.cx + VENT.nx * 4.4 - TX * 1.1, cz = VENT.cz + VENT.nz * 4.4 - TZ * 1.1; const [jx, jy] = hh(t, .015);
     cam(cx + jx, 1.25 + jy, cz, VENT.cx + TX * .05, 1.0, VENT.cz + TZ * .05, late ? 32 : 34);
     FX = { fy: .5, fw: .28, blur: 6, warm: .14, bloom: .35 };
-    return () => { if (!late) { shadowSay(t, .4, 2.4, ['Oh. And…', 'one more term.'], { y: 420, size: 92 }); narr(t, 1.8, 2.4, '…what now?', { y: 1450, size: 76, who: 'SAM' }); heartsFloat(t, 540, 900, .2); return; }
-      narr(tt, .1, 1.0, 'Dude. You’re a shadow.', { y: 1450, size: 70, who: 'SAM' });
-      shadowSay(tt, 1.0, 2.2, ['And she’s a ten.', 'In every light.'], { y: 420, size: 90 });
-      shadowSay(tt, 2.2, 3.4, ['Introduce me', 'to her owner.'], { y: 420, size: 92 });
-      narr(tt, 3.4, 4.6, '…deal. I guess.', { y: 1450, size: 76, who: 'SAM' });
-      if (tt > 2.4) { const k = spring(tt, 2.4, 2, 7); ctx.save(); ctx.translate(540, 1660); ctx.rotate(-.06); ctx.scale(k * .9, k * .9); ctx.fillStyle = '#fbf3e2'; ctx.fillRect(-170, -70, 340, 140); ctx.fillStyle = '#e8333f'; ctx.font = '700 50px Cav'; ctx.textAlign = 'center'; ctx.fillText('Term #5:', 0, -12); ctx.fillStyle = '#0b0a12'; ctx.fillText('introduce me ♥', 0, 40); ctx.restore(); }
+    return () => { if (!late) { shadowSay(t, .3, 2.9, ['Oh. And…', 'one more term.'], { y: 420, size: 92 }); narr(t, 2.1, 2.9, '…what now?', { y: 1450, size: 76, who: 'SAM' }); heartsFloat(t, 540, 900, .2); return; }
+      narr(tt, .1, 1.4, 'Dude. You’re a shadow.', { y: 1450, size: 70, who: 'SAM' });
+      shadowSay(tt, 1.45, 3.15, ['And she’s a ten.', 'In every light.'], { y: 420, size: 90 });
+      shadowSay(tt, 3.2, 4.45, ['Introduce me', 'to her owner.'], { y: 420, size: 92 });
+      narr(tt, 4.5, 6.0, '…deal. I guess.', { y: 1450, size: 76, who: 'SAM' });
+      if (tt > 3.4) { const k = spring(tt, 3.4, 2, 7); ctx.save(); ctx.translate(540, 1660); ctx.rotate(-.06); ctx.scale(k * .9, k * .9); ctx.fillStyle = '#fbf3e2'; ctx.fillRect(-170, -70, 340, 140); ctx.fillStyle = '#e8333f'; ctx.font = '700 50px Cav'; ctx.textAlign = 'center'; ctx.fillText('Term #5:', 0, -12); ctx.fillStyle = '#0b0a12'; ctx.fillText('introduce me ♥', 0, 40); ctx.restore(); }
       heartsFloat(tt, 540, 900, .7); }; }
   // флешбеки — девушка-тень в клубе
   useSet('club'); hideAll(); club.update(t + 3);
-  const f = t < 5.0 ? 1 : t < 7.2 ? 2 : 3, ft = f === 1 ? t - 2.4 : f === 2 ? t - 5.0 : t - 7.2;
+  const f = t < 6.0 ? 1 : t < 8.4 ? 2 : 3, ft = f === 1 ? t - 2.9 : f === 2 ? t - 6.0 : t - 8.4;
   let pose, turn = 0, x = 0, camZ = 3.2, camY = 1.3, lookY = 1.2;
-  if (f === 1) { const d = bigDance(ft * .8, 1.3); pose = { ...d.pose, hipsZ: Math.sin(ft * 4) * .15 }; turn = .9 * Math.sin(ft * 1.6); camZ = lerp(3.4, 3.0, ft / 2.6); }
+  if (f === 1) { const d = bigDance(ft * .8, 1.3); pose = { ...d.pose, hipsZ: Math.sin(ft * 4) * .15 }; turn = .9 * Math.sin(ft * 1.6); camZ = lerp(3.4, 3.0, ft / 3.1); }
   else if (f === 2) { const sl = ft * .35; pose = { ...POSE.stand, aL: [.2, 2.4, 1.2], aR: [0, -.3, .3], headZ: Math.sin(sl * 6) * .35, hipsZ: .12, headX: -.1 }; turn = -.7 + sl * 1.5; camZ = 2.2; camY = 1.45; lookY = 1.45; girlSh.tail.rotation.x = -.5 + Math.sin(sl * 6) * 1.1; }
   else { pose = { ...walk(-ft * 1.1, 0), lean: -.12, aL: [-.3, .5, .4], aR: [.3, -.5, .4] }; turn = Math.PI / 2; x = 1.2 - ft * .9; camZ = 3.6; }
   applyPose(girlSh, pose, t, { mood: 'happy' }, 7); placeShade(girlSh, { x, z: club.wallZ + .03, rise: 1, scale: 1.25, turn, op: 1 }); girlSh.holder.position.y = .35;
@@ -317,9 +317,9 @@ S.S14b = (t) => {
   return () => { ctx.save(); ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = 'rgba(255,90,170,.22)'; ctx.fillRect(0, 0, 1080, 1920); ctx.restore();
     const g = ctx.createRadialGradient(540, 960, 400, 540, 960, 1100); g.addColorStop(0, 'rgba(255,200,230,0)'); g.addColorStop(1, 'rgba(255,170,210,.55)'); ctx.fillStyle = g; ctx.fillRect(0, 0, 1080, 1920);
     heartsFloat(t, 540, 1300, 1); if (f === 2) sparkles(t, 600, 700, 1);
-    if (f === 1) shadowSay(ft, .1, 2.6, ['That shadow at the club…', 'the ponytail… the moves…'], { y: 420, size: 74, glowC: 'rgba(255,220,240,.95)' });
-    if (f === 2) { shadowSay(ft, .05, 2.2, ['When she flipped that hair —', 'I forgot I’m 2D.'], { y: 420, size: 74, glowC: 'rgba(255,220,240,.95)' }); ctx.save(); ctx.font = '800 40px Unb'; ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.textAlign = 'center'; ctx.fillText('SLOW-MO', 540, 1700); ctx.restore(); }
-    if (f === 3) shadowSay(ft, .05, 2.2, ['She moonwalked.', 'ON A WALL.'], { y: 420, size: 92, glowC: 'rgba(255,220,240,.95)' }); };
+    if (f === 1) shadowSay(ft, .1, 3.1, ['That shadow at the club…', 'the ponytail… the moves…'], { y: 420, size: 74, glowC: 'rgba(255,220,240,.95)' });
+    if (f === 2) { shadowSay(ft, .05, 2.4, ['When she flipped that hair —', 'I forgot I’m 2D.'], { y: 420, size: 74, glowC: 'rgba(255,220,240,.95)' }); ctx.save(); ctx.font = '800 40px Unb'; ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.textAlign = 'center'; ctx.fillText('SLOW-MO', 540, 1700); ctx.restore(); }
+    if (f === 3) shadowSay(ft, .05, 1.6, ['She moonwalked.', 'ON A WALL.'], { y: 420, size: 92, glowC: 'rgba(255,220,240,.95)' }); };
 };
 function heartsFloat(t, x, y, k) { ctx.save(); for (let i = 0; i < 16; i++) { const ph = (t * .5 + h1(i)) % 1, hx = x + (h1(i + 2) - .5) * 900 + Math.sin(t * 2 + i) * 30, hy = y - ph * 900, s = (14 + h1(i + 4) * 22) * k;
   ctx.globalAlpha = (1 - ph) * .9 * k; ctx.fillStyle = i % 3 ? '#ff5a9a' : '#ffffff'; ctx.beginPath(); ctx.moveTo(hx, hy + s * .7); ctx.bezierCurveTo(hx - s * 1.4, hy - s * .4, hx - s * .8, hy - s * 1.4, hx, hy - s * .6); ctx.bezierCurveTo(hx + s * .8, hy - s * 1.4, hx + s * 1.4, hy - s * .4, hx, hy + s * .7); ctx.fill(); } ctx.restore(); }
@@ -341,7 +341,7 @@ S.S15 = (t) => { useSet('night'); hideAll(); night.neon.visible = false;
   FX = { fy: .5, fw: .3, blur: 6, bloom: .45, warm: -.02 };
   return () => { if (t > 2.6 && t < 3.6) { const [ex, ey] = toScreen(gx + .3, 1.5 * 1.3, W0); heartsFloat(t - 2.6, ex, ey, .6); }
     if (t > 3.7) heartsFloat(t, 540, 1100, .5);
-    narr(t, 4.4, 5.5, 'Oh no. Not again.', { y: 1450, size: 80, who: 'SAM' }); };
+    narr(t, 3.95, 5.5, 'Oh no. Not again.', { y: 1450, size: 80, who: 'SAM' }); };
 };
 // 16. Финальная плашка
 S.S16 = (t) => { useSet('night'); hideAll(); renderer.setClearColor('#000'); FX = { skip: true };
@@ -359,7 +359,7 @@ function motesSplash(t, x, y) { ctx.save(); for (let i = 0; i < 26; i++) { const
 
 // ---- монтаж ----
 export const ALT = window.ALT_END !== false; // по умолчанию — с альтернативной концовкой (решение 2026-11-23)
-export const SHOTS = [['S1', 3.2], ['S2', 4.0], ['S3', 5.2], ['S4', 7.0], ['S5', 4.5], ['S6', 7.0], ['S7', 6.3], ['S8', 5.0], ['S9', 5.0], ['S10', 5.0], ['S11', 6.0], ['S12', 8.5], ['S13', 7.2], ['S14', 5.4], ...(ALT ? [['S14b', 14.0]] : []), ['S15', 5.5], ['S16', 4.5]];
+export const SHOTS = [['S1', 3.2], ['S2', 4.0], ['S3', 5.2], ['S4', 7.0], ['S5', 4.5], ['S6', 7.0], ['S7', 6.3], ['S8', 5.0], ['S9', 5.0], ['S10', 5.0], ['S11', 6.0], ['S12', 8.5], ['S13', 7.2], ['S14', 5.4], ...(ALT ? [['S14b', 16.0]] : []), ['S15', 5.5], ['S16', 4.5]];
 const starts = []; let acc = 0; for (const [, d] of SHOTS) { starts.push(acc); acc += d; } export const TOTAL = acc;
 const WIPES = [1, 6, 9, ALT ? 14 : 13].map(i => starts[i + 1]); // после S2, S7, S10, S14 (или S14b)
 window.SCENE = { duration: TOTAL, fps: 30, width: W, height: H };

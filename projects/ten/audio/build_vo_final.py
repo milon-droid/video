@@ -12,7 +12,7 @@ for l in cfg['lines']:
     f = os.path.join(VO, 'ep1en', l['id'] + '.wav')
     if not os.path.exists(f): print('нет', l['id']); continue
     t = warp(l['t'], l.get('alt'))
-    with wave.open(f) as w: d = w.getnframes() / w.getframerate() / (1.2 if l['role'] == 'narrator_en' else 1.15 if l['id'] in ('sx1', 'sx3') else 1)
+    with wave.open(f) as w: d = w.getnframes() / w.getframerate() / (1.2 if l['role'] == 'narrator_en' else 1.2 if l['id'] in ('sx1', 'sx3', 'f2', 'f3', 'f4') else 1)
     items.append([t, d, f, l['role'], l['id']])
 items.sort(); end = 0
 for it in items:
@@ -20,7 +20,8 @@ for it in items:
     end = it[0] + it[1]
 ins, flt = [], []
 for k, (t, d, f, role, lid) in enumerate(items):
-    tp = ',atempo=1.15' if lid in ('sx1', 'sx3') else ''
+    FAST = ('sx1', 'sx3', 'f2', 'f3', 'f4')
+    tp = ',atempo=1.2' if lid in FAST else ''
     ins += ['-i', f]; ms = int(t * 1000); flt.append(f"[{k}:a]{FX[role]}{tp},aresample=48000,adelay={ms}|{ms},apad[a{k}]")
 n = len(items); flt.append(''.join(f"[a{k}]" for k in range(n)) + f"amix=inputs={n}:normalize=0:duration=longest,atrim=0:{TOTAL},pan=stereo|c0=c0|c1=c0[out]")
 subprocess.run(['ffmpeg', '-v', 'error', '-y', *ins, '-filter_complex', ';'.join(flt), '-map', '[out]', '-ar', '48000', os.path.join(ROOT, 'vo-final.wav')], check=True)

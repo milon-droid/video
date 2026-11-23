@@ -78,7 +78,7 @@ C[:] = [c for c in C if not (68.8 <= c["t"] < 73.2)]
 from warp import warp
 for c in C: c["t"] = round(warp(c["t"]), 3)
 A0 = warp(68.8 - .001)
-for o, idd, g in [(.35, "click-clap-medium", .3), (1.7, "pop-small-bubble", .5), (2.55, "shimmer-long-soft", .5), (5.4, "whoosh-medium-soft", .5), (5.6, "pop-large-in", .6), (7.4, "foley-card-slide", .5)]: lib(A0 + o, idd, g, align="start")
+for o, idd, g in [(.35, "click-clap-medium", .3), (2.0, "pop-small-bubble", .5), (2.95, "shimmer-long-soft", .5), (6.0, "whoosh-fast-soft", .5), (8.4, "whoosh-fast-soft", .5), (10.0, "whoosh-medium-soft", .5), (13.4, "pop-large-in", .6), (14.6, "foley-card-slide", .5)]: lib(A0 + o, idd, g, align="start")
 G0 = warp(68.8)
 for i in range(4): lib(G0 + .1 + i * .4, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .3, align="start")
 for i in range(6): lib(G0 + .5 + i * .36, "click-clip-soft", .35)
