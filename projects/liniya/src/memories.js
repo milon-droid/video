@@ -293,7 +293,7 @@ function shotMem(lt, t) {
 // ================= палата-2: окно, жена просыпается =================
 const WT1 = { x: 190, y: 296, s: 40 }, WT2 = { x: 190, y: 372, s: 32 };
 const t1 = () => F('t1', () => shift(textShape('thank you', 'scripts', WT1.s), WT1.x, WT1.y));
-const t2 = () => F('t2', () => shift(textShape('for 55 years.', 'scripts', WT2.s), WT2.x, WT2.y));
+const t2 = () => F('t2', () => shift(textShape('for 65 years.', 'scripts', WT2.s), WT2.x, WT2.y));
 const room2Parts = () => F('r2p', () => { const a = t1(), b = t2();
   const go = sampleD(`M583,812 C 600,700 520,560 420,470 C 330,390 ${a.x[0] + 40},${a.y[0] + 60} ${a.x[0]},${a.y[0]}`, 2);
   const mid = sampleD(`M${a.x[a.n - 1]},${a.y[a.n - 1]} C ${a.x[a.n - 1] + 20},${a.y[a.n - 1] + 30} ${b.x[0] - 30},${b.y[0] - 30} ${b.x[0]},${b.y[0]}`, 2);
