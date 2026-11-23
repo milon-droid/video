@@ -152,7 +152,7 @@
 "align": "start"
 },
 {
-"t": 79.9,
+"t": 78.9,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.8,
@@ -332,7 +332,7 @@
 "t": 37.2,
 "type": "lib",
 "id": "oc-AMBUrbn_CityEuroDaytime_LOOP_01",
-"gain": 0.35,
+"gain": 0.22,
 "dur": 15,
 "align": "start"
 },
@@ -340,7 +340,7 @@
 "t": 37.3,
 "type": "lib",
 "id": "oc-VEHCar_CarEngineHigh_LOOP_01",
-"gain": 0.25,
+"gain": 0.13,
 "dur": 4.8,
 "align": "start",
 "rate": 0.6
@@ -446,14 +446,14 @@
 "t": 43.6,
 "type": "lib",
 "id": "celebration-applause-small",
-"gain": 0.45,
+"gain": 0.28,
 "align": "start"
 },
 {
 "t": 44.8,
 "type": "lib",
 "id": "celebration-applause-big",
-"gain": 0.4,
+"gain": 0.22,
 "align": "start"
 },
 {
@@ -717,70 +717,7 @@
 "align": "start"
 },
 {
-"t": 88.8,
-"type": "hum50",
-"gain": 0.25,
-"dur": 4.6,
-"attack": 0.1
-},
-{
-"t": 88.8,
-"type": "lib",
-"id": "oc-AMBForst_Night_LOOP_01",
-"gain": 0.25,
-"dur": 7,
-"align": "start"
-},
-{
-"t": 90.8,
-"type": "zap",
-"gain": 0.45,
-"dur": 0.5
-},
-{
-"t": 91.1,
-"type": "zap",
-"gain": 0.3,
-"dur": 0.3
-},
-{
-"t": 88.9,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.3,
-"align": "start"
-},
-{
-"t": 89.3,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
-"gain": 0.3,
-"align": "start"
-},
-{
-"t": 89.7,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.3,
-"align": "start"
-},
-{
-"t": 90.1,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
-"gain": 0.3,
-"align": "start"
-},
-{
-"t": 91.65,
-"type": "lib",
-"id": "shimmer-medium-bright",
-"gain": 0.25,
-"align": "start",
-"rate": 0.7
-},
-{
-"t": 93.2,
+"t": 100.8,
 "type": "lib",
 "id": "oc-AMBForst_Night_LOOP_01",
 "gain": 0.2,
@@ -908,13 +845,13 @@
 "align": "start"
 },
 {
-"t": 79.8,
+"t": 78.8,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.8
 },
 {
-"t": 79.8,
+"t": 78.8,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.45,
@@ -927,45 +864,151 @@
 "gain": 0.5
 },
 {
-"t": 80.649,
+"t": 79.649,
 "type": "lib",
 "id": "click-clap-medium",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 81.999,
+"t": 81.299,
 "type": "lib",
 "id": "pop-small-bubble",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 82.849,
+"t": 82.249,
 "type": "lib",
 "id": "shimmer-long-soft",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 85.699,
+"t": 85.299,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 87.699,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 89.299,
 "type": "lib",
 "id": "whoosh-medium-soft",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 85.899,
+"t": 92.699,
 "type": "lib",
 "id": "pop-large-in",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 87.699,
+"t": 93.899,
 "type": "lib",
 "id": "foley-card-slide",
 "gain": 0.5,
+"align": "start"
+},
+{
+"t": 95.4,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 95.8,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 96.2,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 96.6,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 95.8,
+"type": "lib",
+"id": "click-clip-soft",
+"gain": 0.35
+},
+{
+"t": 96.16,
+"type": "lib",
+"id": "click-clip-soft",
+"gain": 0.35
+},
+{
+"t": 96.52,
+"type": "lib",
+"id": "click-clip-soft",
+"gain": 0.35
+},
+{
+"t": 96.88,
+"type": "lib",
+"id": "click-clip-soft",
+"gain": 0.35
+},
+{
+"t": 97.24,
+"type": "lib",
+"id": "click-clip-soft",
+"gain": 0.35
+},
+{
+"t": 97.6,
+"type": "lib",
+"id": "click-clip-soft",
+"gain": 0.35
+},
+{
+"t": 97.95,
+"type": "lib",
+"id": "notification-success-sparkle",
+"gain": 0.5
+},
+{
+"t": 99.0,
+"type": "lib",
+"id": "whoosh-medium-soft",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 99.7,
+"type": "lib",
+"id": "move-spring",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 95.3,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.25,
+"dur": 10,
 "align": "start"
 }
 ]

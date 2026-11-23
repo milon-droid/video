@@ -139,7 +139,7 @@ export const kitchen = (() => {
   view.rotation.y = Math.PI / 2; add(g, view, WX - 2, 2, -.2);
   // столешница
   const cab = mesh(G.rbox(2.6, .9, .6, .03), clay('#c8925e'), true, true); add(g, cab, 1.4, .45, -1.4);
-  [0.55, 1.4, 2.25].forEach(x => { add(g, mesh(G.rbox(.8, .78, .02, .02), clay('#b88050')), x, .45, -1.09); add(g, mesh(G.sph(.025), clay('#4a2a10')), x + .25, .6, -1.07); });
+  [0.55, 1.4, 2.25].forEach(x => { add(g, mesh(G.box(.8, .78, .03), clay('#b88050'), false, true), x, .45, -1.08); add(g, mesh(G.sph(.025), clay('#4a2a10')), x + .25, .6, -1.07); });
   const top = mesh(G.rbox(2.7, .06, .66, .02), clay('#efe4d2'), true, true); add(g, top, 1.4, .93, -1.4);
   // фартук-плитка
   const tiles = canvasTex(256, 128, (c) => { c.fillStyle = '#ffffff'; c.fillRect(0, 0, 256, 128); c.strokeStyle = '#d8e0e8'; c.lineWidth = 4; for (let i = 0; i <= 8; i++) { c.beginPath(); c.moveTo(i * 32, 0); c.lineTo(i * 32, 128); c.stroke(); } for (let j = 0; j <= 4; j++) { c.beginPath(); c.moveTo(0, j * 32); c.lineTo(256, j * 32); c.stroke(); } });
@@ -341,7 +341,7 @@ export const club = (() => {
   const key = new THREE.SpotLight('#fff4e8', 170, 14, .2, .3, 1.2); key.position.set(0, 1.6, 4.5); key.target.position.set(0, 1.4, WZ); g.add(key, key.target);
   const cols = ['#ff3a9a', '#3ad8ff', '#ffd23a', '#9a5aff']; const spots = cols.map((c, i) => { const sp = new THREE.SpotLight(c, 160, 16, .22, .4, 1.2); sp.position.set(-3 + i * 2, 4.6, 1.5); g.add(sp, sp.target); return sp; });
   // лучи (аддитивные конусы)
-  const beamM = c => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
+  const beamM = c => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .08, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
   const beams = cols.map(c => { const b = new THREE.Mesh(new THREE.ConeGeometry(.9, 6, 24, 1, true), beamM(c)); g.add(b); return b; });
   // диско-шар
   const ball = new THREE.Group(); ball.add(mesh(G.sph(.35, 24), new THREE.MeshStandardMaterial({ color: '#c8c8d8', metalness: 1, roughness: .15 }), false, false));

@@ -8,6 +8,10 @@ import { handPrint, psNote, condNote, contract, feedUI } from './notes.js';
 // ---- общие герои ----
 const hero = makeToy(LOOK.senya, { uniq: true }); scene.add(hero.root);
 const shade = makeShade(); scene.add(shade.holder);
+const GIRL = { skin: '#f2c9ad', hair: '#3a2018', top: '#e8508a', top2: '#c03a6a', pants: '#2a2e44', shoes: '#ffffff', hood: false, eye: '#1a1210', blush: .6 };
+const girl = makeToy(GIRL); scene.add(girl.root); girl.root.visible = false; girl.root.traverse(o => { if (o.isMesh) o.castShadow = false; });
+{ const hm = clay(GIRL.hair); const tl = new THREE.Group(); girl.head.add(tl); tl.position.set(0, .16, -.14); [[0, 0, 0, .1], [0, -.1, -.09, .085], [0, -.21, -.13, .072], [0, -.32, -.14, .058]].forEach(([x, y, z, r]) => { const m = mesh(G.sph(r, 12), hm); m.position.set(x, y, z); tl.add(m); }); girl.tail = tl;
+  const sk = mesh(new THREE.ConeGeometry(.26, .3, 20, 1, true), clay('#2a2e44')); sk.position.y = -.12; girl.hips.add(sk); }
 const girlSh = makeShade({ female: true }); scene.add(girlSh.holder); girlSh.holder.visible = false;
 const crowdSh = Array.from({ length: 8 }, () => { const s = makeShade(); scene.add(s.holder); s.holder.visible = false; return s; });
 const phone = new THREE.Group(); phone.add(mesh(G.rbox(.07, .13, .015, .01), clay('#15161e', { roughness: .3 }))); const scr = mesh(G.plane(.058, .112), glow('#9ac8ff', .9), false, false); scr.position.z = .009; phone.add(scr);
@@ -23,7 +27,7 @@ const hh = (t, amp = .02, seed = 1) => [noise(seed, t * .8) * amp, noise(seed + 
 function heroAt(x, z, yaw, pose, t, face = {}, { sat = 1, alpha = 1, cast = false, show = true, phoneOn = false, phoneLOn = false } = {}) {
   phoneL.visible = phoneLOn;
   hero.root.visible = show; hero.root.position.set(x, 0, z); hero.root.rotation.set(0, yaw, 0); applyPose(hero, pose, t, face, 1); setFade(hero, sat, alpha, cast); phone.visible = phoneOn; }
-const hideAll = () => { shade.holder.visible = false; girlSh.holder.visible = false; crowdSh.forEach(s => s.holder.visible = false); band.visible = false; hero.root.visible = false; };
+const hideAll = () => { shade.holder.visible = false; girlSh.holder.visible = false; girl.root.visible = false; crowdSh.forEach(s => s.holder.visible = false); band.visible = false; hero.root.visible = false; };
 const talk = (t, a, b) => t < a || t > b ? 0 : clamp(.45 + .55 * Math.sin((t - a) * 16) * Math.sin((t - a) * 5.1 + 1));
 let FX = {}; // параметры компоновщика текущего плана
 
@@ -261,7 +265,7 @@ S.S13 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fi
 };
 // 14. Ладонь к ладони
 S.S14 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 12; roof.paint(() => {});
-  const C0 = 5.0; const k = ease(t, C0 + .15, C0 + .8, sm);
+  const C0 = 4.0; const k = ease(t, C0 + .15, C0 + .8, sm);
   const TX = Math.cos(VENT.yaw), TZ = -Math.sin(VENT.yaw); const P = [VENT.cx + TX * .02, .92, VENT.cz + TZ * .02];
   const hx = VENT.cx + VENT.nx * .45 + TX * .3, hz = VENT.cz + VENT.nz * .45 + TZ * .3;
   heroAt(hx, hz, VENT.yaw + Math.PI - .45, { ...POSE.stand, aR: [lerp(.1, 1.3, k), lerp(-.12, -.6, k), lerp(.15, .1, k)], headY: -.25 }, t, { expr: 'happy', smile: 1 }, {});
@@ -272,59 +276,79 @@ S.S14 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.
   FX = { fy: .5, fw: t < C0 ? .5 : .28, blur: t < C0 ? 12 : 6, warm: .12, bloom: .35 };
   return () => { if (t < C0 + .2) { ctx.fillStyle = `rgba(10,6,20,${.4 * (1 - ease(t, C0, C0 + .2))})`; ctx.fillRect(0, 0, 1080, 1920); } contract(t, 0, C0 - .1);
     const tb = t - C0 - .8; if (tb > 0 && tb < .5) { const [sx, sy] = toScreen(...P); burst(tb, sx, sy, '#fff2c8', 18); if (tb < .25) { ctx.fillStyle = `rgba(255,240,200,${(.25 - tb) * 1.6})`; ctx.fillRect(0, 0, 1080, 1920); } }
-    if (!ALT) narr(t, C0 + .8, 6.4, 'Deal.', { y: 1400, size: 96, who: 'SAM' }); };
+    if (!ALT) narr(t, C0 + .8, 5.4, 'Deal.', { y: 1400, size: 96, who: 'SAM' }); };
 };
-// 14b (альтернативная концовка): тень не отпускает руку — «ещё одно условие» → девушка-тень в клубе → «познакомь»
+// 14b: тень не отпускает руку — «ещё одно условие» → три флешбека (клуб, взмах волос, лунная походка) → «познакомь»
+const ROOF_SEG = [[0, 2.4], [9.4, 14.0]];
 S.S14b = (t) => {
   const TX = Math.cos(VENT.yaw), TZ = -Math.sin(VENT.yaw);
-  if (t < 2.6 || t >= 5.4) { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 12; roof.paint(() => {}); roofLife(t + 12);
-    const tt = t < 2.6 ? t : t - 5.4; const late = t >= 5.4;
+  const onRoof = t < 2.9 || t >= 10.0;
+  if (onRoof) { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 12; roof.paint(() => {}); roofLife(t + 12);
+    const late = t >= 10.0, tt = late ? t - 10.0 : t;
     const hx = VENT.cx + VENT.nx * .45 + TX * .3, hz = VENT.cz + VENT.nz * .45 + TZ * .3;
     const shake = !late && t < 1.2 ? Math.sin(t * 14) * .08 : 0;
-    const hp = late && tt > 1.6 ? keys(tt - 1.6, [[0, { ...POSE.stand, aR: [1.3, -.6, .1], headY: -.25 }], [.35, { ...POSE.facepalm, headY: .4 }]]) : { ...POSE.stand, aR: [1.3 + shake, -.6, .1], headY: late ? .1 : -.25 + (t > 1.6 ? .35 : 0) };
-    heroAt(hx, hz, VENT.yaw + Math.PI - .45, hp, t, { expr: late ? 'surprised' : t > 1.6 ? 'surprised' : 'happy', smile: late ? .5 : 1, mouth: talk(t, 1.8, 2.4) + (late ? talk(tt, 1.6, 2.6) : 0) }, {});
-    applyPose(shade, { ...POSE.stand, aR: [.35 + shake, -1.45, .1], headY: .2 + (t > .4 && !late ? Math.sin(t * 2) * .15 : 0), headX: late ? .15 : 0, hipsZ: late ? Math.sin(tt * 3) * .06 : 0 }, t, { mood: late ? 'happy' : t > .4 ? 'sly' : 'happy', look: late ? 0 : -.6 }, 3);
+    const hp = late ? (tt < 4.4 ? { ...POSE.stand, aR: [.2, -.12, .2], aL: [.6, .3, 1.6], headY: .1, headX: .1 } : keys(tt - 4.4, [[0, { ...POSE.stand, headY: .2 }], [.35, { ...POSE.facepalm, headY: .4 }]])) : { ...POSE.stand, aR: [1.3 + shake, -.6, .1], headY: -.25 + (t > 1.6 ? .35 : 0) };
+    heroAt(hx, hz, VENT.yaw + Math.PI - .45, hp, t, { expr: late ? (tt < 4.4 ? 'calm' : 'surprised') : t > 2.0 ? 'surprised' : 'happy', smile: late ? .3 : 1, mouth: talk(t, 2.15, 2.8) * (late ? 0 : 1) + (late ? talk(tt, .1, 1.3) + talk(tt, 4.5, 5.7) : 0) }, {});
+    // тень мечтательно обнимает себя и покачивается (в конце)
+    const dreamy = late ? { ...POSE.stand, aL: [.9, -.2, 2.2], aR: [.9, .2, 2.2], hipsZ: Math.sin(tt * 2.4) * .12, headZ: Math.sin(tt * 2.4 + 1) * .2, headY: .2 } : { ...POSE.stand, aR: [.35 + shake, -1.45, .1], headY: .2 + (t > .4 ? Math.sin(t * 2) * .15 : 0) };
+    applyPose(shade, dreamy, t, { mood: late ? 'happy' : t > .4 ? 'sly' : 'happy', look: late ? 0 : -.6 }, 3);
     placeShade(shade, { x: VENT.cx + VENT.nx * .012 - TX * .22, z: VENT.cz + VENT.nz * .012 - TZ * .22, yaw: VENT.yaw, rise: 1, scale: 1.0, op: 1 });
     const cx = VENT.cx + VENT.nx * 4.4 - TX * 1.1, cz = VENT.cz + VENT.nz * 4.4 - TZ * 1.1; const [jx, jy] = hh(t, .015);
     cam(cx + jx, 1.25 + jy, cz, VENT.cx + TX * .05, 1.0, VENT.cz + TZ * .05, late ? 32 : 34);
     FX = { fy: .5, fw: .28, blur: 6, warm: .14, bloom: .35 };
-    return () => { if (!late) { shadowSay(t, .4, 2.6, ['Oh. And…', 'one more term.'], { y: 420, size: 92 }); narr(t, 1.8, 2.6, '…what now?', { y: 1450, size: 76, who: 'SAM' }); }
-      else { shadowSay(tt, .1, 1.6, ['Introduce me', 'to her owner.'], { y: 420, size: 92 }); narr(tt, 1.6, 3.1, '…deal. I guess.', { y: 1450, size: 76, who: 'SAM' });
-        if (tt > .2) { const k = spring(tt, .2, 2, 7); ctx.save(); ctx.translate(540, 1660); ctx.rotate(-.06); ctx.scale(k * .9, k * .9); ctx.fillStyle = '#fbf3e2'; ctx.fillRect(-170, -70, 340, 140); ctx.fillStyle = '#e8333f'; ctx.font = '700 50px Cav'; ctx.textAlign = 'center'; ctx.fillText('Term #5:', 0, -12); ctx.fillStyle = '#0b0a12'; ctx.fillText('introduce me ♥', 0, 40); ctx.restore(); }
-        heartsFloat(tt, 540, 900, .5); } }; }
-  // воспоминание: клуб, девушка-тень танцует в луче
-  const tt = t - 2.6; useSet('club'); hideAll(); club.update(t + 3); const d = bigDance(tt * .8, 1.3);
-  applyPose(girlSh, { ...d.pose, hipsZ: Math.sin(tt * 4) * .15, headZ: Math.sin(tt * 4) * .1 }, t, { mood: 'happy' }, 7); placeShade(girlSh, { x: 0, z: club.wallZ + .03, rise: 1, scale: 1.25, turn: .9 * Math.sin(tt * 1.6), op: 1 }); girlSh.holder.position.y = .35;
-  girlSh.tail.rotation.x = Math.sin(tt * 5) * .4; girlSh.skirt.scale.set(1 + Math.abs(Math.sin(tt * 4)) * .2, 1, 1 + Math.abs(Math.sin(tt * 4)) * .2);
-  cam(lerp(.3, -.15, ease(tt, 0, 2.8)), 1.3, lerp(3.4, 3.0, ease(tt, 0, 2.8)), 0, 1.2, -2, 38);
+    return () => { if (!late) { shadowSay(t, .3, 2.9, ['Oh. And…', 'one more term.'], { y: 420, size: 92 }); narr(t, 2.1, 2.9, '…what now?', { y: 1450, size: 76, who: 'SAM' }); heartsFloat(t, 540, 900, .2); return; }
+      narr(tt, .1, 1.4, 'Dude. You’re a shadow.', { y: 1450, size: 70, who: 'SAM' });
+      shadowSay(tt, 1.45, 3.15, ['And she’s a ten.', 'In every light.'], { y: 420, size: 90 });
+      shadowSay(tt, 3.2, 4.45, ['Introduce me', 'to her owner.'], { y: 420, size: 92 });
+      narr(tt, 4.5, 6.0, '…deal. I guess.', { y: 1450, size: 76, who: 'SAM' });
+      if (tt > 3.4) { const k = spring(tt, 3.4, 2, 7); ctx.save(); ctx.translate(540, 1660); ctx.rotate(-.06); ctx.scale(k * .9, k * .9); ctx.fillStyle = '#fbf3e2'; ctx.fillRect(-170, -70, 340, 140); ctx.fillStyle = '#e8333f'; ctx.font = '700 50px Cav'; ctx.textAlign = 'center'; ctx.fillText('Term #5:', 0, -12); ctx.fillStyle = '#0b0a12'; ctx.fillText('introduce me ♥', 0, 40); ctx.restore(); }
+      heartsFloat(tt, 540, 900, .7); }; }
+  // флешбеки — девушка-тень в клубе
+  useSet('club'); hideAll(); club.update(t + 3);
+  const f = t < 6.0 ? 1 : t < 8.4 ? 2 : 3, ft = f === 1 ? t - 2.9 : f === 2 ? t - 6.0 : t - 8.4;
+  let pose, turn = 0, x = 0, camZ = 3.2, camY = 1.3, lookY = 1.2;
+  if (f === 1) { const d = bigDance(ft * .8, 1.3); pose = { ...d.pose, hipsZ: Math.sin(ft * 4) * .15 }; turn = .9 * Math.sin(ft * 1.6); camZ = lerp(3.4, 3.0, ft / 3.1); }
+  else if (f === 2) { const sl = ft * .35; pose = { ...POSE.stand, aL: [.2, 2.4, 1.2], aR: [0, -.3, .3], headZ: Math.sin(sl * 6) * .35, hipsZ: .12, headX: -.1 }; turn = -.7 + sl * 1.5; camZ = 2.2; camY = 1.45; lookY = 1.45; girlSh.tail.rotation.x = -.5 + Math.sin(sl * 6) * 1.1; }
+  else { pose = { ...walk(-ft * 1.1, 0), lean: -.12, aL: [-.3, .5, .4], aR: [.3, -.5, .4] }; turn = Math.PI / 2; x = 1.2 - ft * .9; camZ = 3.6; }
+  applyPose(girlSh, pose, t, { mood: 'happy' }, 7); placeShade(girlSh, { x, z: club.wallZ + .03, rise: 1, scale: 1.25, turn, op: 1 }); girlSh.holder.position.y = .35;
+  if (f !== 2) girlSh.tail.rotation.x = Math.sin(ft * 5) * .4;
+  cam(lerp(.3, -.15, ft / 2.4) + (f === 3 ? -ft * .3 : 0), camY, camZ, x * .3, lookY, -2, f === 2 ? 30 : 38);
   FX = { fy: .5, fw: .5, blur: 6, warm: .06, bloom: 0 };
   return () => { ctx.save(); ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = 'rgba(255,90,170,.22)'; ctx.fillRect(0, 0, 1080, 1920); ctx.restore();
     const g = ctx.createRadialGradient(540, 960, 400, 540, 960, 1100); g.addColorStop(0, 'rgba(255,200,230,0)'); g.addColorStop(1, 'rgba(255,170,210,.55)'); ctx.fillStyle = g; ctx.fillRect(0, 0, 1080, 1920);
-    heartsFloat(tt, 540, 1300, 1); shadowSay(tt, .2, 2.8, ['That shadow at the club…', 'the ponytail… the moves…'], { y: 420, size: 74, glowC: 'rgba(255,220,240,.95)' }); };
+    heartsFloat(t, 540, 1300, 1); if (f === 2) sparkles(t, 600, 700, 1);
+    if (f === 1) shadowSay(ft, .1, 3.1, ['That shadow at the club…', 'the ponytail… the moves…'], { y: 420, size: 74, glowC: 'rgba(255,220,240,.95)' });
+    if (f === 2) { shadowSay(ft, .05, 2.4, ['When she flipped that hair —', 'I forgot I’m 2D.'], { y: 420, size: 74, glowC: 'rgba(255,220,240,.95)' }); ctx.save(); ctx.font = '800 40px Unb'; ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.textAlign = 'center'; ctx.fillText('SLOW-MO', 540, 1700); ctx.restore(); }
+    if (f === 3) shadowSay(ft, .05, 1.6, ['She moonwalked.', 'ON A WALL.'], { y: 420, size: 92, glowC: 'rgba(255,220,240,.95)' }); };
 };
 function heartsFloat(t, x, y, k) { ctx.save(); for (let i = 0; i < 16; i++) { const ph = (t * .5 + h1(i)) % 1, hx = x + (h1(i + 2) - .5) * 900 + Math.sin(t * 2 + i) * 30, hy = y - ph * 900, s = (14 + h1(i + 4) * 22) * k;
   ctx.globalAlpha = (1 - ph) * .9 * k; ctx.fillStyle = i % 3 ? '#ff5a9a' : '#ffffff'; ctx.beginPath(); ctx.moveTo(hx, hy + s * .7); ctx.bezierCurveTo(hx - s * 1.4, hy - s * .4, hx - s * .8, hy - s * 1.4, hx, hy - s * .6); ctx.bezierCurveTo(hx + s * .8, hy - s * 1.4, hx + s * 1.4, hy - s * .4, hx, hy + s * .7); ctx.fill(); } ctx.restore(); }
-// 15. Крючок: «ПРОФСОЮЗ ТЕНЕЙ. ЗАБАСТОВКА — ЗАВТРА»
-S.S15 = (t) => { useSet('night'); hideAll(); night.neon.visible = true;
-  const s2 = t < 2.0 ? 0 : (h1(Math.floor(t * 20)) > .35 || t > 2.5 ? 1 : 0); night.sign2.material.opacity = s2;
-  const xs = [-2.5, -1.85, -1.2, 1.3, 1.9, 2.5, 3.1, -3.1]; crowdSh.forEach((s, i) => { s.holder.visible = true; const look = t < 1.6 ? (xs[i] < .2 ? 1 : -1) : -1;
-    applyPose(s, i % 3 === 0 ? { ...POSE.stand, aL: [.5, .4, 1.9], aR: [.5, -.4, 1.9] } : i % 3 === 1 ? POSE.stand : { ...POSE.stand, aR: [0, -.2, 1.0], headZ: .1 }, t + i, { mood: t < 1.6 ? 'calm' : 'wide', look }, 30 + i);
-    placeShade(s, { x: xs[i], z: night.wallZ + .02, rise: 1, scale: .85 + h1(i) * .2, turn: t < 1.6 ? (xs[i] < .2 ? .5 : -.5) : -.3 }); });
-  const hx = lerp(-3.4, -1.0, ease(t, 0, 1.6, sm)); const pose = t < 1.6 ? walk(hx + 3.4, 0) : keys(t, [[1.6, 'stand'], [1.9, { ...POSE.stand, headX: -.15 }]]);
-  heroAt(hx, 1.2, t < 1.6 ? Math.PI / 2 : lerp(Math.PI / 2, Math.PI * .85, ease(t, 1.6, 2.1)), pose, t, { expr: t < 1.7 ? 'calm' : 'scared', wide: t > 1.7 }, {});
-  const dx = hx - night.lampX, dz = 1.2 - night.lampZ, yaw = Math.atan2(dx, dz);
-  applyPose(shade, t < 2.6 ? pose : keys(t, [[2.6, 'stand'], [2.85, 'shrug']]), t, { mood: t < 2.6 ? 'calm' : 'sly', look: 1 }, 3);
-  placeShade(shade, { x: hx, z: 1.2, rise: 0, len: 1.15 + Math.hypot(dx, dz) * .25, yaw, turn: (t < 1.6 ? Math.PI / 2 : Math.PI) - yaw });
-  const [jx, jy] = hh(t, .02); cam(.2 + jx, 1.9 + jy, lerp(9.8, 9.0, ease(t, 0, 4.4)), .2, 1.55, -1.8, 40);
-  FX = { fy: .45, fw: .3, blur: 6, bloom: .55, warm: -.04 };
-  return () => narr(t, 2.8, 4.4, 'Tomorrow, they all leave.', { y: 1450, size: 80, accent: ['all'] });
+// 15. Клиффхэнгер: ночью мимо проходит та самая девушка; её тень подмигивает — тень Сэма снова отрывается и уходит за ней
+S.S15 = (t) => { useSet('night'); hideAll(); night.neon.visible = false;
+  const W0 = night.wallZ + .02;
+  const hx = lerp(-2.6, -.9, ease(t, 0, 1.6, sm)); const hp = t < 1.6 ? walk(hx + 2.6, 0) : t < 4.2 ? keys(t, [[1.6, 'stand'], [2.0, { ...POSE.stand, headY: .6 }]]) : keys(t, [[4.2, { ...POSE.stand, headY: .6 }], [4.5, { ...POSE.facepalm }]]);
+  heroAt(hx, .9, t < 1.6 ? Math.PI / 2 : lerp(Math.PI / 2, .3, ease(t, 1.6, 2.0)), hp, t, { expr: t < 3.4 ? 'calm' : 'surprised', lookX: t > 1.8 ? .9 : 0, mouth: talk(t, 4.4, 5.3) }, {});
+  // девушка идёт справа налево
+  const gx = lerp(3.4, .9, ease(t, .4, 2.6, sm)) - Math.max(0, t - 3.6) * .6; girl.root.visible = true; girl.root.position.set(gx, 0, 1.4); girl.root.rotation.y = t > 2.6 && t < 3.6 ? lerp(-Math.PI / 2, -.4, ease(t, 2.6, 2.9)) : -Math.PI / 2;
+  applyPose(girl, t > 2.6 && t < 3.6 ? { ...POSE.wave, headY: -.3 } : walk((3.4 - gx) * 1.6, 0), t, { expr: 'happy', smile: 1 }, 8); girl.tail.rotation.x = Math.sin(t * 6) * .25;
+  // их тени на стене (от фонаря позади зрителя)
+  applyPose(girlSh, t > 2.6 && t < 3.6 ? { ...POSE.wave } : walk((3.4 - gx) * 1.6, 0), t, { mood: t > 2.7 && t < 3.6 ? 'sly' : 'happy', look: -1 }, 7);
+  placeShade(girlSh, { x: gx + .3, z: W0, rise: 1, scale: 1.3, turn: t > 2.6 && t < 3.6 ? 0 : -Math.PI / 2, op: 1 });
+  const leave = ease(t, 3.7, 4.6, sm); const sx = lerp(hx + .3, gx + .3 - .9, leave);
+  applyPose(shade, t < 3.7 ? { ...hp, aR: t > 2.8 ? [0, -2.4, .9] : hp.aR } : walk((sx - hx) * 2, 1), t, { mood: t > 2.7 ? 'happy' : 'calm', look: 1 }, 3);
+  placeShade(shade, { x: sx, z: W0 + .005, rise: 1, scale: 1.3, turn: t < 3.7 ? (t < 1.6 ? Math.PI / 2 : 0) : -Math.PI / 2, op: 1 });
+  const [jx, jy] = hh(t, .02); cam(.2 + jx, 1.6 + jy, lerp(8.0, 7.4, ease(t, 0, 5.5)), .2, 1.4, -1.8, 38);
+  FX = { fy: .5, fw: .3, blur: 6, bloom: .45, warm: -.02 };
+  return () => { if (t > 2.6 && t < 3.6) { const [ex, ey] = toScreen(gx + .3, 1.5 * 1.3, W0); heartsFloat(t - 2.6, ex, ey, .6); }
+    if (t > 3.7) heartsFloat(t, 540, 1100, .5);
+    narr(t, 3.95, 5.5, 'Oh no. Not again.', { y: 1450, size: 80, who: 'SAM' }); };
 };
 // 16. Финальная плашка
 S.S16 = (t) => { useSet('night'); hideAll(); renderer.setClearColor('#000'); FX = { skip: true };
   return () => { ctx.fillStyle = '#07060c'; ctx.fillRect(0, 0, 1080, 1920); const b = Math.abs(Math.sin(t * 1.3)) > .08 ? 1 : .1;
     ctx.save(); ctx.fillStyle = '#f4f8ff'; ctx.shadowColor = '#fff'; ctx.shadowBlur = 40; [-1, 1].forEach(s => { ctx.beginPath(); ctx.ellipse(540 + s * 80, 700, 52, 22 * b, s * -.15, 0, 7); ctx.fill(); }); ctx.restore();
     narr(t, .15, 4.5, 'So… do we help the Shadow get the girl?', { y: 1000, size: 72, n: 16, accent: ['girl?'] }); narr(t, 1.9, 4.5, 'Tell us in the comments 👇'.replace(' 👇', ''), { y: 1330, size: 60, n: 20, accent: ['comments'] }); heartsFloat(t, 540, 1700, .6);
-    ctx.save(); ctx.globalAlpha = ease(t, .8, 1.2); ctx.textAlign = 'center'; ctx.font = '600 40px Unb'; ctx.fillStyle = '#bfb6d8'; ctx.fillText('SHADOW · episode 2 soon', 540, 1560); ctx.restore(); };
+    ctx.save(); ctx.globalAlpha = ease(t, .8, 1.2); ctx.textAlign = 'center'; ctx.font = '600 40px Unb'; ctx.fillStyle = '#bfb6d8'; ctx.fillText('TO BE CONTINUED · episode 2: the date', 540, 1560); ctx.restore(); };
 };
 
 // ---- эффекты 2D ----
@@ -335,7 +359,7 @@ function motesSplash(t, x, y) { ctx.save(); for (let i = 0; i < 26; i++) { const
 
 // ---- монтаж ----
 export const ALT = window.ALT_END !== false; // по умолчанию — с альтернативной концовкой (решение 2026-11-23)
-export const SHOTS = [['S1', 3.2], ['S2', 4.0], ['S3', 5.2], ['S4', 7.0], ['S5', 4.5], ['S6', 7.0], ['S7', 6.3], ['S8', 5.0], ['S9', 5.0], ['S10', 5.0], ['S11', 6.0], ['S12', 8.5], ['S13', 7.2], ['S14', 6.4], ...(ALT ? [['S14b', 8.5]] : []), ['S15', 4.4], ['S16', 4.5]];
+export const SHOTS = [['S1', 3.2], ['S2', 4.0], ['S3', 5.2], ['S4', 7.0], ['S5', 4.5], ['S6', 7.0], ['S7', 6.3], ['S8', 5.0], ['S9', 5.0], ['S10', 5.0], ['S11', 6.0], ['S12', 8.5], ['S13', 7.2], ['S14', 5.4], ...(ALT ? [['S14b', 16.0]] : []), ['S15', 5.5], ['S16', 4.5]];
 const starts = []; let acc = 0; for (const [, d] of SHOTS) { starts.push(acc); acc += d; } export const TOTAL = acc;
 const WIPES = [1, 6, 9, ALT ? 14 : 13].map(i => starts[i + 1]); // после S2, S7, S10, S14 (или S14b)
 window.SCENE = { duration: TOTAL, fps: 30, width: W, height: H };
