@@ -4,10 +4,11 @@
 // второй проход сводит две страницы (переворот) + верхний слой O (стикеры/текст).
 (function () {
   const W = 720, H = 1280;
-  const E = window.E = { W, H, T: 0, boil: 0, lw: 1 };
-  const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+  const RS = window.RS || 1, PW = W * RS, PH = H * RS;   // множитель разрешения (3 → 4K)
+  const E = window.E = { W, H, RS, T: 0, boil: 0, lw: 1 };
+  const cv = document.getElementById('c'); cv.width = PW; cv.height = PH;
   const gl = cv.getContext('webgl2', { preserveDrawingBuffer: true, antialias: false, premultipliedAlpha: false });
-  const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c; };
+  const mk = () => { const c = document.createElement('canvas'); c.width = PW; c.height = PH; return c; };
   const G = mk(), C = mk(), O = mk();
   const gx = G.getContext('2d'), cx = C.getContext('2d'), ox = O.getContext('2d');
   E.g = gx; E.c = cx; E.o = ox;
@@ -85,7 +86,7 @@
     if (E.measure) { E.lens[s - E.m0] = Math.max(4, plen(P)); return; }   // замер длины штрихов (для рисования с постоянной скоростью)
     let pp = o.p; if (E.rv !== undefined && o.s === undefined) { const q = clamp(E.rv - s); if (q <= 0) return; pp = Math.min(pp ?? 1, q); }
     let Q = pp !== undefined ? cut(P, pp) : P; if (Q.length < 2) return;
-    if (E.rv !== undefined && o.s === undefined && pp < 1) { const m = c.getTransform(), e = Q[Q.length - 1]; E.tip = [m.a * e[0] + m.c * e[1] + m.e, m.b * e[0] + m.d * e[1] + m.f]; }
+    if (E.rv !== undefined && o.s === undefined && pp < 1) { const m = c.getTransform(), e = Q[Q.length - 1]; E.tip = [(m.a * e[0] + m.c * e[1] + m.e) / RS, (m.b * e[0] + m.d * e[1] + m.f) / RS]; }
     const w = (o.w ?? 2.2) * E.lw, a = (o.a ?? .85) * (E.pa ?? 1), j = (o.j ?? 1.1) * E.lw;
     c.lineCap = 'round'; c.lineJoin = 'round';
     // 3 прохода: основной, «эхо» рядом, лёгкая строительная линия с перелётом концов
@@ -137,12 +138,12 @@
     if (E.measure) return; a *= (E.pa ?? 1);
     if (E.lateK !== undefined) { a *= ss(.5, .95, E.lateK); if (a <= 0) return; }   // тушёвка — после контура
     else if (E.rv !== undefined) { const q = clamp(E.rv - sid); if (q <= 0) return; a *= q; }
-    ctx.save(); ctx.filter = `blur(${blur * E.lw}px)`; ctx.fillStyle = `rgba(255,255,255,${a})`;
+    ctx.save(); ctx.filter = `blur(${blur * E.lw * RS}px)`; ctx.fillStyle = `rgba(255,255,255,${a})`;
     ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]); for (const p of P) ctx.lineTo(p[0], p[1]); ctx.closePath(); ctx.fill(); ctx.restore();
   };
   // стереть графит (ластик) в области
   E.erase = function (P, a = 1, blur = 4, ctx = gx) {
-    ctx.save(); ctx.globalCompositeOperation = 'destination-out'; ctx.filter = `blur(${blur}px)`; ctx.fillStyle = `rgba(0,0,0,${a})`;
+    ctx.save(); ctx.globalCompositeOperation = 'destination-out'; ctx.filter = `blur(${blur * RS}px)`; ctx.fillStyle = `rgba(0,0,0,${a})`;
     ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]); for (const p of P) ctx.lineTo(p[0], p[1]); ctx.closePath(); ctx.fill(); ctx.restore();
   };
 
@@ -226,18 +227,18 @@
   // проход 1: страница = бумага × акварель × графит
   const FS_PAGE = `#version 300 es
   precision highp float; in vec2 uv; out vec4 o;
-  uniform sampler2D G, C; uniform float T, warm; uniform vec2 R; ${NOISE}
+  uniform sampler2D G, C; uniform float T, warm, lod, gs; uniform vec2 R; ${NOISE}
   void main(){
     vec2 px = uv*R;
     // бумага: тёплый крем, волокна, зерно (бугорки)
     float fib = fbm(px*vec2(.012,.09)) * .6 + fbm(px*.035)*.4;
-    float tooth = vn(px*.5)*.65 + vn(px*1.05)*.35;
+    float tooth = vn(px*.5*gs)*.65 + vn(px*1.05*gs)*.35;
     vec3 paper = vec3(.962,.936,.878) * (.965 + .05*fib) + (tooth-.5)*.018;
     // акварель: край чуть плывёт, пигмент оседает в ямках, по краю темнее
     vec2 d = vec2(fbm(px*.02+3.), fbm(px*.02+9.)) - .5;
     vec2 u2 = uv + d*vec2(6.,6.)/R + vec2(-3.,3.)/R;
     vec4 c = texture(C, vec2(u2.x, 1.-u2.y));
-    vec4 cb = textureLod(C, vec2(u2.x, 1.-u2.y), 3.2);
+    vec4 cb = textureLod(C, vec2(u2.x, 1.-u2.y), 3.2 + lod);
     float a = c.a;
     vec3 rgb = a > .001 ? c.rgb : vec3(1.);
     float edge = clamp(a - cb.a*.92, 0., 1.);
@@ -247,7 +248,7 @@
     vec3 col = paper * mix(vec3(1.), dye, pig);
     // графит: ложится на бугорки бумаги, плотный — блестит холодным серым
     float g = texture(G, vec2(uv.x, 1.-uv.y)).a;
-    float ge = g * mix(.3, 1.08, smoothstep(.3, .78, tooth*1.1 + g*.28 + (vn(px*1.3)-.5)*.18));
+    float ge = g * mix(.3, 1.08, smoothstep(.3, .78, tooth*1.1 + g*.28 + (vn(px*1.3*gs)-.5)*.18));
     ge = clamp(ge, 0., 1.);
     vec3 lead = vec3(.17,.17,.2);
     col = mix(col, col*lead/.95, ge*.92);
@@ -256,7 +257,7 @@
   // проход 2: сведение — переворот страницы A над B + верхний слой O + свет лампы
   const FS_COMP = `#version 300 es
   precision highp float; in vec2 uv; out vec4 o;
-  uniform sampler2D A, B, O; uniform float flip, T, fade, shake; uniform vec2 R; ${NOISE}
+  uniform sampler2D A, B, O; uniform float flip, T, fade, shake, rs; uniform vec2 R; ${NOISE}
   void main(){
     vec2 q = uv;
     vec3 col;
@@ -294,7 +295,7 @@
     col *= mix(.72, 1., vig);
     col = mix(col, vec3(.06,.05,.05), fade);
     // плёночное зерно
-    col += (h21(q*R + fract(T*7.)*91.) - .5) * .022;
+    col += (h21(floor(q*R*rs/max(1., rs*.5)) + fract(T*7.)*91.) - .5) * .022;
     o = vec4(col, 1.);
   }`;
   function sh(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
@@ -310,45 +311,45 @@
     return t;
   }
   const tG = tex(false), tC = tex(true), tO = tex(false);
-  const pages = [0, 1].map(() => { const t = tex(false); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, W, H, 0, gl.RGBA, gl.UNSIGNED_BYTE, null); const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0); return { t, f }; });
+  const pages = [0, 1].map(() => { const t = tex(false); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, PW, PH, 0, gl.RGBA, gl.UNSIGNED_BYTE, null); const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0); return { t, f }; });
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   function up(t, c, mip) { gl.bindTexture(gl.TEXTURE_2D, t); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c); if (mip) gl.generateMipmap(gl.TEXTURE_2D); }
-  function reset(c) { c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over'; c.filter = 'none'; c.clearRect(0, 0, W, H); }
+  function reset(c) { c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over'; c.filter = 'none'; c.clearRect(0, 0, PW, PH); c.setTransform(RS, 0, 0, RS, 0, 0); }
 
   // камера внутри страницы: (x,y) — центр, z — зум
   E.cam = function (x = W / 2, y = H / 2, z = 1, r = 0) {
-    for (const c of [gx, cx]) { c.setTransform(1, 0, 0, 1, 0, 0); c.translate(W / 2, H / 2); c.rotate(r); c.scale(z, z); c.translate(-x, -y); }
+    for (const c of [gx, cx]) { c.setTransform(RS, 0, 0, RS, 0, 0); c.translate(W / 2, H / 2); c.rotate(r); c.scale(z, z); c.translate(-x, -y); }
     E.lw = 1 / Math.sqrt(z);   // при наезде линии толстеют, но не пропорционально
   };
   // нарисовать страницу в слот (0 — верхняя/текущая, 1 — нижняя/следующая)
   E.page = function (slot, fn) {
     reset(gx); reset(cx); sid = 0; E.cam(); fn();
     up(tG, G, false); up(tC, C, true);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, pages[slot].f); gl.viewport(0, 0, W, H);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, pages[slot].f); gl.viewport(0, 0, PW, PH);
     gl.useProgram(PP); bindQuad(PP);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tG); gl.uniform1i(gl.getUniformLocation(PP, 'G'), 0);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, tC); gl.uniform1i(gl.getUniformLocation(PP, 'C'), 1);
-    gl.uniform1f(gl.getUniformLocation(PP, 'T'), E.T); gl.uniform2f(gl.getUniformLocation(PP, 'R'), W, H);
+    gl.uniform1f(gl.getUniformLocation(PP, 'T'), E.T); gl.uniform2f(gl.getUniformLocation(PP, 'R'), W, H); gl.uniform1f(gl.getUniformLocation(PP, 'lod'), Math.log2(RS)); gl.uniform1f(gl.getUniformLocation(PP, 'gs'), RS > 1 ? 2.2 : 1);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   };
   E.overlay = function (fn) { reset(ox); if (fn) fn(ox); };
   E.compose = function (flip = 0, fade = 0) {
     up(tO, O, false);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, PW, PH);
     gl.useProgram(PC); bindQuad(PC);
     [['A', pages[0].t], ['B', pages[1].t], ['O', tO]].forEach(([n, t], i) => { gl.activeTexture(gl.TEXTURE0 + i); gl.bindTexture(gl.TEXTURE_2D, t); gl.uniform1i(gl.getUniformLocation(PC, n), i); });
     gl.uniform1f(gl.getUniformLocation(PC, 'flip'), flip); gl.uniform1f(gl.getUniformLocation(PC, 'fade'), fade);
-    gl.uniform1f(gl.getUniformLocation(PC, 'T'), E.T); gl.uniform2f(gl.getUniformLocation(PC, 'R'), W, H);
+    gl.uniform1f(gl.getUniformLocation(PC, 'T'), E.T); gl.uniform2f(gl.getUniformLocation(PC, 'R'), W, H); gl.uniform1f(gl.getUniformLocation(PC, 'rs'), RS);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   };
-  E.grab = function () { const px = new Uint8Array(W * H * 4); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
-    const o = new Uint8Array(W * H * 4), row = W * 4; for (let y = 0; y < H; y++) o.set(px.subarray((H - 1 - y) * row, (H - y) * row), y * row); return o; };
+  E.grab = function () { const px = new Uint8Array(PW * PH * 4); gl.readPixels(0, 0, PW, PH, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    const o = new Uint8Array(PW * PH * 4), row = PW * 4; for (let y = 0; y < PH; y++) o.set(px.subarray((PH - 1 - y) * row, (PH - y) * row), y * row); return o; };
 
   // ---------- стикер с надписью (верхний слой): бумажка с тенью, текст тёмным карандашом
   E.note = function (c, x, y, w, h, rot, lines, p = 1, o = {}) {
     if (p <= 0) return;
     const k = eo(clamp(p * 3)); c.save(); c.translate(x, y); c.rotate(rot + (1 - k) * .2); c.scale(lerp(.85, 1, k), lerp(.85, 1, k)); c.globalAlpha = k;
-    c.fillStyle = 'rgba(40,30,20,.22)'; c.filter = 'blur(10px)'; c.fillRect(-w / 2 + 8, -h / 2 + 14, w, h); c.filter = 'none';
+    c.fillStyle = 'rgba(40,30,20,.22)'; c.filter = `blur(${10 * RS}px)`; c.fillRect(-w / 2 + 8, -h / 2 + 14, w, h); c.filter = 'none';
     c.fillStyle = o.bg || '#f7f0dc'; c.beginPath(); c.moveTo(-w / 2, -h / 2); c.lineTo(w / 2, -h / 2 + 3); c.lineTo(w / 2 - 2, h / 2); c.lineTo(-w / 2 + 3, h / 2 - 2); c.closePath(); c.fill();
     if (o.tape !== false) { c.fillStyle = 'rgba(236,226,196,.82)'; c.save(); c.rotate(-.06); c.fillRect(-55, -h / 2 - 16, 110, 32); c.restore(); }
     c.globalAlpha = 1;

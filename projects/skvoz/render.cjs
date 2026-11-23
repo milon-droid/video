@@ -1,6 +1,6 @@
 // node render.cjs out.mp4 [from] [to]   — параллельный рендер (WORKERS=4, RS=1), readPixels → ffmpeg
 const {chromium}=require('playwright');const {spawn,execFileSync}=require('child_process');const fs=require('fs');const path=require('path');
-const out=process.argv[2]||'render/day214.mp4';const RS=+(process.env.RS||1);const PAGE='/src/scene.html';const SZ=`${720*RS}x${1280*RS}`;const FPS=30;const N=+(process.env.WORKERS||4);
+const out=process.argv[2]||'render/day214.mp4';const RS=+(process.env.RS||1);const PAGE=RS>1?'/src/scene_4k.html':'/src/scene.html';const SZ=`${720*RS}x${1280*RS}`;const FPS=30;const N=+(process.env.WORKERS||4);
 (async()=>{
   const b0=await chromium.launch();const p0=await b0.newPage();await p0.goto('file://'+__dirname+PAGE);
   const D=await p0.evaluate(()=>window.DURATION);await b0.close();
