@@ -15,6 +15,7 @@ function screenContent(ctx, t, ra) {
   }
   let f = feedAt(t); if (f.off) f = lastClip(t);
   if (t > 36.0 && t < 37.0) f = { k: 'A', lt: 37.0 - DUR, sw: 0 };   // экран проснулся: ролик на паузе
+  if (f.k !== 'A') f.lt = Math.max(0, f.lt); if (f.k2 && f.k2 !== 'A') f.lt2 = Math.max(0, f.lt2);
   if (f.sw > 0) { ctx.save(); ctx.translate(0, -1920 * E.io(f.sw)); CLIPS[f.k2](ctx, f.lt2); ctx.restore(); ctx.save(); ctx.translate(0, 1920 * (1 - E.io(f.sw))); CLIPS[f.k](ctx, f.lt); ctx.restore(); }
   else CLIPS[f.k](ctx, f.lt);
   // строка состояния: батарея
