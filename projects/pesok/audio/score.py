@@ -78,9 +78,10 @@ def fade(x, a=.05, b=.2):
 # ---------------- таймкоды (story.js)
 SH = [0, 3.4, 7.4, 13.4, 17.6, 22.8, 27.0, 31.2, 35.0, 38.6, 42.6, 45.2, 51.6, 57.0]
 TR = {3.4: 1.2, 7.4: 1.1, 13.4: 1.1, 17.6: 1.0, 22.8: 1.1, 27.0: 1.2, 31.2: 1.1, 35.0: .9, 38.6: 1.0, 42.6: .7, 45.2: 1.2}
-LINES = [(8.5, 'Daddy, build a castle with me?'), (10.85, 'Later.'), (14.4, 'Can we go to the beach?'), (15.85, 'Later, sweetie.'),
-         (19.2, 'Dad, look!'), (20.55, 'Later.'), (23.3, 'Beach this weekend?'), (25.0, 'Later, Dad.'), (27.9, 'Bye, Dad!'),
-         (40.5, 'Grandpa, build a castle with me?')]
+LINES = [(3.6, 'The day she was born, I had 18,000 left.'), (6.7, 'Felt like forever.'), (8.6, 'Daddy, build a castle with me?'), (10.9, 'Later.'),
+         (14.4, 'Can we go to the beach?'), (16.2, 'Later, sweetie.'), (19.2, 'Dad, look!'), (20.55, 'Later.'), (23.3, 'Beach this weekend?'),
+         (25.0, 'Later, Dad.'), (27.9, 'Bye, Dad!'), (31.3, 'I kept saying later.'), (33.3, 'The sand kept falling.'),
+         (35.6, 'Then one day, the top was almost empty.'), (40.2, 'Grandpa, build a castle with me?')]
 
 # ---------------- инструменты
 def musicbox(f, d=2.2, v=1.):
@@ -171,8 +172,8 @@ add(bell(nt(86), 3.5, .1), 43.55, rev=.5)
 theme(45.25, bars=9, mb=1.1, gt=1., st=1.)
 # 51.2 последняя песчинка — колокольчик, финальный аккорд и тишина песка
 add(bell(nt(90), 4.0, .14), 51.22, rev=.7); add(bell(nt(86), 4.0, .08), 51.25, rev=.7)
-for c in [38, 50, 57, 62, 66, 69]: add(pad(nt(c), 5.6, .05, 1.2, 2.8), 51.4, rev=.6)
-for i, n in enumerate([74, 78, 81, 86]): add(musicbox(nt(n), 3.5, .11), 52.0 + i * .5, pan=.2, rev=.6)
+for c in [38, 50, 57, 62, 66, 69]: add(pad(nt(c), 5.6, .03, 1.2, 2.8), 51.4, rev=.6)
+for i, n in enumerate([74, 78, 81, 86]): add(musicbox(nt(n), 3.5, .06), 52.0 + i * .5, pan=.2, rev=.6)
 MUS_END = True
 
 # ---------------- шумы и foley (реальные записи)
@@ -194,13 +195,13 @@ def writing(t, n):
     x = rec('brush', 10 + (t * 3.7) % 30, d + .1); x = fftfilt(x, 1500, 9000); x = fade(norm(x, .03), .02, .08)
     add(x, t, pan=.1, rev=.1)
 for t, s in LINES: writing(t, len(s))
-writing(0.0, 15); writing(.55, 12); writing(4.4, 14); writing(43.6, 4)
+writing(0.0, 15); writing(.55, 12); writing(43.6, 4)
 writing(51.8, 24); writing(53.3, 18); writing(53.9, 15)
 # дождь, прибой, чайки
 bed('rain', 13.0, 18.2, 20, .06, .8, .9, rev=.1)
-bed('surf', 17.4, 23.2, 2, .05, .8, 1.0)
-x = rec('surf', 14, 3.0); add(fade(norm(x, .1), .5, 1.2), 20.9)                 # волна смывает замок
-bed('surf', 45.0, 57.0, 8, .04, 1.2, .1)
+bed('surf', 17.4, 23.2, 2, .035, .8, 1.0)
+x = rec('surf', 14, 3.0); add(fade(norm(x, .07), .5, 1.2), 21.0)                 # волна смывает замок
+bed('surf', 45.0, 57.0, 8, .03, 1.2, .1)
 bed('seagull', 17.9, 19.6, 0, .03, .05, .4, pan=-.4, rev=.3); bed('seagull', 46.2, 47.8, 1.5, .025, .05, .4, pan=.4, rev=.3)
 # шаги
 bed('childsteps', 7.4, 8.7, 4, .05, .05, .2, pan=-.4)
@@ -243,16 +244,21 @@ rv = reverb(RV)
 Lm = L + rv; Rm = R + np.roll(rv, int(SR * .013))
 # ---------------- голос: дорожка + приглушение фона под голосом (≈ −9 дБ)
 VOD = os.path.join(ROOT, '../assets/vo/ep1'); VO = json.load(open(os.path.join(ROOT, 'vo_times.json')))
-V = np.zeros(N); VR = np.zeros(N)
+V = np.zeros(N); VR = np.zeros(N); VLEN = {}
 for vid, t in VO.items():
     import subprocess
     raw = subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-i', os.path.join(VOD, vid + '.wav'), '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True).stdout
-    x = np.frombuffer(raw, dtype=np.float32).astype(float); x = norm(x, .16 if vid.startswith(('n', 'o')) else .15)
-    i = int(t * SR); n = min(len(x), N - i); V[i:i+n] += x[:n]; VR[i:i+n] += x[:n] * (.12 if vid[0] in 'gdtwk' else .06)
+    x = np.frombuffer(raw, dtype=np.float32).astype(float); x = norm(x, .16 if vid.startswith(('n', 'o')) else .15)  # n2f — ускоренная n2
+    i = int(t * SR); n = min(len(x), N - i); VLEN[vid] = n; V[i:i+n] += x[:n]; VR[i:i+n] += x[:n] * (.12 if vid[0] in 'gdtwk' else .06)
 env_v = np.convolve(np.abs(V), np.ones(int(SR * .05)) / (SR * .05), 'same')
 act = np.convolve((env_v > .01).astype(float), np.ones(int(SR * .5)) / (SR * .5), 'same')
-duck = 1 - .65 * np.clip(act, 0, 1)
+duck = 1 - .8 * np.clip(act, 0, 1)
 vrv = reverb(VR, 1.4)
+bgm = (Lm + Rm) / 2 * duck
+for vid, t in VO.items():
+    i0 = int(t * SR); i1 = i0 + VLEN[vid]
+    rv_ = np.sqrt(np.mean(V[i0:i1] ** 2)) + 1e-9; rb = np.sqrt(np.mean(bgm[i0:i1] ** 2)) + 1e-9
+    print(f"голос/фон {vid}: {20 * np.log10(rv_ / rb):+.1f} дБ")
 Lm = Lm * duck + V * 1.0 + vrv; Rm = Rm * duck + V * 1.0 + np.roll(vrv, int(SR * .011))
 end = int(SR * DUR)
 Lm, Rm = Lm[:end], Rm[:end]

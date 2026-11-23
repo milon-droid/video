@@ -13,16 +13,21 @@
   const TXT = 885;
   // ---------- реплики [t, t_end, text, who, size]
   const LINES = [
-    [8.5, 10.75, 'Daddy, build a castle with me?', 'g', 52],
-    [10.85, 12.6, 'Later.', 'm', 72],
-    [14.4, 15.8, 'Can we go to the beach?', 'g', 52],
-    [15.85, 17.5, 'Later, sweetie.', 'm', 60],
+    [3.6, 6.6, 'The day she was born, I had 18,000 left.', 'n', 46],
+    [6.7, 8.4, 'Felt like forever.', 'n', 52],
+    [8.6, 10.8, 'Daddy, build a castle with me?', 'g', 52],
+    [10.9, 12.6, 'Later.', 'm', 72],
+    [14.4, 16.1, 'Can we go to the beach?', 'g', 52],
+    [16.2, 17.5, 'Later, sweetie.', 'm', 60],
     [19.2, 20.45, 'Dad, look!', 'g', 64],
     [20.55, 21.7, 'Later.', 'm', 72],
     [23.3, 24.9, 'Beach this weekend?', 'm', 56],
     [25.0, 26.5, 'Later, Dad.', 't', 64],
     [27.9, 29.2, 'Bye, Dad!', 'w', 64],
-    [40.5, 42.5, 'Grandpa, build a castle with me?', 'k', 52],
+    [31.3, 33.2, 'I kept saying later.', 'n', 52],
+    [33.3, 35.2, 'The sand kept falling.', 'n', 52],
+    [35.6, 38.5, 'Then one day, the top was almost empty.', 'n', 46],
+    [40.2, 42.6, 'Grandpa, build a castle with me?', 'k', 52],
   ];
   E.LINES = LINES;
   function mouth(T, who) {
@@ -123,10 +128,7 @@
     c.beginPath(); c.ellipse(bx, by, 44, 18, Math.atan2(hy2 - by, hx2 - bx) * .5, 0, 7); c.fill();       // одеяльце
     c.beginPath(); c.arc(hx2 + 4, hy2 - 2, 19, 0, 7); c.fill();                                          // головка
        // носик вверх
-        const hr = Math.sin(T * 3.1) * .5 + .5;                                                             // ручка тянется к папе
-    c.lineWidth = 5; c.lineCap = 'round'; E.path(c, [[bx + 14, by - 12], [bx + 20, by - 26 - hr * 8], [bx + 26 + hr * 4, by - 36 - hr * 10]]); c.stroke();
-    c.beginPath(); c.arc(bx + 27 + hr * 4, by - 38 - hr * 10, 4, 0, 7); c.fill();
-    E.carve(c, .9); c.lineWidth = 2;
+        E.carve(c, .9); c.lineWidth = 2;
     c.lineWidth = 3; c.beginPath(); c.arc(hx2 + 4, hy2 - 2, 22, 1.7, 4.3); c.stroke();                   // край пелёнки у головки
     c.lineWidth = 2; c.beginPath(); c.moveTo(bx - 34, by + 4); c.quadraticCurveTo(bx, by - 8, bx + 22, by + 8); c.stroke();   // складка одеяльца
     c.beginPath(); c.arc(hx2 + 9, hy2 - 6, 3.4, .3, 2.8); c.stroke();                                   // спящий глазик
@@ -134,7 +136,7 @@
     E.sand(c, 1); c.beginPath(); c.arc(330 + n1x, 880 + n1y - 4, 7, 0, 7); c.fill(); E.reset(c);       // кисть под одеяльцем
     counter(c, T, K(lt, .6, 1.2));
     scr(c); E.band(c, 815);
-    E.write(c, 'Her first day.', W / 2, TXT, 60, (lt - 1.0) / .7, { w: 6 });
+    lines(c, T, 3.5, 7.4);
   } });
 
   // 3. Кабинет: «Daddy, build a castle with me?» — «Later.» → крупно её лицо
@@ -257,7 +259,7 @@
     for (let i = 0; i < 4; i++) { const ph = (lt * 1.3 + i * .25) % 1; c.save(); c.translate(150 + ph * 120, 600 - ph * 160 + ph * ph * 300); c.rotate(ph * 4 + i); E.sand(c, .8 * (1 - ph)); c.fillRect(-14, -18, 28, 36); c.restore(); }
     E.reset(c); E.rect(c, 136, 570, 36, 46, 1); E.carve(c, .9); c.fillRect(142, 582, 24, 3); E.reset(c);
     counter(c, T);
-    scr(c); E.band(c, 815);
+    scr(c); E.band(c, 815); lines(c, T, 31, 35);
   } });
 
   // 9. Крупно: часы почти пусты; взгляд опускается на ведёрко под столом
@@ -271,7 +273,7 @@
     E.bucket(c, 194, 838, .9, 0); E.shovel(c, 214, 846, .9, 1.2);
     E.grains(c, 196, 850, 22, 8, 16, 3, .45, 1.4);   // пыль на ведёрке
     counter(c, T, 1 - dn);
-    scr(c); E.band(c, 815);
+    scr(c); E.band(c, 815); lines(c, T, 35, 38.6);
   } });
 
   // 10. Звонок в дверь: дочь и внучка — «Grandpa, build a castle with me?»
