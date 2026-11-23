@@ -15,11 +15,11 @@
  },
  "lines": [
   {
-   "id": "e01",
+   "id": "e01b",
    "role": "senya_en",
    "t": 0.1,
    "text": "At 11:47 PM my shadow fucked off.",
-   "say": "At eleven forty-seven p.m., my shadow fucked off."
+   "say": "At eleven forty-seven p.m., my shadow... fucked. off."
   },
   {
    "id": "e02",
@@ -52,7 +52,7 @@
   {
    "id": "e06",
    "role": "senya_en",
-   "t": 17.3,
+   "t": 16.9,
    "text": "…what the fuck.",
    "say": "What the fuck."
   },
@@ -64,10 +64,10 @@
    "say": "Nine thousand, four hundred and ninety times. One routine."
   },
   {
-   "id": "r1",
+   "id": "r1t",
    "role": "narrator_en",
    "t": 22.55,
-   "text": "Rule number one. No shadow? You last till sunset. Then you become one.",
+   "text": "Rule number one. No shadow? You last till sunset.",
    "say": "Rule number one. No shadow? You last till sunset. Then... you become one."
   },
   {
@@ -164,7 +164,7 @@
   {
    "id": "e22",
    "role": "senya_en",
-   "t": 61.9,
+   "t": 64.7,
    "text": "New terms. Sign it, and I'll come back.",
    "say": "New terms. Sign it, and I'll come back."
   },
@@ -262,11 +262,11 @@
    "say": "Oh... fuck!"
   },
   {
-   "id": "sm1",
+   "id": "cl1",
    "role": "senya_en",
    "t": 73.0,
-   "text": "Smooth. Real smooth.",
-   "say": "Smooth. Real smooth."
+   "text": "Oh no. Not again.",
+   "say": "Oh no. Not again."
   }
  ]
 }

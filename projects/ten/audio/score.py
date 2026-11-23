@@ -172,9 +172,9 @@ def mumble(t0, dur, base=105, v=1.):
 
 # ===== заполнение вставок (EN-финал): мягкий пэд в тональности места + альтернативная концовка + длинный хвост =====
 RAW = True
-FILL = {73.2: ['F3', 'A3', 'C4'], 16.7: ['F3', 'Ab3', 'C4'], 22.4: ['C3', 'G3', 'C4'], 25.05: ['C3', 'Gb3', 'C4'], 30.1: ['A2', 'E3', 'C4'], 57.6: ['A2', 'E3', 'C4', 'E4'], 64.4: ['C3', 'G3', 'E4'], 67.4: ['F2', 'C3', 'A3']}
+FILL = {73.2: ['F3', 'A3', 'C4'], 16.7: ['F3', 'Ab3', 'C4'], 22.4: ['C3', 'G3', 'C4'], 30.1: ['A2', 'E3', 'C4'], 57.6: ['A2', 'E3', 'C4', 'E4'], 64.4: ['C3', 'G3', 'E4'], 67.4: ['F2', 'C3', 'A3']}
 for p, e in INS:
-    if p in FILL: put(pad([hz(n) for n in FILL[p]], e + .8, .3, .5, 1500), warp(p - .001) - .2, .32, 0, .5)
+    if p in FILL and e > 0: put(pad([hz(n) for n in FILL[p]], e + .8, .3, .5, 1500), warp(p - .001) - .2, .32, 0, .5)
 import wave as _w
 with _w.open('alt_cue.wav') as w: cue = np.frombuffer(w.readframes(w.getnframes()), '<i2').reshape(-1, 2).astype(float) / 32768
 i0 = int(warp(68.8 - .001) * SR); n = min(len(cue), len(L) - i0); L[i0:i0 + n] += cue[:n, 0] * .9; R[i0:i0 + n] += cue[:n, 1] * .9

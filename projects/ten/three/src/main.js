@@ -89,14 +89,14 @@ const paintLetter = (t, t0, psT0 = 1e9) => hall.paint(c => {
 });
 // 4. Письмо: УВОЛЬНЯЮСЬ (со спины → лицо)
 S.S4 = (t) => { useSet('hall'); hideAll(); paintLetter(t, .2);
-  if (t < 5.3) {
+  if (t < 4.9) {
     heroAt(.75, 1.1, Math.PI + .25, keys(t, [[0, 'stand'], [2.2, 'stand'], [2.6, { ...POSE.scared, headX: -.25 }]]), t, { expr: 'scared' });
-    const [jx, jy] = hh(t, .015); cam(.15 + jx, 1.55 + jy, lerp(4.4, 4.0, ease(t, 0, 5.3)), .0, 2.0, -1.5, 40);
+    const [jx, jy] = hh(t, .015); cam(.15 + jx, 1.55 + jy, lerp(4.4, 4.0, ease(t, 0, 4.9)), .0, 2.0, -1.5, 40);
     FX = { fy: .4, fw: .3, blur: 5 };
-  } else { const tt = t - 5.3;
+  } else { const tt = t - 4.9;
     heroAt(.75, 1.1, .25, { ...POSE.scared, headX: -.3 }, t, { expr: 'sad', lookY: .8, mouth: .35 + talk(t, 4.6, 5.4) * 0 });
     cam(.82, 1.0, 2.35, .78, 1.13, 1.1, 32); FX = { fy: .42, fw: .25, blur: 9 }; }
-  return () => { if (t > 5.3) narr(t, 5.45, 7.0, '…what the fuck.', { y: 1330, size: 80, who: 'SAM' }); };
+  return () => { if (t > 4.9) narr(t, 5.0, 6.0, '…what the fuck.', { y: 1330, size: 80, who: 'SAM' }); };
 };
 // 5. Миниатюра: дом → работа → дом, 9 490 раз
 S.S5 = (t) => { useSet('loop'); hideAll();
@@ -113,16 +113,16 @@ S.S5 = (t) => { useSet('loop'); hideAll();
 };
 // 6. P.S. → рука просвечивает → таймер
 S.S6 = (t, T) => { useSet('hall'); hideAll(); paintLetter(t + 10, .2, .2 + 10);
-  if (t < 4.9) { heroAt(5, 5, 0, POSE.stand, t, {}, { show: false });
-    cam(.0, 1.6, lerp(3.6, 3.3, ease(t, 0, 4.9)), .0, 1.7, -1.5, 36); FX = { fy: .5, fw: .5, blur: 12 };
-    return () => { ctx.fillStyle = 'rgba(10,6,20,.35)'; ctx.fillRect(0, 0, 1080, 1920); psNote(t, .05, 4.65); }; }
-  const tt = t - 4.9; const pose = { ...POSE.stand, aL: [1.35, .35, 1.25], headX: .15, headY: -.15 };
+  if (t < 3.8) { heroAt(5, 5, 0, POSE.stand, t, {}, { show: false });
+    cam(.0, 1.6, lerp(3.6, 3.3, ease(t, 0, 3.8)), .0, 1.7, -1.5, 36); FX = { fy: .5, fw: .5, blur: 12 };
+    return () => { ctx.fillStyle = 'rgba(10,6,20,.35)'; ctx.fillRect(0, 0, 1080, 1920); psNote(t, .05, 3.55); }; }
+  const tt = t - 3.8; const pose = { ...POSE.stand, aL: [1.35, .35, 1.25], headX: .15, headY: -.15 };
   heroAt(0, .4, -.15, pose, t, { expr: 'scared', lookX: -.5, lookY: .2, wide: true, mouth: .3 }, {});
   // растворение кисти
   fadeHand(hero.aL.el, ease(tt, .3, 2.2));
   const hp = worldOf(hero.aL.hand), hd = worldOf(hero.head); const mid = hp.clone().lerp(hd, .45); cam(mid.x - .45, mid.y + .05, mid.z + 1.35, mid.x, mid.y, mid.z, 34);
   FX = { fy: .45, fw: .2, blur: 10, bloom: .3, warm: -.06 };
-  return () => { const [sx, sy] = toScreen(hp.x, hp.y + .03, hp.z); sparkles(t, sx, sy - 60, ease(tt, .3, 2)); sunHud(tt, T, { t0: .3, y: 330 }); narr(t, 5.05, 7.0, 'My fingers are see-through.', { y: 1560, size: 66, accent: ['see-through.'] }); };
+  return () => { const [sx, sy] = toScreen(hp.x, hp.y + .03, hp.z); sparkles(t, sx, sy - 60, ease(tt, .3, 2)); sunHud(tt, T, { t0: .3, y: 330 }); narr(t, 3.95, 5.8, 'My fingers are see-through.', { y: 1560, size: 66, accent: ['see-through.'] }); };
 };
 // экран телефона: крыша с танцующей тенью рисуется прямо в прямоугольник экрана (второй рендер после основного)
 const scrCam = new THREE.PerspectiveCamera(34, .51, .05, 200);
@@ -261,7 +261,7 @@ S.S13 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fi
   FX = { fy: .52, fw: .28, blur: 6, warm: .12, bloom: .35 + (t > CL && t < CL + .4 ? .6 : 0) };
   return () => { if (t > CL && t < CL + .35) { ctx.fillStyle = `rgba(255,240,210,${(CL + .35 - t) * 2.2})`; ctx.fillRect(0, 0, 1080, 1920); }
     if (t < CL + .2) sunHud(t, T, { y: 330, k: 1 - ease(t, CL, CL + .2) });
-    if (t > 2.5) { ctx.fillStyle = `rgba(10,6,20,${.35 * ease(t, 2.5, 2.8)})`; ctx.fillRect(0, 0, 1080, 1920); } condNote(t, 2.55); };
+     };
 };
 // 14. Ладонь к ладони
 S.S14 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = 12; roof.paint(() => {});
@@ -327,7 +327,7 @@ function heartsFloat(t, x, y, k) { ctx.save(); for (let i = 0; i < 16; i++) { co
 S.S15 = (t) => { useSet('night'); hideAll(); night.neon.visible = false;
   const W0 = night.wallZ + .02;
   const hx = lerp(-2.6, -.9, ease(t, 0, 1.6, sm)); const hp = t < 1.6 ? walk(hx + 2.6, 0) : t < 4.2 ? keys(t, [[1.6, 'stand'], [2.0, { ...POSE.stand, headY: .6 }]]) : keys(t, [[4.2, { ...POSE.stand, headY: .6 }], [4.5, { ...POSE.facepalm }]]);
-  heroAt(hx, .9, t < 1.6 ? Math.PI / 2 : lerp(Math.PI / 2, .3, ease(t, 1.6, 2.0)), hp, t, { expr: t < 3.4 ? 'calm' : 'surprised', lookX: t > 1.8 ? .9 : 0, mouth: talk(t, 4.4, 5.3) }, {});
+  heroAt(hx, .9, t < 1.6 ? Math.PI / 2 : lerp(Math.PI / 2, .3, ease(t, 1.6, 2.0)), hp, t, { expr: t < 3.4 ? 'calm' : 'surprised', lookX: t > 1.8 ? (t > 3.7 ? -.9 : .9) : 0, mouth: talk(t, 4.25, 5.2) }, {});
   // девушка идёт справа налево
   const gx = lerp(3.4, .9, ease(t, .4, 2.6, sm)) - Math.max(0, t - 3.6) * .6; girl.root.visible = true; girl.root.position.set(gx, 0, 1.4); girl.root.rotation.y = t > 2.6 && t < 3.6 ? lerp(-Math.PI / 2, -.4, ease(t, 2.6, 2.9)) : -Math.PI / 2;
   applyPose(girl, t > 2.6 && t < 3.6 ? { ...POSE.wave, headY: -.3 } : walk((3.4 - gx) * 1.6, 0), t, { expr: 'happy', smile: 1 }, 8); girl.tail.rotation.x = Math.sin(t * 6) * .25;
@@ -335,16 +335,16 @@ S.S15 = (t) => { useSet('night'); hideAll(); night.neon.visible = false;
   applyPose(girlSh, t > 2.6 && t < 3.6 ? { ...POSE.wave } : walk((3.4 - gx) * 1.6, 0), t, { mood: t > 2.7 && t < 3.6 ? 'sly' : 'happy', look: -1 }, 7);
   placeShade(girlSh, { x: gx + .3, z: W0, rise: 1, scale: 1.3, turn: t > 2.6 && t < 3.6 ? 0 : -Math.PI / 2, op: 1 });
   // тень Сэма видит её → «Oh, fuck!» → удирает обратно и прячется за Сэмом, выглядывает
-  const back = ease(t, 3.55, 4.05, sm); const baseX = hx + .3; const sx = lerp(baseX, hx - .35, back);
+  const back = ease(t, 3.55, 4.8, k => k); const baseX = hx + .3; const sx = lerp(baseX, hx - 4.2, back);
   const flinch = t > 2.95 && t < 3.55 ? { ...POSE.scared, lean: -.15 } : null;
-  const hide = t >= 4.05 ? { ...POSE.stand, crouch: .16, aL: [.9, .3, 2.0], aR: [.9, -.3, 2.0], headX: .1 } : null;
+  const hide = null;
   applyPose(shade, flinch || hide || (t >= 3.55 ? walk((baseX - sx) * 2.4, 1) : { ...hp, aR: t > 2.6 ? [0, -2.4, .9] : hp.aR }), t, { mood: t > 2.95 ? 'wide' : t > 2.6 ? 'happy' : 'calm', look: t > 4.05 ? 1 : 1 }, 3);
-  placeShade(shade, { x: sx, z: W0 + .005, rise: 1, scale: 1.3, turn: t >= 3.55 && t < 4.05 ? Math.PI / 2 : (t < 1.6 ? Math.PI / 2 : 0), op: 1 });
+  placeShade(shade, { x: sx, z: W0 + .005, rise: 1, scale: 1.3, turn: t >= 3.55 ? -Math.PI / 2 : (t < 1.6 ? Math.PI / 2 : 0), op: 1 });
   const [jx, jy] = hh(t, .02); cam(.2 + jx, 1.6 + jy, lerp(8.0, 7.4, ease(t, 0, 5.5)), .2, 1.4, -1.8, 38);
   FX = { fy: .5, fw: .3, blur: 6, bloom: .45, warm: -.02 };
   return () => { if (t > 2.6) { const [ex, ey] = toScreen(gx + .3, 1.5 * 1.3, W0); heartsFloat(t - 2.6, ex, ey, .6); }
     shadowSay(t, 2.95, 3.9, ['Oh, fuck!'], { y: 560, size: 120 });
-    narr(t, 4.2, 5.5, 'Smooth. Real smooth.', { y: 1450, size: 80, who: 'SAM' }); };
+    narr(t, 4.2, 5.5, 'Oh no. Not again.', { y: 1450, size: 80, who: 'SAM' }); };
 };
 // 16. Финальная плашка
 S.S16 = (t) => { useSet('night'); hideAll(); renderer.setClearColor('#000'); FX = { skip: true };
@@ -362,7 +362,7 @@ function motesSplash(t, x, y) { ctx.save(); for (let i = 0; i < 26; i++) { const
 
 // ---- монтаж ----
 export const ALT = window.ALT_END !== false; // по умолчанию — с альтернативной концовкой (решение 2026-11-23)
-export const SHOTS = [['S1', 3.2], ['S2', 4.0], ['S3', 5.2], ['S4', 7.0], ['S5', 4.5], ['S6', 7.0], ['S7', 6.3], ['S8', 5.0], ['S9', 5.0], ['S10', 5.0], ['S11', 6.0], ['S12', 8.5], ['S13', 7.2], ['S14', 5.4], ...(ALT ? [['S14b', 16.0]] : []), ['S15', 5.5], ['S16', 4.5]];
+export const SHOTS = [['S1', 3.2], ['S2', 4.0], ['S3', 5.2], ['S4', 6.0], ['S5', 4.5], ['S6', 5.8], ['S7', 6.3], ['S8', 5.0], ['S9', 5.0], ['S10', 5.0], ['S11', 6.0], ['S12', 8.5], ['S13', 4.0], ['S14', 5.4], ...(ALT ? [['S14b', 16.0]] : []), ['S15', 5.5], ['S16', 4.5]];
 const starts = []; let acc = 0; for (const [, d] of SHOTS) { starts.push(acc); acc += d; } export const TOTAL = acc;
 const WIPES = [1, 6, 9, ALT ? 14 : 13].map(i => starts[i + 1]); // после S2, S7, S10, S14 (или S14b)
 window.SCENE = { duration: TOTAL, fps: 30, width: W, height: H };
