@@ -67,7 +67,7 @@ for c in OLD_BUMP: C.remove(c)
 for c in C:
     if c["t"] >= 66.6 - .41: c["t"] = round(c["t"] + 2.2, 3)
 lib(22.45, "impact-light-soft", .7); lib(22.45, "foley-card-slide", .6, align="start"); lib(23.55, "writing-marker-draw", .5, align="start")
-lib(61.75, "impact-light-soft", .6); lib(61.75, "foley-card-slide", .5, align="start"); lib(62.6, "writing-marker-tick", .5)
+# (записка «New terms» убрана в v10)
 lib(64.4, "whoosh-medium-soft", .6, align="start")
 for i in range(4): lib(65.0 + i * .42, "writing-marker-tick", .7); lib(64.8 + i * .42, "pop-small-bubble", .4)
 lib(66.55, "writing-scribble", .55, align="start"); lib(66.85, "impact-heavy-soft", .7); lib(67.1, "impact-deep-hard", .6); lib(67.3, "whoosh-fast-soft", .6, align="start")
