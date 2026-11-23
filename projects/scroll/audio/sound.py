@@ -21,9 +21,9 @@ def rs(x, k): n = int(len(x) / k); return np.interp(np.arange(n) * k, np.arange(
 def lpv(x, fc): k = max(1, int(SR / fc / 2)); w = np.hanning(2 * k + 1); w /= w.sum(); return np.convolve(x, w, 'same')
 def sine(f, d, a=.003, r=.1): n = int(SR * d); t = np.arange(n) / SR; return np.sin(2 * np.pi * np.cumsum(np.full(n, f) if np.isscalar(f) else f) / SR) * np.minimum(1, t / a) * np.exp(-t / r)
 # таймлайн (как в story.js)
-FEEDS = [(0, [('A', 1.5), ('B', 1.1), ('C', 1.0)]), (6.2, [('D', .9), ('E', .8), ('A', .8), ('B', .9)]), (12.8, [('C', .6), ('D', .6), ('E', .6), ('B', .6), ('A', .6), ('B', .6)]), (21.8, [(k, .47) for k in 'NOPWRSTX'])]
+FEEDS = [(0, [('A', 1.5), ('B', 1.1), ('C', 1.0)]), (6.2, [('D', .85), ('E', .85), ('F', .85), ('G', .85)]), (12.8, [(k, .6) for k in 'HIJKLM']), (21.8, [(k, .47) for k in 'NOPWRSTX'])]
 ZK = [(0, 1), (3.6, 1), (4.4, 0), (5.4, 0), (6.2, 1), (9.6, 1), (10.2, 0), (12.0, 0), (12.8, 1), (16.4, 1), (17.0, 0), (21.0, 0), (21.8, 1), (25.6, 1), (26.2, 0), (30.6, 0), (31.4, 1), (34.4, 1), (35.2, 0), (40.6, 0), (DUR, 1)]
-FACE = [(12.0, 12.8), (21.0, 21.8), (29.4, 30.2)]
+FACE = [(12.0, 12.8), (21.0, 21.8)]
 def zoom(t):
     for (a, va), (b, vb) in zip(ZK, ZK[1:]):
         if t <= b: u = min(1, max(0, (t - a) / (b - a))); u = 4 * u ** 3 if u < .5 else 1 - (-2 * u + 2) ** 3 / 2; return va + (vb - va) * u
@@ -58,8 +58,47 @@ def clip_sfx(k, t0, d):
         while j * .7 < d: put(L('pop-large-in'), t0 + j * .7 + .1, .45, (j % 2 - .5) * .4); j += 1
         put(L('move-spring'), t0, .2)
     elif k == 'E':
-        put(L('impact-heavy-firm'), t0 + .5 % 1.2, .55); put(rs(L('transform-stretch'), 1.4), t0 + .48, .4)
-        n = int(.5 * SR); x = np.arange(n) / SR; put(lpv(rng.standard_normal(n), 3000) * np.minimum(1, x / .2) * .3, t0, .3)
+        put(rs(L('transform-stretch'), 1.4), t0 + .5, .4); put(L('impact-heavy-firm'), t0 + .68, .7); put(L('appear-burst'), t0 + .7, .35)
+        n = int(.6 * SR); x = np.arange(n) / SR; put(lpv(rng.standard_normal(n), 2000) * np.minimum(1, x / .3) * .3, t0, .3)
+    elif k == 'F':                                         # раннер: монетки, свист прыжка
+        for j in range(int(d / .18)): put(sine(1568 if j % 2 else 2093, .12, r=.05), t0 + j * .18, .25, .3)
+        put(L('whoosh-fast-soft'), t0 + .2, .35)
+    elif k == 'G':                                         # слайм: хлюп и пузыри
+        for j in range(3): n = int(.25 * SR); x = np.arange(n) / SR; put(lpv(rng.standard_normal(n), 700) * np.sin(np.pi * x / x[-1]) * 1.4, t0 + j * .3, .4, (j - 1) * .3)
+        put(rs(L('pop-large-in'), .7), t0 + .5, .3)
+    elif k == 'H':                                         # домино: каскад щелчков
+        for j in range(int(d / .07)): put(rs(L('click-clip-firm'), .8 + (j % 3) * .1), t0 + j * .07, .3 + .02 * j, (j % 5 - 2) * .15)
+    elif k == 'I':                                         # торт: нож режет
+        n = int(.35 * SR); x = np.arange(n) / SR; put((rng.standard_normal(n) - lpv(rng.standard_normal(n), 1500)) * np.sin(np.pi * x / x[-1]) * .5, t0 + .15, .4); put(L('impact-light-soft'), t0 + .5, .4)
+    elif k == 'J':                                         # плинко: звоночки по колышкам
+        for j in range(int(d / .055)): put(sine(1800 + 400 * ((j * 7) % 5), .08, r=.03), t0 + j * .055, .18, (j % 3 - 1) * .3)
+    elif k == 'K':                                         # бесконечный зум: восходящий тон
+        n = int(d * SR); x = np.arange(n) / SR; put(np.sin(2 * np.pi * np.cumsum(220 * 2 ** (x * 2.5)) / SR) * np.minimum(1, x / .1) * .35, t0, .4)
+    elif k == 'L':                                         # краска льётся
+        n = int(d * SR); x = np.arange(n) / SR; put(lpv(rng.standard_normal(n), 900) * (1 + .5 * np.sin(x * 40)) * np.minimum(1, x / .05) * .9, t0, .4)
+    elif k == 'M':                                         # кот: стакан падает и бьётся
+        put(rs(L('swipe-fast-soft'), .8), t0 + .3, .3); put(L('impact-light-firm'), t0 + .5, .7)
+        for j in range(6): put(sine(2600 + j * 500, .15, r=.05), t0 + .52 + j * .02, .25, (j - 3) * .2)
+    elif k == 'N':                                         # яйцо шипит
+        n = int(d * SR); x = np.arange(n) / SR; put((rng.standard_normal(n) - lpv(rng.standard_normal(n), 3000)) * (.6 + .4 * rng.random(n) ** 8) * .45, t0, .45); put(L('impact-light-soft'), t0 + .15, .4)
+    elif k == 'O':                                         # блок-паркур: глухие прыжки
+        for j in range(int(d / .23)): put(lpv(L('impact-light-firm'), 1200) * 1.5, t0 + j * .23, .45)
+    elif k == 'P':                                         # логотип: бип при отскоке
+        for j in range(2): put(sine(880, .1, r=.04), t0 + .12 + j * .2, .3, (j - .5) * .6)
+    elif k == 'Q':
+        for j in range(int(d / .1)): put(L('click-clip-soft'), t0 + j * .1, .2)
+    elif k == 'R':                                         # сортировка: плинк шарика
+        for j in range(int(d / .12)): put(sine(1046 * 2 ** ((j % 5) / 12 * 3), .15, r=.06), t0 + j * .12, .3)
+    elif k == 'S':                                         # маркер скрипит по бумаге
+        n = int(d * SR); x = np.arange(n) / SR; put(np.sin(2 * np.pi * np.cumsum(1400 + 200 * np.sin(x * 30)) / SR) * (rng.random(n) > .3) * .2, t0, .35)
+    elif k == 'T':                                         # мойка ковра: струя воды
+        n = int(d * SR); put(lpv(rng.standard_normal(n), 5000) * .8, t0, .5); put(lpv(rng.standard_normal(n), 300) * 1.5, t0, .3)
+    elif k == 'W':                                         # мукбанг: чавк и хлюп лапши
+        for j in range(int(d / .14)): n = int(.1 * SR); x = np.arange(n) / SR; put(lpv(rng.standard_normal(n), 1500 + 800 * (j % 2)) * np.sin(np.pi * x / x[-1]) * 1.5, t0 + j * .14, .5)
+        n = int(.3 * SR); x = np.arange(n) / SR; put(np.sin(2 * np.pi * np.cumsum(600 + 1200 * x) / SR) * lpv(rng.standard_normal(n), 2500) * 3 * np.sin(np.pi * x / x[-1]), t0 + .05, .4)
+    elif k == 'X':                                         # сплит: «голос» озвучки (роботичный слог) + игра
+        for j in range(int(d / .11)): put(sine(np.full(int(.09 * SR), 180 + 40 * (j % 3)), .09, r=.08) * (np.sign(np.sin(np.arange(int(.09 * SR)) * .02)) * .3 + .7), t0 + j * .11, .3)
+        put(sine(1568, .1, r=.05), t0 + .2, .2, .3)
 for t0, cl in FEEDS:
     tt0 = t0
     for j, (k, d) in enumerate(cl):

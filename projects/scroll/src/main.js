@@ -36,6 +36,15 @@ function faceRef(ctx, t) {                 // отражение: старое �
   ctx.save(); ctx.translate(540, 960); ctx.scale(1 + u * .25, 1 + u * .25); ctx.translate(-540, -960);
   const P = { x: 540, y: 2780, R: 300, kind: 'old', age: 80, outfit: 'tee', hair: 'grey', hairCol: PAPER, browCol: PAPER, t, seed: 3, look: [0, 0], wide: shock, O: shock, brow: shock, furrow: -shock, eye: 1 - .3 * (1 - shock), tremble: shock };
   P.headDX = Math.sin(t * 40) * .02 * shock; drawPerson(ctx, P);
+  { const G0 = personGeom(P), [hx, hy] = G0.hc, k = P.R / 100;            // естественная седая борода и усы
+    ctx.save(); ctx.translate(hx, hy); ctx.scale(k, k);
+    ctx.beginPath(); ctx.moveTo(-96, 0); ctx.bezierCurveTo(-100, 70, -70, 150, -30, 170); ctx.quadraticCurveTo(0, 182, 30, 170); ctx.bezierCurveTo(70, 150, 100, 70, 96, 0);
+    ctx.bezierCurveTo(80, 40, 56, 44, 40, 40); ctx.quadraticCurveTo(28, 78 + 20 * shock, 0, 80 + 22 * shock); ctx.quadraticCurveTo(-28, 78 + 20 * shock, -40, 40); ctx.bezierCurveTo(-56, 44, -80, 40, -96, 0); ctx.closePath();
+    fill(ctx, ink(.08, .18, .1)); stroke(ctx, 4);
+    for (let i = 0; i < 14; i++) { const x = -80 + i * 12, y0 = 60 + Math.abs(x) * -.3 + 40; ctx.beginPath(); ctx.moveTo(x, y0); ctx.quadraticCurveTo(x + 4, y0 + 30, x - 2 + Math.sin(i) * 6, y0 + 50 - Math.abs(x) * .3); stroke(ctx, 2.5, ink(.25, .4, .25)); }
+    ctx.beginPath(); ctx.moveTo(-50, 40); ctx.quadraticCurveTo(-20, 22, 0, 34); ctx.quadraticCurveTo(20, 22, 50, 40); ctx.quadraticCurveTo(24, 50, 0, 44); ctx.quadraticCurveTo(-24, 50, -50, 40); fill(ctx, ink(.1, .22, .12)); stroke(ctx, 3);
+    if (shock > .3) { ctx.beginPath(); ctx.ellipse(0, 72, 14 * shock + 4, 22 * shock, 0, 0, 7); fill(ctx, ink(.75, .9, .45)); stroke(ctx, 3); }
+    ctx.restore(); }
   const G = personGeom(P); for (let i = 0; i < 9; i++) { ctx.beginPath(); const y = G.hc[1] - 260 + i * 40; ctx.moveTo(G.hc[0] - 200 + hash(i) * 60, y); ctx.lineTo(G.hc[0] - 120 + hash(i + 2) * 40, y + 6); stroke(ctx, 6, ink(.45, .3, .5)); }   // морщины
   ctx.restore();
   // трещина по стеклу в момент шока
@@ -91,7 +100,7 @@ window.renderFrame = async t => {
 };
 
 function lesson(ctx, t) {                    // урок в конце (поверх тёмной комнаты)
-  const L = [[35.6, '47 YEARS. GONE.', 72, NEON], [36.6, 'ONE SWIPE', 84, PAPER], [37.1, 'AT A TIME.', 84, PAPER], [37.9, 'PUT IT DOWN.', 78, NEON_Y], [38.4, 'LOOK UP.', 110, NEON_Y]];
+  const L = [[35.6, '47 YEARS. GONE.', 72, NEON], [36.4, 'THE WORLD MOVED ON.', 48, PAPER], [37.0, 'YOU DIDN’T.', 84, PAPER], [37.8, 'PUT IT DOWN.', 78, NEON_Y], [38.3, 'LOOK UP.', 110, NEON_Y]];
   if (t < 35.4 || t > 39.4) return;
   const out = 1 - sstep(39.0, 39.4, t);
   ctx.save(); ctx.globalAlpha = .55 * sstep(35.4, 35.8, t) * out; ctx.fillStyle = OUT; ctx.fillRect(0, 0, CW, CH); ctx.restore();

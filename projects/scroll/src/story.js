@@ -24,7 +24,7 @@ function feedAt(t) {                              // какой ролик на 
 }
 const ZK = [[0, 1], [3.6, 1], [4.4, 0], [5.4, 0], [6.2, 1], [9.6, 1], [10.2, 0], [12.0, 0], [12.8, 1], [16.4, 1], [17.0, 0], [21.0, 0], [21.8, 1], [25.6, 1], [26.2, 0], [30.6, 0], [31.4, 1], [34.4, 1], [35.2, 0], [40.6, 0], [DUR, 1]];
 function zoomAt(t) { for (let i = 1; i < ZK.length; i++) if (t <= ZK[i][0]) { const [a, va] = ZK[i - 1], [b, vb] = ZK[i]; return lerp(va, vb, E.io(clamp((t - a) / (b - a)))); } return 1; }
-const FACE = [[12.0, 12.8, .1], [21.0, 21.8, .45], [29.4, 30.2, .95]];                 // крупно лицо (склейка)
+const FACE = [[12.0, 12.8, .1], [21.0, 21.8, .45]];                 // крупно лицо (склейка)
 const RA = [[0, 0], [10.2, 0], [11.8, .08], [17.0, .08], [21.0, .45], [26.2, .45], [30.4, 1], [DUR, 1]];
 function raAt(t) { if (t >= 40.6) return 1; for (let i = 1; i < RA.length; i++) if (t <= RA[i][0]) { const [a, va] = RA[i - 1], [b, vb] = RA[i]; return lerp(va, vb, clamp((t - a) / (b - a))); } return 1; }
 const lapse = t => (t > 10.2 && t < 11.8) || (t > 17 && t < 21) || (t > 26.2 && t < 30.4);
@@ -33,7 +33,7 @@ function screenTime(t) {                                            // знач�
   if (t < 10.2) return `0:00:${String(Math.floor(t + 1)).padStart(2, '0')}`;
   if (t < 11.8) return `${Math.floor(lerp(0, 6, (t - 10.2) / 1.6))} HOURS`;
   if (t < 17) return '6 HOURS';
-  if (t < 21) { const y = lerp(0, 9, ((t - 17) / 4) ** 1.5); return y < 1 ? `${Math.max(1, Math.floor(y * 12))} MONTHS` : `${Math.floor(y)} YEARS`; }
+  if (t < 21) { const y = lerp(0, 9, ((t - 17) / 4) ** 1.5); return y < 1 ? `${Math.max(1, Math.floor(y * 12))} MONTHS` : `${Math.floor(y)} YEAR${Math.floor(y) > 1 ? 'S' : ''}`; }
   if (t < 26.2) return '9 YEARS';
   if (t > 30.4) return '47 YEARS';
   return `${Math.floor(lerp(9, 47, clamp((t - 26.2) / 4.2)))} YEARS`;

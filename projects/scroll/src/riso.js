@@ -11,10 +11,10 @@ const Riso = (() => {
     return .5 + .25*(cos(6.2832*q.x) + cos(6.2832*q.y)); }
   float cov(float d, vec2 px, float a, float k){
     vec2 pq = floor(px / uK);                                      // зерно в «пикселях 720p» — одинаково при любом разрешении
-    d *= .86 + .14*n(pq/34. + k*17.);                 // неровный накат краски
-    float thr = mix(1. - scr(px, a), h(pq + k*91.), .12);   // растр + стохастика
-    float c = smoothstep(thr - .07, thr + .07, d*1.13 - .045);
-    c *= step(.022, h(pq*1.37 + k*7.));               // белые крапинки
+    d *= .97 + .03*n(pq/34. + k*17.);                 // неровный накат краски
+    float thr = 1. - scr(px, a);   // растр + стохастика
+    float c = smoothstep(thr - .12, thr + .12, d*1.13 - .045);
+                   // белые крапинки
     return c;
   }
   void main(){
@@ -22,7 +22,7 @@ const Riso = (() => {
     float dp = texture2D(uD, uv + uO0/uRes).r;
     float db = texture2D(uD, uv + uO1/uRes).g;
     float dy = texture2D(uD, uv + uO2/uRes).b;
-    vec2 pp = px / uK; vec3 paper = vec3(.962,.941,.897) * (.975 + .025*n(pp*.7 + 3.)) * (.985 + .015*n(pp*.05));
+    vec2 pp = px / uK; vec3 paper = vec3(.962,.941,.897) * (.992 + .008*n(pp*.05));
     vec3 c = paper;
     c *= mix(vec3(1.), vec3(1.,.282,.69), cov(dp, px, 1.309, 1.));
     c *= mix(vec3(1.), vec3(0.,.47,.75), cov(db, px, .262, 2.));

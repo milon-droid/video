@@ -4,21 +4,35 @@ function roomPOV(ctx, t, ra) {
   const spin = lapse(t), day = spin ? .5 + .5 * Math.sin(t * 9) : (t > 33 ? .7 : 0);
   ctx.fillStyle = ink(lerp(.25, .4, ra), lerp(.55, .45, ra), lerp(.15, .45, ra)); ctx.fillRect(-200, -200, 1480, 1700);      // стена (темнеет и желтеет)
   ctx.fillStyle = ink(.45, .3, .6); ctx.fillRect(-200, 1480, 1480, 640);                                                  // пол
-  // окно: день/ночь мелькают, сезоны
-  rr(ctx, 640, 360, 380, 520, 8); fill(ctx, ink(.5, .3, .6)); stroke(ctx, 7);
-  ctx.save(); ctx.beginPath(); ctx.rect(662, 382, 336, 476); ctx.clip();
-  ctx.fillStyle = ink(lerp(.4, .05, day), lerp(1, .3, day), lerp(.2, .05, day)); ctx.fillRect(662, 382, 336, 476);
-  const sea = Math.floor(ra * 40) % 4; ctx.fillStyle = [ink(.4, 0, .1), ink(0, .7, .9), ink(.7, .05, .95), PAPER][spin ? sea : 0];
-  for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(700 + i * 80, 820 - (i % 2) * 30, 60, 0, 7); ctx.fill(); }
-  const sky = Math.floor(ra * 8); for (let i = 0; i < 2 + sky; i++) { ctx.fillStyle = ink(.6, 1, .5, .7); const h = 120 + hash(i) * 260; ctx.fillRect(670 + (i * 47) % 300, 858 - h, 40, h); }   // город растёт
-  ctx.restore(); ctx.fillStyle = ink(.5, .3, .6); ctx.fillRect(820, 382, 12, 476);
+  // окно: город растёт — домики → многоэтажки → неоновые небоскрёбы
+  const WX = 600, WY = 300, WW = 440, WH = 640;
+  rr(ctx, WX - 22, WY - 22, WW + 44, WH + 44, 8); fill(ctx, ink(.5, .3, .6)); stroke(ctx, 7);
+  ctx.save(); ctx.beginPath(); ctx.rect(WX, WY, WW, WH); ctx.clip();
+  const night = ra > .7 ? 1 : day < .5 ? 1 - day * 2 : 0;
+  ctx.fillStyle = ink(lerp(.4, .2, ra), lerp(1, .5, ra) * (night ? 1 : .35) + (night ? 0 : .1), lerp(.2, .05, ra)); ctx.fillRect(WX, WY, WW, WH);
+  if (ra < .12) {                                                  // маленькие дома и деревья
+    for (let i = 0; i < 5; i++) { const x = WX + 10 + i * 88, h = 90 + hash(i) * 40, y = WY + WH - 60;
+      ctx.fillStyle = [ink(.6, .05, .5), ink(.2, .5, .7), ink(.5, .2, .9)][i % 3]; ctx.fillRect(x, y - h, 74, h); ctx.strokeStyle = OUT; ctx.lineWidth = 4; ctx.strokeRect(x, y - h, 74, h);
+      ctx.beginPath(); ctx.moveTo(x - 6, y - h); ctx.lineTo(x + 37, y - h - 46); ctx.lineTo(x + 80, y - h); fill(ctx, ink(.75, .4, .6)); stroke(ctx, 4);
+      ctx.fillStyle = NEON_Y; ctx.fillRect(x + 24, y - h + 24, 26, 26); }
+    for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(WX + 50 + i * 110, WY + WH - 40, 40, 0, 7); fill(ctx, ink(0, .75, .9)); stroke(ctx, 4); }
+  } else {
+    const lvl = clamp((ra - .12) / .88), n = 7;
+    for (let i = 0; i < n; i++) { const x = WX + i * 64 - 4, h = lerp(200, 560, lvl) * (.55 + .45 * hash(i + 3)), y = WY + WH;
+      ctx.fillStyle = lvl > .6 ? ink(.65, 1, .55) : ink(.45, .6, .4); ctx.fillRect(x, y - h, 60, h); ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.strokeRect(x, y - h, 60, h);
+      for (let wy = y - h + 16; wy < y - 10; wy += 30) for (let wx = x + 8; wx < x + 52; wx += 18) if (hash(wx * 3 + wy) > .45) { ctx.fillStyle = lvl > .6 ? (hash(wx + wy) > .7 ? NEON : NEON_Y) : ink(0, 0, .8); ctx.fillRect(wx, wy, 9, 14); }
+      if (lvl > .6 && i % 2) { ctx.beginPath(); ctx.moveTo(x + 30, y - h); ctx.lineTo(x + 30, y - h - 50); stroke(ctx, 3); ctx.beginPath(); ctx.arc(x + 30, y - h - 52, 6, 0, 7); fill(ctx, NEON); } }
+    if (lvl > .3 && lvl < .85) { ctx.beginPath(); ctx.moveTo(WX + 330, WY + WH); ctx.lineTo(WX + 330, WY + 120); ctx.lineTo(WX + 120, WY + 120); stroke(ctx, 8, NEON_Y); ctx.beginPath(); ctx.moveTo(WX + 160, WY + 120); ctx.lineTo(WX + 160, WY + 220 + Math.sin(t * 2) * 20); stroke(ctx, 3); }   // кран
+    if (lvl > .75) for (let i = 0; i < 3; i++) { const x = WX + ((t * 120 + i * 170) % (WW + 80)) - 40; ctx.beginPath(); ctx.ellipse(x, WY + 90 + i * 60, 22, 8, 0, 0, 7); fill(ctx, NEON); }   // летающие огни
+  }
+  ctx.restore(); ctx.fillStyle = ink(.5, .3, .6); ctx.fillRect(WX + WW / 2 - 6, WY, 12, WH); ctx.fillRect(WX, WY + WH * .45, WW, 12);
   // часы
   ctx.beginPath(); ctx.arc(480, 300, 80, 0, 7); fill(ctx, PAPER); stroke(ctx, 7);
   const hm = spin ? t * 40 : 0.05 + t * .002, hh = spin ? t * 3.3 : 0;
   ctx.beginPath(); ctx.moveTo(480, 300); ctx.lineTo(480 + Math.sin(hm) * 62, 300 - Math.cos(hm) * 62); ctx.moveTo(480, 300); ctx.lineTo(480 + Math.sin(hh) * 40, 300 - Math.cos(hh) * 40); stroke(ctx, 7);
   // календарь: год
-  rr(ctx, 380, 450, 200, 220, 6); fill(ctx, PAPER); stroke(ctx, 6); ctx.fillStyle = NEON; ctx.fillRect(380, 450, 200, 50);
-  ctx.font = '900 60px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = OUT; ctx.fillText(String(2026 + Math.floor(ra * 47)), 480, 610);
+  rr(ctx, 370, 450, 190, 220, 6); fill(ctx, PAPER); stroke(ctx, 6); ctx.fillStyle = NEON; ctx.fillRect(370, 450, 190, 50);
+  ctx.font = '900 60px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = OUT; ctx.fillText(String(2026 + Math.floor(ra * 47)), 465, 610);
   // полка с цветком (вянет)
   rr(ctx, 120, 760, 220, 20, 4); fill(ctx, ink(.5, .2, .7)); stroke(ctx, 5);
   const wilt = clamp(ra / .45), dead = ra > .5;
@@ -78,7 +92,7 @@ function faceShot(ctx, ra, t) {
   ctx.fillStyle = ink(.7, 1, .6); ctx.fillRect(-200, -200, 1480, 2400);
   const P = { x: 540, y: 2900, R: 330, kind: 'man', age: 25 + ra * 50, outfit: 'tee', hair: ra > .5 ? 'grey' : 'short', hairCol: ra > .5 ? ink(.18, .32, .2) : ink(.7, .95, .7), browCol: ra > .5 ? ink(.18, .32, .2) : ink(.7, .95, .7), t, seed: 3, look: [0, .7], eye: .55, smile: 0, open: .1 };
   const G = drawPerson(ctx, P);
-  if (ra > .3) { ctx.save(); ctx.translate(G.hc[0], G.hc[1]); ctx.scale(3.3, 3.3); ctx.globalAlpha = .9; ctx.beginPath(); ctx.moveTo(-90, 20); ctx.quadraticCurveTo(-80, 125, 0, 130); ctx.quadraticCurveTo(80, 125, 90, 20); ctx.quadraticCurveTo(40, 95, 0, 95); ctx.quadraticCurveTo(-40, 95, -90, 20); fill(ctx, P.hairCol); ctx.restore(); }   // борода
+  if (false) { ctx.save(); ctx.translate(G.hc[0], G.hc[1]); ctx.scale(3.3, 3.3); ctx.globalAlpha = .9; ctx.beginPath(); ctx.moveTo(-90, 20); ctx.quadraticCurveTo(-80, 125, 0, 130); ctx.quadraticCurveTo(80, 125, 90, 20); ctx.quadraticCurveTo(40, 95, 0, 95); ctx.quadraticCurveTo(-40, 95, -90, 20); fill(ctx, P.hairCol); ctx.restore(); }   // борода
   for (const s of [-1, 1]) { const ex = G.hc[0] + s * 34 * 3.3, ey = G.hc[1] - 6 * 3.3 + 30; ctx.save(); ctx.translate(ex, ey); ctx.rotate(t * 6 * s); ctx.beginPath(); for (let a = 0; a < 14; a += .2) ctx.lineTo(Math.cos(a) * a * 2.2, Math.sin(a) * a * 2.2); stroke(ctx, 5, NEON); ctx.restore(); }   // спирали в глазах
   ctx.globalCompositeOperation = 'multiply'; const g = ctx.createRadialGradient(540, 1700, 50, 540, 1400, 1100); g.addColorStop(0, ink(.3, .4, 1)); g.addColorStop(1, ink(1, 1, 1)); ctx.fillStyle = g; ctx.fillRect(-200, -200, 1480, 2400); ctx.globalCompositeOperation = 'source-over';
 }
