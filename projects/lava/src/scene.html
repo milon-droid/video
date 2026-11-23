@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Сцена</title>
+<!--
+  Шаблон вертикального ролика 1080×1920.
+  Рендер:   node tools/render.mjs projects/<проект>/src/scene.html --draft --safe
+  Правила:  .claude/skills/html-animation/SKILL.md
+-->
+<style>
+  :root {
+    --bg1: #0f1020;
+    --bg2: #2a1b5c;
+    --accent: #ffe600;
+    --text: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; }
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background: radial-gradient(120% 80% at 50% 30%, var(--bg2), var(--bg1));
+  }
+
+  /* Безопасная область для текста: x 60–920, y 220–1500 */
+  .safe { position: absolute; left: 60px; top: 220px; width: 860px; height: 1280px; }
+
+  /* ---------- Сцена 1 (0–3 с): хук ---------- */
+  .hook {
+    position: absolute; inset: 0; display: flex; flex-wrap: wrap; align-content: center;
+    justify-content: center; gap: 0 26px; text-align: center;
+    font-weight: 900; font-size: 128px; line-height: 1.05; letter-spacing: -2px;
+    animation: fadeOut .3s ease-in 2.7s both;
+  }
+  .hook span { display: inline-block; animation: pop .45s cubic-bezier(.2,1.6,.4,1) both; }
+  .hook span:nth-child(1) { animation-delay: .10s; }
+  .hook span:nth-child(2) { animation-delay: .35s; }
+  .hook span:nth-child(3) { animation-delay: .60s; color: var(--accent); }
+  .hook span:nth-child(4) { animation-delay: .85s; color: var(--accent); }
+
+  /* ---------- Сцена 2 (3–6.5 с): картинка + подпись ---------- */
+  .media {
+    position: absolute; left: 0; right: 0; top: 380px; height: 760px; overflow: hidden;
+    border-radius: 40px; margin: 0 60px;
+    animation: slideIn .5s cubic-bezier(.2,.8,.2,1) 3s both, fadeOut .3s ease-in 6.2s both;
+  }
+  .media > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    animation: kenburns 3.5s linear 3s both; }
+  .placeholder { display: grid; place-items: center; background: repeating-linear-gradient(45deg,#333 0 30px,#3c3c3c 30px 60px);
+    font: 800 64px 'Inter'; color: #ff4d6d; }
+  .caption2 {
+    position: absolute; left: 0; right: 0; top: 970px; text-align: center; /* внутри .safe */
+    font-weight: 800; font-size: 72px; line-height: 1.15;
+    animation: rise .4s ease-out 3.4s both, fadeOut .3s ease-in 6.2s both;
+  }
+
+  /* ---------- Сцена 3 (6.5–8 с): призыв ---------- */
+  .cta {
+    position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
+    animation: pop .5s cubic-bezier(.2,1.6,.4,1) 6.5s both;
+  }
+  .cta b { display: block; font-size: 110px; font-weight: 900; }
+  .cta i { display: inline-block; margin-top: 30px; font-style: normal; font-weight: 800; font-size: 56px;
+    background: var(--accent); color: #111; padding: 18px 40px; border-radius: 999px; }
+
+  /* Прогресс-бар (управляется из renderFrame) */
+  .progress { position: absolute; left: 0; top: 0; height: 10px; background: var(--accent); }
+
+  @keyframes pop     { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes rise    { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes slideIn { from { transform: translateY(120px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes fadeOut { to { opacity: 0; } }
+  @keyframes kenburns { from { transform: scale(1.0) translate(0,0); } to { transform: scale(1.15) translate(-2%,-3%); } }
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <div class="safe">
+    <div class="hook"><span>Ты</span><span>делаешь</span><span>это</span><span>неправильно</span></div>
+    <div class="caption2">Вот как надо<br>на самом деле</div>
+    <div class="cta"><div><b>Сохрани,<br>чтобы не забыть</b><i>Подпишись →</i></div></div>
+  </div>
+
+  <div class="media">
+    <!-- Замените на <img src="../assets/<проект>-01-....png"> когда пользователь пришлёт ассет -->
+    <div class="placeholder">ASSET #01</div>
+  </div>
+
+<script>
+  window.SCENE = { duration: 8, fps: 30, width: 1080, height: 1920 };
+
+  // Детерминированное состояние на момент t (сек). Без Date.now/setTimeout/rAF.
+  const progress = document.getElementById('progress');
+  window.renderFrame = (t) => {
+    progress.style.width = (Math.min(t / SCENE.duration, 1) * 100) + '%';
+  };
+</script>
+</body>
+</html>
