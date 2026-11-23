@@ -3,10 +3,11 @@
 // тонкий слой — янтарный, толстый — чёрный, края зернистые, зёрна привязаны к миру (камера едет — песок едет).
 (function () {
   const W = 720, H = 1280;
-  const E = window.E = { W, H };
-  const cv = document.getElementById('c');
+  const RS = window.RS || 1, PW = W * RS, PH = H * RS;   // множитель разрешения (3 → 4K)
+  const E = window.E = { W, H, RS };
+  const cv = document.getElementById('c'); cv.width = PW; cv.height = PH;
   const gl = cv.getContext('webgl2', { preserveDrawingBuffer: true, antialias: false });
-  const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c; };
+  const mk = () => { const c = document.createElement('canvas'); c.width = PW; c.height = PH; return c; };
   const D = mk(), A = mk(), B = mk(), M = mk();           // итог, кадр A, кадр B, маска перехода
   const dx = D.getContext('2d'), ax = A.getContext('2d'), bx = B.getContext('2d'), mx = M.getContext('2d');
   E.ctx = ax;
@@ -25,7 +26,7 @@
   // ---------- камера (мир 720×1280; z — зум)
   E.cam = { x: W / 2, y: H / 2, z: 1, r: 0 };
   E.setCam = function (c, x, y, z = 1, r = 0) {
-    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.setTransform(RS, 0, 0, RS, 0, 0);
     c.translate(W / 2, H / 2); c.rotate(r); c.scale(z, z); c.translate(-x, -y);
   };
 
@@ -125,14 +126,14 @@
   // ---------- переходы: «ладонь сметает» кадр A, под ним уже насыпан B
   // kind: 'sweep' (угол ang), 'pour' (сверху вниз струями), 'iris' (из точки)
   E.compose = function (drawA, drawB, k, kind = 'sweep', o = {}) {
-    E.reset(ax); E.reset(bx); ax.setTransform(1, 0, 0, 1, 0, 0); ax.clearRect(0, 0, W, H);
+    E.reset(ax); E.reset(bx); ax.setTransform(1, 0, 0, 1, 0, 0); ax.clearRect(0, 0, PW, PH);
     if (k < 1) { E.ctx = ax; drawA(ax); }
-    dx.setTransform(1, 0, 0, 1, 0, 0); dx.globalCompositeOperation = 'source-over'; dx.clearRect(0, 0, W, H);
+    dx.setTransform(1, 0, 0, 1, 0, 0); dx.globalCompositeOperation = 'source-over'; dx.clearRect(0, 0, PW, PH);
     if (k <= 0) { dx.drawImage(A, 0, 0); E.ctx = ax; return; }
-    bx.setTransform(1, 0, 0, 1, 0, 0); bx.clearRect(0, 0, W, H); E.ctx = bx; drawB(bx); E.reset(bx);
+    bx.setTransform(1, 0, 0, 1, 0, 0); bx.clearRect(0, 0, PW, PH); E.ctx = bx; drawB(bx); E.reset(bx);
     if (k >= 1) { dx.drawImage(B, 0, 0); return; }
     // маска: где показывать B
-    mx.setTransform(1, 0, 0, 1, 0, 0); mx.clearRect(0, 0, W, H); mx.fillStyle = '#fff';
+    mx.setTransform(1, 0, 0, 1, 0, 0); mx.clearRect(0, 0, PW, PH); mx.setTransform(RS, 0, 0, RS, 0, 0); mx.fillStyle = '#fff';
     const front = []; const seed = o.seed || 1;
     if (kind === 'iris') {
       const cx = o.x ?? W / 2, cy = o.y ?? H / 2, R = eio(k) * 1600;
@@ -152,23 +153,23 @@
       mx.beginPath(); mx.moveTo(...pts[0]); for (const p of pts) mx.lineTo(...p);
       const far = 3000; mx.lineTo(pts[48][0] - ca * far, pts[48][1] - sa * far); mx.lineTo(pts[0][0] - ca * far, pts[0][1] - sa * far); mx.fill();
     }
-    mx.globalCompositeOperation = 'source-in'; mx.drawImage(B, 0, 0); mx.globalCompositeOperation = 'source-over';
+    mx.setTransform(1, 0, 0, 1, 0, 0); mx.globalCompositeOperation = 'source-in'; mx.drawImage(B, 0, 0); mx.globalCompositeOperation = 'source-over';
     // A стирается там, где B
     const am = mk.cache || (mk.cache = mk()); const amx = am.getContext('2d');
-    amx.setTransform(1, 0, 0, 1, 0, 0); amx.globalCompositeOperation = 'source-over'; amx.clearRect(0, 0, W, H); amx.drawImage(A, 0, 0);
-    amx.globalCompositeOperation = 'destination-out'; amx.fillStyle = '#fff';
+    amx.setTransform(1, 0, 0, 1, 0, 0); amx.globalCompositeOperation = 'source-over'; amx.clearRect(0, 0, PW, PH); amx.drawImage(A, 0, 0);
+    amx.setTransform(RS, 0, 0, RS, 0, 0); amx.globalCompositeOperation = 'destination-out'; amx.fillStyle = '#fff';
     if (kind === 'iris') { amx.beginPath(); front.forEach((p, i) => i ? amx.lineTo(...p) : amx.moveTo(...p)); amx.fill(); }
     else { const ang = kind === 'pour' ? Math.PI / 2 : (o.ang ?? 0), ca = Math.cos(ang), sa = Math.sin(ang), far = 3000;
       amx.beginPath(); amx.moveTo(...front[0]); for (const p of front) amx.lineTo(...p); amx.lineTo(front[48][0] - ca * far, front[48][1] - sa * far); amx.lineTo(front[0][0] - ca * far, front[0][1] - sa * far); amx.fill(); }
-    amx.globalCompositeOperation = 'source-over';
-    dx.drawImage(am, 0, 0); dx.drawImage(M, 0, 0);
+    amx.globalCompositeOperation = 'source-over'; amx.setTransform(1, 0, 0, 1, 0, 0);
+    dx.drawImage(am, 0, 0); dx.drawImage(M, 0, 0); dx.setTransform(RS, 0, 0, RS, 0, 0);
     // валик сметённого песка вдоль фронта + разлёт крупинок
     dx.save(); dx.lineCap = 'round'; dx.lineJoin = 'round';
     const ridge = Math.sin(clamp(k) * Math.PI);
     dx.strokeStyle = `rgba(255,255,255,${.35 * ridge})`; dx.lineWidth = 34; path(dx, front); dx.stroke();
     dx.strokeStyle = `rgba(255,255,255,${.75 * ridge})`; dx.lineWidth = 9; path(dx, front); dx.stroke();
-    for (let i = 0; i < front.length; i++) E.grains(dx, front[i][0], front[i][1], 40, 40, 22, i + seed * 31 + Math.floor(k * 30), .85 * ridge, 1.5);
-    dx.restore(); E.ctx = bx;
+    for (let i = 0; i < front.length; i++) E.grains(dx, front[i][0], front[i][1], 40, 40, 22, i + seed * 31 + Math.floor(k * 30), .75 * ridge, 1.1);
+    dx.restore(); dx.setTransform(1, 0, 0, 1, 0, 0); E.ctx = bx;
   };
   // один кадр без перехода
   E.single = function (draw) { E.compose(draw, null, 0); };
@@ -178,45 +179,47 @@
   in vec2 p; out vec2 uv; void main(){ uv = p*.5+.5; gl_Position = vec4(p,0,1); }`;
   const fs = `#version 300 es
   precision highp float; in vec2 uv; out vec4 o;
-  uniform sampler2D D; uniform vec2 res; uniform vec4 cam; uniform float t, warm, lampX, lampY, expo, dust;
+  uniform sampler2D D; uniform vec2 res; uniform vec4 cam; uniform float t, warm, lampX, lampY, expo, dust, rs, gf, bandY;
   uniform vec3 cA, cB;
-  float h(vec2 p){ p = fract(p*vec2(443.897,441.423)); p += dot(p, p.yx+19.19); return fract((p.x+p.y)*p.x); }
+  float h(vec2 p){ vec3 p3 = fract(vec3(p.xyx)*.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y)*p3.z); }
   float vn(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
     return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }
   void main(){
     vec2 px = vec2(uv.x, 1.-uv.y)*res;                     // экранные пиксели (верх = 0)
     float c = cos(cam.w), s = sin(cam.w);
-    vec2 q = (px - res*.5)/cam.z; q = vec2(c*q.x + s*q.y, -s*q.x + c*q.y); vec2 wp = q + cam.xy;   // мировые координаты
-    float g1 = h(floor(wp*1.35)), g2 = h(floor(wp*.62)+3.1), g3 = h(floor(px*1.)+floor(t*24.));
+    vec2 q = (px - res*.5)/(cam.z*rs); q = vec2(c*q.x + s*q.y, -s*q.x + c*q.y); vec2 wp = q + cam.xy;   // мировые координаты
+    float g1 = h(floor(wp*gf)), g2 = h(floor(wp*.62)+3.1), g3 = h(floor(px)+floor(t*12.)*17.);
     float clump = vn(wp*.045)*.6 + vn(wp*.13)*.4;
-    vec2 j = (vec2(h(floor(wp*1.35)+.7), h(floor(wp*1.35)+5.3))-.5) * 2.6;  // зернистый край
+    vec2 j = (vec2(h(floor(wp*gf)+.7), h(floor(wp*gf)+5.3))-.5) * 2.2 * rs;  // зернистый край
     vec2 tu = (px + j)/res;
     float d0 = texture(D, tu).a;
-    float d1 = 0.; for(int i=0;i<6;i++){ float a = float(i)*1.047 + g1*6.28; d1 += texture(D, tu + vec2(cos(a),sin(a))*2.2/res).a; } d1/=6.;
+    float d1 = 0.; for(int i=0;i<6;i++){ float a = float(i)*1.047 + g1*6.28; d1 += texture(D, tu + vec2(cos(a),sin(a))*2.2*rs/res).a; } d1/=6.;
     float d = mix(d0, d1, .45);
     float th = d*(.82 + .36*clump);
-    th += (g1-.5)*.34*smoothstep(.02,.35,d)*(1.-smoothstep(.75,1.,d));    // отдельные зёрна в тонком слое
+    th += (g1-.5)*.22*smoothstep(.02,.35,d)*(1.-smoothstep(.75,1.,d));    // отдельные зёрна в тонком слое
     th += (g2-.5)*.12*d;
-    th += step(.998, g1)*.5*dust + step(.9994, g2)*.9*dust;             // пылинки на чистом стекле
+    th += step(.9993, g1)*.3*dust;             // пылинки на чистом стекле
     th = max(th, 0.);
     float T = exp(-th*5.2);
     // лампа под стеклом: горячее пятно + спад к краям
     vec2 l = vec2(lampX, lampY)*res; float r = length((px - l)/res.y);
     float lamp = 1.15*exp(-r*r*2.1) + .25;
     vec3 back = mix(cB, cA, clamp(lamp-.2, 0., 1.)) * lamp;
+    float bk = smoothstep(bandY + 10.*rs, bandY + 50.*rs, px.y);
+    back = mix(back, vec3(1.25, 1.12, .92), bk);
     vec3 col = back * T;
     // ореол света через край (halation) — размытая плотность из мип-уровней
-    float bl = textureLod(D, tu, 4.5).a, bl2 = textureLod(D, tu, 6.).a;
+    float bl = textureLod(D, tu, 4.5 + log2(rs)).a, bl2 = textureLod(D, tu, 6. + log2(rs)).a;
     col += back * (exp(-bl*4.) - T) * .16 * (1.-d);
     col += cA * exp(-bl2*3.) * .05;
     // верхний свет: песок не абсолютно чёрный, видна фактура
     float top = (1.-T);
     col += vec3(.20,.12,.06) * top * (.25 + .9*g1) * (.35 + .65*clump) * .55;
-    col += vec3(.33,.22,.12) * step(.985, g2) * top * .5;                  // блестящие песчинки
+    col += vec3(.33,.22,.12) * step(.992, g1) * top * .35;                  // блестящие песчинки
     col *= expo;
     // виньетка, зерно плёнки, мягкое тональное сжатие
     vec2 vv = uv-.5; col *= 1. - dot(vv*vec2(1.05,.8), vv*vec2(1.05,.8))*.9;
-    col += (g3-.5)*.028;
+    col += (g3-.5)*.016;
     col = col/(1.+col*.18);
     col = pow(max(col, 0.), vec3(.95));
     o = vec4(col, 1);
@@ -242,12 +245,12 @@
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, D); gl.generateMipmap(gl.TEXTURE_2D);
-    gl.uniform2f(U('res'), W, H); const c = E.cam; gl.uniform4f(U('cam'), c.x, c.y, c.z, c.r || 0);
+    gl.uniform2f(U('res'), PW, PH); gl.uniform1f(U('rs'), RS); gl.uniform1f(U('gf'), RS > 1 ? 2.1 : 1.35); gl.uniform1f(U('bandY'), (E.bandY ?? 815) * RS); const c = E.cam; gl.uniform4f(U('cam'), c.x, c.y, c.z, c.r || 0);
     gl.uniform1f(U('t'), t); gl.uniform1f(U('lampX'), E.light.x); gl.uniform1f(U('lampY'), E.light.y);
     gl.uniform1f(U('expo'), E.light.expo); gl.uniform1f(U('dust'), E.light.dust);
     gl.uniform3f(U('cA'), ...E.light.a); gl.uniform3f(U('cB'), ...E.light.b);
-    gl.viewport(0, 0, W, H); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.viewport(0, 0, PW, PH); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   };
-  E.grab = function () { const px = new Uint8Array(W * H * 4); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
-    const o = new Uint8Array(W * H * 4), row = W * 4; for (let y = 0; y < H; y++) o.set(px.subarray((H - 1 - y) * row, (H - y) * row), y * row); return o; };
+  E.grab = function () { const px = new Uint8Array(PW * PH * 4); gl.readPixels(0, 0, PW, PH, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    const o = new Uint8Array(PW * PH * 4), row = PW * 4; for (let y = 0; y < PH; y++) o.set(px.subarray((PH - 1 - y) * row, (PH - y) * row), y * row); return o; };
 })();

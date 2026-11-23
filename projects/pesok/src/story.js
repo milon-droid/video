@@ -8,7 +8,7 @@
   const cam = (c, x, y, z = 1, r = 0) => { E.setCam(c, x, y, z, r); E.cam = { x, y, z, r }; };
   const camF = (c, x, floorW, z, fs = FLOOR_S) => cam(c, x, floorW - (fs - 640) / z, z);   // мировой пол → экранный FLOOR_S
   const cyF = (floorW, z, fs = FLOOR_S) => floorW - (fs - 640) / z;
-  const scr = c => c.setTransform(1, 0, 0, 1, 0, 0);
+  const scr = c => c.setTransform(E.RS, 0, 0, E.RS, 0, 0);
   const K = (lt, a, b) => ss(a, b, lt);
   const TXT = 885;
   // ---------- реплики [t, t_end, text, who, size]
@@ -41,13 +41,13 @@
       const dur = Math.max(.35, l[2].length * .045), p = clamp((T - l[0]) / dur);
       const fade = 1 - ss(l[1] - .25, l[1], T);   // песок засыпает борозду
       if (fade <= 0) continue;
-      const sz = l[4], two = E.textPolys(l[2], 'scripts', sz).w > 560;
+      const sz = Math.round(l[4] * .92), F = { font: 'futural', a: fade, w: sz * .13 }, two = E.textPolys(l[2], 'futural', sz).w > 610;
       if (two) {
         const ws = l[2].split(' '), half = Math.ceil(ws.length / 2), a = ws.slice(0, half).join(' '), b = ws.slice(half).join(' ');
         const la = a.length / (a.length + b.length);
-        E.write(c, a, W / 2 - 20, y - sz * .5, sz, clamp(p / la), { a: fade, w: sz * .105 });
-        E.write(c, b, W / 2 - 20, y + sz * .7, sz, clamp((p - la) / (1 - la)), { a: fade, w: sz * .105 });
-      } else E.write(c, l[2], W / 2 - 20, y, sz, p, { a: fade, w: sz * .105 });
+        E.write(c, a, W / 2 - 20, y - sz * .62, sz, clamp(p / la), F);
+        E.write(c, b, W / 2 - 20, y + sz * .72, sz, clamp((p - la) / (1 - la)), F);
+      } else E.write(c, l[2], W / 2 - 20, y, sz, p, F);
     }
   }
   // ---------- счётчик дней (одна функция на весь ролик)
@@ -344,9 +344,9 @@
     const glass = E.giantGlass(c, GL.cx, GL.cy, GL.h, 0, T, 0, 1);
     c.save(); glass(); c.clip(); finale(c, lt, T, false); c.restore();
     scr(c); E.band(c, 815);
-    E.write(c, "You can't stop the sand.", W / 2 - 20, 850, 44, (lt - .2) / 1.0, { w: 6 });
-    E.write(c, 'But you can choose', W / 2 - 20, 912, 44, (lt - 1.7) / .6, { w: 6 });
-    E.write(c, 'what it builds.', W / 2 - 20, 970, 44, (lt - 2.3) / .55, { w: 6 });
+    E.write(c, "You can't stop the sand.", W / 2 - 20, 850, 40, (lt - .2) / 1.0, { font: 'futural', w: 5.2 });
+    E.write(c, 'But you can choose', W / 2 - 20, 912, 40, (lt - 1.7) / .6, { font: 'futural', w: 5.2 });
+    E.write(c, 'what it builds.', W / 2 - 20, 970, 40, (lt - 2.3) / .55, { font: 'futural', w: 5.2 })
   } });
 
   window.DURATION = 57.0; window.SCENE = { duration: 57.0 };
