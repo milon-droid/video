@@ -16,11 +16,11 @@ const CAPS = [
   [18.5, 20.1, ['“Play the one about the moon.”'], 905],
   [25.0, 26.7, ['Two knocks.', 'That’s a yes.'], 905],
   [28.8, 30.2, ['You’re terrible at guitar.'], 905],
-  [30.3, 31.7, ['You’re terrible at knocking.'], 905],
-  [43.6, 46.3, ['Fifty years ago…', 'you knocked first.'], 905],
-  [46.4, 47.9, ['And you knocked back.'], 905],
+  [30.6, 31.9, ['You’re terrible at knocking.'], 905],
+  [43.6, 46.7, ['Fifty years ago…', 'you knocked first.'], 905],
+  [46.8, 48.0, ['And you knocked back.'], 905],
 ];
-const VOT = { l1: 3.8, l2: 11.4, l3: 18.5, l4: 25.0, m1: 28.8, l5: 30.3, o1: 43.6, om1: 46.4 };
+const VOT = { l1: 3.8, l2: 11.4, l3: 18.5, l4: 25.0, m1: 28.8, l5: 30.6, o1: 43.6, om1: 46.8 };
 const talk = (t, a, b) => t > a && t < b ? .2 + .3 * Math.abs(Math.sin(t * 17)) * Math.abs(Math.sin(t * 5.3)) : 0;
 function caption(ctx, t) {
   for (const [t0, t1, lines, yc] of CAPS) {
@@ -56,7 +56,7 @@ function people(ctx, t) {
   if (t < 26.3 || t > 48.2) { const M = miaPose(t); M.open = Math.max(M.open || 0, 0); drawPerson(ctx, M); if (M.broom) broom(ctx, M.broom[0], M.broom[1], M.broom[1] - 380); }
   // этаж 2: молодой Лео
   if (t < 26.6) { const P0 = leoPose(t); rr(ctx, P0.x - 60, F2 - 150, 120, 30, 6); fill(ctx, ink(.5, .2, .7)); stroke(ctx, 5); ctx.beginPath(); ctx.moveTo(P0.x - 45, F2 - 120); ctx.lineTo(P0.x - 55, F2); ctx.moveTo(P0.x + 45, F2 - 120); ctx.lineTo(P0.x + 55, F2); stroke(ctx, 10);
-    const P = P0; P.open = Math.max(P.open || 0, talk(t, VOT.l1, VOT.l1 + 2.8) * 0, 0); const G = drawPerson(ctx, P); if (P.guitar) guitar(ctx, P, G); }
+    const P = P0; P.open = Math.max(P.open || 0, talk(t, 3.8, 6.2), talk(t, 18.5, 19.7), talk(t, 25.0, 26.8)); const G = drawPerson(ctx, P); if (P.guitar) guitar(ctx, P, G); }
   // лестница: встреча
   if (t >= 26.6 && t < 32.5) {
     const lp = walk(t, [[26.6, 400, F2], [27.2, 300, F2], [28.4, 205, 1330]]), mp = walk(t, [[26.8, 400, F3], [27.4, 300, F3], [28.5, 25, 1330]]);
@@ -64,7 +64,7 @@ function people(ctx, t) {
     const M = { x: mp.x, y: mp.y, R: 60, kind: 'woman', age: 24, outfit: 'sweater', pants: ink(.1, .55, 0), hair: 'bob', hairCol: hairMia(0), browCol: hairMia(0), t, seed: 2, legSwing: mp.mv ? Math.sin(t * 10) * .3 : 0, bob: mp.mv ? -Math.abs(Math.sin(t * 10)) * 8 : 0,
       look: meet ? [1, 0] : [-.6, .6], face: meet ? .5 : 0, smile: meet ? 1 : .5, open: talk(t, 28.8, 30.2) + (t > 31.7 ? .3 : 0), hA: [mp.x - 30, mp.y - 300], hB: give ? [mp.x + 60, mp.y - 330] : [mp.x + 40, mp.y - 250], brow: .5 };
     const L = { x: lp.x, y: lp.y, R: 62, kind: 'man', age: 25, outfit: 'tee', pants: ink(.45, .8, .3), hair: 'curly', hairCol: hairLeo(0), browCol: hairLeo(0), t, seed: 1, legSwing: lp.mv ? Math.sin(t * 10) * .3 : 0, bob: lp.mv ? -Math.abs(Math.sin(t * 10)) * 8 : 0,
-      look: meet ? [-1, 0] : [-.5, -.6], face: meet ? -.5 : 0, smile: 1, open: talk(t, 30.3, 31.7) + (t > 31.7 ? .3 : 0), hA: [lp.x - 60 - give * 20, lp.y - 330], hB: [lp.x + 50, lp.y - 330], armsFront: true };
+      look: meet ? [-1, 0] : [-.5, -.6], face: meet ? -.5 : 0, smile: 1, open: talk(t, 30.6, 31.8) + (t > 31.7 ? .3 : 0), hA: [lp.x - 60 - give * 20, lp.y - 330], hB: [lp.x + 50, lp.y - 330], armsFront: true };
     drawPerson(ctx, M); broom(ctx, mp.x - 40, mp.y - 20, mp.y - 400); drawPerson(ctx, L);
     cup(ctx, L.hB[0], L.hB[1] - 20); cup(ctx, give ? lerp(L.hA[0], M.hB[0], give) : L.hA[0], (give ? lerp(L.hA[1], M.hB[1], give) : L.hA[1]) - 20);
   }
@@ -112,10 +112,10 @@ function oldScene(ctx, t) {
   rr(ctx, 440, 1000, 150, 120, 6); fill(ctx, PAPER); stroke(ctx, 6); ctx.font = '900 22px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = ink(1, 0, .4); ctx.fillText('♥ L + M ♥', 515, 1070);
   const up = t > 43.0 && t < 44.0, gup = sstep(47.6, 47.85, t) * (1 - sstep(48.3, 48.6, t)), lean = 1 - sstep(42.95, 43.2, t) * (1 - sstep(44.5, 45, t));
   const L = { x: 580, y: F2, R: 64, kind: 'old', age: 75, sit: 1, outfit: 'cardigan', pants: ink(.3, .6, .4), hair: 'curly', hairCol: hairLeo(1), browCol: ink(.2, .35, .2), glasses: true, t, seed: 1,
-    look: up || gup ? [0, -1] : [.7, .2], face: up || gup ? 0 : .3, smile: .8, open: talk(t, 43.6, 46.3), gup,
+    look: up || gup ? [0, -1] : [.7, .2], face: up || gup ? 0 : .3, smile: .8, open: talk(t, 43.6, 46.6), gup,
     hA: [lerp(545, 560, gup), lerp(1630, 1250, gup)], hB: [lerp(620, 600, gup), lerp(1650 + (t < 43 ? Math.sin(t * 6) * 12 : 0), 1330, gup)] };
   const M = { x: 740, y: F2, R: 60, kind: 'woman', age: 74, sit: 1, outfit: 'sweater', pants: ink(.1, .55, 0), hair: 'bob', hairCol: hairMia(1), browCol: ink(.2, .3, .2), glasses: true, t, seed: 2,
-    look: up ? [0, -1] : [-.8, .1], face: up ? 0 : -.4, smile: 1, brow: up ? .9 : .2, open: talk(t, 46.4, 47.9), headDX: -.4 * lean, tilt: -.22 * lean, eye: up ? 1 : .55, happyEyes: true, hA: [660, 1610], hB: [800, 1640] };
+    look: up ? [0, -1] : [-.8, .1], face: up ? 0 : -.4, smile: 1, brow: up ? .9 : .2, open: talk(t, 46.8, 47.7), headDX: -.4 * lean, tilt: -.22 * lean, eye: up ? 1 : .55, happyEyes: true, hA: [660, 1610], hB: [800, 1640] };
   drawPerson(ctx, M); const G = drawPerson(ctx, L); guitar(ctx, L, G);
 }
 function world(ctx, t) {
