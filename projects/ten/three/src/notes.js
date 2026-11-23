@@ -59,14 +59,14 @@ export function condNote(t, t0) {
 }
 
 // интерактивный договор: пункты появляются, тень-рука ставит галочки, подписи, печать
-const ITEMS = ['Once a week — somewhere|we’ve never been', 'Sunsets — no phone', 'Dance,|even if it’s cringe', 'Break it —|I quit. For fucking real.'];
+const ITEMS = ['Once a week — somewhere|we’ve never been', 'Sunsets — no phone', 'Enjoy life', 'Break it —|I quit. For fucking real.'];
 export function contract(t, t0, out) {
   if (t < t0) return; const up = ease(t, t0, t0 + .35, back), away = ease(t, out, out + .3);
   ctx.save(); ctx.translate(540, lerp(2400, 930, up) + away * 1800); ctx.rotate(.015);
   const W = 900, Hh = 1260; ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.fillRect(-W / 2 + 20, -Hh / 2 + 24, W, Hh);
   ctx.fillStyle = '#fbf6ea'; ctx.fillRect(-W / 2, -Hh / 2, W, Hh); ctx.strokeStyle = '#c9b38a'; ctx.lineWidth = 4; ctx.strokeRect(-W / 2 + 22, -Hh / 2 + 22, W - 44, Hh - 44);
   ctx.textAlign = 'center'; ctx.fillStyle = INK; ctx.font = '800 62px Unb'; ctx.fillText('CONTRACT #1', 0, -Hh / 2 + 120);
-  ctx.font = '700 54px Cav'; ctx.fillText('between Senya and his Shadow', 0, -Hh / 2 + 185);
+  ctx.font = '700 54px Cav'; ctx.fillText('between Sam and his Shadow', 0, -Hh / 2 + 185);
   let y = -Hh / 2 + 300;
   ITEMS.forEach((it, i) => { const ti = t0 + .4 + i * .42; if (t < ti) return; const k = ease(t, ti, ti + .2); const lines = it.split('|');
     ctx.globalAlpha = k; ctx.strokeStyle = INK; ctx.lineWidth = 5; ctx.strokeRect(-W / 2 + 70, y - 46, 56, 56);
@@ -75,7 +75,7 @@ export function contract(t, t0, out) {
       ctx.moveTo(px, py); const p2 = [px + 22, py + 26], p3 = [px + 70, py - 40]; if (tk < .4) ctx.lineTo(lerp(px, p2[0], tk / .4), lerp(py, p2[1], tk / .4)); else { ctx.lineTo(...p2); ctx.lineTo(lerp(p2[0], p3[0], (tk - .4) / .6), lerp(p2[1], p3[1], (tk - .4) / .6)); } ctx.stroke(); }
     ctx.globalAlpha = 1; y += 70 + lines.length * 56; });
   // подписи
-  const sy = Hh / 2 - 250; ctx.textAlign = 'left'; ctx.font = '700 50px Cav'; ctx.fillStyle = '#6a5a7a'; ctx.fillText('Senya', -W / 2 + 70, sy); ctx.fillText('Shadow', 40, sy);
+  const sy = Hh / 2 - 250; ctx.textAlign = 'left'; ctx.font = '700 50px Cav'; ctx.fillStyle = '#6a5a7a'; ctx.fillText('Sam', -W / 2 + 70, sy); ctx.fillText('Shadow', 40, sy);
   ctx.strokeStyle = '#6a5a7a'; ctx.lineWidth = 3; [[-W / 2 + 70, -40], [40, W / 2 - 60]].forEach(([a, b]) => { ctx.beginPath(); ctx.moveTo(a, sy + 70); ctx.lineTo(b, sy + 70); ctx.stroke(); });
   const sk = ease(t, t0 + 2.15, t0 + 2.5); if (sk > 0) { ctx.strokeStyle = '#2a3a8a'; ctx.lineWidth = 5; ctx.beginPath(); for (let i = 0; i <= 40 * sk; i++) { const u = i / 40; ctx.lineTo(-W / 2 + 80 + u * 300, sy + 50 - Math.sin(u * 19) * 22 * (1 - u * .5) - u * 10); } ctx.stroke(); }
   if (t > t0 + 2.45) { const k = clamp((t - t0 - 2.45) * 6); handPrint(ctx, 210, sy + 40, lerp(1.8, .75, k), -.25); }

@@ -73,5 +73,10 @@ for i in range(4): lib(65.0 + i * .42, "writing-marker-tick", .7); lib(64.8 + i 
 lib(66.55, "writing-scribble", .55, align="start"); lib(66.85, "impact-heavy-soft", .7); lib(67.1, "impact-deep-hard", .6); lib(67.3, "whoosh-fast-soft", .6, align="start")
 lib(68.3, "impact-light-soft", .8); lib(68.3, "shimmer-medium-bright", .45, align="start")
 lib(35.55, "impact-heavy-firm", .5)
+# EN-финал: всё в новое время + звуки альтернативной концовки
+from warp import warp
+for c in C: c["t"] = round(warp(c["t"]), 3)
+A0 = warp(68.8 - .001)
+for o, idd, g in [(.35, "click-clap-medium", .3), (1.7, "pop-small-bubble", .5), (2.55, "shimmer-long-soft", .5), (5.4, "whoosh-medium-soft", .5), (5.6, "pop-large-in", .6), (7.4, "foley-card-slide", .5)]: lib(A0 + o, idd, g, align="start")
 json.dump(C, open("sfx.json", "w"), ensure_ascii=False, indent=0)
 print(len(C), "cues")
