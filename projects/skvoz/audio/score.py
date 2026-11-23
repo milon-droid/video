@@ -3,7 +3,7 @@
 настоящие записи карандаша/ластика/страниц (CC0), двери и смех (Oculus, CC BY 4.0).
 python3 projects/skvoz/audio/score.py → projects/skvoz/audio/mix.wav"""
 import numpy as np, subprocess, os, wave
-SR = 48000; DUR = 64.0
+SR = 48000; DUR = 67.0
 ROOT = os.path.dirname(os.path.abspath(__file__))
 LIB = os.path.join(ROOT, '../../../assets/sfx-library')
 rng = np.random.default_rng(214)
@@ -46,7 +46,7 @@ def speed(t):
 T = np.arange(N) / SR
 sp = speed(T)
 # в «нарисованных» планах (крупные, её блокнот) поезд тише
-inside = 1 - .6 * (ss(6.7, 6.9, T) - ss(15.0, 15.3, T)) - .3 * (ss(18.7, 18.9, T) - ss(27.3, 27.5, T)) - .55 * (ss(35.0, 35.3, T) - ss(43.9, 44.1, T)) - .6 * (ss(54.8, 55.0, T) - ss(63, 64, T))
+inside = 1 - .6 * (ss(6.7, 6.9, T) - ss(15.0, 15.3, T)) - .3 * (ss(18.7, 18.9, T) - ss(27.3, 27.5, T)) - .55 * (ss(35.0, 35.3, T) - ss(43.9, 44.1, T)) - .6 * (ss(55.2, 55.4, T) - ss(66, 67, T))
 rum = lp(rng.standard_normal(N), 90) * 9 + lp(rng.standard_normal(N), 400) * .6
 rum *= (.25 + .75 * sp) * np.clip(inside, .2, 1) * .5 * ss(3.2, 3.7, T)
 add(rum, 0, .9, 0)
@@ -167,22 +167,23 @@ add(PAGE, 46.3, .5, 0)
 arpeggio(46.3, 4, dens=2, vel=.55, mel=True)
 add(pad([50, 57, 62, 66], 6.0, .09), 46.3); add(pad([43, 50, 55, 59, 62], 6.0, .09), 51.8)
 add(WRITE[:int(SR * .7)], 48.9, .5, -.1)
-add(LAUGH, 50.0, .35, .2, .2)
-# переписка блокнотами
-add(SLIDE, 51.3, .45, .3); add(WRITE[:int(SR * .55)], 51.7, .45, .3)
-add(SLIDE, 52.5, .45, -.3); add(WRITE[:int(SR * .65)], 52.8, .45, -.3); add(piano(81, 1.5, .4), 53.2, .25, 0, .5)
-add(SLIDE, 53.6, .45, .3); add(WRITE[:int(SR * .45)], 53.9, .45, .3); add(LAUGH[:int(SR * 1.2)], 54.3, .25, .2, .2)
-# вдвоём
-add(pad([55, 62, 66, 71], 3.4, .08), 54.9)
-for i, m in enumerate([83, 86, 90]): add(bell(m, .25), 55.4 + i * .6, .22, -.2 + i * .2, .6)
-# общая страница
-add(PAGE, 58.0, .45, 0)
-for i, t in enumerate(np.arange(58.1, 60.6, .6)): add(PENCIL[:int(SR * .62)], t, .32, -.25)
-for t in (59.5, 60.1, 60.8, 61.4): add(SLIDE[:int(SR * .35)], t, .25, .3)
-add(TOUCH, 58.65, .45, 0); add(TOUCH, 60.05, .45, 0)
-add(piano(74, 4, .55), 58.6, .4, 0, .5); add(piano(78, 4, .5), 60.0, .35, 0, .5)
-for m in [38, 50, 57, 62, 66, 69, 76]: add(piano(m, 4.5, .55), 61.4, .3, (m - 57) / 40, .5)
-add(WRITE[:int(SR * .6)], 62.2, .4, 0); add(bell(86, .3), 62.3, .3, .2, .7)
+# она смущается: тихие высокие ноты вместо смеха
+add(piano(86, 2, .3), 50.15, .22, .3, .6); add(piano(81, 2, .28), 50.55, .2, .3, .6); add(bell(90, .2), 50.9, .18, .2, .7)
+# разговор в профиль — только музыка и поезд, мягкий пэд
+add(pad([47, 54, 59, 62, 66], 4.2, .07), 51.3)
+for i, m in enumerate([78, 76, 74, 76]): add(piano(m, 1.6, .35), 51.5 + i * 1.0, .25, 0, .5)
+# вдвоём, общий блокнот
+add(pad([55, 62, 66, 71], 2.8, .08), 55.3)
+for i, m in enumerate([83, 86, 90]): add(bell(m, .25), 55.6 + i * .6, .22, -.2 + i * .2, .6)
+# общая страница: карандаш рисует, кисть красит
+add(PAGE, 57.8, .45, 0)
+for i, t in enumerate(np.arange(58.1, 62.6, .58)): add(PENCIL[:int(SR * .6)], t, .34, -.25 + .1 * (i % 2))
+for t in np.arange(62.8, 65.6, .4): add(SLIDE[:int(SR * .3)], t, .22, .3)
+add(TOUCH, 62.35, .45, 0); add(TOUCH, 63.65, .45, 0)
+add(piano(74, 4, .55), 62.3, .4, 0, .5); add(piano(78, 4, .5), 63.6, .35, 0, .5)
+arpeggio(57.8, 2, dens=1, vel=.4, mel=False)
+for m in [38, 50, 57, 62, 66, 69, 76]: add(piano(m, 4.5, .55), 65.0, .3, (m - 57) / 40, .5)
+add(WRITE[:int(SR * .6)], 65.8, .4, 0); add(bell(86, .3), 66.0, .3, .2, .7)
 
 # ---------- реверб (простые гребёнки) и мастер-сумма
 def reverb(x):

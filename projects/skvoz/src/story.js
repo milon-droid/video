@@ -2,7 +2,7 @@
 (function () {
   const { lerp, clamp, ss, eio, eo, back, seg, hash, noise1, cr, ell, rect } = E;
   const P = E.PAL;
-  const DUR = 64.0;
+  const DUR = 67.0;
   window.DURATION = DUR; window.SCENE = { duration: DUR };
 
   // ---------- поезд: скорость и пройденный путь (одна функция для всех планов)
@@ -207,53 +207,64 @@
     E.cam(); E.hand('DAY 215', 360, 215, 70, seg(lt, .05, .9), { w: 6.5 });
   }, .32);
   add(34.0, 35.6, (t, lt) => {
-    wide(t, { col: .8, z: 1.6, y: 760, her: { lx: .9, m: lt > .9 ? 2 : 1, coatColor: 1, browUp: ss(.6, 1, lt) },
+    wide(t, { col: .8, z: 1.6, y: 760, her: { lx: lt > 1.1 ? .5 : .9, ly: lt > 1.1 ? .7 : 0, m: 1, coatColor: 1, browUp: ss(.6, .9, lt) * .6, blush: ss(.9, 1.4, lt) },
       him: { book: 'show', from: 'lap', bk: ss(.05, .45, lt), bookText: 'HI.', textP: seg(lt, .5, 1.1), textSize: 48, lx: 1, hoodColor: 1, m: 1, blush: .6 } });
   });
   add(35.6, 36.9, (t, lt) => {
     E.cam(360, 660, 1 + lt * .02);
     E.blot(360, 640, 520, P.yellow, .18, { seed: 30 });
-    E.herFront(360, 700, 2.1, { lx: -.9, m: 2, open: .5 + .3 * Math.abs(Math.sin(lt * 18)), blink: lt > .2 && lt < .9 ? 1 : 0, blush: 1, browUp: .4 });
+    // смущается: взгляд вниз, румянец растёт, робкая улыбка, глаза на него — и снова вниз
+    const peek = ss(.55, .7, lt) * (1 - ss(.95, 1.1, lt));
+    E.herFront(360, 700, 2.1, { lx: lerp(-.3, -.9, peek), ly: lerp(.9, 0, peek), lid: lerp(.5, .1, peek), m: lt > .3 ? 1 : 4, blink: lt > 1.18 && lt < 1.26 ? 1 : 0, blush: .5 + .5 * ss(0, .8, lt), browUp: .2, browTilt: .5 });
   });
   SH = 0;
-  // ===== переписка блокнотами
-  add(51.3, 54.9, (t, lt) => {
-    const herS = ss(.0, .4, lt) * (1 - ss(1.15, 1.35, lt)) + ss(2.3, 2.6, lt), himS = ss(1.2, 1.5, lt) * (1 - ss(2.25, 2.45, lt));
-    const herTxt = lt < 1.5 ? "HI!|I'M LIA." : 'I KNOW.|:)', herP = lt < 1.5 ? seg(lt, .4, .9) : seg(lt, 2.6, 3.0);
-    wide(t, { col: .9, z: 1.75, y: 700,
-      her: { lx: .9, m: lt > 2.9 ? 2 : 1, open: .2, coatColor: 1, show: herS, showText: herTxt, showP: herP, showSize: 34, blush: lt > 2.6 ? .9 : .4, browUp: lt > 1.6 && lt < 2.4 ? .6 : 0 },
-      him: { book: himS > .5 ? 'show' : 'lap', from: 'lap', bk: himS, bookText: 'MAX.|I DRAW|YOU...', textP: seg(lt, 1.5, 2.1), textSize: 28, lx: 1, hoodColor: 1, m: lt > 2.9 ? 2 : (lt > 1.5 ? 4 : 1), blush: lt > 1.5 ? 1 : .5, sweat: lt > 1.6 && lt < 2.6 ? .6 : 0 } });
+  // ===== разговор в профиль (без субтитров): говорят по очереди, смущаются
+  const talk = (t, a, b) => t > a && t < b ? Math.abs(Math.sin((t - a) * 11)) * (.6 + .4 * Math.abs(Math.sin((t - a) * 3.3))) : 0;
+  add(51.3, 55.3, (t, lt) => {
+    const hisT = talk(t, 51.5, 52.5) + talk(t, 53.8, 54.3), herT = talk(t, 52.6, 53.7);
+    const shyHim = ss(52.5, 52.8, t) * (1 - ss(53.4, 53.7, t)), shyHer = ss(51.6, 51.9, t) * (1 - ss(52.4, 52.6, t)) + ss(54.4, 54.6, t) * (1 - ss(54.9, 55.1, t));
+    wide(t, { col: .9, z: 1.75 + lt * .03, y: 700,
+      her: { lx: lerp(.9, .4, shyHer), ly: lerp(0, .8, shyHer), lid: shyHer * .4, m: herT > .05 ? 0 : 1, talk: herT, coatColor: 1, blush: .6 + .4 * shyHer, blink: blink(t, 14), tilt: -.05 * shyHer + .03 * Math.sin(t * 2) },
+      him: { book: 'lap', lx: lerp(1, .5, shyHim), ly: lerp(0, .7, shyHim), m: hisT > .05 ? 0 : 1, talk: hisT, hoodColor: 1, blush: .5 + .5 * shyHim, blink: blink(t, 15), tilt: .04 * Math.sin(t * 2.4) + .05 * shyHim } });
   });
-  // ===== вместе: она пересела к нему (анфас, вдвоём)
-  add(54.9, 58.0, (t, lt) => {
+  // ===== вместе: она пересела к нему (анфас, вдвоём), общий блокнот
+  add(55.3, 57.8, (t, lt) => {
     E.cam(360, 680 - lt * 6, 1.02 + lt * .01);
     E.wash(rect(30, 160, 660, 520), P.sky, .45, { seed: 3, rough: 8 });
     E.blot(560, 300, 60, P.yellow, .7, { seed: 5 });
     E.wash([[30, 470], [200, 430], [420, 460], [690, 420], [690, 680], [30, 680]], P.green, .4, { seed: 4, rough: 6 });
     E.pen(cr([[30, 160], [690, 160], [690, 680], [30, 680], [30, 160]], 1), { w: 3, a: .8 });
     E.wash(rect(0, 700, 720, 600), P.teal, .3, { seed: 6, rough: 10 });
-    const look = ss(.3, .6, lt) * (1 - ss(1.6, 1.9, lt)) + ss(2.4, 2.7, lt);
-    E.herFront(470, 760, 1.35, { lx: lerp(-.3, -1, look), ly: lerp(.8, 0, look), m: lt > 1 ? 2 : 1, open: .2, blush: .9, blink: blink(t, 12), turn: -.5 });
-    E.himFront(250, 780, 1.35, { lx: lerp(.3, 1, look), ly: lerp(.8, 0, look), m: 1, blush: .9, blink: blink(t, 13) });
-    // общий блокнот у них на коленях
+    const look = ss(.2, .5, lt) * (1 - ss(1.3, 1.6, lt));
+    E.herFront(470, 760, 1.35, { lx: lerp(-.3, -1, look), ly: lerp(.9, 0, look), lid: .2, m: 1, blush: .9, blink: blink(t, 12), turn: -.5 });
+    E.himFront(250, 780, 1.35, { lx: lerp(.3, 1, look), ly: lerp(.9, 0, look), m: 1, blush: .9, blink: blink(t, 13) });
     const B = [[180, 1060], [540, 1060], [560, 1230], [160, 1230]]; E.knock(B); E.knockC(B);
     E.pen(B.concat([B[0]]), { w: 3, a: .85 }); E.pen([[360, 1060], [360, 1230]], { w: 2, a: .6 });
     E._handCol = 1; E.toolHand(300 + Math.sin(lt * 6) * 14, 1150, 'pencil', -.35, .55); E._handCol = 0; E.toolHand(430 + Math.sin(lt * 5 + 1) * 14, 1150, 'brush', .4, .55);
   });
-  // ===== общая страница: его карандаш + её кисть рисуют их двоих
-  add(58.0, DUR, (t, lt) => {
-    E.cam(360, 660, 1.05 - lt * .01);
+  // ===== общая страница: рисунок появляется под кончиком его карандаша, цвет — где её кисть
+  const PAINT = [   // [начало, конец, центр x, y, радиус движения]
+    ['scarf', 5.0, 5.8, 470, 812, 60], ['hood', 5.8, 6.6, 250, 880, 90], ['cheeks', 6.6, 7.1, 360, 676, 90], ['sky', 7.1, 7.8, 360, 420, 160]];
+  add(57.8, DUR, (t, lt) => {
+    E.cam();
     E.pen([[60, 120], [60, 1200]], { w: 1.2, a: .25 });
-    const k = seg(lt, .1, 2.6), c = seg(lt, 1.4, 3.6);
-    const s0 = E.sidNow(); E.rv = s0 + 6 + k * 260; E.wg = c;
-    E.himFront(250, 640, 1.25, { lx: 1, m: 1, blush: c });
-    E.herFront(470, 630, 1.25, { lx: -1, m: 1, blush: c, turn: -.4 });
-    E.rv = undefined; E.wg = 1;
-    E.blot(250, 870, 130 * eo(c), P.ochre, .5, { seed: 61 }); E.blot(360, 360, 260 * eo(seg(lt, 2, 4.5)), P.yellow, .25, { seed: 62 });
-    E.hand('DAY 1.', 360, 1010, 62, seg(lt, 4.2, 4.8), { w: 5.5, rot: -.03 });
-    if (lt < 4.1) E.toolHand(230 + Math.sin(lt * 8) * 70, 890 + Math.cos(lt * 13) * 40, 'pencil', -.45, .8);
-    if (lt > 1.3 && lt < 4.0) E.toolHand(500 + Math.sin(lt * 5) * 70, 900 + Math.cos(lt * 4) * 50, 'brush', .5, .8);
-    if (lt > 4.15 && lt < 4.9) E.toolHand(300 + seg(lt, 4.2, 4.8) * 140, 1015, 'pencil', -.45, .8);
+    const pg = (n) => { const p = PAINT.find(q => q[0] === n); return seg(lt, p[1], p[2]); };
+    // фон и худи — под линиями
+    E.blot(360, 430, 300 * eo(pg('sky')), P.yellow, .28, { seed: 62 }); E.blot(470, 330, 180 * eo(pg('sky')), P.sky, .25, { seed: 63 });
+    E.wash(cr([[90, 990], [110, 860], [190, 800], [250, 796], [310, 800], [390, 860], [400, 990]], 4, true), P.ochre, .55, { grow: pg('hood'), seed: 64 });
+    const k = seg(lt, .25, 4.9);
+    const drawing = () => {
+      E.himFront(250, 640, 1.25, { lx: 1, m: 1, blush: pg('cheeks') });
+      E.wg = pg('scarf'); E.herFront(470, 630, 1.25, { lx: -1, m: 1, lid: .15, blush: pg('cheeks'), turn: -.4 }); E.wg = 1;
+    };
+    const tip = E.drawLive('pair', drawing, k);
+    E.hand('DAY 1.', 360, 1060, 62, seg(lt, 8.0, 8.6), { w: 5.5, rot: -.03 });
+    // руки: карандаш точно на конце текущего штриха, кисть — по закрашиваемому месту
+    if (k < 1 && tip) E.toolHand(tip[0], tip[1], 'pencil', -2.75, .75);
+    else if (lt < 4.95) E.toolHand(300, 1000, 'pencil', -2.75, .75);
+    const pi = PAINT.find(q => lt >= q[1] - .25 && lt < q[2]);
+    if (pi) { const u = (lt - pi[1]) * 9; E.toolHand(pi[3] + Math.cos(u) * pi[5] * .5, pi[4] + Math.sin(u * 1.3) * pi[5] * .3, 'brush', 2.7, .7); }
+    if (lt > 7.95 && lt < 8.7) { const tw = E.textPolys('DAY 1.', 62).w; E.toolHand(360 - tw / 2 + tw * seg(lt, 8.0, 8.6), 1070, 'pencil', -2.75, .75); }
   }, .3);
 
   // ---------- надписи поверх (стикеры)
@@ -277,9 +288,9 @@
       E.hand('HE NEVER SAYS HI.', 360, 285, 46, seg(T, 42.4, 42.95), { ctx: o, color: '#24427e', w: 4.4, rot: -.02 });
       E.hand('SO... HI.', 380, 1060, 70, seg(T, 42.95, 43.35), { ctx: o, color: '#24427e', w: 6.5, rot: -.04 });
     }
-    if (T > 58.6) {
-      E.note(o, 360, 175, 560, 110, -.02, [["DON'T WAIT 7 MONTHS", 48]], seg(T, 58.6, 59.2));
-      E.note(o, 370, 295, 620, 110, .015, [['TO REGRET IT FOR 70 YEARS.', 33]], seg(T, 60.0, 60.7));
+    if (T > 62.3) {
+      E.note(o, 360, 175, 560, 110, -.02, [["DON'T WAIT 7 MONTHS", 48]], seg(T, 62.3, 62.9));
+      E.note(o, 370, 295, 620, 110, .015, [['TO REGRET IT FOR 70 YEARS.', 33]], seg(T, 63.6, 64.3));
     }
   }
 
@@ -307,7 +318,7 @@
       } else E.page(0, () => s.fn(T, T - s.t0));
     }
     E.overlay(o => overlays(T, o));
-    const fade = ss(63.2, 64.0, T) * .92;
+    const fade = ss(66.2, 67.0, T) * .92;
     E.compose(flip, fade);
   };
   window.grab = () => E.grab(); window.ready = true;

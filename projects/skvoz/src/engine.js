@@ -69,7 +69,7 @@
     }
     return o;
   }
-  E.plen = plen; E.cut = cut; E.sidNow = () => sid; E.hid = () => E.rv !== undefined && E.rv < sid;
+  E.plen = plen; E.cut = cut; E.sidNow = () => sid; E.hid = () => E.measure || (E.rv !== undefined && E.rv < sid);
 
   // ---------- карандаш
   // кипение линии: смещение точки меняется 12 раз в секунду (как у рисованной анимации), но плавно вдоль линии
@@ -82,8 +82,10 @@
   // pen(P, {w, a, p (доля нарисованного), j (дрожь), ctx, taper})
   E.pen = function (P, o = {}) {
     const c = o.ctx || gx, s = (o.s ?? sid++);
+    if (E.measure) { E.lens[s - E.m0] = Math.max(4, plen(P)); return; }   // замер длины штрихов (для рисования с постоянной скоростью)
     let pp = o.p; if (E.rv !== undefined && o.s === undefined) { const q = clamp(E.rv - s); if (q <= 0) return; pp = Math.min(pp ?? 1, q); }
     let Q = pp !== undefined ? cut(P, pp) : P; if (Q.length < 2) return;
+    if (E.rv !== undefined && o.s === undefined && pp < 1) { const m = c.getTransform(), e = Q[Q.length - 1]; E.tip = [m.a * e[0] + m.c * e[1] + m.e, m.b * e[0] + m.d * e[1] + m.f]; }
     const w = (o.w ?? 2.2) * E.lw, a = (o.a ?? .85) * (E.pa ?? 1), j = (o.j ?? 1.1) * E.lw;
     c.lineCap = 'round'; c.lineJoin = 'round';
     // 3 прохода: основной, «эхо» рядом, лёгкая строительная линия с перелётом концов
@@ -113,6 +115,7 @@
   // штриховка внутри контура: параллельные штрихи под углом, кипят вместе с линиями
   E.hatch = function (clip, o = {}) {
     const c = o.ctx || gx, ang = o.ang ?? -.9, gap = (o.gap ?? 7), w = (o.w ?? 1.3) * E.lw, s = sid++;
+    if (E.measure) { E.lens[s - E.m0] = 90; return; }
     let a = (o.a ?? .35) * (E.pa ?? 1); if (E.rv !== undefined) { const q = clamp(E.rv - s); if (q <= 0) return; a *= q; }
     let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; for (const p of clip) { x0 = Math.min(x0, p[0]); y0 = Math.min(y0, p[1]); x1 = Math.max(x1, p[0]); y1 = Math.max(y1, p[1]); }
     c.save(); c.beginPath(); c.moveTo(clip[0][0], clip[0][1]); for (const p of clip) c.lineTo(p[0], p[1]); c.closePath(); c.clip();
@@ -131,7 +134,9 @@
   };
   // мягкий тон (растушёвка пальцем)
   E.tone = function (P, a = .2, blur = 6, ctx = gx) {
-    a *= (E.pa ?? 1); if (E.rv !== undefined) { const q = clamp(E.rv - sid); if (q <= 0) return; a *= q; }
+    if (E.measure) return; a *= (E.pa ?? 1);
+    if (E.lateK !== undefined) { a *= ss(.5, .95, E.lateK); if (a <= 0) return; }   // тушёвка — после контура
+    else if (E.rv !== undefined) { const q = clamp(E.rv - sid); if (q <= 0) return; a *= q; }
     ctx.save(); ctx.filter = `blur(${blur * E.lw}px)`; ctx.fillStyle = `rgba(255,255,255,${a})`;
     ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]); for (const p of P) ctx.lineTo(p[0], p[1]); ctx.closePath(); ctx.fill(); ctx.restore();
   };
@@ -144,6 +149,7 @@
   // ---------- акварель
   // заливка контура с неровным краем; grow — растекание от центра (0..1); n — сид края
   E.wash = function (P, col, a = .6, o = {}) {
+    if (E.measure) return;
     const c = o.ctx || cx, grow = (o.grow ?? 1) * (E.wg ?? 1); a *= (E.wa ?? 1); if (grow <= 0 || a <= 0) return;
     let mx = 0, my = 0; for (const p of P) { mx += p[0]; my += p[1]; } mx /= P.length; my /= P.length;
     if (o.cx !== undefined) { mx = o.cx; my = o.cy; }
@@ -352,5 +358,22 @@
       E.hand(s, 0, (i - (n - 1) / 2) * (o.lh || sz * 1.35), sz, clamp(tp * n - i), { ctx: c, color: o.ink || '#2b2a30', w: sz * .1 });
     });
     c.restore();
+  };
+})();
+
+// рисование «по-настоящему»: штрихи появляются по длине с постоянной скоростью, E.tip — где сейчас кончик карандаша (пиксели холста)
+(function () {
+  const cache = new Map();
+  E.drawLive = function (key, fn, k) {
+    if (!cache.has(key)) {
+      E.measure = true; E.lens = []; E.m0 = E.sidNow(); const g = E.g, c = E.c; g.save(); c.save(); fn(); g.restore(); c.restore(); E.measure = false;
+      const L = E.lens.map(v => v || 0), cum = [0]; for (const v of L) cum.push(cum[cum.length - 1] + v); cache.set(key, { L, cum });
+    }
+    const { L, cum } = cache.get(key), tot = cum[cum.length - 1], tg = E.clamp(k) * tot;
+    let i = 0; while (i < L.length - 1 && cum[i + 1] <= tg) i++;
+    const s0 = E.sidNow(); E.tip = null;
+    E.rv = k >= 1 ? 1e9 : s0 + i + (L[i] ? (tg - cum[i]) / L[i] : 0); E.lateK = k;
+    fn(); E.rv = undefined; E.lateK = undefined;
+    return E.tip;
   };
 })();

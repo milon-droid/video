@@ -9,8 +9,8 @@
   const pen = E.pen, T = (P0, dx, dy) => P0.map(p => [p[0] + dx, p[1] + dy]);
   const fillG = (Q, a) => { if (E.hid()) return; const c = E.g; c.save(); c.fillStyle = `rgba(255,255,255,${a})`; c.beginPath(); Q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fill(); c.restore(); };
   // «бумага» под фигурой: стирает фон за силуэтом, чтобы линии окна не просвечивали сквозь лицо
-  const knock = (Q) => { const c = E.g; c.save(); c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.beginPath(); Q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fill(); c.restore(); };
-  const knockC = (Q) => { const c = E.c; c.save(); c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.beginPath(); Q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fill(); c.restore(); };
+  const knock = (Q) => { if (E.measure) return; const c = E.g; c.save(); c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.beginPath(); Q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fill(); c.restore(); };
+  const knockC = (Q) => { if (E.measure) return; const c = E.c; c.save(); c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.beginPath(); Q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); c.fill(); c.restore(); };
   E.knock = knock; E.knockC = knockC; E.fillG = fillG;
 
   // ================= ГЛАЗ, БРОВЬ, РОТ =================
@@ -165,6 +165,7 @@
     brow(26, -21, .8, o.browUp || 0, o.browTilt || 0, who === 'her' ? .8 : 1);
     if (o.m === 1 || o.m === 2) { pen(cr([[36, 25], [41, 28], [45, 24]]), { w: 2.2, a: .9 }); if (o.m === 2) E.fillG(cr([[38, 25], [44, 30], [46, 24]]), .5); }
     else if (o.m === 3) { pen(ell(43, 25, 3, 4), { w: 2, a: .9 }); }
+    if (o.talk > .05) { const k = o.talk; E.fillG(ell(41, 26, 3.4, 1.5 + 3.5 * k, 0, 6.3, 12), .7); pen(ell(41, 26, 3.6, 1.6 + 3.6 * k, 0, 6.3, 14), { w: 1.8, a: .9, sketch: false }); }
     if (o.blush) E.blot(24, 18, 10, P.blush, .5 * o.blush, { seed: 9 });
     if (who === 'him') {
       const hair = cr([[30, -40], [10, -62], [-30, -58], [-52, -26], [-48, 18], [-36, 28], [-30, 4], [-14, -18], [12, -30]], 5, true);
@@ -197,7 +198,7 @@
     E.hatch(torso, { gap: 6, a: .26, ang: -1 }); E.tone(cr([[20, -180], [50, -120], [56, -30], [50, 30], [20, 30]], 3, true), .12, 8);
     if (o.hoodColor) E.wash(torso, P.ochre, .55 * o.hoodColor, { seed: 21, grow: o.hoodColor });
     // голова
-    E.push(22, hy + 4 * Math.sin(E.T * 2), 1); headSide(o, 'him'); E.pop();
+    E.push(22, hy + 4 * Math.sin(E.T * 2), 1, 1, o.tilt || 0); headSide(o, 'him'); E.pop();
     // руки + блокнот
     const sh = [16, -170];
     let bx, by, br, bw = o.book === 'show' ? 176 : 100, bh = o.book === 'show' ? 140 : 136;
