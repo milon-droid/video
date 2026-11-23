@@ -107,18 +107,19 @@
 
   // 2. Её первый день — отец с младенцем у окна
   shot(3.4, 7.4, { light: L.gold, lamp: [.75, .3], tr: { kind: 'pour', dur: 1.2, seed: 2 }, draw(c, lt, T) {
-    camF(c, 380 + lt * 4, 880, 1.45 + lt * .05);
+    cam(c, 400 + lt * 4, 640 - lt * 4, 1.7 + lt * .06);
     wall(c, .1);
-    E.window(c, 470, 330, 230, 420, { fr: 16 });
-    E.clear(c, 560, 560, 260, .4);
+    E.window(c, 560, 300, 240, 440, { fr: 16 });
+    E.clear(c, 470, 500, 200, .7);
     E.floor(c, 880, .6);
-    E.grains(c, 520, 560, 170, 200, 30, Math.floor(T * 2), .45, 2);
-    const bob = Math.sin(lt * 2.6) * 3;
-    E.person(c, { kind: 'man', x: 330, y: 880, s: 1, f: 1, t: T, lean: 3, head: 24, sh: [62, 54], el: [74, 84], blink: E.blink(T, 1), brow: .4, bob,
-      hold: [(c, x, y) => { c.save(); c.translate(x - 8, y - 18 + bob * .3); c.rotate(-.38); E.sand(c, 1);
-        c.beginPath(); c.ellipse(0, 0, 44, 20, 0, 0, 7); c.fill(); c.beginPath(); c.arc(38, -14, 16, 0, 7); c.fill();
-        c.beginPath(); c.arc(30, -26, 6, 0, 7); c.fill();
-        E.carve(c, .95); c.lineWidth = 1.8; c.beginPath(); c.arc(43, -15, 3.2, .2, 2.9); c.stroke(); c.restore(); }, null] });
+    E.grains(c, 520, 520, 170, 200, 30, Math.floor(T * 2), .45, 2);
+    const lift = Math.sin(lt * 2.2) * 6 + K(lt, 0, 1.2) * 4;
+    const R0 = E.person(c, { kind: 'man', x: 330, y: 880, s: 1, f: 1, t: T, lean: 2, head: -20 + Math.sin(lt * 2.2) * 3, sh: [124 + lift * .6, 130 + lift * .6], el: [22, 18], blink: E.blink(T, 1), brow: .6,
+      mouth: Math.sin(lt * 1.7) > .6 ? .45 : 0 });
+    const hx = 330 + R0.hands[0][0], hy = 880 + R0.hands[0][1];
+    E.baby(c, hx + 24, hy + 4, 1.2, T, -1);
+    // пальцы папы поверх тельца
+    E.sand(c, 1); c.beginPath(); c.arc(hx + 12, hy + 4, 7, 0, 7); c.fill(); c.beginPath(); c.arc(hx + 38, hy + 4, 7, 0, 7); c.fill(); E.reset(c);
     counter(c, T, K(lt, .6, 1.2));
     scr(c); E.band(c, 815);
     E.write(c, 'Her first day.', W / 2, TXT, 60, (lt - 1.0) / .7, { w: 6 });

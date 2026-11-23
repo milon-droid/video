@@ -155,6 +155,26 @@
     E.sand(c, 1);
   }
 
+
+  // младенец (держат под мышки): x,y — подмышки; f — куда смотрит; ручки и ножки болтаются
+  E.baby = function (c, x, y, s, t, f = -1) {
+    c.save(); c.translate(x, y); c.scale(f * s, s); E.sand(c, 1); c.lineCap = 'round';
+    c.beginPath(); c.ellipse(0, 12, 15, 24, 0, 0, 7); c.fill();                       // тельце
+    c.beginPath(); c.arc(2, -22, 19, 0, 7); c.fill();                                 // голова
+    c.beginPath(); c.moveTo(18, -24); c.lineTo(23, -18); c.lineTo(18, -14); c.fill();   // носик
+    c.beginPath(); c.moveTo(-4, -40); c.quadraticCurveTo(2, -50, 8, -42); c.lineWidth = 3; c.stroke();   // хохолок
+    c.lineWidth = 8;
+    const a1 = Math.sin(t * 5.3) * .5, a2 = Math.sin(t * 4.1 + 1) * .5;
+    E.path(c, [[6, -2], [18 + Math.cos(a1) * 6, -14 + Math.sin(a1) * 10], [26, -26 + a1 * 14]]); c.stroke();   // ручка тянется к папе
+    c.beginPath(); c.arc(27, -27 + a1 * 14, 5, 0, 7); c.fill();
+    const k1 = Math.sin(t * 6) * .5, k2 = Math.sin(t * 6 + 2.4) * .5;
+    E.path(c, [[2, 30], [14, 42 + k1 * 8], [8, 58 + k1 * 6]]); c.stroke();          // ножки дрыгаются
+    E.path(c, [[-6, 30], [4, 46 + k2 * 8], [-4, 60 + k2 * 6]]); c.stroke();
+    c.beginPath(); c.ellipse(11, 60 + k1 * 6, 6, 4, 0, 0, 7); c.fill(); c.beginPath(); c.ellipse(-1, 62 + k2 * 6, 6, 4, 0, 0, 7); c.fill();
+    E.carve(c, .95); c.lineWidth = 2; c.beginPath(); c.arc(9, -24, 4, .3, 2.8); c.stroke();   // глазки-щёлочки, улыбается
+    c.beginPath(); c.arc(17, -11, 3, .2, 2.6); c.stroke();
+    c.restore(); E.reset(c);
+  };
   // ---------- предметы
   E.bucket = function (c, x, y, s = 1, ang = 0, a = 1) {   // ведёрко с ручкой; (x,y) — ручка в кисти
     c.save(); c.translate(x, y); c.rotate(ang * .15); c.scale(s, s); E.sand(c, a);

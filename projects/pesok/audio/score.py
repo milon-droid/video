@@ -241,6 +241,19 @@ def reverb(x, sec=2.4):
     return np.fft.irfft(F, m)[:len(x)] / np.sqrt(np.sum(ir ** 2)) * .35
 rv = reverb(RV)
 Lm = L + rv; Rm = R + np.roll(rv, int(SR * .013))
+# ---------------- голос: дорожка + приглушение фона под голосом (≈ −9 дБ)
+VOD = os.path.join(ROOT, '../assets/vo/ep1'); VO = json.load(open(os.path.join(ROOT, 'vo_times.json')))
+V = np.zeros(N); VR = np.zeros(N)
+for vid, t in VO.items():
+    import subprocess
+    raw = subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-i', os.path.join(VOD, vid + '.wav'), '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True).stdout
+    x = np.frombuffer(raw, dtype=np.float32).astype(float); x = norm(x, .16 if vid.startswith(('n', 'o')) else .15)
+    i = int(t * SR); n = min(len(x), N - i); V[i:i+n] += x[:n]; VR[i:i+n] += x[:n] * (.12 if vid[0] in 'gdtwk' else .06)
+env_v = np.convolve(np.abs(V), np.ones(int(SR * .05)) / (SR * .05), 'same')
+act = np.convolve((env_v > .01).astype(float), np.ones(int(SR * .5)) / (SR * .5), 'same')
+duck = 1 - .65 * np.clip(act, 0, 1)
+vrv = reverb(VR, 1.4)
+Lm = Lm * duck + V * 1.0 + vrv; Rm = Rm * duck + V * 1.0 + np.roll(vrv, int(SR * .011))
 end = int(SR * DUR)
 Lm, Rm = Lm[:end], Rm[:end]
 pk = max(np.abs(Lm).max(), np.abs(Rm).max()); Lm /= pk / .8; Rm /= pk / .8
