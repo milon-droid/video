@@ -16,3 +16,9 @@
 | 31.5–38 | DAY 215: она садится РЯДОМ. Он пишет в блокноте крупно «HI.» и показывает; она смеётся, акварель заливает весь вагон |
 | 38–42.5 | «Don't wait 214 days. / Someone may be drawing you too.» Блокнот закрывается |
 Код: `src/engine.js` (бумага, карандаш, акварель, перелист), `src/chars.js` (он/она), `src/story.js` (таймлайн). Звук `audio/score.py`.
+Звук: `audio/score.py` — синтез «войлочного» пианино, стук колёс по пройденному пути, записи карандаша/ластика/страниц (sfx-kit CC0),
+сердце (BigSoundBank CC0), двери и смех (Oculus, CC BY 4.0). Мастер: compressor→limiter→loudnorm −14 (цепочка «без озвучки»).
+Рендер: `node projects/skvoz/render.cjs projects/skvoz/render/day214.mp4` (720×1280, ~3 мин), лист кадров `node stills.cjs out.png t…`.
+Подпись: «He drew her for 214 days. She was drawing too. ✏️ Sounds: Oculus Audio Pack by Meta (CC BY 4.0)» #shortfilm #animation #love #sketchbook
+## Статус
+- v1 (2026-11-23): `render/day214_v1.mp4` (63 МБ), лёгкая `render/day214_v1_send.mp4` (18 МБ), 43 с, 720p. Ждёт отзыва.
