@@ -1,0 +1,46 @@
+{
+ "roles": {
+  "sm_kid": {
+   "instruct": "A 10-year-old American boy, bright clear childish voice, curious and playful, natural, close to the microphone.",
+   "ref": "Wait, what? Who sent this? Is this a joke?",
+   "f0": 260
+  },
+  "sm_old": {
+   "instruct": "An 80-year-old American man, warm gentle raspy voice, slow, kind grandfatherly tone, a soft smile in the voice.",
+   "ref": "Well, look at that. It has been a long, long time.",
+   "f0": 110
+  }
+ },
+ "lines": [
+  {
+   "id": "k1",
+   "role": "sm_kid",
+   "text": "It goes fast... have fun?",
+   "emo": "Puzzled, reading a strange note slowly, the end is a confused question."
+  },
+  {
+   "id": "k2",
+   "role": "sm_kid",
+   "text": "Hello, future me!",
+   "emo": "Shouting happily out of a window, excited."
+  },
+  {
+   "id": "o1",
+   "role": "sm_old",
+   "text": "Hello, future me.",
+   "emo": "Reading a note aloud slowly, amused and touched."
+  },
+  {
+   "id": "o2",
+   "role": "sm_old",
+   "text": "Hi, kid.",
+   "emo": "One tiny soft breath of a laugh, then tender and short."
+  },
+  {
+   "id": "o3",
+   "role": "sm_old",
+   "text": "It goes fast. Have fun.",
+   "emo": "Tender, nostalgic, slow, a little emotional, like advice to a grandchild."
+  }
+ ]
+}
