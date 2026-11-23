@@ -37,16 +37,34 @@
    "emo": "Reading a child's note aloud slowly, amused, a smile in the voice."
   },
   {
-   "id": "o2",
-   "role": "sm_old",
-   "text": "No... Better.",
-   "emo": "Very soft and tender, almost a whisper, a long pause after 'No', deeply happy and moved."
-  },
-  {
    "id": "o3",
    "role": "sm_old",
    "text": "It goes fast. Have fun.",
    "emo": "Tender, nostalgic, slow, a little emotional, like advice to a grandchild."
+  },
+  {
+   "id": "k1b",
+   "role": "sm_kid",
+   "text": "From... me?!",
+   "emo": "Stunned amazed whisper, slowly realizing, the end rises in disbelief."
+  },
+  {
+   "id": "r1",
+   "role": "sm_old",
+   "text": "Rich? Famous?",
+   "emo": "Amused, gently teasing, a soft little chuckle, like smiling at his younger self."
+  },
+  {
+   "id": "r2",
+   "role": "sm_old",
+   "text": "No.",
+   "emo": "Soft, warm, smiling, calm and certain, not sad at all."
+  },
+  {
+   "id": "r3",
+   "role": "sm_old",
+   "text": "Better...",
+   "emo": "Slow, drawn out, whispered with deep love and quiet happiness, a smile you can hear, savoring the word, holding the hand of his wife."
   }
  ]
 }

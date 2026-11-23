@@ -1,6 +1,6 @@
 // Класс (начало), скамейка (конец), самолётик, записка, фон.
 const SIDE_A = ['NO. BETTER.', 'IT GOES FAST.', 'HAVE FUN.', '— YOU, 80'], SIDE_B = ['HELLO, FUTURE ME!', 'ARE WE RICH?', 'ARE WE FAMOUS?', '— ME, 10'];
-const NB = SIDE_B.join('').length;
+const NB = SIDE_B.join('').length, NA = SIDE_A.join('').length;
 
 function handText(ctx, lines, x, y, size, col, reveal = 1e9, seed = 0, maxW = 1e9) {
   ctx.font = `900 ${size}px Inter`;
@@ -24,9 +24,19 @@ function sheet(ctx, cx, cy, w, side, flipX, fold, reveal = 1e9) {
   rr(ctx, -w / 2, -h / 2, w, h, 4); fill(ctx, PAPER); stroke(ctx, w * .012);
   for (const fx of [-.25, 0, .25]) { ctx.beginPath(); ctx.moveTo(fx * w, -h / 2); ctx.lineTo(fx * w, h / 2); stroke(ctx, w * .004, ink(.1, .2, .05)); }
   if (flipX < 0) ctx.scale(-1, 1);
-  if (fold < .5) handText(ctx, side === 'A' ? SIDE_A : SIDE_B, 0, -h * .3, w * .11, side === 'A' ? ink(.15, 1, .1) : ink(1, .05, .6), reveal, side === 'A' ? 1 : 2, w * .86);
+  if (fold < .5) handText(ctx, side === 'A' ? SIDE_A : SIDE_B, side === 'A' ? -w * .1 : 0, -h * .3, w * .11, side === 'A' ? ink(.15, 1, .1) : ink(1, .05, .6), reveal, side === 'A' ? 1 : 2, side === 'A' ? w * .64 : w * .86);
+  if (fold < .5 && side === 'A' && reveal >= NA) doodle(ctx, w * .33, h * .1, w * .1);
   ctx.restore();
 }
+function doodle(ctx, x, y, r) {             // рисунок-подпись: старик с таким же вихром
+  ctx.save(); ctx.translate(x, y); const c = ink(.15, 1, .1), L = r * .09;
+  ctx.beginPath(); ctx.ellipse(0, 0, r * .85, r, 0, 0, 7); stroke(ctx, L, c);
+  for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(s * r * .35, -r * .1, r * .22, 0, 7); stroke(ctx, L, c); ctx.beginPath(); ctx.arc(s * r * .9, -r * .35, r * .25, 0, 7); stroke(ctx, L, c); }
+  ctx.beginPath(); ctx.moveTo(-r * .1, -r); ctx.quadraticCurveTo(0, -r * 1.6, r * .45, -r * 1.55); stroke(ctx, L * 1.2, ink(1, .05, .6));   // вихор
+  ctx.beginPath(); ctx.arc(0, r * .35, r * .3, .2, Math.PI - .2); stroke(ctx, L, c);
+  ctx.restore();
+}
+function pen(ctx, x, y) { ctx.save(); ctx.translate(x, y); ctx.rotate(.5); rr(ctx, -6, -60, 12, 64, 4); fill(ctx, ink(0, .9, .1)); stroke(ctx, 3); ctx.restore(); }
 function plane(ctx, x, y, L, ang, bank, dir = 1) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.scale(dir, 1);
   const wt = L * (.18 + .22 * Math.abs(Math.cos(bank)));
@@ -59,7 +69,7 @@ function school(ctx, t, K) {
   ctx.beginPath(); ctx.moveTo(1140, 420); ctx.lineTo(1330, 360); ctx.lineTo(1330, 1580); ctx.lineTo(1140, 1520); ctx.closePath(); fill(ctx, ink(.02, .12, .1, .9)); stroke(ctx, 7);
 }
 // ---------- скамейка ----------
-function bench(ctx, t, O) {
+function bench(ctx, t, O, W) {
   tree(ctx, BENCH_X - 520, PAPER, 9); tree(ctx, BENCH_X + 600, PAPER, 4);
   ctx.beginPath(); ctx.moveTo(BENCH_X + 380, GY); ctx.lineTo(BENCH_X + 380, 900); stroke(ctx, 22); stroke(ctx, 12, ink(.2, .6, .2));
   rr(ctx, BENCH_X + 330, 860, 100, 70, 10); fill(ctx, ink(0, 0, .9)); stroke(ctx, 6);                // фонарь
@@ -67,7 +77,7 @@ function bench(ctx, t, O) {
   rr(ctx, BENCH_X - 360, 1250, 720, 60, 10); fill(ctx, ink(.45, .12, .72)); stroke(ctx, 6);
   rr(ctx, BENCH_X - 360, 1330, 720, 50, 10); fill(ctx, ink(.45, .12, .72)); stroke(ctx, 6);
   ctx.beginPath(); ctx.ellipse(BENCH_X - 200, 1245, 120, 18, 0, 0, 7); fill(ctx, PAPER);             // снег на спинке
-  drawPerson(ctx, wifePose(t));
+  drawPerson(ctx, W || wifePose(t));
   const G = drawPerson(ctx, O);
   ctx.beginPath(); ctx.moveTo(G.hc[0] - 80, G.shY - 6); ctx.quadraticCurveTo(G.hc[0], G.shY + 40, G.hc[0] + 80, G.shY - 6);   // шарф
   stroke(ctx, 44, OUT); stroke(ctx, 34, ink(.9, .05, .3));
@@ -115,8 +125,8 @@ function particles(ctx, cam, t) {             // лепестки / листья
   const kind = s < .8 ? 0 : s < 2.8 ? -1 : s < 3.6 ? 1 : 2; if (kind < 0) return;
   const col = [ink(.6, 0, .1), ink(.7, .05, .95), PAPER][kind], n = [26, 22, 60][kind];
   for (let i = 0; i < n; i++) {
-    const TAU = 2 * Math.PI / DUR, sp = Math.round([.12, .16, .1][kind] * DUR) / DUR, u = ((t * sp + hash(i)) % 1 + 1) % 1;   // всё периодично по длине ролика — петля без скачка
-    const x = cam.cx - cam.vw / 2 + ((hash(i + 3) * cam.vw + Math.sin(t * TAU * 9 + i) * 60 - (kind === 2 ? 0 : (t / DUR) * cam.vw * 3)) % cam.vw + cam.vw) % cam.vw;
+    const TAU = 2 * Math.PI / REAL_DUR, sp = Math.round([.12, .16, .1][kind] * REAL_DUR) / REAL_DUR, u = ((t * sp + hash(i)) % 1 + 1) % 1;   // всё периодично по длине ролика — петля без скачка
+    const x = cam.cx - cam.vw / 2 + ((hash(i + 3) * cam.vw + Math.sin(t * TAU * 9 + i) * 60 - (kind === 2 ? 0 : (t / REAL_DUR) * cam.vw * 3)) % cam.vw + cam.vw) % cam.vw;
     const y = top + u * h, r = cam.vw * (kind === 2 ? .006 : .009) * (.6 + hash(i + 5));
     ctx.save(); ctx.translate(x, y); ctx.rotate(t * TAU * 14 + i);
     ctx.beginPath(); ctx.ellipse(0, 0, r, r * (kind === 2 ? 1 : .55), 0, 0, 7); fill(ctx, col); if (kind !== 2) stroke(ctx, r * .25);

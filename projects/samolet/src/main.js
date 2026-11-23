@@ -1,5 +1,6 @@
 // Камера, кадр, титры, печать.
-window.SCENE = { duration: DUR, fps: 30, width: CW, height: CH };
+window.SCENE = { duration: REAL_DUR, fps: 30, width: CW, height: CH };
+var CUR_T = 0;
 const V = (cx, cy, vw) => ({ cx, cy, vw });
 const mixC = (a, b, u) => V(lerp(a.cx, b.cx, u), lerp(a.cy, b.cy, u), Math.exp(lerp(Math.log(a.vw), Math.log(b.vw), u)));
 const C0 = V(720, 1020, 1200), C1 = V(600, 1235, 600), C2 = V(700, 1080, 1050);
@@ -25,25 +26,25 @@ function camera(t) {
 }
 // титры (английский)
 const CAPS = [
-  [1.35, 3.65, ['“No… better”?', 'What?']],
+  [1.35, 3.2, ['“No… better”?', 'What?']],
   [3.7, 5.85, ['Are we rich?', 'Are we famous?']],
   [5.95, 7.4, ['Hello, future me!']],
   [31.2, 35.0, ['“Hello, future me.', 'Are we rich? Are we famous?”']],
-  [35.1, 36.55, ['No…']],
-  [36.55, 37.25, ['No… Better.']],
+  [35.0, 36.3, ['Better…']],
   [37.3, 40.0, ['It goes fast.', 'Have fun.']],
 ];
-// вспышки-воспоминания старика: квартал, p, камера
-const FLASH = [[34.95, 1, .55, V(3700, 760, 900)], [35.4, 2, .72, V(5300, 1230, 900)], [35.85, 3, .6, V(6850, 1060, 800)], [36.3, 4, .62, V(8380, 1330, 1000)]];
-const flashAt = t => FLASH.find(f => t >= f[0] && t < f[0] + .45);
-function caption(ctx, t) {
-  for (const [t0, t1, lines] of CAPS) {
-    if (t < t0 || t > t1) continue;
+const HCAPS = [[0, .6, 1.6, ['From… me?!']], [1, .05, 2.35, ['Rich? Famous?']], [1, 2.4, 3.0, ['No.']], [1, 4.5, 4.8, ['Better…']]];
+// вспышки-воспоминания в паузе старика: u-начало, квартал, p, камера
+const FLASH = [[3.0, 1, .55, V(3700, 760, 900)], [3.375, 2, .72, V(5300, 1230, 900)], [3.75, 3, .6, V(6850, 1060, 800)], [4.125, 4, .62, V(8380, 1330, 1000)]];
+function caption(ctx, t, h) {
+  const list = h ? HCAPS.filter(c => c[0] === h.i).map(c => [c[1], c[2], c[3], h.i === 0 ? 240 : 905]) : CAPS, tt = h ? h.u : t;
+  for (const [t0, t1, lines, yc = 905] of list) {
+    t = tt; if (t < t0 || t > t1) continue;
     const out = clamp((t1 - t) / .2);
     ctx.save(); ctx.font = '900 46px Inter';
     const fs = Math.min(46, 46 * 600 / Math.max(...lines.map(l => ctx.measureText(l).width)));
     ctx.font = `900 ${fs}px Inter`; ctx.textBaseline = 'middle';
-    const lh = fs * 1.3, y0 = 905 - (lines.length - 1) * lh / 2;
+    const lh = fs * 1.3, y0 = yc - (lines.length - 1) * lh / 2;
     lines.forEach((l, i) => {
       const li = clamp((t - t0 - i * .35) / .16); if (li <= 0) return;
       const w = ctx.measureText(l).width + 36, x = 360 - w / 2 - 14 + (i % 2 ? 24 : 0), y = y0 + i * lh;
@@ -91,22 +92,32 @@ async function setup() {
   await Promise.all(['900 40px Inter', '700 20px Inter'].map(f => document.fonts.load(f)));
   ready = true;
 }
-window.renderFrame = async t => {
+function holdCam(h, t) {
+  if (h.i === 0) return mixC(V(590, 1235, 560), V(600, 1170, 520), sstep(0, .4, h.u));
+  return h.u < 4.45 ? mixC(B1, V(BENCH_X + 120, 1250, 620), sstep(1.6, 2.3, h.u)) : V(BENCH_X + 130, 1260, 600);
+}
+window.renderFrame = async T => {
   if (!ready) await setup();
-  const fl = flashAt(t), cam = fl ? fl[3] : camera(t), a = CW / cam.vw, ctx = dctx;
+  CUR_T = T;
+  const [t, h] = warpT(T);
+  const fl = h && h.i === 1 ? FLASH.find(f => h.u >= f[0] && h.u < f[0] + .375) : null;
+  const cam = fl ? fl[3] : h ? holdCam(h, t) : camera(t), a = CW / cam.vw, ctx = dctx;
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
   ctx.fillStyle = PAPER; ctx.fillRect(0, 0, CW, CH);
   ctx.setTransform(a, 0, 0, a, -(cam.cx - cam.vw / 2) * a, -(cam.cy - cam.vw * 8 / 9) * a);
   background(ctx, cam, t);
   const L = cam.cx - cam.vw, R = cam.cx + cam.vw;
-  if (L < 1400) school(ctx, t, kidPose(t));
+  if (L < 1400) school(ctx, t, h && h.i === 0 ? kidHold(h.u) : kidPose(t));
   BLOCKS.forEach((b, bi) => { if (b.x0 + b.w > L && b.x0 < R) { const p = planeAt(t); const px = p.fly ? p.x : (t < 20 ? 0 : 99999); b.draw(ctx, b.x0, fl && fl[1] === bi ? fl[2] : clamp((px - b.x0) / b.w), t); } });
   ground(ctx, cam);
-  let OG = null; if (R > 10600) OG = bench(ctx, t, oldPose(t));
-  const sh = sheetAt(t);
+  let OG = null; if (R > 10600) OG = bench(ctx, t, h && h.i === 1 ? oldHold(h.u) : oldPose(t), null);
+  let sh = sheetAt(t);
+  if (h && h.i === 0 && sh) { const k = sstep(0, .3, h.u) * (1 - sstep(1.3, 1.6, h.u)); sh.cx = lerp(sh.cx, 545, k); sh.cy = lerp(sh.cy, 1370, k); }   // опускает лист — видно лицо
+  if (h && h.i === 1) { sh = sheetAt(34.99); const k = sstep(4.3, 4.5, h.u); sh.cx = lerp(BENCH_X, BENCH_X - 60, k); sh.cy = lerp(1330, 1455, k); sh.w = lerp(300, 240, k); }
   if (sh) {
     if (sh.fold > .97 && !sh.onDesk) {}
     else sheet(ctx, sh.cx, sh.cy, sh.w, sh.side, sh.flip, sh.fold, sh.reveal);
+    if (sh.pen) { const O = oldPose(t); pen(ctx, O.hB[0], O.hB[1]); }
     if (sh.onDesk) plane(ctx, sh.cx, sh.cy - 10, 150, 0, 0, -1);
   }
   // самолётик в руке перед броском
@@ -123,16 +134,16 @@ window.renderFrame = async t => {
   particles(ctx, cam, t);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (fl) {                                   // рамка «фотографии» вокруг воспоминания
-    const u = (t - fl[0]) / .45, m = 46;
+    const m = 46;
     ctx.save(); ctx.translate(360, 640); ctx.rotate((fl[1] % 2 ? 1 : -1) * .02); ctx.translate(-360, -640);
     ctx.fillStyle = PAPER; ctx.fillRect(-100, -100, CW + 200, m + 100); ctx.fillRect(-100, CH - m * 3.2, CW + 200, m * 3.2 + 100); ctx.fillRect(-100, -100, m + 100, CH + 200); ctx.fillRect(CW - m, -100, m + 100, CH + 200);
     ctx.strokeStyle = OUT; ctx.lineWidth = 4; ctx.strokeRect(m, m, CW - 2 * m, CH - m * 4.2);
     ctx.font = '900 40px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = ink(.15, 1, .1); ctx.fillText('AGE ' + BLOCKS[fl[1]].age, 360, CH - m * 1.9);
     ctx.restore();
   }
-  if (!fl) overlays(ctx, t, cam); caption(ctx, t);
+  if (!fl && !h) overlays(ctx, t, cam); caption(ctx, t, h);
   let mis = 1;
-  if (fl && t - fl[0] < .08) mis = 6;
+  if (fl && h.u - fl[0] < .08) mis = 6;
   if (t > 39.5 && t < 43.8) mis = 1 + 2 * Math.sin(Math.PI * (t - 39.5) / 4.3);
-  Riso.print(dens, t, mis);
+  Riso.print(dens, T, mis);
 };

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """HELLO, FUTURE ME — звук: синтез гитары (Карплус–Стронг) + свист мелодии, SFX сценок, голоса. → mix.wav"""
 import json, subprocess, os, wave, numpy as np
-SR = 48000; DUR = 46; N = int(SR * DUR); NE = N + 12 * SR
+SR = 48000; HOLDS = [(3.2, 1.6), (35.0, 4.8)]; DUR = 46 + sum(h[1] for h in HOLDS); N = int(SR * DUR); NE = N + 12 * SR
+REAL = lambda t: t + sum(l for s0, l in HOLDS if t > s0 + 1e-6)   # время сюжета → время ролика
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, '../../..'))
 LIB = os.path.join(ROOT, 'assets/sfx-library'); IDX = {e['id']: e for e in json.load(open(os.path.join(LIB, 'index.json')))}
 SF = os.path.join(HERE, '../assets/sfx'); rng = np.random.default_rng(3)
@@ -12,8 +13,8 @@ def dec(f, a=0, b=None):
     n = min(len(x), int(.05 * SR)); x[-n:] *= np.linspace(1, 0, n); x[:n // 5] *= np.linspace(0, 1, n // 5); return x
 L = lambda i, a=0, b=None: dec(os.path.join(LIB, IDX[i]['file']), a, b)
 F = lambda f, a=0, b=None: dec(os.path.join(SF, f), a, b)
-def put(x, t, g=1., pan=0., b='sfx'):
-    i = int(t * SR); x = np.asarray(x)
+def put(x, t, g=1., pan=0., b='sfx', real=False):
+    i = int((t if real else REAL(t)) * SR); x = np.asarray(x)
     if i < 0: x = x[-i:]; i = 0
     if i >= NE: return
     x = x[:NE - i]; l, r = np.cos((pan + 1) * np.pi / 4), np.sin((pan + 1) * np.pi / 4)
@@ -115,16 +116,20 @@ wind = lpv(rng.standard_normal(int(25 * SR)), 900) * np.sin(np.linspace(0, np.pi
 put(wind, 6.0, .08, 0, 'amb')
 snow = L('bsb-wind-foley')[:int(8 * SR)]; put(snow * np.sin(np.linspace(0, np.pi, len(snow))), 28.5, .12, 0, 'amb')
 
-# вспышки-воспоминания: щелчок «фото», тёплый аккорд, далёкий звук каждого момента (с эхом)
+# паузы: мальчик понимает (H1), старик отвечает (H2) — время ролика
+H1, H2 = 3.2, 35.0 + 1.6
+for j, m in enumerate([72, 76, 79, 84]): put(pluck(m, 1.6, 1, .8), H1 + .75 + j * .07, .2, .2, 'mus', real=True)
 def echo(x, d=.18, k=.4, n=4):
-    y = np.zeros(len(x) + int(d * SR * n)); 
+    y = np.zeros(len(x) + int(d * SR * n))
     for i in range(n): y[int(i * d * SR):int(i * d * SR) + len(x)] += x * k ** i
     return lpv(y, 3500)
-for i, (tf, snd) in enumerate([(34.95, L('celebration-applause-small', 0, .9)), (35.4, L('celebration-applause-big', 0, 1.0)), (35.85, F('baby-giggle-b38737.mp3', .3, 1.3)), (36.3, F('bicycle-bell-c6-c6e543.mp3'))]):
-    put(L('click-clip-soft'), tf, .5, 0); put(echo(snd), tf + .03, .18, (i - 1.5) * .3)
-for j, m in enumerate([48, 55, 60, 64, 67, 72]): put(pluck(m, 3.5, 1, .3), 34.95 + j * .06, .22, (j - 2.5) * .15, 'mus')
+for i, snd in enumerate([L('celebration-applause-small', 0, .9), L('celebration-applause-big', 0, 1.0), F('baby-giggle-b38737.mp3', .3, 1.3), F('bicycle-bell-c6-c6e543.mp3')]):
+    tf = H2 + 3.0 + i * .375; put(L('click-clip-soft'), tf, .5, 0, real=True); put(echo(snd), tf + .03, .18, (i - 1.5) * .3, real=True)
+for j, m in enumerate([48, 55, 60, 64, 67, 72]): put(pluck(m, 3.5, 1, .3), H2 + 3.0 + j * .06, .22, (j - 2.5) * .15, 'mus', real=True)
+for j, m in enumerate([45, 52, 57, 60, 64, 69]): put(pluck(m, 4.0, 1, .25), H2 + 4.5 + j * .09, .2, (j - 2.5) * .15, 'mus', real=True)   # «Better.»
+put(L('writing-pencil-draw'), 36.6, .45, -.1); put(L('writing-pencil-draw'), 37.2, .4, -.1)
 # ---------- голос ----------
-VO = {'k1': 1.35, 'k2a': 3.7, 'k2': 5.95, 'o1': 31.25, 'o2a': 35.1, 'o2b': 36.6, 'o3': 37.3}
+VO = {'k1': 1.35, 'k1b': 3.8, 'k2a': REAL(3.7), 'k2': REAL(5.95), 'o1': REAL(31.25), 'r1': H2 + .05, 'r2': H2 + 2.4, 'r3': H2 + 4.5, 'o3': REAL(37.3)}   # время ролика
 for b in bus:                                            # петля: через стык переходит только ровный фон
     tl = bus[b][N:].copy(); bus[b] = bus[b][:N].copy()
     if b == 'amb': bus[b][:len(tl)] += tl

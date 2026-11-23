@@ -19,7 +19,7 @@ function ikArm(s, h, L, side) {
 
 function personGeom(P) {
   const R = P.R, [leg, tor, shw] = BODY[P.kind], sit = P.sit || 0;
-  const br = Math.sin(P.t * 2 * Math.PI * 12 / DUR + (P.seed || 0)) * .03 * R;
+  const TT = typeof CUR_T === 'number' ? CUR_T : P.t, br = Math.sin(TT * 2 * Math.PI * 12 / REAL_DUR + (P.seed || 0)) * .03 * R;
   const hipY = P.y - leg * R * (1 - .52 * sit) + (P.bob || 0), hx = P.x;
   const shY = hipY - tor * R * (1 - .08 * (P.lean || 0)) + br + (P.kind === 'old' ? .15 * R : 0);
   const shX = hx + (P.lean2 || 0) * R;
@@ -94,6 +94,7 @@ function drawHeadP(ctx, G, P, lw) {
   if (P.hair === 'white') {
     for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * 82, -36, 26, 34, s * .3, 0, 7); fill(ctx, PAPER); stroke(ctx, L); }
     ctx.beginPath(); ctx.ellipse(-30, -70, 26, 12, -.4, 0, 7); fill(ctx, ink(.05, 0, .1));
+    ctx.beginPath(); ctx.moveTo(-10, -98); ctx.quadraticCurveTo(0, -150, 40, -146); stroke(ctx, 14, OUT); stroke(ctx, 9, PAPER);   // тот же вихор, только седой
   } else if (P.hair) {
     const sh = P.hair === 'short' || P.hair === 'grey' || P.hair === 'dark', fr = sh ? -62 : -46, cap = sh ? .78 : 1;
     ctx.beginPath(); ctx.moveTo(-100, 10);
@@ -109,7 +110,7 @@ function drawHeadP(ctx, G, P, lw) {
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(s * 54 + f * 30, 30, 15, 0, 7); fill(ctx, ink(.55, 0, .12, P.blow ? 1 : .75)); }
   if (P.age < 20) for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc((i % 3 - 1) * 12 + (i < 3 ? -52 : 52) + f * 30, 18 + Math.floor(i % 2) * 8, 3, 0, 7); fill(ctx, ink(.6, .1, .7)); }
   // глаза
-  const op = clamp((P.eye ?? 1) * blink(((P.t % DUR) + DUR) % DUR * .999 + (P.seed || 0) + .7)), ex0 = f * 30;
+  const op = clamp((P.eye ?? 1) * blink(((CUR_T % REAL_DUR) + REAL_DUR) % REAL_DUR * .999 + (P.seed || 0) + .7)), ex0 = f * 30;
   for (const s of [-1, 1]) {
     const ex = s * 34 + ex0, ey = -6, rx = 19, ry = 23 * (1 + .2 * (P.wide || 0));
     if (op < .15) { ctx.beginPath(); ctx.moveTo(ex - rx, ey + 2); ctx.quadraticCurveTo(ex, ey + (P.happyEyes ? -10 : 10), ex + rx, ey + 2); stroke(ctx, 6); }
