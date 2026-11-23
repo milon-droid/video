@@ -55,7 +55,7 @@ L += room + whine; Rr += room * .9 + whine
 # гул: низкие синусы с биениями, напряжение растёт к зеркалу; провал до тишины на «это я»
 def curve(points):
     xs, ys = zip(*points); return np.interp(t, xs, ys)
-tens = curve([(0, .7), (S('A'), .25), (S('E'), .35), (S('F'), .55), (S('I'), .8), (S('L'), 1.0), (V('M') + .3, 1.0), (V('M') + .45, 0), (S('N') + .9, 0.05), (S('O'), .7), (S('P') + 1.6, 1), (S('P') + 2.3, 0), (TOTAL, 0)])
+tens = curve([(0, .7), (S('A'), .25), (S('E'), .35), (S('F'), .55), (S('I'), .8), (S('L'), 1.0), (V('M') + D['l14'] + .1, 1.0), (V('M') + D['l14'] + .25, 0), (S('N') + .9, 0.05), (S('O'), .7), (S('P') + 1.6, 1), (S('P') + 2.3, 0), (TOTAL, 0)])
 drone = (tone(N, 41.2) + .8 * tone(N, 41.9) + .5 * tone(N, 61.7) + .35 * tone(N, 82.6 + .3 * np.sin(t * .2))) * .075
 diss = (tone(N, 233.1) + tone(N, 246.9 + .8 * np.sin(t * .13)) + .6 * tone(N, 349.2)) * .012 * np.clip((tens - .4) / .6, 0, 1)
 air = band(N, 1500, 6000, -.3) * .02
@@ -65,7 +65,7 @@ L += drone * tens + diss * tens + airL * tens; Rr += drone * tens * .95 + diss *
 def boom(tt, g=1, f0=55):
     n = int(2.4 * R); x = np.arange(n) / R; f = f0 * (1 + 1.4 * np.exp(-x * 9))
     y = np.sin(2 * np.pi * np.cumsum(f) / R) * np.exp(-x * 1.6) + band(n, 30, 300) * np.exp(-x * 8) * .5; put(y * .55, tt, g)
-put(load(lib('sfx-kit/sounds/digital/digital-corrupt.wav')) * .7, 0.0, 1)
+put(load(lib('sfx-kit/sounds/digital/digital-corrupt.wav')) * .35, 0.0, 1)
 boom(0.02, 1)
 put(tone(int(.09 * R), 2200) * env(int(.09 * R), .005, .04) * .1, S('H') + .3)   # писк изотермы
 
@@ -115,7 +115,7 @@ n = int((S('L') - S('F')) * R); put(band(n, 200, 1200) * env(n, 1.5, 1.5) * .05 
 # ===== СОБАКА: когти по полу у окна, лай =====
 for k in range(10): n = int(.03 * R); put(band(n, 2500, 7000) * env(n, .001, .02) * .08, S('D') + .1 + k * .25 + (k % 2) * .06, 1, -.2)
 barks = [load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/ANMLDog_DogBark_OS_01.ogg')), load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/ANMLDog_DogBark_OS_02.ogg'))]
-for k, a in enumerate([.35, .85, 1.25]): put(barks[k % 2], S('P') + a + .06, 1.4, .05)
+for k, a in enumerate([.35, .85, 1.25]): put(barks[k % 2], S('P') + a + .06, 1.1, .05)
 
 # ===== ДЖЕСС: дыхание во сне =====
 br = load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/HMNBrth_FemaleBreathing_OS_01.ogg'))
@@ -123,18 +123,18 @@ g0 = SH['G']; n = int(g0['d'] * R); put(br[:n] * env(n, .4, .6) * .35, S('G'), 1
 
 # ===== СЕРДЦЕ: от I до M, ускоряется; обрыв на «это я» =====
 hb = load(lib('bigsoundbank/1930.flac'))
-a0, a1 = S('I') + 1.0, V('M') + .25; n = int((a1 - a0) * R)
+a0, a1 = S('I') + 1.0, V('M') + D['l14'] + .08; n = int((a1 - a0) * R)
 h = hb[:n] if len(hb) >= n else np.pad(hb, (0, n - len(hb)))
 put(h * np.linspace(.35, .9, n) * env(n, .5, .02), a0, 1)
 # «это я»: удар + звон в ушах
-boom(V('M') + .3, 1.2, 45)
-n = int(4 * R); x = np.arange(n) / R; put(tone(n, 4100) * np.exp(-x * .7) * .025 * env(n, .05, 1), V('M') + .3, 1)
+boom(V('M') + D['l14'] + .1, 1.2, 45)
+n = int(4 * R); x = np.arange(n) / R; put(tone(n, 4100) * np.exp(-x * .7) * .025 * env(n, .05, 1), V('M') + D['l14'] + .1, 1)
 # Джесс появляется — тихий высокий кластер
 n = int(3 * R); x = np.arange(n) / R
 put((tone(n, 1046) + tone(n, 1108) + tone(n, 1567)) * .012 * env(n, 1.2, 1), S('N') + .5, 1)
 # конец: сбой, выключение
 n_end = S('P') + SH['P']['d'] - 2.0
-put(load(lib('sfx-kit/sounds/digital/digital-interference.wav')), S('P') + .3, .6)
+put(load(lib('sfx-kit/sounds/digital/digital-interference.wav')), S('P') + .3, .35)
 put(load(lib('sfx-kit/sounds/digital/digital-corrupt.wav')), n_end - .1, .8)
 n = int(.7 * R); x = np.arange(n) / R; put(np.sin(2 * np.pi * np.cumsum(900 * np.exp(-x * 5) + 40) / R) * env(n, .005, .2) * .12, n_end + .35)
 boom(n_end + .4, .8, 38)
@@ -148,8 +148,15 @@ for lid, tt in VO:
     p = subprocess.run(['ffmpeg', '-v', 'error', '-i', os.path.join(PRJ, 'vo/take1', lid + '.wav'), '-af', fx[lines[lid]['role']], '-ac', '1', '-ar', str(R), '-f', 'f32le', '-'], capture_output=True, check=True).stdout
     x = np.frombuffer(p, np.float32).astype(np.float64); i = int(tt * R); x = x[:N - i]; vo[i:i + len(x)] += x
 # фон под голосом приглушить (≈ −9 дБ), голос по центру
-envv = np.convolve(np.abs(vo) > .01, np.ones(int(.25 * R)) / (.25 * R), 'same'); duck = 1 - .62 * np.clip(envv * 3, 0, 1)
-L = L * duck + vo * 1.0; Rr = Rr * duck + vo * 1.0
+w_ = int(.25 * R); cs = np.cumsum(np.concatenate([np.zeros(w_), (np.abs(vo) > .01).astype(float), np.zeros(w_)])); envv = (cs[w_ + w_ // 2:w_ + w_ // 2 + N] - cs[w_ // 2:w_ // 2 + N]) / w_; duck = 1 - .62 * np.clip(envv * 3, 0, 1)
+L = L * duck * 1.8 + vo * 1.0; Rr = Rr * duck * 1.8 + vo * 1.0
+# проверка баланса: голос громче фона по каждой реплике (цель ≈ +10 дБ)
+bg = (L - vo + Rr - vo) / 2
+for lid, tt in VO:
+    i0 = int(tt * R); i1 = i0 + int(D[lid] * R); seg = vo[i0:i1]; act = np.abs(seg) > .02
+    if act.sum() < 100: continue
+    rv = np.sqrt(np.mean(seg[act] ** 2)); rb = np.sqrt(np.mean(bg[i0:i1][act] ** 2)) + 1e-9
+    print(f'  {lid} {tt:5.1f} с  голос/фон {20 * np.log10(rv / rb):5.1f} дБ')
 mx = np.abs(np.stack([L, Rr])).max(); st = np.stack([L, Rr], 1) / mx * .89
 st.astype(np.float32).tofile(os.path.join(HERE, 'mix.f32'))
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ar', str(R), '-ac', '2', '-i', os.path.join(HERE, 'mix.f32'), os.path.join(HERE, 'mix.wav')], check=True)
