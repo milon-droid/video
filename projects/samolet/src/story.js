@@ -1,7 +1,6 @@
 // Сюжет во времени ролика t. Петля: последние 1.5 с — это «до начала» сцены в классе (s = t − DUR).
 const DUR = 46, LOOP = 1.5;
 // паузы сюжета (время сюжета стоит, идут отдельные сценки): мальчик понимает «это от меня», старик отвечает «No… Better.»
-const HOLDS = [[3.2, 1.6], [35.0, 4.8]], REAL_DUR = DUR + HOLDS.reduce((a, h) => a + h[1], 0);
 function warpT(T) {
   let off = 0;
   for (let i = 0; i < HOLDS.length; i++) {
@@ -23,9 +22,16 @@ function herm(keys, t) {                 // [[t, x, v], ...] — кубичес�
   const k = keys[keys.length - 1]; return k[1] + k[2] * (t - k[0]);
 }
 const FX = [[5.62, 790, 1200], [6.8, 1650, 450], [29.8, 11000, 400], [31.0, 11560, 0]];
-const FY = [[5.62, 1120, -500], [6.8, 820, 0], [12.0, 900, 0], [15.8, 1060, 0], [18.5, 820, 0], [21.5, 880, 0], [23.8, 1280, 0], [26.0, 1000, -40], [28.5, 880, 0], [31.0, 1330, 0]];
+const FY = [[5.62, 1120, -500], [6.8, 820, 0], [12.0, 900, 0], [15.0, 1080, 30], [18.5, 820, 0], [21.5, 880, 0], [23.8, 1280, 0], [26.0, 1000, -40], [28.5, 880, 0], [31.0, 1330, 0]];
 const RX = [[38.8, 11380, -900], [39.8, 10400, -2400], [43.5, 2500, -2000], [44.5, 1700, -540]];
 const RY = [[38.8, 1230, -600], [39.8, 850, 0], [44.5, 900, 0]];
+// паузы: 0 — петля самолётика в классе, 1 — «From… me?!», 2 — сердце над свадьбой, 3 — «Rich? Famous? No… Better.»
+const HP = 0, HK = 1, HH = 2, HO = 3, HEART_X = 5300, HEART_LEN = 2.6;
+const HEART_T = (() => { let t = 6.8; while (herm(FX, t) < HEART_X) t += .002; return t; })();
+const HOLDS = [[.30, 1.3], [3.2, 1.6], [HEART_T, HEART_LEN], [35.0, 6.0]], REAL_DUR = DUR + HOLDS.reduce((a, h) => a + h[1], 0);
+const HEART = (u, k = 14) => { const th = Math.PI - 2 * Math.PI * u;
+  return [HEART_X + 16 * Math.sin(th) ** 3 * k, 900 - (13 * Math.cos(th) - 5 * Math.cos(2 * th) - 2 * Math.cos(3 * th) - Math.cos(4 * th)) * k]; };
+FY[3] = [HEART_T, HEART(0)[1], 0];
 const AX = [[-1.5, 1700, -540], [.45, 640, -60]], AY = [[-1.5, 900, 0], [-.3, 1000, 120], [.45, 1385, 0]];
 function planePos(t) {
   const s = sOf(t);
@@ -54,7 +60,7 @@ function sheetAt(t) {
     const fold = t < 31.5 ? 1 : t < 31.9 ? 1 - sstep(31.5, 31.9, t) : t > 37.8 ? sstep(37.8, 38.2, t) : 0;
     const flip = t < 36.3 ? -1 : t < 36.6 ? lerp(-1, 1, sstep(36.3, 36.6, t)) : 1;
     const reveal = flip < 0 ? 99 : t < 36.6 ? 0 : t > 37.75 ? 99 : Math.floor(clamp((t - 36.6) / 1.1) * NA);
-    const lap = sstep(34.95, 35.05, t) * (1 - sstep(36.1, 36.4, t));
+    const lap = sstep(34.9, 35.0, t) * (1 - sstep(36.1, 36.4, t));
     return { cx: lerp(BENCH_X, BENCH_X - 60, lap), cy: lerp(1330, 1455, lap), w: lerp(300, 240, lap), side: flip < 0 ? 'B' : 'A', flip: Math.abs(flip) < .02 ? .02 : flip, fold, reveal, pen: t > 36.55 && t < 37.8 };
   }
   return null;
@@ -111,13 +117,23 @@ function kidHold(u) {                      // смотрит на подпись
   const K = kidPose(3.19);
   const sig = sstep(0, .3, u), touch = sstep(.3, .55, u) * (1 - sstep(1.25, 1.5, u)), wow = sstep(.7, .9, u);
   Object.assign(K, { look: [lerp(0, .7, sig) * (1 - touch * .6), lerp(.65, .2, sig) - touch * .9], furrow: (1 - wow) * .6,
-    hA: touch > 0 ? [lerp(435, 590, touch), lerp(1345, 1040, touch)] : K.hA, wide: wow, O: wow > .5 && u < 1.3 ? 1 : 0, brow: wow, smile: sstep(1.25, 1.5, u), tilt: 0 });
+    hA: touch > 0 ? [lerp(435, 590, touch), lerp(1345, 1040, touch)] : K.hA, wide: wow * (1 - sstep(1.35, 1.6, u)), O: wow > .5 && u < 1.3 ? 1 : 0, brow: wow * (1 - sstep(1.35, 1.6, u)), smile: sstep(1.2, 1.4, u) * (1 - sstep(1.45, 1.6, u)), tilt: 0 });
   return K;
 }
 function oldHold(u) {                      // «Rich? Famous?» — смешок, качает головой — «No.» — вспышки — берёт её руку — «Better.»
   const O = oldPose(34.99);
   Object.assign(O, { look: u < 2.1 ? [0, .6] : [.9, .1], face: u < 2.1 ? 0 : .45, smile: 1, tilt: u < 2.3 ? Math.sin(u * 7) * .06 : .06,
     open: Math.max(talk(u, .05, 2.25), talk(u, 2.4, 2.85) * .7), bob: u > 1.5 && u < 2.1 ? -Math.abs(Math.sin(u * 16)) * 7 : 0, eye: u > 2.3 ? .7 : 1, happyEyes: true });
-  if (u > 4.3) { const k = sstep(4.3, 4.5, u); O.hA = [lerp(BENCH_X - 150, BENCH_X - 170, k), lerp(1330, 1455, k)]; O.hB = [lerp(BENCH_X + 150, BENCH_X + 160, k), lerp(1330, 1440, k)]; O.eye = .6; }
+  if (u > 5.45) { const k = sstep(5.45, 5.65, u); O.hA = [lerp(BENCH_X - 150, BENCH_X - 170, k), lerp(1330, 1455, k)]; O.hB = [lerp(BENCH_X + 150, BENCH_X + 160, k), lerp(1330, 1440, k)]; O.eye = .6; }
   return O;
+}
+
+function kidLoop(u) {                     // самолётик кружит по классу — мальчик следит глазами
+  const K = kidPose(.299), p = loopPlane(u), lx = clamp((p.x - 600) / 300, -1, 1), ly = clamp((p.y - 1150) / 250, -1, 1);
+  Object.assign(K, { look: [lx, ly], wide: 1, O: 1, brow: 1, hA: [520, 1300], hB: [700, 1290], tilt: lx * .08 });
+  return K;
+}
+function loopPlane(u) {                   // петля вокруг головы мальчика и снова на курс посадки
+  const p0 = { x: herm(AX, .30), y: herm(AY, .30) }, w = E.io(clamp(u / 1.3)), a = 2 * Math.PI * w;
+  return { x: p0.x - 330 * Math.sin(a), y: p0.y - 420 * (1 - Math.cos(a)) * .5 - 80 * Math.sin(a), a };
 }

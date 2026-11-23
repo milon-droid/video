@@ -9,6 +9,11 @@
    "instruct": "An 80-year-old American man, warm gentle raspy voice, slow, kind grandfatherly tone, a soft smile in the voice.",
    "ref": "Well, look at that. It has been a long, long time.",
    "f0": 110
+  },
+  "sm_kid_c": {
+   "instruct": "",
+   "ref": "Are we rich? Are we famous?",
+   "f0": 290
   }
  },
  "lines": [
@@ -44,7 +49,7 @@
   },
   {
    "id": "k1b",
-   "role": "sm_kid",
+   "role": "sm_kid_c",
    "text": "From... me?!",
    "emo": "Stunned amazed whisper, slowly realizing, the end rises in disbelief."
   },
