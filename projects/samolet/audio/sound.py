@@ -139,10 +139,12 @@ for j, m in enumerate([48, 55, 60, 64, 67, 72]): put(pluck(m, 3.5, 1, .3), H2 + 
 for j, m in enumerate([45, 52, 57, 60, 64, 69]): put(pluck(m, 4.0, 1, .25), H2 + 6.0 + j * .09, .2, (j - 2.5) * .15, 'mus', real=True)   # «Better.»
 for i in range(8): put(L('click-clip-soft'), H2 + 3.0 + i * .33, .45, 0, real=True)                                                 # 8 карточек
 # класс изнутри: самолётик влетает в окно (шелест полёта), садится на парту; соседка пишет
-put(rs(L('whoosh-slow-soft'), .8), .55, .4, .4, real=True); put(L('whoosh-fast-soft'), 1.5, .3, 0, real=True); put(L('impact-light-soft'), 2.0, .45, -.2, real=True)
+put(rs(L('whoosh-slow-soft'), .8), .1, .35, .4, real=True); put(L('whoosh-fast-soft'), 1.3, .3, 0, real=True); put(L('impact-light-soft'), 2.0, .45, -.2, real=True)
 put(L('writing-pencil-draw'), .1, .2, .3, real=True); put(L('writing-pencil-draw'), 1.6, .15, .3, real=True)
 # свадьба: обычные аплодисменты, когда самолётик рисует сердце (музыка не прерывается)
-put(L('celebration-applause-big')[:int(3.5 * SR)] * np.linspace(1, 0, int(3.5 * SR)), HEART_T - .3, .35, .1)
+HS = 6.8
+while herm(FX, HS) < 4826: HS += .002
+put(L('celebration-applause-big')[:int(3.5 * SR)] * np.linspace(1, 0, int(3.5 * SR)), HS + .8, .35, .1)
 put(L('writing-pencil-draw'), 36.6, .45, -.1); put(L('writing-pencil-draw'), 37.2, .4, -.1)
 # ---------- голос ----------
 VO = {'k1': REAL(1.35), 'k1b': H1 + .7, 'k2a': REAL(3.7), 'k2': REAL(5.95), 'o1': REAL(31.25), 'r1': H2 + .05, 'r2': H2 + 2.4, 'r3': H2 + 6.0, 'o3': REAL(37.3)}   # время ролика

@@ -52,7 +52,7 @@ function wake(ctx, pts) {                       // след ветра за са
 }
 
 // ---------- класс ----------
-function school(ctx, t, K) {
+function school(ctx, t, K, up = 0) {
   facade(ctx, -200, 1600, 250, ink(.55, .12, .5), ink(.65, .2, .6));
   stamp(ctx, 'SCHOOL', 650, 330, 0, ink(.1, .9, .1), 70);
   window_(ctx, 160, 420, 980, 1100, ink(.05, .3, .22), () => {
@@ -60,8 +60,9 @@ function school(ctx, t, K) {
     ctx.font = '700 44px Inter'; ctx.fillStyle = PAPER; ctx.textAlign = 'left'; ctx.fillText('2 + 2 = 4', 300, 580); ctx.fillText('NOV 23', 300, 650);
     ctx.beginPath(); ctx.arc(780, 640, 60, 0, 7); stroke(ctx, 5, PAPER); ctx.beginPath(); ctx.moveTo(780, 640); ctx.lineTo(780, 595); ctx.moveTo(780, 640); ctx.lineTo(815, 655); stroke(ctx, 5, PAPER);
     ctx.beginPath(); ctx.arc(1040, 560, 50, 0, 7); fill(ctx, PAPER); stroke(ctx, 5);                // часы
-    drawPerson(ctx, { x: 1000, y: 1650, R: 88, kind: 'boy', age: 10, sit: 1, outfit: 'dress', hair: 'bun', t, seed: 4, smile: .3, look: [-.2, .8], hA: [950, 1395], hB: [1050 + Math.sin(t * 14) * 10, 1390] });   // соседка пишет
+    drawPerson(ctx, { x: 1000, y: 1650, R: 88, kind: 'boy', age: 10, sit: 1, outfit: 'dress', hair: 'bun', t, seed: 4, smile: .3, look: [lerp(-.2, .1, up), lerp(.8, -.9, up)], hA: [950, 1395], hB: [1050 + Math.sin(t * 14) * 10 * (1 - up), 1390] });   // соседка пишет
     drawPerson(ctx, K);
+    if (K.love) { const k = (CUR_T * .7) % 1; heart(ctx, 600 + Math.sin(CUR_T * 5) * 12, 1000 - k * 110, 24); }   // влюблён
     rr(ctx, 260, 1390, 860, 40, 6); fill(ctx, ink(.45, .12, .72)); stroke(ctx, 6);                 // парта
     ctx.fillStyle = ink(.55, .2, .8); ctx.fillRect(280, 1430, 820, 120);
   });

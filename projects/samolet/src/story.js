@@ -32,16 +32,21 @@ const HOLDS = [[0, 2.2], [3.2, 1.6], [35.0, 6.0]], REAL_DUR = DUR + HOLDS.reduce
 const HEART = (u, k = 14) => { const th = Math.PI - 2 * Math.PI * u;
   return [HEART_X + 16 * Math.sin(th) ** 3 * k, 900 - (13 * Math.cos(th) - 5 * Math.cos(2 * th) - 2 * Math.cos(3 * th) - Math.cos(4 * th)) * k]; };
 function heartOff(t) {                    // сердце в системе камеры: самолётик рисует его, не сбавляя ход
-  const u = (t - (HEART_T - HEART_LEN / 2)) / HEART_LEN;
+  const u = (t - HS) / HEART_LEN;
   if (u <= 0 || u >= 1) return [0, 0, u >= 1 ? 1 : 0];
   const w = E.io(u), a = HEART(w, 13), b = HEART(0, 13); return [a[0] - b[0], a[1] - b[1], w];
 }
-function planeBase(t) { return { x: herm(FX, t), y: herm(FY, t) }; }
-const AX = [[-1.5, 1700, -540], [0, 1000, -380]], AY = [[-1.5, 900, 0], [0, 980, 30]];        // снаружи: в конце ролика влетает в окно класса
+// у свадьбы самолётик сбавляет ход (не останавливается), рисует сердце и снова разгоняется — молодые остаются в кадре
+const HS = (() => { let t = 6.8; while (herm(FX, t) < 4826) t += .002; return t + .8; })();   // начало сердца
+const HXS = (() => { const xa = herm(FX, HS - .8), xs = xa + 210; return [[HS - .8, xa, 400], [HS, xs, 120], [HS + HEART_LEN, xs + 120 * HEART_LEN, 120], [HS + 4.6, herm(FX, HS + 4.6), 400]]; })();
+function baseX(t) { return t > HS - .8 && t < HS + 4.6 ? herm(HXS, t) : herm(FX, t); }
+function planeBase(t) { return { x: baseX(t), y: herm(FY, t) }; }
+const AX = [[-1.5, 1700, -540], [0, 1250, -380]], AY = [[-1.5, 900, 0], [0, 880, 20]];        // сбоку, мимо створки — к окну класса
+const HX = [[0, 1250, -380], [1.0, 880, -420], [2.0, 640, -60]], HY = [[0, 880, 20], [1.0, 1060, 180], [2.0, 1385, 0]];   // пауза 0: влетает, над соседкой, на парту
 function planePos(t) {
   const s = sOf(t);
   if (s < 0 && t >= DUR - LOOP) return { x: herm(AX, s), y: herm(AY, s), dir: -1, fly: true };
-  if (t >= 5.62 && t < 31.0) { const o = heartOff(t); return { x: herm(FX, t) + o[0], y: herm(FY, t) + o[1], dir: 1, fly: true, heart: o[2] }; }
+  if (t >= 5.62 && t < 31.0) { const o = heartOff(t); return { x: baseX(t) + o[0], y: herm(FY, t) + o[1], dir: 1, fly: true, heart: o[2] }; }
   if (t >= 38.8 && t < DUR - LOOP) return { x: herm(RX, t), y: herm(RY, t), dir: -1, fly: true };
   return { fly: false };
 }
@@ -75,7 +80,7 @@ function kidPose(t) {
   let s = sOf(t); if (s > 7.5) s = -2;
   const K = { x: 600, y: 1650, R: 105, kind: 'boy', age: 10, sit: 1, outfit: 'stripes', hair: 'mop', t, seed: 0, look: [.2, .3], smile: 0 };
   if (s < 0) {                                                     // влюблённо смотрит на соседку
-    Object.assign(K, { hA: [585, 1300], hB: [740, 1385], tilt: .1, eye: .7, look: [1, .1], smile: .8, face: .3 });
+    Object.assign(K, { hA: [585, 1300], hB: [740, 1385], tilt: .1, eye: .7, look: [1, .1], smile: .8, face: .3, love: 1 });
   } else if (s < .75) Object.assign(K, { wide: 1, O: 1, brow: 1, look: [.3, .7], hA: [520, 1300], hB: [700, 1300] });
   else if (s < 3.5) Object.assign(K, { hA: [435, 1345], hB: [765, 1345], look: [0, .75], furrow: sstep(1.5, 1.9, s), open: talk(s, 1.35, 3.6), tilt: s > 1.9 ? .12 : 0, brow: s > 2.9 ? .4 : 0 });
   else if (s < 4.6) { const u = clamp((s - 3.55) / 1.0), ln = Math.min(3, Math.floor(u * 4)), fr = (u * 4) % 1;
@@ -132,21 +137,12 @@ function oldHold(u) {                      // «Rich? Famous?» — смешок
   return O;
 }
 
-// ---------- класс изнутри (первая пауза): самолётик влетает в окно ----------
-const IX = -6000;
-function inPlane(u) {                      // из окна → над соседкой → на парту мальчика
-  const K = [[.35, IX + 400, 690, -140], [1.15, IX + 120, 860, -420], [2.0, IX - 190, 1400, -120]], Y = [[.35, 690, 30], [1.15, 860, 160], [2.0, 1400, 0]];
-  return { x: herm(K, u), y: herm(Y, u), L: lerp(60, 150, sstep(.35, 1.4, u)), vis: u > .35 && u < 2.0 };
-}
+// ---------- пауза 0: самолётик влетает в окно класса (тот же вид снаружи) ----------
+function holdPlane(u) { const x = herm(HX, u), y = herm(HY, u), x2 = herm(HX, u - .02), y2 = herm(HY, u - .02); return { x, y, dir: x < x2 ? -1 : 1, ang: Math.atan2(y - y2, Math.abs(x - x2) + .5) * .8 * (x < x2 ? -1 : 1), vis: u < 2.0 }; }
 function kidIn(u) {
-  const see = sstep(.5, .7, u), land = sstep(1.9, 2.05, u), p = inPlane(u);
-  const lk = see < .5 ? [1, .05] : [clamp((p.x - (IX - 230)) / 300, -1, 1), clamp((p.y - 1150) / 300, -1, 1)];
-  return { x: IX - 230, y: 1700, R: 100, kind: 'boy', age: 10, sit: 1, outfit: 'stripes', hair: 'mop', t: u, seed: 0,
-    look: lk, eye: lerp(.7, 1, see), smile: .8 * (1 - see), face: .3 * (1 - see), tilt: .1 * (1 - see), brow: see, wide: see * (1 - land) + land, O: land,
-    hA: see < .5 ? [IX - 245, 1300] : [IX - 330, 1330], hB: [IX - 90, 1395] };
+  const K = kidPose(-.01), see = sstep(.35, .55, u), land = sstep(1.9, 2.05, u), p = holdPlane(u);
+  if (see > .5) Object.assign(K, { look: [clamp((p.x - 600) / 350, -1, 1), clamp((p.y - 1150) / 300, -1, 1)], eye: 1, smile: 0, face: 0, tilt: 0, brow: 1, wide: 1, O: land, love: 0 });
+  if (u > 2.0) Object.assign(K, { look: [.3, .7], hA: [520, 1300], hB: [700, 1300] });
+  return K;
 }
-function girlIn(u) {
-  const up = sstep(1.0, 1.2, u) * (1 - sstep(1.5, 1.8, u));
-  return { x: IX + 210, y: 1700, R: 92, kind: 'boy', age: 10, sit: 1, outfit: 'dress', hair: 'bun', t: u, seed: 4,
-    look: [lerp(-.2, -.3, up), lerp(.8, -.9, up)], smile: .3, hA: [IX + 150, 1395], hB: [IX + 250 + Math.sin(u * 14) * 12 * (1 - up), 1390] };
-}
+function girlUp(u) { return sstep(.5, .7, u) * (1 - sstep(1.1, 1.4, u)); }

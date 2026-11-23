@@ -72,7 +72,7 @@ function overlays(ctx, t, cam) {
   const s = sOf(t), p = planeAt(t);
   if (p.fly && s < .45 && (t < 5 || t >= DUR - LOOP)) {
     const [x, y] = toScreen(cam, p.x, p.y), a = clamp((.45 - s) / .25);
-    ctx.globalAlpha = a; stampS(ctx, 'FROM: YOU, AGE 80', clamp(x, 200, 520), y - 90, -.08, ink(1, .05, .95), 34); ctx.globalAlpha = 1;
+    ctx.globalAlpha = a * (x > 20 && x < 700 ? 1 : 0); stampS(ctx, 'FROM: YOU, AGE 80', clamp(x, 200, 520), y - 90, -.08, ink(1, .05, .95), 34); ctx.globalAlpha = 1;
   }
   // перемотка жизни назад
   if (t > 39.5 && t < 43.8) {
@@ -97,7 +97,7 @@ async function setup() {
 }
 const CLOSE = V(BENCH_X + 130, 1260, 600), HEARTCAM = V(HEART_X, 1080, 1180);
 function holdCam(h, t) {
-  if (h.i === HP) return V(IX + 20, 1080, 980);
+  if (h.i === HP) return mixC(C0, C2b, sstep(1.2, 2.2, h.u));
   if (h.i === HK) return mixC(camera(3.2), V(600, 1170, 520), sstep(0, .4, h.u) * (1 - sstep(1.25, 1.6, h.u)));
   return h.u < 5.65 ? mixC(B1, V(BENCH_X + 120, 1250, 620), sstep(1.6, 2.3, h.u)) : CLOSE;
 }
@@ -112,13 +112,13 @@ window.renderFrame = async T => {
   ctx.setTransform(a, 0, 0, a, -(cam.cx - cam.vw / 2) * a, -(cam.cy - cam.vw * 8 / 9) * a);
   background(ctx, cam, t);
   const L = cam.cx - cam.vw, R = cam.cx + cam.vw;
-  if (h && h.i === HP) interior(ctx, h.u);
-  else if (L < 1400) school(ctx, t, h && h.i === HK ? kidHold(h.u) : kidPose(t));
+  if (L < 1400) school(ctx, t, h && h.i === HK ? kidHold(h.u) : h && h.i === HP ? kidIn(h.u) : kidPose(t), h && h.i === HP ? girlUp(h.u) : 0);
   BLOCKS.forEach((b, bi) => { if (b.x0 + b.w > L && b.x0 < R) { const p = planeAt(t); const px = p.fly ? p.x : (t < 20 ? 0 : 99999); b.draw(ctx, b.x0, fl && fl[1] === bi ? fl[3] : clamp(((p.fly && p.dir > 0 ? planeBase(t).x : px) - b.x0) / b.w), t); } });
   if (fl && typeof fl[1] === 'string') card(ctx, fl[1], T);
-  if (!(h && h.i === HP)) ground(ctx, cam);
+  ground(ctx, cam);
   let OG = null; if (R > 10600 && R < 20000) OG = bench(ctx, t, h && h.i === HO ? oldHold(h.u) : oldPose(t), null);
   let sh = sheetAt(t);
+  if (h && h.i === HP && h.u < 2.0) sh = null;                  // ещё летит
   if (h && h.i === HK && sh) { const k = sstep(0, .3, h.u) * (1 - sstep(1.3, 1.6, h.u)); sh.cx = lerp(sh.cx, 545, k); sh.cy = lerp(sh.cy, 1370, k); }   // опускает лист — видно лицо
   if (h && h.i === HO) { sh = sheetAt(34.99); const k = sstep(5.45, 5.65, h.u); sh.cx = lerp(BENCH_X, BENCH_X - 60, k); sh.cy = lerp(1330, 1455, k); sh.w = lerp(300, 240, k); }
   if (sh) {
@@ -133,12 +133,13 @@ window.renderFrame = async T => {
   if (t >= 38.2 && t < 38.8) { const O = oldPose(t), h = O.hA; plane(ctx, h[0] - 10, h[1] - 25, 140, .2, 0, -1); }
   if (t >= 31.0 && t < 31.5) plane(ctx, BENCH_X, 1320, 140, 0, 0, 1);
   const p = h && (h.i === HP || h.i === HH) ? { fly: false } : planeAt(t);
+  if (h && h.i === HP) { const q = holdPlane(h.u); if (q.vis) plane(ctx, q.x, q.y, 140, q.ang, h.u * 2, q.dir); }
   if (p.fly) {
     const pts = []; for (let i = 1; i < 14; i++) { const q = planeAt(t - i * .035); if (q.fly) pts.push([q.x - 60 * q.dir, q.y + 6]); }
     if (p.heart > 0 && p.dir > 0) heartTrail(ctx, t, p.heart); else wake(ctx, pts);
     plane(ctx, p.x, p.y, 140, p.ang, p.bank, p.dir);
   }
-  if (!(h && h.i === HP)) { foreground(ctx, cam); particles(ctx, cam, T); }
+  foreground(ctx, cam); particles(ctx, cam, T);
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (fl) {                                   // рамка «фотографии» вокруг воспоминания
     const m = 46, age = fl[2];
@@ -149,7 +150,7 @@ window.renderFrame = async T => {
     ctx.restore();
   }
   if (!fl && !h) overlays(ctx, t, cam); caption(ctx, t, h);
-  if (h && h.i === HP) { const q = inPlane(h.u); if (q.vis) { const [x, y] = toScreen(cam, q.x, q.y); ctx.globalAlpha = sstep(.5, .8, h.u); stampS(ctx, 'FROM: YOU, AGE 80', clamp(x, 220, 500), y - 90, -.08, ink(1, .05, .95), 34); ctx.globalAlpha = 1; } }
+  if (h && h.i === HP) { const q = holdPlane(h.u); if (q.vis) { const [x, y] = toScreen(cam, q.x, q.y); ctx.globalAlpha = sstep(.5, .8, h.u); stampS(ctx, 'FROM: YOU, AGE 80', clamp(x, 220, 500), y - 90, -.08, ink(1, .05, .95), 34); ctx.globalAlpha = 1; } }
   let mis = 1;
   if (fl && h.u - fl[0] < .07) mis = 6;
   if (t > 39.5 && t < 43.8) mis = 1 + 2 * Math.sin(Math.PI * (t - 39.5) / 4.3);
