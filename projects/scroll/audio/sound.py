@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+"""FOR YOU — звук: в ленте быстрый бит и звуки роликов, в комнате тишина; свайпы, уведомления, вибрация, сердце. → mix.wav"""
+import json, subprocess, os, sys, wave, numpy as np
+SR = 48000; DUR = 40.0; N = int(SR * DUR); NE = N + 4 * SR
+HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, '../../..'))
+LIB = os.path.join(ROOT, 'assets/sfx-library'); IDX = {e['id']: e for e in json.load(open(os.path.join(LIB, 'index.json')))}
+SF = os.path.join(HERE, '../assets/sfx'); rng = np.random.default_rng(9)
+bus = {k: np.zeros((NE, 2)) for k in ('mus', 'sfx', 'amb')}
+def dec(f, a=0, b=None):
+    x = np.frombuffer(subprocess.run(['ffmpeg', '-v', 'error', '-i', f, '-f', 'f32le', '-ac', '1', '-ar', str(SR), '-'], capture_output=True).stdout, np.float32).astype(float)
+    x = x[int(a * SR):int(b * SR) if b else None]; x /= np.abs(x).max() + 1e-9; n = min(len(x), int(.02 * SR)); x[-n:] *= np.linspace(1, 0, n); return x
+L = lambda i, a=0, b=None: dec(os.path.join(LIB, IDX[i]['file']), a, b)
+F = lambda f, a=0, b=None: dec(os.path.join(SF, f), a, b)
+def put(x, t, g=1., pan=0., b='sfx'):
+    i = int(t * SR); x = np.asarray(x)
+    if i < 0: x = x[-i:]; i = 0
+    if i >= NE: return
+    x = x[:NE - i]; l, r = np.cos((pan + 1) * np.pi / 4), np.sin((pan + 1) * np.pi / 4)
+    bus[b][i:i + len(x), 0] += x * g * l * 1.41; bus[b][i:i + len(x), 1] += x * g * r * 1.41
+def rs(x, k): n = int(len(x) / k); return np.interp(np.arange(n) * k, np.arange(len(x)), x)
+def lpv(x, fc): k = max(1, int(SR / fc / 2)); w = np.hanning(2 * k + 1); w /= w.sum(); return np.convolve(x, w, 'same')
+def sine(f, d, a=.003, r=.1): n = int(SR * d); t = np.arange(n) / SR; return np.sin(2 * np.pi * np.cumsum(np.full(n, f) if np.isscalar(f) else f) / SR) * np.minimum(1, t / a) * np.exp(-t / r)
+# таймлайн (как в story.js)
+FEEDS = [(0, [('A', 1.5), ('B', 1.1), ('C', 1.0)]), (6.2, [('D', .9), ('E', .8), ('A', .8), ('B', .9)]), (12.8, [('C', .6), ('D', .6), ('E', .6), ('B', .6), ('A', .6), ('B', .6)]), (21.8, [(k, .38) for k in 'ABCDEBADEB'])]
+ZK = [(0, 1), (3.6, 1), (4.4, 0), (5.4, 0), (6.2, 1), (9.6, 1), (10.2, 0), (12.0, 0), (12.8, 1), (16.4, 1), (17.0, 0), (21.0, 0), (21.8, 1), (25.6, 1), (26.2, 0), (30.6, 0), (31.4, .8), (33.4, .8), (34.2, 0), (37.4, 0), (DUR, 1)]
+FACE = [(12.0, 12.8), (21.0, 21.8)]
+def zoom(t):
+    for (a, va), (b, vb) in zip(ZK, ZK[1:]):
+        if t <= b: u = min(1, max(0, (t - a) / (b - a))); u = 4 * u ** 3 if u < .5 else 1 - (-2 * u + 2) ** 3 / 2; return va + (vb - va) * u
+    return 1
+tt = np.arange(NE) / SR; ZE = np.array([zoom(x % DUR if x < DUR else x - DUR) for x in tt[::480]]); ZE = np.interp(np.arange(NE), np.arange(0, NE, 480), ZE)
+for a, b in FACE: ZE[int(a * SR):int(b * SR)] = .35
+DEADM = (tt > 30.4) & (tt < 36.0)
+# ---------- бит ленты: kick + hat + коровий колокол (phonk-ish), темп растёт ----------
+def kick(): n = int(.35 * SR); t = np.arange(n) / SR; return np.sin(2 * np.pi * np.cumsum(55 + 140 * np.exp(-t * 30)) / SR) * np.exp(-t * 7)
+def hat(): n = int(.05 * SR); return (rng.standard_normal(n) - lpv(rng.standard_normal(n), 6000)) * np.exp(-np.arange(n) / SR * 80)
+def bell(f): n = int(.4 * SR); t = np.arange(n) / SR; return (np.sign(np.sin(2 * np.pi * f * t)) * .5 + np.sin(2 * np.pi * f * 1.48 * t) * .5) * np.exp(-t * 9)
+mel = [76, 79, 76, 74, 76, 79, 81, 79]; mtof = lambda m: 440 * 2 ** ((m - 69) / 12)
+t = 0.; i = 0
+while t < DUR + 3:
+    bpm = 140 if t < 12 else 155 if t < 21.8 else 175
+    st = 60 / bpm / 2
+    if i % 4 == 0: put(kick(), t, .9, 0, 'mus')
+    put(hat(), t, .25 if i % 2 else .15, .3, 'mus')
+    if i % 2 == 0: put(lpv(bell(mtof(mel[(i // 2) % 8])), 4000), t, .22, -.2, 'mus')
+    t += st; i += 1
+# ---------- звуки роликов ----------
+def clip_sfx(k, t0, d):
+    if k == 'A':
+        st = F('footsteps-wooden-stairs-3-ac0a94.mp3', .1, 1.6); put(rs(st, 1.6)[:int(d * SR)], t0, .35, .1); put(L('whoosh-fast-soft'), t0 + d * .45, .35, .2)
+    elif k == 'B':
+        n = int(d * SR); x = np.arange(n) / SR; put((np.sin(2 * np.pi * 110 * x) + .5 * np.sin(2 * np.pi * 112.5 * x) + .3 * np.sin(2 * np.pi * 330 * x * (1 + .01 * np.sin(x * 9)))) * np.minimum(1, x / .05) * .5, t0, .4, 0)
+    elif k == 'C':
+        c = F('paper-rustle-910aa4.mp3', .2, .5); j = 0
+        while j * .28 < d: put(rs(c, 1.8), t0 + j * .28, .45, -.1); put(L('click-clip-firm'), t0 + j * .28, .3); j += 1
+    elif k == 'D':
+        j = 0
+        while j * .7 < d: put(L('pop-large-in'), t0 + j * .7 + .1, .45, (j % 2 - .5) * .4); j += 1
+        put(L('move-spring'), t0, .2)
+    elif k == 'E':
+        put(L('impact-heavy-firm'), t0 + .5 % 1.2, .55); put(rs(L('transform-stretch'), 1.4), t0 + .48, .4)
+        n = int(.5 * SR); x = np.arange(n) / SR; put(lpv(rng.standard_normal(n), 3000) * np.minimum(1, x / .2) * .3, t0, .3)
+for t0, cl in FEEDS:
+    tt0 = t0
+    for j, (k, d) in enumerate(cl):
+        clip_sfx(k, tt0, d)
+        if j > 0 or t0 > 0: put(L('swipe-fast-firm'), tt0 - .02, .55, .2)
+        tt0 += d
+clip_sfx('A', 37.0, 3.0 + 1.5)                                     # конец: паркур снова (идёт через стык)
+# ---------- комната: тишина, часы, уведомления, пёс, таймлапс ----------
+def ping(): a = sine(1320, .3, r=.08) * .6; return a + sine(1760, .3, r=.1)
+for t0 in (10.4, 17.3, 18.2, 19.1, 20.0, 26.5): put(ping(), t0, .4, .2); put(L('swipe-fast-soft'), t0 + .8, .4, .2)
+n = int(.6 * SR); x = np.arange(n) / SR; whine = np.sin(2 * np.pi * np.cumsum(900 + 300 * np.sin(x * 6) - 400 * x) / SR) * np.sin(np.pi * x / x[-1]) * .3
+put(lpv(whine, 2500), 4.8, .5, -.4)
+tick = lambda: lpv(rng.standard_normal(int(.03 * SR)), 5000) * np.exp(-np.arange(int(.03 * SR)) / SR / .005)
+for a, b in ((10.2, 11.8), (17, 21), (26.2, 30.4)):
+    j = 0
+    while a + j * .09 < b: put(tick(), a + j * .09, .2, .3, 'amb'); j += 1
+    put(L('whoosh-slow-soft'), a, .35); put(L('whoosh-slow-soft'), b - .8, .3)
+for x0 in (4.4, 10.2, 17.0, 26.2): put(L('whoosh-fast-soft'), x0 - .6, .4)          # отъезды
+put(L('faller-1s-strong'), 30.35, .6); put(rs(L('faller-1s-soft'), .7), 30.5, .4)
+hb = L('bsb-heartbeat-slow'); put(hb[:int(2.4 * SR)], 31.2, .7)
+put(L('phone-vibrate-table'), 35.8, .8); put(ping(), 35.85, .5)
+put(L('whoosh-fast-medium'), 37.3, .45)
+for a, b in FACE: n = int((b - a) * SR); x = np.arange(n) / SR; put(np.sin(2 * np.pi * 55 * x) * .5 * np.minimum(1, x / .1), a, .5, 0, 'amb')
+room = lpv(rng.standard_normal(NE), 200) * .04; put(room, 0, 1, 0, 'amb')
+# музыка и звуки роликов слышны, только когда смотрим в ленту (z), в комнате — глухо и тихо; телефон сел — тишина
+g = np.clip(ZE, 0, 1) ** 1.5; g[DEADM[:NE]] = 0
+for b in ('mus',):
+    muf = np.stack([lpv(bus[b][:, 0], 500), lpv(bus[b][:, 1], 500)], 1)
+    bus[b] = bus[b] * g[:, None] + muf * (1 - g[:, None]) * .25 * (~DEADM[:NE])[:, None]
+sfx_feed = bus['sfx'].copy()
+# петля: хвост за концом — в начало (там тот же паркур)
+for b in bus:
+    tl = bus[b][N:].copy(); bus[b] = bus[b][:N].copy(); bus[b][:len(tl)] += tl
+M = bus['mus'] * .8 + bus['sfx'] + bus['amb']; M /= np.abs(M).max() * 1.12
+with wave.open(os.path.join(HERE, 'mix.wav'), 'wb') as w:
+    w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((M * 32767).astype('<i2').tobytes())
+print('ok')
