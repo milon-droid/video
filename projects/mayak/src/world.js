@@ -7,7 +7,8 @@ const Wd = (() => {
   const setFlashes = a => FL = a;
   function flash(t) { let v = 0; for (const f of FL) { const d = t - f; if (d >= 0 && d < .7) v = Math.max(v, (d < .06 ? 1 : Math.exp(-(d - .06) * 7)) * (d > .12 && d < .2 ? .5 : 1)); } return v; }
   // цвет: смешать два hex
-  function mix(a, b, k) { const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16); const r = (pa >> 16) * (1 - k) + (pb >> 16) * k, g = ((pa >> 8) & 255) * (1 - k) + ((pb >> 8) & 255) * k, bl = (pa & 255) * (1 - k) + (pb & 255) * k; return `rgb(${r | 0},${g | 0},${bl | 0})`; }
+  function hx(a) { if (a[0] === '#') return parseInt(a.slice(1), 16); const m = a.match(/\d+/g).map(Number); return (m[0] << 16) | (m[1] << 8) | m[2]; }
+  function mix(a, b, k) { const pa = hx(a), pb = hx(b); const r = (pa >> 16) * (1 - k) + (pb >> 16) * k, g = ((pa >> 8) & 255) * (1 - k) + ((pb >> 8) & 255) * k, bl = (pa & 255) * (1 - k) + (pb & 255) * k; return `rgb(${r | 0},${g | 0},${bl | 0})`; }
   // ---------- палитры: шторм ночью / рассвет
   const PAL = {
     night: { sky0: '#0f1630', sky1: '#2a3760', cl: ['#1a2342', '#222d52', '#2a3762'], sea: ['#11283f', '#153452', '#1b4365', '#215279', '#285f8a'], foam: 'rgba(214,230,244,.92)', rock: ['#161b23', '#20262f'], cliff: '#1b2a2c', grass: '#21382f' },
