@@ -150,7 +150,7 @@ window.renderFrame = async T => {
     ctx.restore();
   }
   if (!fl && !h) overlays(ctx, t, cam); caption(ctx, t, h);
-  if (h && h.i === HP) { const q = holdPlane(h.u); if (q.vis) { const [x, y] = toScreen(cam, q.x, q.y); ctx.globalAlpha = sstep(.5, .8, h.u); stampS(ctx, 'FROM: YOU, AGE 80', clamp(x, 220, 500), y - 90, -.08, ink(1, .05, .95), 34); ctx.globalAlpha = 1; } }
+  if (h && h.i === HP) { const q = holdPlane(h.u); if (q.vis) { const [x, y] = toScreen(cam, q.x, q.y); ctx.globalAlpha = (1 - sstep(1.75, 2.0, h.u)) * (x > 20 && x < 700 ? 1 : 0); stampS(ctx, 'FROM: YOU, AGE 80', clamp(x, 220, 500), y - 90, -.08, ink(1, .05, .95), 34); ctx.globalAlpha = 1; } }
   let mis = 1;
   if (fl && h.u - fl[0] < .07) mis = 6;
   if (t > 39.5 && t < 43.8) mis = 1 + 2 * Math.sin(Math.PI * (t - 39.5) / 4.3);
