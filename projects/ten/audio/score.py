@@ -4,7 +4,9 @@
 python3 score.py out.wav"""
 import sys, numpy as np
 from scipy.signal import butter, sosfilt, fftconvolve
-SR = 44100; DUR = 75.8
+from warp import warp, TOTAL, INS
+SR = 44100; DUR = TOTAL
+RAW = False
 SHIFT_AT, SHIFT = 66.6, 2.2   # с серии v4: договор удлинил план 14 на 2,2 с
 L = np.zeros(int(SR * (DUR + 3))); R = np.zeros_like(L); VERB = np.zeros_like(L)
 rng = np.random.default_rng(7)
@@ -15,6 +17,7 @@ def hz(n):
     return 440 * 2 ** ((k + 12 * (int(n[i:]) + 1) - 69) / 12)
 def put(sig, t, gain=1., pan=0., verb=.2):
     if t >= SHIFT_AT: t += SHIFT
+    if not RAW: t = warp(t)
     i = int(t * SR)
     if i >= len(L): return
     j = min(len(L), i + len(sig)); s = sig[:j - i] * gain
@@ -164,6 +167,17 @@ def mumble(t0, dur, base=105, v=1.):
         s *= np.sin(np.pi * t / d) ** .6 * (1 + .3 * np.sin(2 * np.pi * 28 * t))
         put(s * 2.2, tt, .55 * v, -.15, .15); tt += d + (rng.uniform(.03, .12) if rng.uniform() < .25 else .01); k += 1
 # бормотание заменено настоящим голосом тени (vo/ep1, v6)
+
+# ===== заполнение вставок (EN-финал): мягкий пэд в тональности места + альтернативная концовка + длинный хвост =====
+RAW = True
+FILL = {16.7: ['F3', 'Ab3', 'C4'], 22.4: ['C3', 'G3', 'C4'], 25.05: ['C3', 'Gb3', 'C4'], 30.1: ['A2', 'E3', 'C4'], 57.6: ['A2', 'E3', 'C4', 'E4'], 64.4: ['C3', 'G3', 'E4'], 67.4: ['F2', 'C3', 'A3']}
+for p, e in INS:
+    if p in FILL: put(pad([hz(n) for n in FILL[p]], e + .8, .3, .5, 1500), warp(p - .001) - .2, .32, 0, .5)
+import wave as _w
+with _w.open('alt_cue.wav') as w: cue = np.frombuffer(w.readframes(w.getnframes()), '<i2').reshape(-1, 2).astype(float) / 32768
+i0 = int(warp(68.8 - .001) * SR); n = min(len(cue), len(L) - i0); L[i0:i0 + n] += cue[:n, 0] * .9; R[i0:i0 + n] += cue[:n, 1] * .9
+for k, (n_, o) in enumerate([('C5', 0), ('E5', .5), ('G5', 1.0), ('E5', 1.5), ('C6', 2.0)]): put(musicbox(hz(n_)), warp(73.0) + 1.0 + o, .3, .2, .6)
+RAW = False
 
 # реверб: экспоненциальный шум 2.4 с
 ir_t = T(2.4); ir = rng.uniform(-1, 1, len(ir_t)) * np.exp(-ir_t * 2.4); ir = lp(ir, 5000); ir /= np.abs(ir).sum() ** .5 * 6

@@ -4,11 +4,12 @@ import json, subprocess, os, sys
 ROOT = os.path.dirname(os.path.abspath(__file__)); VO = os.path.join(ROOT, '..', 'vo')
 SENYA = "asetrate=24000*1.07,aresample=24000,atempo=0.98,highpass=f=100,equalizer=f=3000:t=q:w=1:g=2,acompressor=threshold=-20dB:ratio=3:makeup=3"
 TEN = "asetrate=24000*0.9,aresample=24000,atempo=1.08,highpass=f=90,equalizer=f=160:t=q:w=1:g=3,equalizer=f=2400:t=q:w=1:g=3,acompressor=threshold=-24dB:ratio=5:makeup=5,aecho=0.6:0.4:24|48:0.22|0.12"
-EN = '--en' in sys.argv
+ALTV = '--alt' in sys.argv
+EN = '--en' in sys.argv or ALTV
 if EN:
     SENYA = "highpass=f=90,equalizer=f=3200:t=q:w=1:g=2,acompressor=threshold=-20dB:ratio=3:makeup=3"
     TEN = "asetrate=24000*0.93,aresample=24000,atempo=1.075,highpass=f=90,equalizer=f=160:t=q:w=1:g=3,equalizer=f=2400:t=q:w=1:g=2,acompressor=threshold=-24dB:ratio=5:makeup=5,aecho=0.6:0.4:24|48:0.2|0.1"
-cfg = json.load(open(os.path.join(VO, 'ep1-en.json' if EN else 'ep1.json')))
+cfg = json.load(open(os.path.join(VO, 'ep1-en-alt.json' if ALTV else 'ep1-en.json' if EN else 'ep1.json')))
 items = [] if EN else [("probe2/q1.wav", "senya", .12, 1.0), ("probe2/q2.wav", "senya", 12.65, 1.15), ("probe2/q3_c1.wav", "ten", 33.45, 1.0), ("probe2/q4_c1.wav", "ten", 39.85, 1.0)]
 PF = os.path.join(VO, 'ep1en-pick.json' if EN else 'ep1-pick.json'); PICK = json.load(open(PF)) if os.path.exists(PF) else {}
 items += [(f"{'ep1en' if EN else 'ep1'}/{PICK.get(l['id'], l['id'])}.wav", l['role'], l['t'], 1.0) for l in cfg['lines']]
@@ -33,6 +34,7 @@ for i, (f, role, t, tempo) in enumerate(items):
     fx = (SENYA if role.startswith('senya') else TEN) + (f",atempo={tempo}" if tempo != 1 else '')
     flt.append(f"[{k}:a]{fx},aresample=48000,adelay={int(t * 1000)}|{int(t * 1000)},apad[a{k}]")
 n = sum(1 for x in ins if x == '-i')
-flt.append(''.join(f"[a{k}]" for k in range(n)) + f"amix=inputs={n}:normalize=0:duration=longest,atrim=0:75.8,pan=stereo|c0=c0|c1=c0[out]")
-subprocess.run(['ffmpeg', '-v', 'error', '-y', *ins, '-filter_complex', ';'.join(flt), '-map', '[out]', '-ar', '48000', os.path.join(ROOT, 'vo-en.wav' if EN else 'vo.wav')], check=True)
+DUR = 84.3 if ALTV else 75.8
+flt.append(''.join(f"[a{k}]" for k in range(n)) + f"amix=inputs={n}:normalize=0:duration=longest,atrim=0:{DUR},pan=stereo|c0=c0|c1=c0[out]")
+subprocess.run(['ffmpeg', '-v', 'error', '-y', *ins, '-filter_complex', ';'.join(flt), '-map', '[out]', '-ar', '48000', os.path.join(ROOT, 'vo-en-alt.wav' if ALTV else 'vo-en.wav' if EN else 'vo.wav')], check=True)
 print('vo.wav', n, 'реплик')

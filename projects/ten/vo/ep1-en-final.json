@@ -1,0 +1,233 @@
+{
+ "roles": {
+  "senya_en": {
+   "instruct": "Young man around 20, energetic and fast-talking, sarcastic Gen Z storyteller, casual American English, bright youthful timbre, expressive and a little dramatic, like a viral TikTok narrator.",
+   "ref": "Okay, so this is gonna sound insane, but my shadow literally walked out on me last night. Like, packed up and left."
+  },
+  "shadow2_en": {
+   "instruct": "Playful, cheeky young male voice, early twenties, smooth and charismatic, mischievous grin in the voice, quick comedic timing, clear natural delivery, slightly higher pitch than average, like a cocky best friend.",
+   "ref": "Relax, man. I'm not gone gone. I'm just living a little. You should try it sometime, seriously."
+  },
+  "narrator_en": {
+   "instruct": "Deep, calm, resonant adult male narrator, movie-trailer voice, slow, authoritative and mysterious, low pitch, clear diction.",
+   "ref": "In a world where shadows have rules, only one thing matters. Never lose yours."
+  }
+ },
+ "lines": [
+  {
+   "id": "e01",
+   "role": "senya_en",
+   "t": 0.1,
+   "text": "At 11:47 PM my shadow fucked off.",
+   "say": "At eleven forty-seven p.m., my shadow fucked off."
+  },
+  {
+   "id": "e02",
+   "role": "senya_en",
+   "t": 5.6,
+   "text": "I only noticed in the morning.",
+   "say": "I only noticed in the morning."
+  },
+  {
+   "id": "e03",
+   "role": "senya_en",
+   "t": 7.4,
+   "text": "The cat has one. The kettle has one.",
+   "say": "The cat has one. The kettle has one."
+  },
+  {
+   "id": "e04",
+   "role": "senya_en",
+   "t": 10.15,
+   "text": "I don't.",
+   "say": "I don't."
+  },
+  {
+   "id": "e05",
+   "role": "senya_en",
+   "t": 12.65,
+   "text": "I quit. 26 years following you, and you never go anywhere. Fuck this.",
+   "say": "I quit. Twenty-six years following you, and you never go anywhere. Fuck this."
+  },
+  {
+   "id": "e06",
+   "role": "senya_en",
+   "t": 17.3,
+   "text": "…what the fuck.",
+   "say": "What the fuck."
+  },
+  {
+   "id": "e07b",
+   "role": "senya_en",
+   "t": 19.0,
+   "text": "9,490 times. One routine.",
+   "say": "Nine thousand, four hundred and ninety times. One routine."
+  },
+  {
+   "id": "r1",
+   "role": "narrator_en",
+   "t": 22.55,
+   "text": "Rule number one. No shadow? You last till sunset. Then you become one.",
+   "say": "Rule number one. No shadow? You last till sunset. Then... you become one."
+  },
+  {
+   "id": "e09",
+   "role": "senya_en",
+   "t": 25.9,
+   "text": "My fingers are see-through.",
+   "say": "My fingers are see-through."
+  },
+  {
+   "id": "e10",
+   "role": "senya_en",
+   "t": 27.7,
+   "text": "An hour later, the internet found it.",
+   "say": "An hour later, the internet found it."
+  },
+  {
+   "id": "e11",
+   "role": "senya_en",
+   "t": 30.25,
+   "text": "Alright, you little shit.",
+   "say": "Alright, you little shit."
+  },
+  {
+   "id": "e12",
+   "role": "senya_en",
+   "t": 32.5,
+   "text": "It rode other people's buses…",
+   "say": "It rode other people's buses..."
+  },
+  {
+   "id": "s13",
+   "role": "shadow2_en",
+   "t": 34.0,
+   "text": "Catch me, loser!",
+   "say": "Catch me, loser!"
+  },
+  {
+   "id": "s14",
+   "role": "shadow2_en",
+   "t": 35.75,
+   "text": "Fuuuuck!",
+   "say": "Fuuuuuuck!"
+  },
+  {
+   "id": "e15",
+   "role": "senya_en",
+   "t": 37.5,
+   "text": "…danced with strangers' shadows…",
+   "say": "...danced with strangers' shadows..."
+  },
+  {
+   "id": "s16",
+   "role": "shadow2_en",
+   "t": 39.9,
+   "text": "Watch and learn, dumbass.",
+   "say": "Watch and learn, dumbass."
+  },
+  {
+   "id": "e17",
+   "role": "senya_en",
+   "t": 42.6,
+   "text": "…and for the first time in a year, I ran.",
+   "say": "...and for the first time in a year, I ran."
+  },
+  {
+   "id": "e18",
+   "role": "senya_en",
+   "t": 50.5,
+   "text": "Come back. I'm fading.",
+   "say": "Come back. I'm fading."
+  },
+  {
+   "id": "sa1",
+   "role": "shadow2_en",
+   "t": 53.5,
+   "text": "Look around.",
+   "say": "Hey. Look around."
+  },
+  {
+   "id": "sa2",
+   "role": "shadow2_en",
+   "t": 55.7,
+   "text": "You lived more today than all year.",
+   "say": "You lived more today than all year."
+  },
+  {
+   "id": "sa3",
+   "role": "shadow2_en",
+   "t": 57.7,
+   "text": "Work is work. But get out. Mix it up.",
+   "say": "Work is work, man. But get out. Mix it up."
+  },
+  {
+   "id": "e22",
+   "role": "senya_en",
+   "t": 61.9,
+   "text": "New terms. Sign it, and I'll come back.",
+   "say": "New terms. Sign it, and I'll come back."
+  },
+  {
+   "id": "e23",
+   "role": "senya_en",
+   "t": 66.5,
+   "text": "Signing.",
+   "say": "Signing."
+  },
+  {
+   "id": "e25",
+   "role": "senya_en",
+   "t": 71.6,
+   "text": "Tomorrow, they all leave.",
+   "say": "Tomorrow, they all leave."
+  },
+  {
+   "id": "sx1",
+   "role": "shadow2_en",
+   "t": 68.8,
+   "text": "Oh. And… one more term.",
+   "say": "Oh. And... one more term.",
+   "alt": 0.4
+  },
+  {
+   "id": "x2",
+   "role": "senya_en",
+   "t": 68.8,
+   "text": "…what now?",
+   "say": "What now?",
+   "alt": 1.8
+  },
+  {
+   "id": "sx3",
+   "role": "shadow2_en",
+   "t": 68.8,
+   "text": "That shadow at the club… the ponytail… the moves…",
+   "say": "That shadow at the club... the ponytail... the moves...",
+   "alt": 2.7
+  },
+  {
+   "id": "sx4",
+   "role": "shadow2_en",
+   "t": 68.8,
+   "text": "Introduce me to her owner.",
+   "say": "Introduce me to her owner.",
+   "alt": 5.5
+  },
+  {
+   "id": "x5",
+   "role": "senya_en",
+   "t": 68.8,
+   "text": "…deal. I guess.",
+   "say": "Deal... I guess.",
+   "alt": 7.0
+  },
+  {
+   "id": "c1",
+   "role": "senya_en",
+   "t": 71.3,
+   "text": "So… do we help the Shadow get the girl? Tell us in the comments.",
+   "say": "So... do we help the Shadow get the girl? Tell us in the comments!"
+  }
+ ]
+}

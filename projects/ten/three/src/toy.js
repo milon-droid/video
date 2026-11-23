@@ -127,7 +127,14 @@ export const blinkK = (t, seed = 1) => { const per = 2.4 + h1(seed) * 2.2, ph = 
 
 // тень-персонаж: приплюснутый двойник. yawG (поворот на земле) → holder (сплющивание по z, подъём) → root (поза, поворот фигуры).
 // rise 0 — лежит на земле (голова к +z относительно yawG), 1 — стоит на стене. len — вытянутость тени.
-export function makeShade() { const T = makeToy(LOOK.senya, { shadow: true }); const yawG = new THREE.Group(), holder = new THREE.Group(); yawG.add(holder); holder.add(T.root); return { ...T, holder: yawG, flat: holder }; }
+export function makeShade(opt = {}) { const T = makeToy(LOOK.senya, { shadow: true }); const yawG = new THREE.Group(), holder = new THREE.Group(); yawG.add(holder); holder.add(T.root);
+  if (opt.female) { // девушка-тень: хвостик, юбка, тоньше талия
+    const ink = new THREE.MeshBasicMaterial({ color: '#05050a' }); const tail = new THREE.Group(); T.head.add(tail); tail.position.set(0, .16, -.12);
+    [[0, 0, 0, .1], [0, -.09, -.1, .085], [0, -.2, -.15, .075], [0, -.31, -.16, .06]].forEach(([x, y, z, r]) => { const m = mesh(G.sph(r, 12), ink, false, false); m.position.set(x, y, z); tail.add(m); });
+    [-1, 1].forEach(sd => { const m = mesh(G.sph(.11, 12), ink, false, false); m.position.set(sd * .17, .02, -.02); m.scale.set(.7, 1.6, .9); T.head.add(m); });
+    const skirt = mesh(new THREE.ConeGeometry(.25, .3, 20, 1, true), ink, false, false); skirt.position.y = -.12; T.hips.add(skirt); T.tail = tail; T.skirt = skirt;
+    T.spine.children[0].scale.x = .8; }
+  return { ...T, holder: yawG, flat: holder }; }
 export function placeShade(Sh, { x = 0, y = 0, z = 0, rise = 1, len = 1.3, yaw = 0, scale = 1, turn = 0, op = .92 }) {
   Sh.holder.position.set(x, y + .004, z); Sh.holder.rotation.set(0, yaw, 0);
   Sh.flat.rotation.set((1 - rise) * Math.PI / 2, 0, 0); Sh.flat.scale.set(scale, scale * lerp(len, 1, rise), .03 * scale);
