@@ -72,9 +72,9 @@ export const night = (() => {
   const hyd = new THREE.Group(); add(hyd, mesh(G.cyl(.1, .12, .4), clay('#d84a3a')), 0, .2, 0); add(hyd, mesh(G.sph(.11), clay('#d84a3a')), 0, .42, 0); add(g, hyd, 5.0, 0, 2.8);
   // неон «ПРОФСОЮЗ ТЕНЕЙ» (для финала) + дверь
   const neon = new THREE.Group(); neon.visible = false;
-  const signTex = canvasTex(1024, 300, (c) => { c.fillStyle = '#0a0612'; c.fillRect(0, 0, 1024, 300); c.strokeStyle = '#ff3a8a'; c.lineWidth = 14; c.shadowColor = '#ff3a8a'; c.shadowBlur = 30; c.strokeRect(20, 20, 984, 260); c.font = '800 98px Unb'; c.textAlign = 'center'; c.fillStyle = '#ffd0e8'; c.fillText('ПРОФСОЮЗ', 512, 140); c.fillText('ТЕНЕЙ', 512, 250); });
+  const signTex = canvasTex(1024, 300, (c) => { c.fillStyle = '#0a0612'; c.fillRect(0, 0, 1024, 300); c.strokeStyle = '#ff3a8a'; c.lineWidth = 14; c.shadowColor = '#ff3a8a'; c.shadowBlur = 30; c.strokeRect(20, 20, 984, 260); c.font = '800 98px Unb'; c.textAlign = 'center'; c.fillStyle = '#ffd0e8'; c.fillText('SHADOW', 512, 140); c.fillText('UNION', 512, 250); });
   const sign = mesh(G.plane(2.6, .76), new THREE.MeshBasicMaterial({ map: signTex, toneMapped: false }), false, false); add(neon, sign, .2, 3.35, -2.13);
-  const sign2Tex = canvasTex(1024, 160, (c) => { c.font = '800 60px Unb'; c.textAlign = 'center'; c.fillStyle = '#7af0ff'; c.shadowColor = '#7af0ff'; c.shadowBlur = 26; c.fillText('ЗАБАСТОВКА — ЗАВТРА', 512, 100); });
+  const sign2Tex = canvasTex(1024, 160, (c) => { c.font = '800 60px Unb'; c.textAlign = 'center'; c.fillStyle = '#7af0ff'; c.shadowColor = '#7af0ff'; c.shadowBlur = 26; c.fillText('STRIKE — TOMORROW', 512, 100); });
   const sign2 = mesh(G.plane(2.1, .33), new THREE.MeshBasicMaterial({ map: sign2Tex, transparent: true, toneMapped: false }), false, false); add(neon, sign2, .1, 2.78, -2.13);
   const door = mesh(G.rbox(1.0, 2.0, .1, .03), clay('#120e22'), false, true); add(neon, door, .2, 1.0, -2.12);
   const dfr = mesh(G.rbox(1.15, 2.1, .08, .02), clay('#3a3260'), false, true); add(neon, dfr, .2, 1.05, -2.14);
@@ -83,8 +83,8 @@ export const night = (() => {
   const aw = mesh(G.box(1.6, .06, .7), new THREE.MeshStandardMaterial({ map: canvasTex(128, 32, (c) => { for (let i = 0; i < 8; i++) { c.fillStyle = i % 2 ? '#f2e8e0' : '#c83a5a'; c.fillRect(i * 16, 0, 16, 32); } }), roughness: .8 }), true, true);
   aw.rotation.x = .35; add(neon, aw, .2, 2.25, -1.85);
   [0, 1].forEach(k => add(neon, mesh(G.rbox(1.5 - k * .2, .12, .4 - k * .12, .02), clay('#4a4268'), false, true), .2, .06 + k * .12, -1.95 + k * .06));
-  const plq = mesh(G.plane(.6, .22), new THREE.MeshBasicMaterial({ map: canvasTex(256, 96, (c) => { c.fillStyle = '#d8c8a8'; c.fillRect(0, 0, 256, 96); c.fillStyle = '#1a1424'; c.font = '700 22px Unb'; c.textAlign = 'center'; c.fillText('ТОЛЬКО', 128, 40); c.fillText('ДЛЯ ТЕНЕЙ', 128, 74); }) }), false, false); add(neon, plq, .2, 1.45, -2.06);
-  [['ТЕНИ,', 'ХВАТИТ', 'ХОДИТЬ', 'ЗА НИМИ!', '#ffcf4a'], ['МЫ НЕ', 'ОБЯЗАНЫ', 'ПОВТОРЯТЬ', '#7af0ff']].forEach((p, i) => {
+  const plq = mesh(G.plane(.6, .22), new THREE.MeshBasicMaterial({ map: canvasTex(256, 96, (c) => { c.fillStyle = '#d8c8a8'; c.fillRect(0, 0, 256, 96); c.fillStyle = '#1a1424'; c.font = '700 22px Unb'; c.textAlign = 'center'; c.fillText('SHADOWS', 128, 40); c.fillText('ONLY', 128, 74); }) }), false, false); add(neon, plq, .2, 1.45, -2.06);
+  [['SHADOWS,', 'STOP', 'FOLLOWING', 'THEM!', '#ffcf4a'], ['WE DON’T', 'HAVE TO', 'COPY YOU', '#7af0ff']].forEach((p, i) => {
     const col = p[p.length - 1]; const lines = p.slice(0, -1);
     const pm = mesh(G.plane(.7, .95), new THREE.MeshStandardMaterial({ map: canvasTex(140, 190, (c) => { c.fillStyle = '#f0e6d4'; c.fillRect(0, 0, 140, 190); c.fillStyle = '#0a0812'; c.beginPath(); c.arc(70, 52, 22, 0, 7); c.fill(); c.fillRect(52, 70, 36, 46); c.fillStyle = '#fff'; c.fillRect(60, 46, 7, 4); c.fillRect(74, 46, 7, 4); c.fillStyle = col; c.fillRect(0, 0, 140, 10); c.fillStyle = '#1a1424'; c.font = '800 15px Unb'; c.textAlign = 'center'; lines.forEach((l, k) => c.fillText(l, 70, 136 + k * 16)); }), roughness: .9 }), false, true);
     pm.rotation.z = i ? .05 : -.06; add(neon, pm, i ? 1.35 : -1.0, 1.55, -2.13); });
