@@ -22,3 +22,4 @@
 Подпись: «He drew her for 214 days. She was drawing too. ✏️ Sounds: Oculus Audio Pack by Meta (CC BY 4.0)» #shortfilm #animation #love #sketchbook
 ## Статус
 - v1 (2026-11-23): `render/day214_v1.mp4` (63 МБ), лёгкая `render/day214_v1_send.mp4` (18 МБ), 43 с, 720p. Ждёт отзыва.
+- v2 (2026-11-23): `render/day214_v2.mp4` (26 МБ, 64 с, 720p): DAY 1 флешбэк, его скетчбук, её DAY 1, переписка блокнотами, рисуют вдвоём, «DON'T WAIT 7 MONTHS / TO REGRET IT FOR 70 YEARS». Ждёт отзыва.
