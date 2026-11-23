@@ -1,29 +1,148 @@
 {
  "roles": {
-  "ps_old": {"instruct": "A 75-year-old American man, warm, slightly raspy, gentle voice, slow and tender, a quiet storyteller remembering his life, close to the microphone.", "ref": "One grain. One day of your life.", "f0": 115},
-  "ps_dad": {"instruct": "A 35-year-old American man, calm baritone, distracted and busy, speaking without looking up from his work, flat and absent-minded.", "ref": "Later.", "f0": 120},
-  "ps_girl": {"instruct": "A 5-year-old American girl, tiny sweet high childish voice, hopeful and shy, close to the microphone.", "ref": "Daddy, build a castle with me?", "f0": 300},
-  "ps_girl10": {"instruct": "A 10-year-old American girl, bright excited voice, proud, calling out loudly across a beach.", "ref": "Dad, look!", "f0": 270},
-  "ps_teen": {"instruct": "A 16-year-old American teenage girl, bored, cold, dismissive, slightly annoyed, flat.", "ref": "Later, Dad.", "f0": 220},
-  "ps_woman": {"instruct": "A 22-year-old American young woman, warm but rushed, cheerful goodbye, calling from a distance.", "ref": "Bye, Dad!", "f0": 210},
-  "ps_kid": {"instruct": "A 5-year-old American girl, very small cute high voice, shy and hopeful, a little lisp.", "ref": "Grandpa, build a castle with me?", "f0": 310}
+  "ps_old": {
+   "instruct": "A 75-year-old American man, warm, slightly raspy, gentle voice, slow and tender, a quiet storyteller remembering his life, close to the microphone.",
+   "ref": "One grain. One day of your life.",
+   "f0": 115
+  },
+  "ps_dad": {
+   "instruct": "A 35-year-old American man, calm baritone, distracted and busy, speaking without looking up from his work, flat and absent-minded.",
+   "ref": "Later.",
+   "f0": 120
+  },
+  "ps_girl": {
+   "instruct": "A 5-year-old American girl, tiny sweet high childish voice, hopeful and shy, close to the microphone.",
+   "ref": "Daddy, build a castle with me?",
+   "f0": 300
+  },
+  "ps_girl10": {
+   "instruct": "A 10-year-old American girl, bright excited voice, proud, calling out loudly across a beach.",
+   "ref": "Dad, look!",
+   "f0": 270
+  },
+  "ps_teen": {
+   "instruct": "A 16-year-old American teenage girl, bored, cold, dismissive, slightly annoyed, flat.",
+   "ref": "Later, Dad.",
+   "f0": 220
+  },
+  "ps_woman": {
+   "instruct": "A 22-year-old American young woman, warm but rushed, cheerful goodbye, calling from a distance.",
+   "ref": "Bye, Dad!",
+   "f0": 210
+  },
+  "ps_kid": {
+   "instruct": "A 5-year-old American girl, very small cute high voice, shy and hopeful, a little lisp.",
+   "ref": "Grandpa, build a castle with me?",
+   "f0": 310
+  },
+  "ps_old_c": {
+   "instruct": "",
+   "ref": "You can't stop the sand. But you can choose what it builds.",
+   "ref_wav": "projects/pesok/assets/vo/ep1/n5.wav",
+   "f0": 114
+  }
  },
  "lines": [
-  {"id": "n1", "role": "ps_old", "text": "One grain. One day of your life.", "emo": "Slow, intimate, mysterious, a soft pause between the two sentences."},
-  {"id": "n2", "role": "ps_old", "text": "The day she was born, I had eighteen thousand left. Felt like forever.", "emo": "Tender, remembering, a soft smile in the voice."},
-  {"id": "g1", "role": "ps_girl", "text": "Daddy, build a castle with me?", "emo": "Hopeful, tugging at his sleeve, rising question."},
-  {"id": "d1", "role": "ps_dad", "text": "Later.", "emo": "Short, flat, absent, not looking up, typing."},
-  {"id": "g2", "role": "ps_girl", "text": "Can we go to the beach?", "emo": "Quiet, a bit sad, looking at the rain, rising question."},
-  {"id": "d2", "role": "ps_dad", "text": "Later, sweetie.", "emo": "Distracted, talking on the phone at the same time, quick."},
-  {"id": "g3", "role": "ps_girl10", "text": "Dad, look!", "emo": "Excited, proud, shouting across the beach."},
-  {"id": "d3", "role": "ps_dad", "text": "Later.", "emo": "Absent-minded mumble, eyes on the laptop."},
-  {"id": "d4", "role": "ps_dad", "text": "Beach this weekend?", "emo": "Hopeful, a bit awkward, trying to reconnect, rising question."},
-  {"id": "t1", "role": "ps_teen", "text": "Later, Dad.", "emo": "Cold, bored, dismissive, closing the door."},
-  {"id": "w1", "role": "ps_woman", "text": "Bye, Dad!", "emo": "Cheerful, waving, in a hurry."},
-  {"id": "n3", "role": "ps_old", "text": "I kept saying later. The sand kept falling.", "emo": "Quiet regret, slow, heavy."},
-  {"id": "n4", "role": "ps_old", "text": "Then one day, the top was almost empty.", "emo": "Almost a whisper, frightened realisation."},
-  {"id": "k1", "role": "ps_kid", "text": "Grandpa, build a castle with me?", "emo": "Shy, hopeful, rising question."},
-  {"id": "o1", "role": "ps_old", "text": "Now.", "emo": "Emotional, choked up, smiling through tears, firm and warm."},
-  {"id": "n5", "role": "ps_old", "text": "You can't stop the sand. But you can choose what it builds.", "emo": "Warm, wise, gentle, slow, final words of the story."}
+  {
+   "id": "n1",
+   "role": "ps_old",
+   "text": "One grain. One day of your life.",
+   "emo": "Slow, intimate, mysterious, a soft pause between the two sentences."
+  },
+  {
+   "id": "n2",
+   "role": "ps_old",
+   "text": "The day she was born, I had eighteen thousand left. Felt like forever.",
+   "emo": "Tender, remembering, a soft smile in the voice."
+  },
+  {
+   "id": "g1",
+   "role": "ps_girl",
+   "text": "Daddy, build a castle with me?",
+   "emo": "Hopeful, tugging at his sleeve, rising question."
+  },
+  {
+   "id": "d1",
+   "role": "ps_dad",
+   "text": "Later.",
+   "emo": "Short, flat, absent, not looking up, typing."
+  },
+  {
+   "id": "g2",
+   "role": "ps_girl",
+   "text": "Can we go to the beach?",
+   "emo": "Quiet, a bit sad, looking at the rain, rising question."
+  },
+  {
+   "id": "d2",
+   "role": "ps_dad",
+   "text": "Later, sweetie.",
+   "emo": "Distracted, talking on the phone at the same time, quick."
+  },
+  {
+   "id": "g3",
+   "role": "ps_girl10",
+   "text": "Dad, look!",
+   "emo": "Excited, proud, shouting across the beach."
+  },
+  {
+   "id": "d3",
+   "role": "ps_dad",
+   "text": "Later.",
+   "emo": "Absent-minded mumble, eyes on the laptop."
+  },
+  {
+   "id": "d4",
+   "role": "ps_dad",
+   "text": "Beach this weekend?",
+   "emo": "Hopeful, a bit awkward, trying to reconnect, rising question."
+  },
+  {
+   "id": "t1",
+   "role": "ps_teen",
+   "text": "Later, Dad.",
+   "emo": "Cold, bored, dismissive, closing the door."
+  },
+  {
+   "id": "w1",
+   "role": "ps_woman",
+   "text": "Bye, Dad!",
+   "emo": "Cheerful, waving, in a hurry."
+  },
+  {
+   "id": "n3",
+   "role": "ps_old",
+   "text": "I kept saying later. The sand kept falling.",
+   "emo": "Quiet regret, slow, heavy."
+  },
+  {
+   "id": "n4",
+   "role": "ps_old",
+   "text": "Then one day, the top was almost empty.",
+   "emo": "Almost a whisper, frightened realisation."
+  },
+  {
+   "id": "k1",
+   "role": "ps_kid",
+   "text": "Grandpa, build a castle with me?",
+   "emo": "Shy, hopeful, rising question."
+  },
+  {
+   "id": "o1",
+   "role": "ps_old",
+   "text": "Now.",
+   "emo": "Emotional, choked up, smiling through tears, firm and warm."
+  },
+  {
+   "id": "n5",
+   "role": "ps_old",
+   "text": "You can't stop the sand. But you can choose what it builds.",
+   "emo": "Warm, wise, gentle, slow, final words of the story."
+  },
+  {
+   "id": "n1c",
+   "role": "ps_old_c",
+   "text": "One grain. One day of your life."
+  }
  ]
 }
