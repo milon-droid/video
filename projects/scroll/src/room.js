@@ -6,11 +6,12 @@ function roomPOV(ctx, t, ra) {
   ctx.fillStyle = ink(.45, .3, .6); ctx.fillRect(-200, 1480, 1480, 640);                                                  // пол
   // окно: день/ночь мелькают, сезоны
   rr(ctx, 640, 360, 380, 520, 8); fill(ctx, ink(.5, .3, .6)); stroke(ctx, 7);
+  ctx.save(); ctx.beginPath(); ctx.rect(662, 382, 336, 476); ctx.clip();
   ctx.fillStyle = ink(lerp(.4, .05, day), lerp(1, .3, day), lerp(.2, .05, day)); ctx.fillRect(662, 382, 336, 476);
   const sea = Math.floor(ra * 40) % 4; ctx.fillStyle = [ink(.4, 0, .1), ink(0, .7, .9), ink(.7, .05, .95), PAPER][spin ? sea : 0];
   for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(700 + i * 80, 820 - (i % 2) * 30, 60, 0, 7); ctx.fill(); }
   const sky = Math.floor(ra * 8); for (let i = 0; i < 2 + sky; i++) { ctx.fillStyle = ink(.6, 1, .5, .7); const h = 120 + hash(i) * 260; ctx.fillRect(670 + (i * 47) % 300, 858 - h, 40, h); }   // город растёт
-  ctx.fillStyle = ink(.5, .3, .6); ctx.fillRect(820, 382, 12, 476);
+  ctx.restore(); ctx.fillStyle = ink(.5, .3, .6); ctx.fillRect(820, 382, 12, 476);
   // часы
   ctx.beginPath(); ctx.arc(480, 300, 80, 0, 7); fill(ctx, PAPER); stroke(ctx, 7);
   const hm = spin ? t * 40 : 0.05 + t * .002, hh = spin ? t * 3.3 : 0;
@@ -35,6 +36,12 @@ function roomPOV(ctx, t, ra) {
   const boxes = Math.min(7, Math.floor(ra * 14)); for (let i = 0; i < boxes; i++) { rr(ctx, 780 + (i % 2) * 14, 1500 - i * 36, 260, 36, 4); fill(ctx, ink(.1, .05, .5)); stroke(ctx, 4); }
   if (ra > .25) { const melt = clamp((ra - .25) / .25); rr(ctx, 40, 1440, 220, 120, 14); fill(ctx, PAPER); stroke(ctx, 5); ctx.fillStyle = NEON; ctx.fillRect(40, 1480, 220, 14);
     for (let i = 0; i < 5; i++) { const h = 70 * (1 - melt) + 8; ctx.fillStyle = ink(0, .7, .1); ctx.fillRect(70 + i * 38, 1440 - h, 10, h); if (melt < 1) { ctx.beginPath(); ctx.ellipse(75 + i * 38, 1430 - h, 7, 13, 0, 0, 7); fill(ctx, ink(.6, 0, 1)); } } }
+}
+function dread(ctx, ra, t) {                 // с годами комната тонет во тьме, свет — только от экрана
+  const k = clamp(ra * 1.15) * (t > DEAD[0] ? 1.15 : 1);
+  ctx.globalCompositeOperation = 'lighter';
+  const g = ctx.createRadialGradient(540, 1250, 250, 540, 1150, 1300); g.addColorStop(0, ink(0, 0, 0)); g.addColorStop(1, ink(.35 * k, .75 * k, .3 * k));
+  ctx.fillStyle = g; ctx.fillRect(-300, -300, 1680, 2600); ctx.globalCompositeOperation = 'source-over';
 }
 function dog(ctx, x, y, ra, t) {
   const old = ra > .45, lying = ra > .15, wag = lying ? 0 : Math.sin(t * 12) * .5, col = old ? ink(.25, .3, .3) : ink(.55, .2, .85);

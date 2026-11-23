@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """FOR YOU — звук: в ленте быстрый бит и звуки роликов, в комнате тишина; свайпы, уведомления, вибрация, сердце. → mix.wav"""
 import json, subprocess, os, sys, wave, numpy as np
-SR = 48000; DUR = 40.0; N = int(SR * DUR); NE = N + 4 * SR
+SR = 48000; DUR = 43.0; N = int(SR * DUR); NE = N + 4 * SR
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, '../../..'))
 LIB = os.path.join(ROOT, 'assets/sfx-library'); IDX = {e['id']: e for e in json.load(open(os.path.join(LIB, 'index.json')))}
 SF = os.path.join(HERE, '../assets/sfx'); rng = np.random.default_rng(9)
@@ -21,16 +21,16 @@ def rs(x, k): n = int(len(x) / k); return np.interp(np.arange(n) * k, np.arange(
 def lpv(x, fc): k = max(1, int(SR / fc / 2)); w = np.hanning(2 * k + 1); w /= w.sum(); return np.convolve(x, w, 'same')
 def sine(f, d, a=.003, r=.1): n = int(SR * d); t = np.arange(n) / SR; return np.sin(2 * np.pi * np.cumsum(np.full(n, f) if np.isscalar(f) else f) / SR) * np.minimum(1, t / a) * np.exp(-t / r)
 # таймлайн (как в story.js)
-FEEDS = [(0, [('A', 1.5), ('B', 1.1), ('C', 1.0)]), (6.2, [('D', .9), ('E', .8), ('A', .8), ('B', .9)]), (12.8, [('C', .6), ('D', .6), ('E', .6), ('B', .6), ('A', .6), ('B', .6)]), (21.8, [(k, .38) for k in 'ABCDEBADEB'])]
-ZK = [(0, 1), (3.6, 1), (4.4, 0), (5.4, 0), (6.2, 1), (9.6, 1), (10.2, 0), (12.0, 0), (12.8, 1), (16.4, 1), (17.0, 0), (21.0, 0), (21.8, 1), (25.6, 1), (26.2, 0), (30.6, 0), (31.4, .8), (33.4, .8), (34.2, 0), (37.4, 0), (DUR, 1)]
-FACE = [(12.0, 12.8), (21.0, 21.8)]
+FEEDS = [(0, [('A', 1.5), ('B', 1.1), ('C', 1.0)]), (6.2, [('D', .9), ('E', .8), ('A', .8), ('B', .9)]), (12.8, [('C', .6), ('D', .6), ('E', .6), ('B', .6), ('A', .6), ('B', .6)]), (21.8, [(k, .47) for k in 'NOPWRSTX'])]
+ZK = [(0, 1), (3.6, 1), (4.4, 0), (5.4, 0), (6.2, 1), (9.6, 1), (10.2, 0), (12.0, 0), (12.8, 1), (16.4, 1), (17.0, 0), (21.0, 0), (21.8, 1), (25.6, 1), (26.2, 0), (30.6, 0), (31.4, 1), (34.4, 1), (35.2, 0), (40.6, 0), (DUR, 1)]
+FACE = [(12.0, 12.8), (21.0, 21.8), (29.4, 30.2)]
 def zoom(t):
     for (a, va), (b, vb) in zip(ZK, ZK[1:]):
         if t <= b: u = min(1, max(0, (t - a) / (b - a))); u = 4 * u ** 3 if u < .5 else 1 - (-2 * u + 2) ** 3 / 2; return va + (vb - va) * u
     return 1
 tt = np.arange(NE) / SR; ZE = np.array([zoom(x % DUR if x < DUR else x - DUR) for x in tt[::480]]); ZE = np.interp(np.arange(NE), np.arange(0, NE, 480), ZE)
 for a, b in FACE: ZE[int(a * SR):int(b * SR)] = .35
-DEADM = (tt > 30.4) & (tt < 36.0)
+DEADM = (tt > 30.4) & (tt < 39.0)
 # ---------- бит ленты: kick + hat + коровий колокол (phonk-ish), темп растёт ----------
 def kick(): n = int(.35 * SR); t = np.arange(n) / SR; return np.sin(2 * np.pi * np.cumsum(55 + 140 * np.exp(-t * 30)) / SR) * np.exp(-t * 7)
 def hat(): n = int(.05 * SR); return (rng.standard_normal(n) - lpv(rng.standard_normal(n), 6000)) * np.exp(-np.arange(n) / SR * 80)
@@ -66,10 +66,12 @@ for t0, cl in FEEDS:
         clip_sfx(k, tt0, d)
         if j > 0 or t0 > 0: put(L('swipe-fast-firm'), tt0 - .02, .55, .2)
         tt0 += d
-clip_sfx('A', 37.0, 3.0 + 1.5)                                     # конец: паркур снова (идёт через стык)
+clip_sfx('A', 40.6, 2.4 + 1.5)                                     # конец: паркур снова (идёт через стык)
 # ---------- комната: тишина, часы, уведомления, пёс, таймлапс ----------
 def ping(): a = sine(1320, .3, r=.08) * .6; return a + sine(1760, .3, r=.1)
-for t0 in (10.4, 17.3, 18.2, 19.1, 20.0, 26.5): put(ping(), t0, .4, .2); put(L('swipe-fast-soft'), t0 + .8, .4, .2)
+for t0 in (10.4, 17.1, 18.1, 19.1, 26.4): put(ping(), t0, .4, .2); put(L('swipe-fast-soft'), t0 + .8, .4, .2)
+n = int(1.4 * SR); x = np.arange(n) / SR; put((np.sin(2 * np.pi * 950 * x) * (x % .5 < .33)) * .25 * np.exp(-x * .3), 27.8, .5, .2)   # «номер не обслуживается» — три тона
+for j, f in enumerate((913, 1428, 1776)): put(sine(f, .33, r=.5) * .5, 27.85 + j * .36, .35, .2)
 n = int(.6 * SR); x = np.arange(n) / SR; whine = np.sin(2 * np.pi * np.cumsum(900 + 300 * np.sin(x * 6) - 400 * x) / SR) * np.sin(np.pi * x / x[-1]) * .3
 put(lpv(whine, 2500), 4.8, .5, -.4)
 tick = lambda: lpv(rng.standard_normal(int(.03 * SR)), 5000) * np.exp(-np.arange(int(.03 * SR)) / SR / .005)
@@ -79,10 +81,15 @@ for a, b in ((10.2, 11.8), (17, 21), (26.2, 30.4)):
     put(L('whoosh-slow-soft'), a, .35); put(L('whoosh-slow-soft'), b - .8, .3)
 for x0 in (4.4, 10.2, 17.0, 26.2): put(L('whoosh-fast-soft'), x0 - .6, .4)          # отъезды
 put(L('faller-1s-strong'), 30.35, .6); put(rs(L('faller-1s-soft'), .7), 30.5, .4)
-hb = L('bsb-heartbeat-slow'); put(hb[:int(2.4 * SR)], 31.2, .7)
-put(L('phone-vibrate-table'), 35.8, .8); put(ping(), 35.85, .5)
-put(L('whoosh-fast-medium'), 37.3, .45)
+hb = L('bsb-heartbeat-fast'); put(hb[:int(4.0 * SR)], 31.0, .8)
+put(L('cinematic-thunder-big')[:int(2.5 * SR)], 32.6, .55); put(L('impact-deep-hard'), 32.62, .7)          # шок + трещина
+n = int(4 * SR); x = np.arange(n) / SR; put((np.sin(2 * np.pi * 55 * x) + .6 * np.sin(2 * np.pi * 58.5 * x)) * np.minimum(1, x / 1.5) * .5, 31.0, .5, 0, 'amb')
+for j, t0 in enumerate((35.6, 36.6, 37.1, 37.9, 38.4)): put(L('impact-heavy-soft'), t0, .7 if j in (0, 4) else .45)   # урок
+put(L('phone-vibrate-table'), 39.0, .8); put(ping(), 39.05, .5)
+put(L('whoosh-fast-medium'), 40.7, .45)
 for a, b in FACE: n = int((b - a) * SR); x = np.arange(n) / SR; put(np.sin(2 * np.pi * 55 * x) * .5 * np.minimum(1, x / .1), a, .5, 0, 'amb')
+hb2 = L('bsb-heartbeat-slow')
+for t0 in (17.0, 26.2): put(hb2[:int(4 * SR)] * np.linspace(.2, 1, int(4 * SR))[:len(hb2[:int(4 * SR)])], t0, .45, 0, 'amb')
 room = lpv(rng.standard_normal(NE), 200) * .04; put(room, 0, 1, 0, 'amb')
 # музыка и звуки роликов слышны, только когда смотрим в ленту (z), в комнате — глухо и тихо; телефон сел — тишина
 g = np.clip(ZE, 0, 1) ** 1.5; g[DEADM[:NE]] = 0

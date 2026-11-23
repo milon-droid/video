@@ -12,7 +12,7 @@ const Riso = (() => {
   float cov(float d, vec2 px, float a, float k){
     vec2 pq = floor(px / uK);                                      // зерно в «пикселях 720p» — одинаково при любом разрешении
     d *= .86 + .14*n(pq/34. + k*17.);                 // неровный накат краски
-    float thr = mix(1. - scr(px, a), h(pq + k*91.), .3);   // растр + стохастика
+    float thr = mix(1. - scr(px, a), h(pq + k*91.), .12);   // растр + стохастика
     float c = smoothstep(thr - .07, thr + .07, d*1.13 - .045);
     c *= step(.022, h(pq*1.37 + k*7.));               // белые крапинки
     return c;
