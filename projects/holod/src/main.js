@@ -9,7 +9,8 @@ import DUR from '../vo/durations.json';
 buildSet();
 // --- персонажи ---
 const dog = makeDog(0); scene.add(dog.g);
-const me = makeHuman({ cold: true, device: true, cloth: 4.1 }, 1); me.dev.scale.set(1.25, 1.1, 1); scene.add(me.g);   // «я» — только в отражениях (слой 1)
+const me = makeHuman({ cold: true, device: true, cloth: 4.1 }, 1); me.dev.scale.set(1.1, 1.0, .9);
+me.mats.dev.uniforms.uT.value = 3.6; me.mats.lens.uniforms.uT.value = 3; scene.add(me.g);   // «я» — только в отражениях (слой 1)
 const jess = makeHuman({ longHair: true, dress: true, cloth: 30.5, short: true, slim: true }, 0); scene.add(jess.g);
 // Джесс в кровати: голова на подушке, волосы, рука поверх одеяла
 const jb = new THREE.Group(); scene.add(jb);
@@ -85,17 +86,16 @@ function cam(p, look, t, { shake = 1, fov = 56, roll = 0, walk = 0, ph = 0 } = {
 const L3 = (a, b, k) => a.clone().lerp(b, k);
 // «я» в отражении повторяет камеру: голова за камерой, корпус по направлению взгляда
 function syncMe(t, ph = 0, walkAmp = 0, armL = null) {
-  const f = new THREE.Vector3(); camera.getWorldDirection(f); const yaw = Math.atan2(f.x, f.z), pitch = -Math.asin(clamp(f.y, -1, 1));
-  const fh2 = V3(Math.sin(yaw), 0, Math.cos(yaw));
-  const head = camera.position.clone().addScaledVector(f, -.2).add(V3(0, .03, 0));
-  const pos = head.clone().addScaledVector(fh2, -.01).add(V3(0, -1.65, 0));
-  const r = V3(-Math.cos(yaw), 0, Math.sin(yaw));
+  // держу тепловизор у груди и смотрю вниз в его экран: в зеркале — фигура с опущенной головой, без «камеры у лица»
+  const f = new THREE.Vector3(); camera.getWorldDirection(f); const yaw = Math.atan2(f.x, f.z);
+  const fh2 = V3(Math.sin(yaw), 0, Math.cos(yaw)), r = V3(-Math.cos(yaw), 0, Math.sin(yaw));
+  const pos = camera.position.clone().addScaledVector(fh2, -.3).setY(0);
   const up = V3(0, 1, 0).applyQuaternion(camera.quaternion), rr = V3(1, 0, 0).applyQuaternion(camera.quaternion);
-  const dc = camera.position.clone().addScaledVector(f, -.07);            // корпус прибора — сразу за объективом
-  poseHuman(me, { pos, yaw, headPitch: pitch * .8, walk: ph, walkAmp, t: 0,
-    armR: dc.clone().addScaledVector(rr, .085).addScaledVector(up, -.02),
-    armL: armL || dc.clone().addScaledVector(rr, -.085).addScaledVector(up, -.02) });
-  me.dev.position.copy(dc); me.dev.quaternion.copy(camera.quaternion);    // держит ровно: прибор смотрит туда же, куда камера
+  const dc = camera.position.clone().addScaledVector(f, -.06);
+  poseHuman(me, { pos, yaw, headPitch: .28, lean: .03, walk: ph, walkAmp, t: 0,
+    armR: dc.clone().addScaledVector(rr, .075).addScaledVector(up, -.02),
+    armL: armL || dc.clone().addScaledVector(rr, -.075).addScaledVector(up, -.02) });
+  me.dev.position.copy(dc); me.dev.quaternion.copy(camera.quaternion);
   me.lens.position.copy(camera.position.clone().addScaledVector(f, .02)); me.lens.quaternion.setFromUnitVectors(V3(0, 1, 0), f);
 }
 function hideAll() { stare(0); PRINTS.forEach(p => p.g.visible = false); me.g.visible = true; jess.g.visible = false; jb.visible = true; dog.g.visible = true; fh.visible = false; }
@@ -122,8 +122,9 @@ function poseHand(k, t) {
 const SHOT = {
   H(u, s) { // хук: в зеркале — холодная фигура с камерой
     hideAll(); dog.g.visible = false; jb.visible = false;
-    const p = V3(2.0, 1.6, -6.75 - u * .12); cam(p, V3(2.0, 1.4, -8.97), u, { fov: 50 }); syncMe(u);
-    return { lo: 3, hi: 36, iso: 9, isoK: ease(u, .2, .6), zoom: 1.08 + u * .02, glitch: u < .25 ? .8 * (1 - u / .25) : 0, hook: 1 };
+    const p = V3(2.0, 1.32, -6.6 - u * .1); cam(p, V3(2.0, 1.62, -8.97), u, { fov: 50 }); syncMe(u);
+    const gl = u < .25 ? .9 : (Math.abs(u - 1.3) < .09 || Math.abs(u - 2.4) < .07) ? .7 : 0;
+    return { lo: 3, hi: 36, iso: 9, isoK: ease(u, .2, .6), zoom: 2.3 + u * .08, glitch: gl, hook: 1, fade: gl > .6 && Math.floor(u * 30) % 2 ? .3 : 1 };
   },
   A(u, s) { // собака рычит в коридор
     hideAll(); jb.visible = false;
@@ -203,7 +204,7 @@ const SHOT = {
   I(u, s) { // в конце коридора — фигура
     hideAll(); dog.g.visible = false; bedHeat(u);
     const k = ease(u, .25, .75, inoutE);
-    const p = V3(1.75 + k * .25, 1.6, -6.15 - k * .05);
+    const p = V3(1.75 + k * .25, lerp(1.6, 1.32, ease(u, .2, 1.0)), -6.15 - k * .05);
     const look = L3(V3(-1.2, .7, -6.5), V3(2.0, 1.45, -8.97), k);
     cam(p, look, u, { fov: 52, shake: 1.6 }); syncMe(u);
     return { lo: 3, hi: 36, iso: 9, isoK: ease(u, .9, 1.3), zoom: 1 + ease(u, 1.2, 2.2, inoutE) * .9, heart: 1, alert: u > 1.1, glitch: (u > 1.1 && u < 1.25) ? .6 : 0 };
@@ -212,19 +213,19 @@ const SHOT = {
     hideAll(); dog.g.visible = false; bedHeat(u);
     const st = ease(u, s.v0 + .9, s.v0 + 1.5) + ease(u, s.v0 + 2.1, s.v0 + 2.7);
     const z = -6.2 - st * .45, ph = st * Math.PI;
-    cam(V3(2.0, 1.6, z), V3(2.0, 1.45, -8.97), u, { fov: 52, walk: (st % 1 > .02 && st % 1 < .98) ? 1 : 0, ph, shake: 1.3 }); syncMe(u, ph, (st % 1 > .02 && st % 1 < .98) ? 1 : 0);
+    cam(V3(2.0, 1.32, z), V3(2.0, 1.45, -8.97), u, { fov: 52, walk: (st % 1 > .02 && st % 1 < .98) ? 1 : 0, ph, shake: 1.3 }); syncMe(u, ph, (st % 1 > .02 && st % 1 < .98) ? 1 : 0);
     return { lo: 3, hi: 36, iso: 9, isoK: 1, zoom: 1.9 - ease(u, 0, 1, inoutE) * .5, heart: 1, alert: 1, glitch: Math.abs(u - s.v0 - 1.0) < .08 || Math.abs(u - s.v0 - 2.2) < .08 ? .5 : 0 };
   },
   Kk(u, s) { // «стекло отражает тепло» — рамка зеркала
     hideAll(); dog.g.visible = false; bedHeat(u);
     const k = ease(u, 0, s.d, inoutE);
-    cam(V3(2.0, 1.6, -7.15 - k * .15), V3(2.0 + Math.sin(u * 1.2) * .08, 1.6 - k * .15, -8.97), u, { fov: lerp(60, 54, k), shake: 1.2 }); syncMe(u);
+    cam(V3(2.0, 1.32, -7.15 - k * .15), V3(2.0 + Math.sin(u * 1.2) * .08, 1.6 - k * .15, -8.97), u, { fov: lerp(60, 54, k), shake: 1.2 }); syncMe(u);
     return { lo: 3, hi: 36, iso: 9, isoK: 1, zoom: 1, frame: ease(u, s.v0 + .7, s.v0 + 1.1), heart: 1, alert: 1 };
   },
   L(u, s) { // поднимаю руку
     hideAll(); dog.g.visible = false; bedHeat(u);
     const hk = ease(u, s.v0 + .2, s.v0 + 1.4, inoutE);
-    cam(V3(2.0, 1.6, -7.32), V3(2.0, 1.55, -8.97), u, { fov: 54, shake: 1.1 });
+    cam(V3(2.0, 1.32, -7.32), V3(2.0, 1.55, -8.97), u, { fov: 54, shake: 1.1 });
     poseHand(hk, u);
     const hw = fhPalm.getWorldPosition(V3());
     syncMe(u, 0, 0, hk > .05 ? hw.clone().add(V3(0, -.05, .04)) : null);
@@ -232,14 +233,14 @@ const SHOT = {
   },
   M(u, s) { // «значит, это я»
     hideAll(); dog.g.visible = false; bedHeat(u);
-    cam(V3(2.0, 1.6, -7.32), V3(2.0, 1.55, -8.97), u, { fov: 54 - u * .8, shake: .9 });
+    cam(V3(2.0, 1.32, -7.32), V3(2.0, 1.55, -8.97), u, { fov: 54 - u * .8, shake: .9 });
     poseHand(1, u); const hw = fhPalm.getWorldPosition(V3()); syncMe(u, 0, 0, hw.clone().add(V3(0, -.05, .04)));
     return { lo: 3, hi: 36, iso: 9, isoK: 1, spots: [[hw.clone(), 'hand', null]], heart: 0 };
   },
   N(u, s) { // в зеркале за спиной — Джесс
     hideAll(); dog.g.visible = false; jb.visible = false; jess.g.visible = true;
     const hk = 1 - ease(u, .1, .8);
-    cam(V3(2.0, 1.6, -7.32), V3(2.0, 1.55, -8.97), u, { fov: 52 - u * .5, shake: 1 });
+    cam(V3(2.0, 1.32, -7.32), V3(2.0, 1.55, -8.97), u, { fov: 52 - u * .5, shake: 1 });
     poseHand(hk, u); const hw = fhPalm.getWorldPosition(V3()); syncMe(u, 0, 0, hk > .05 ? hw.clone().add(V3(0, -.05, .04)) : null);
     const w = ease(u, .2, 1.6), jp = L3(V3(1.05, 0, -6.15), V3(1.85, 0, -5.85), sm(w));
     poseHuman(jess, { pos: jp, yaw: lerp(Math.PI / 2, Math.PI, ease(u, .6, 1.6)), t: u, walk: sm(w) * .8 / .3 * Math.PI, walkAmp: 1 - ease(u, 1.3, 1.6), headYaw: 0,
@@ -250,7 +251,7 @@ const SHOT = {
     hideAll(); dog.g.visible = true; jb.visible = false; jess.g.visible = true;
     const k = ease(u, 0, .45, inoutE);
     const yaw = lerp(Math.PI, 0, k) + noise(11, u * 2) * .02; // смотрю -z → +z
-    const p = V3(2.0, 1.6, -7.32);
+    const p = V3(2.0, 1.32, -7.32);
     cam(p, p.clone().add(V3(Math.sin(yaw) * 2.2, -.6 * k - .3 * Math.sin(k * Math.PI), Math.cos(yaw) * 2.2)), u, { fov: 60, shake: 1.5 + (1 - k) * 2 });
     syncMe(u);
     const jp = V3(1.78, 0, -4.95).lerp(V3(1.72, 0, -4.55), ease(u, 1.2, 2.2));
@@ -263,7 +264,7 @@ const SHOT = {
   },
   P(u, s) { // лай → сбой → темнота
     hideAll(); dog.g.visible = true; jb.visible = false; jess.g.visible = true;
-    const p = V3(2.0, 1.6, -7.32), bark = (a) => Math.max(0, Math.sin(clamp((u - a) / .32) * Math.PI));
+    const p = V3(2.0, 1.32, -7.32), bark = (a) => Math.max(0, Math.sin(clamp((u - a) / .32) * Math.PI));
     const bk = bark(.35) + bark(.85) + bark(1.25);
     shakeK = 1 + bk * 2;
     cam(p, V3(2.0, .8, -4.6), u, { fov: 58, shake: 1.6 }); shakeK = 1; syncMe(u);

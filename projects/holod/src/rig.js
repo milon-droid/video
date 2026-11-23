@@ -31,7 +31,7 @@ const rotAbout = (p, c, axis, ang) => p.clone().sub(c).applyAxisAngle(axis, ang)
 export function makeHuman(look = {}, layer = 0) {
   const R = new Rig(layer);
   const c = look.cold ? 4.1 : null;
-  const M = (n, T, o = {}) => R.mat(n, { T: c ? c + (T - 33) * .12 : T, ...o, ...(look.cold ? { nz: .9, nzs: 7, fres: .8 } : {}) });
+  const M = (n, T, o = {}) => R.mat(n, { T: c ? c + (T - 33) * .12 : T, ...o, ...(look.cold ? { nz: .9, nzs: 7, fres: .3 } : {}) });
   const skin = M('skin', 34.6), face = M('face', 35.3), eye = M('eye', 36.9, { nz: 0 }), nose = M('nose', 30.8), hair = M('hair', 27), cloth = M('cloth', look.cloth ?? 31.2), legs = M('legs', look.legs ?? 30.2), feet = M('feet', 27.5), hand = M('hand', 33.6);
   const sl = look.slim ? .78 : 1; R.sl = sl;
   R.seg('torso', .15 * sl, .17 * sl, cloth); R.seg('belly', .14 * sl, .15 * sl, cloth); R.seg('neck', .055, .05, skin);
@@ -62,7 +62,7 @@ export function poseHuman(R, P) {
   const hy = (P.yaw || 0) + (P.headYaw || 0), hp = (P.headPitch || 0) + lean;
   const hf = V3(Math.sin(hy) * Math.cos(hp), -Math.sin(hp), Math.cos(hy) * Math.cos(hp)), hr = V3(-Math.cos(hy), 0, Math.sin(hy)), hu = hr.clone().cross(hf).negate();
   R.put('neck', neck0, headC.clone().addScaledVector(hu, -.06));
-  R.at('head', headC); R.balls.head.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(hr.clone().negate(), hu, hf));
+  R.at('head', headC); R.balls.head.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(hr.clone(), hu, hf));
   const hp2 = (x, y, z) => headC.clone().addScaledVector(hr, x).addScaledVector(hu, y).addScaledVector(hf, z);
   R.at('eyeL', hp2(-.036, .018, .088)); R.at('eyeR', hp2(.036, .018, .088)); R.at('nose', hp2(0, -.012, .105));
   R.at('hairCap', hp2(0, .028, -.018)); R.balls.hairCap.quaternion.copy(R.balls.head.quaternion);
@@ -122,7 +122,7 @@ export function poseDog(R, P) {
   const neckBase = L(0, .58 - g * .07, .32);
   const headC = neckBase.clone().addScaledVector(hf, .15 + bk * .03 + g * .04).add(V3(0, .2 - g * .19 + bk * .03, 0));
   R.put('neck', neckBase, headC);
-  R.at('head', headC); R.balls.head.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(hr.clone().negate(), hu, hfp));
+  R.at('head', headC); R.balls.head.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(hr.clone(), hu, hfp));
   const hp = (x, y, z) => headC.clone().addScaledVector(hr, x).addScaledVector(hu, y).addScaledVector(hfp, z);
   const sn0 = hp(0, -.02, .06), sn1 = hp(0, -.035, .21);
   R.put('snout', sn0, sn1); R.at('snTip', sn1.clone().addScaledVector(hfp, -.02)); R.at('nose', sn1.clone().addScaledVector(hfp, .012).addScaledVector(hu, .01));
