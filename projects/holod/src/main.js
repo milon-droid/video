@@ -9,16 +9,27 @@ import DUR from '../vo/durations.json';
 buildSet();
 // --- персонажи ---
 const dog = makeDog(0); scene.add(dog.g);
-const me = makeHuman({ cold: true, device: true, cloth: 4.1 }, 1); scene.add(me.g);   // «я» — только в отражениях (слой 1)
+const me = makeHuman({ cold: true, device: true, cloth: 4.1 }, 1); me.dev.scale.set(1.25, 1.1, 1); scene.add(me.g);   // «я» — только в отражениях (слой 1)
 const jess = makeHuman({ longHair: true, dress: true, cloth: 30.5, short: true, slim: true }, 0); scene.add(jess.g);
 // Джесс в кровати: голова на подушке, волосы, рука поверх одеяла
 const jb = new THREE.Group(); scene.add(jb);
 const jbHead = mesh(G.sph(.105, 18), tMat({ T: 35.2, nz: .2, nzs: 9, fres: .6, heatK: 0 })); jbHead.scale.set(1.12, .95, 1); jbHead.position.set(-2.13, .76, -7.0); jb.add(jbHead);
 const jbHair = mesh(G.sph(.15, 16), tMat({ T: 27.4, nz: .5, nzs: 12, fres: .6, heatK: 0 })); jbHair.scale.set(1.1, .55, 1.25); jbHair.position.set(-2.25, .73, -7.06); jb.add(jbHair);
-const jbEye = mesh(G.sph(.017, 10), tMat({ T: 36.7, nz: 0, heatK: 0 })); jbEye.position.set(-2.08, .79, -6.92); jb.add(jbEye);
+const jbEye = mesh(G.sph(.017, 10), tMat({ T: 34.6, nz: 0, heatK: 0 })); jbEye.position.set(-2.08, .79, -6.92); jb.add(jbEye);
+const eyeOpen = tMat({ T: 37.8, nz: 0, heatK: 0 }); const jbE2 = [0, 1].map(i => { const m = mesh(G.sph(.019, 10), eyeOpen); m.position.set(-2.035, .8, -6.98 + (i ? .04 : -.04)); m.visible = false; jb.add(m); return m; });
+function stare(on) { jbE2.forEach(m => m.visible = !!on); jbEye.visible = !on; jbHead.rotation.y = on ? .5 : 0; jbHair.position.x = on ? -2.27 : -2.25; }
 const armM = tMat({ T: 33.4, nz: .2, nzs: 9, fres: .6, heatK: 0 });
 const jbArm = mesh(new THREE.CapsuleGeometry(.04, .32, 4, 10), armM); jbArm.position.set(-1.68, .73, -6.72); jbArm.rotation.set(Math.PI / 2, 0, .9); jbArm.rotation.order = 'YXZ'; jb.add(jbArm);
 const jbHand = mesh(G.sph(.048, 12), tMat({ T: 33.8, nz: .2, heatK: 0 })); jbHand.scale.set(1, .5, 1.2); jbHand.position.set(-1.5, .72, -6.55); jb.add(jbHand);
+// свежие следы: появляются под ногами, пока иду
+const fpGeo = (() => { const g = new THREE.CircleGeometry(1, 20); return g; })();
+const PRINTS = [[1.88, -4.55], [2.12, -4.9], [1.9, -5.25], [2.13, -5.6], [1.91, -5.95]].map(([x, z], i) => {
+  const m = tMat({ T: 14, nz: .15, nzs: 20, fres: .2, heatK: 0 }); const g = new THREE.Group();
+  const sole = mesh(fpGeo, m); sole.scale.set(.045, .085, 1); sole.position.set(0, .01, 0); g.add(sole);
+  const heel = mesh(fpGeo, m); heel.scale.set(.035, .04, 1); heel.position.set(0, -.095, 0); g.add(heel);
+  for (let k = 0; k < 5; k++) { const toe = mesh(fpGeo, m); toe.scale.setScalar(.013 - k * .0013); toe.position.set((i % 2 ? 1 : -1) * (-.03 + k * .015), .1 - Math.sin(k / 4 * 3.1) * .012, 0); g.add(toe); }
+  g.rotation.x = -Math.PI / 2; g.position.set(x, .004, z); g.visible = false; scene.add(g); return { g, m, z };
+});
 // рука «я» на переднем плане (слой 0, привязана к камере)
 const fh = new THREE.Group(); camera.add(fh); scene.add(camera);
 const handM = tMat({ T: 4.1, nz: .15, nzs: 14, fres: .35, heatK: 0 });
@@ -37,7 +48,9 @@ const SHOTS = [
   { id: 'D', lines: ['l06'], lead: .3, tail: .6, min: 5 },
   { id: 'E', lines: ['l07'], lead: .3, tail: .7, min: 3 },
   { id: 'F', lines: ['l08'], lead: .4, tail: .7, min: 5 },
-  { id: 'G', lines: ['l09'], lead: .4, tail: .9, min: 5 },
+  { id: 'F2', lines: ['l08b'], lead: .3, tail: .6, min: 4 },
+  { id: 'G', lines: ['l09'], lead: .4, tail: .5, min: 4.6 },
+  { id: 'G2', lines: ['l09b'], lead: .55, tail: .7, min: 3.4 },
   { id: 'I', lines: ['l10'], lead: .55, tail: .8, min: 3.8 },
   { id: 'J', lines: ['l11'], lead: .4, tail: 1.1, min: 4 },
   { id: 'Kk', lines: ['l12'], lead: .35, tail: .5, min: 3.4 },
@@ -45,7 +58,7 @@ const SHOTS = [
   { id: 'M', lines: ['l14'], lead: .25, tail: 1.3, min: 2.8 },
   { id: 'N', lines: ['l15'], lead: 1.1, tail: .7, min: 3.6 },
   { id: 'O', lines: ['l16'], lead: .55, tail: .5, min: 3.6 },
-  { id: 'P', lines: ['l17'], lead: 1.3, tail: 2.2, min: 4.6 },
+  { id: 'P', lines: ['l17'], lead: 1.65, tail: 4.6, min: 7 },
 ];
 let T0 = 0; const VO = [];
 for (const s of SHOTS) {
@@ -57,7 +70,8 @@ export const TOTAL = T0;
 window.VO_TIMELINE = VO; window.SHOTS = SHOTS.map(s => ({ id: s.id, t0: s.t0, d: s.d }));
 const SH = Object.fromEntries(SHOTS.map(s => [s.id, s]));
 // NUC: камера калибруется — кадр замирает, щелчок, серое поле
-const NUC = [SH.B.t0 + .35, SH.F.t0 + .15, SH.P.t0 + SH.P.d - 2.0];
+const PEND = SH.P.d - 4.4; // начало конца в плане P
+const NUC = [SH.B.t0 + .35, SH.F.t0 + .15, SH.P.t0 + PEND];
 
 // --- камера «с рук» ---
 let shakeK = 1;
@@ -76,11 +90,15 @@ function syncMe(t, ph = 0, walkAmp = 0, armL = null) {
   const head = camera.position.clone().addScaledVector(f, -.2).add(V3(0, .03, 0));
   const pos = head.clone().addScaledVector(fh2, -.01).add(V3(0, -1.65, 0));
   const r = V3(-Math.cos(yaw), 0, Math.sin(yaw));
+  const up = V3(0, 1, 0).applyQuaternion(camera.quaternion), rr = V3(1, 0, 0).applyQuaternion(camera.quaternion);
+  const dc = camera.position.clone().addScaledVector(f, -.07);            // корпус прибора — сразу за объективом
   poseHuman(me, { pos, yaw, headPitch: pitch * .8, walk: ph, walkAmp, t: 0,
-    armR: camera.position.clone().addScaledVector(f, -.02).addScaledVector(r, .07).add(V3(0, -.06, 0)),
-    armL: armL || null });
+    armR: dc.clone().addScaledVector(rr, .085).addScaledVector(up, -.02),
+    armL: armL || dc.clone().addScaledVector(rr, -.085).addScaledVector(up, -.02) });
+  me.dev.position.copy(dc); me.dev.quaternion.copy(camera.quaternion);    // держит ровно: прибор смотрит туда же, куда камера
+  me.lens.position.copy(camera.position.clone().addScaledVector(f, .02)); me.lens.quaternion.setFromUnitVectors(V3(0, 1, 0), f);
 }
-function hideAll() { me.g.visible = true; jess.g.visible = false; jb.visible = true; dog.g.visible = true; fh.visible = false; }
+function hideAll() { stare(0); PRINTS.forEach(p => p.g.visible = false); me.g.visible = true; jess.g.visible = false; jb.visible = true; dog.g.visible = true; fh.visible = false; }
 const DOG_A = V3(2.0, 0, -1.15), yawTo = (a, b) => Math.atan2(b.x - a.x, b.z - a.z);
 function bedHeat(t, on = 1) {
   S.bodyHeat.forEach(([x, z, r], i) => setHeat(2 + i, x, .62, z, r * 1.7, 31.6 + Math.sin(t * 1.5) * .2));
@@ -126,17 +144,17 @@ const SHOT = {
     hideAll(); jb.visible = false;
     const tw = s.v1 - .25, k = ease(u, tw, tw + .9, inoutE);
     const dogHead = V3(1.93, .66, -1.58);
-    cam(L3(V3(.65, .95, -2.2), V3(.6, 1.35, -1.6), k), L3(dogHead, V3(-1.0, 1.4, -2.5), k), u, { fov: lerp(46, 58, k) });
-    poseDog(dog, { pos: DOG_A, yaw: Math.PI, t: u + 30, growl: .9 - ease(u, 0, 1.2) * .5, headYaw: -ease(u, .5, 1.3) * .75, look: -.08 });
+    cam(L3(V3(.35, .74, -2.3), V3(.5, 1.35, -1.6), k), L3(dogHead.clone().add(V3(0, -.12, 0)), V3(-1.0, 1.4, -2.5), k), u, { fov: lerp(44, 58, k) });
+    poseDog(dog, { pos: DOG_A, yaw: Math.PI, t: u + 30, growl: .9 - ease(u, 0, 1.2) * .5, headYaw: ease(u, .5, 1.3) * .8, look: -.08 });
     steam(S.steam, u + 9, V3(-1.3, .53, .45));
     const spots = k < .5 ? [[dogHead.clone().add(V3(-.04, .02, .08)), 'eye', 'ALIVE']] : [[V3(-1.45, 1.25, -2.53), 'win', 'COLD']];
     return { lo: 16, hi: 39, spots };
   },
   D(u, s) { // стекло отражает тепло: собака у окна и её отражение
     hideAll(); jb.visible = false;
-    const w = ease(u, 0, 2.6), p0 = V3(1.6, 0, -1.3), p1 = V3(-.35, 0, -1.75), dp = L3(p0, p1, sm(w));
+    const w = ease(u, 0, 2.6), p0 = V3(1.6, 0, -1.4), p1 = V3(-.45, 0, -2.05), dp = L3(p0, p1, sm(w));
     const ph = sm(w) * 2.0 / .55 * Math.PI;
-    poseDog(dog, { pos: dp, yaw: lerp(yawTo(p0, p1), -2.3, ease(u, 2.2, 3.2)), t: u + 40, walk: ph, walkAmp: 1 - ease(u, 2.0, 2.5), growl: .2, headYaw: ease(u, 2.4, 3.6) * .3, look: ease(u, 2.6, 3.4) * .25, wag: .3 });
+    poseDog(dog, { pos: dp, yaw: lerp(yawTo(p0, p1), -1.9, ease(u, 2.2, 3.2)), t: u + 40, walk: ph, walkAmp: 1 - ease(u, 2.0, 2.5), growl: .2, headYaw: ease(u, 2.4, 3.6) * .3, look: ease(u, 2.6, 3.4) * .25, wag: .3 });
     cam(V3(.9, 1.45, .7), V3(-.65, .95, -2.5), u, { fov: 52 });
     steam(S.steam, u + 12, V3(-1.3, .53, .45));
     return { lo: 16, hi: 39, rule: ease(u, s.v0 + 1.0, s.v0 + 1.5), ruleT: u - s.v0 - 1.0, refl: dp };
@@ -161,6 +179,20 @@ const SHOT = {
     const minT = lerp(14.8, 11.2, k);
     return { lo: 6, hi: 36, minT, temp: 1 };
   },
+  F2(u, s) { // смотрю под ноги: каждый мой шаг оставляет холодный след
+    hideAll(); dog.g.visible = false; jb.visible = false;
+    const k = ease(u, .2, s.d - .3), z = lerp(-4.2, -6.0, k), ph = (z + 4.2) / -.35 * Math.PI;
+    const tilt = ease(u, 0, .7, inoutE);
+    cam(V3(2.0, 1.6, z), L3(V3(2.0, 1.3, z - 2), V3(2.0, 0, z + .25), tilt), u, { fov: 58, walk: .8, ph, shake: 1.3 });
+    PRINTS.forEach(p => { const a = clamp((p.z - z - .05) / -.25); p.g.visible = a > 0; p.m.uniforms.uT.value = lerp(13.5, 5.2, a); });
+    return { lo: 4, hi: 34, minT: lerp(11.2, 9.4, k), temp: 1 };
+  },
+  G2(u, s) { // она не спит — смотрит прямо на меня
+    hideAll(); dog.g.visible = false; bedHeat(u); stare(1);
+    const z = 1 + ease(u, 0, .15, outE) * 1.6 + u * .05;
+    cam(V3(.15, 1.66, -6.55), V3(-2.1, .8, -6.98), u, { fov: 58, shake: 2.2 - u * .3 });
+    return { lo: 8, hi: 38, zoom: z, glitch: u < .2 ? .9 : 0, spots: [[V3(-2.04, .82, -6.98), 'eye', null]] };
+  },
   G(u, s) { // спальня: Джесс спит, моя половина — холодная
     hideAll(); dog.g.visible = false; bedHeat(u);
     const k = u / s.d;
@@ -174,20 +206,20 @@ const SHOT = {
     const p = V3(1.75 + k * .25, 1.6, -6.15 - k * .05);
     const look = L3(V3(-1.2, .7, -6.5), V3(2.0, 1.45, -8.97), k);
     cam(p, look, u, { fov: 52, shake: 1.6 }); syncMe(u);
-    return { lo: 3, hi: 36, iso: 9, isoK: ease(u, .9, 1.3), zoom: 1 + ease(u, 1.2, 2.2, inoutE) * .9, heart: 1 };
+    return { lo: 3, hi: 36, iso: 9, isoK: ease(u, .9, 1.3), zoom: 1 + ease(u, 1.2, 2.2, inoutE) * .9, heart: 1, alert: u > 1.1, glitch: (u > 1.1 && u < 1.25) ? .6 : 0 };
   },
   J(u, s) { // «не двигалось, пока не двинулся я»
     hideAll(); dog.g.visible = false; bedHeat(u);
     const st = ease(u, s.v0 + .9, s.v0 + 1.5) + ease(u, s.v0 + 2.1, s.v0 + 2.7);
     const z = -6.2 - st * .45, ph = st * Math.PI;
     cam(V3(2.0, 1.6, z), V3(2.0, 1.45, -8.97), u, { fov: 52, walk: (st % 1 > .02 && st % 1 < .98) ? 1 : 0, ph, shake: 1.3 }); syncMe(u, ph, (st % 1 > .02 && st % 1 < .98) ? 1 : 0);
-    return { lo: 3, hi: 36, iso: 9, isoK: 1, zoom: 1.9 - ease(u, 0, 1, inoutE) * .5, heart: 1 };
+    return { lo: 3, hi: 36, iso: 9, isoK: 1, zoom: 1.9 - ease(u, 0, 1, inoutE) * .5, heart: 1, alert: 1, glitch: Math.abs(u - s.v0 - 1.0) < .08 || Math.abs(u - s.v0 - 2.2) < .08 ? .5 : 0 };
   },
   Kk(u, s) { // «стекло отражает тепло» — рамка зеркала
     hideAll(); dog.g.visible = false; bedHeat(u);
     const k = ease(u, 0, s.d, inoutE);
     cam(V3(2.0, 1.6, -7.15 - k * .15), V3(2.0 + Math.sin(u * 1.2) * .08, 1.6 - k * .15, -8.97), u, { fov: lerp(60, 54, k), shake: 1.2 }); syncMe(u);
-    return { lo: 3, hi: 36, iso: 9, isoK: 1, zoom: 1, frame: ease(u, s.v0 + .7, s.v0 + 1.1), heart: 1 };
+    return { lo: 3, hi: 36, iso: 9, isoK: 1, zoom: 1, frame: ease(u, s.v0 + .7, s.v0 + 1.1), heart: 1, alert: 1 };
   },
   L(u, s) { // поднимаю руку
     hideAll(); dog.g.visible = false; bedHeat(u);
@@ -196,7 +228,7 @@ const SHOT = {
     poseHand(hk, u);
     const hw = fhPalm.getWorldPosition(V3());
     syncMe(u, 0, 0, hk > .05 ? hw.clone().add(V3(0, -.05, .04)) : null);
-    return { lo: 3, hi: 36, iso: 9, isoK: 1, heart: 1 - ease(u, 1, 2) * .5 };
+    return { lo: 3, hi: 36, iso: 9, isoK: 1, heart: 1 - ease(u, 1, 2) * .5, alert: 1 };
   },
   M(u, s) { // «значит, это я»
     hideAll(); dog.g.visible = false; bedHeat(u);
@@ -239,7 +271,7 @@ const SHOT = {
     poseDog(dog, { pos: dp, yaw: yawTo(dp, p) + .75, t: u + 70, growl: 1, bark: bk, headYaw: .65, look: -.25 });
     const pr = poseHuman(jess, { pos: V3(1.72, 0, -4.55), yaw: Math.PI + .1, t: u, scale: .96 });
     poseHuman(jess, { pos: V3(1.72, 0, -4.55), yaw: Math.PI + .1, t: u, scale: .96, armL: pr.chest.clone().add(V3(.1, -.08, -.14)) });
-    const end = u - (s.d - 2.0);
+    const end = u - PEND;
     return { lo: 3, hi: 40, iso: 9, isoK: 1, glitch: clamp(bk * .6 + (end > 0 ? .3 : 0)), fade: 1 - ease(end, .25, .6), bark: bk, breathDog: 1, end };
   },
 };
@@ -262,7 +294,7 @@ function hud(t, st, tc) {
   // REC + время
   const rec = Math.floor(t * 1.6) % 2 === 0;
   if (rec) { ctx.fillStyle = '#ff2a2a'; ctx.beginPath(); ctx.arc(k2(92), k2(222), k2(11), 0, 7); ctx.fill(); }
-  txt('REC', 112, 233, 30); const ss = Math.floor(t + 7); txt(`03:14:${String(ss % 60).padStart(2, '0')}`, 1000, 233, 30, { align: 'right' });
+  txt('REC', 112, 233, 30); txt('11·23·2025', 200, 233, 22, { w: 500, color: 'rgba(255,255,255,.8)' }); const ss = Math.floor(t + 7); txt(`03:14:${String(ss % 60).padStart(2, '0')}`, 1000, 233, 30, { align: 'right' });
   txt(st.pal > .5 ? 'WHITE HOT' : 'IRONBOW', 82, 280, 22, { w: 500, color: 'rgba(255,255,255,.85)' });
   txt(`ε0.95  ${(st.zoom || 1).toFixed(1)}x`, 1000, 280, 22, { w: 500, align: 'right', color: 'rgba(255,255,255,.85)' });
   // батарея
@@ -283,6 +315,7 @@ function hud(t, st, tc) {
     txt(`${fmt(tc)}°C`, cx + 58, cy - 22, 40, { color: cold ? '#5ff5e8' : '#fff' });
     if (cold) txt('LOW', cx + 58, cy + 22, 24, { color: '#5ff5e8', w: 500 });
   }
+  if (st.alert && Math.floor(t * 3) % 2 === 0) { ctx.fillStyle = 'rgba(200,0,20,.85)'; ctx.fillRect(k2(250), k2(345), k2(580), k2(56)); txt('⚠ LOW TEMP ALERT', 540, 386, 34, { align: 'center' }); }
   if (st.minT != null) txt(`MIN ${st.minT.toFixed(1)}°`, 82, 326, 24, { color: '#9fd8ff' });
   ctx.restore();
 }
@@ -376,7 +409,12 @@ window.renderFrame = async T => {
   hud(T, st, tc);
   if (st.end > .9) { // финальная табличка
     const a = ease(st.end, .9, 1.2);
-    txt('03:14', 540, 900, 120, { font: BIG, align: 'center', alpha: a * (Math.floor(T * 2) % 2 ? 1 : .35), color: '#5ff5e8' });
+    const e = st.end, b = ease(e, 2.1, 2.3), c = ease(e, 3.2, 3.4);
+    txt('LAST RECORDING', 540, 640, 34, { align: 'center', alpha: a, color: 'rgba(255,255,255,.75)', w: 500 });
+    txt('11·23·2025  03:14', 540, 730, 64, { font: BIG, align: 'center', alpha: a, color: '#5ff5e8' });
+    txt('TODAY', 540, 900, 34, { align: 'center', alpha: b, color: 'rgba(255,255,255,.75)', w: 500 });
+    txt('11·23·2026  03:14', 540, 990, 64, { font: BIG, align: 'center', alpha: b * (Math.floor(T * 2.5) % 2 ? 1 : .45), color: '#ff3b3b' });
+    txt('the dog is growling again', 540, 1110, 34, { align: 'center', alpha: c, color: '#fff', w: 500 });
   }
   captions(T);
 };

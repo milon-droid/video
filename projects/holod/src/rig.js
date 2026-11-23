@@ -35,8 +35,8 @@ export function makeHuman(look = {}, layer = 0) {
   const skin = M('skin', 34.6), face = M('face', 35.3), eye = M('eye', 36.9, { nz: 0 }), nose = M('nose', 30.8), hair = M('hair', 27), cloth = M('cloth', look.cloth ?? 31.2), legs = M('legs', look.legs ?? 30.2), feet = M('feet', 27.5), hand = M('hand', 33.6);
   const sl = look.slim ? .78 : 1; R.sl = sl;
   R.seg('torso', .15 * sl, .17 * sl, cloth); R.seg('belly', .14 * sl, .15 * sl, cloth); R.seg('neck', .055, .05, skin);
-  R.ball('head', .108, face, .95, 1.12, 1.02); R.ball('eyeL', .019, eye); R.ball('eyeR', .019, eye); R.ball('nose', .02, nose, 1, 1, 1.4); R.ball('hairCap', .113, hair, .98, .95, 1.03);
-  if (look.longHair) R.ball('hairBack', .115, hair, 1.0, 1.3, .7);
+  R.ball('head', .108, face, .93, 1.05, 1.0); R.ball('eyeL', .019, eye); R.ball('eyeR', .019, eye); R.ball('nose', .02, nose, 1, 1, 1.4); R.ball('hairCap', .113, hair, .98, .95, 1.03);
+  if (look.longHair) R.ball('hairBack', .11, hair, .95, 1.15, .6);
   R.ball('chest', .17 * sl, cloth, 1.12, .8, .78); R.ball('pelvis', .145 * sl, legs, 1.15, .8, .8);
   for (const s of ['L', 'R']) {
     R.ball('sh' + s, .062 * sl, cloth); R.seg('ua' + s, .058 * sl, .048 * sl, look.short ? skin : cloth); R.ball('el' + s, .046 * sl, look.short ? skin : cloth); R.seg('fa' + s, .045 * sl, .034 * sl, look.short ? skin : cloth); R.ball('hand' + s, .045 * sl, hand, .8, 1.1, .55);
@@ -73,7 +73,7 @@ export function poseHuman(R, P) {
     const sx = sd === 'L' ? -1 : 1, a = sh[sd];
     const swing = Math.sin(ph + (sd === 'L' ? 0 : Math.PI)) * .18 * wa;
     let tgt = P['arm' + sd] || a.clone().addScaledVector(r, sx * .06).addScaledVector(UP, -.56 * s).addScaledVector(f, .06 + swing);
-    const pole = r.clone().multiplyScalar(sx * .5).addScaledVector(f, -.8).addScaledVector(UP, -.4);
+    const pole = r.clone().multiplyScalar(sx * .45).addScaledVector(f, -.25).addScaledVector(UP, -1);
     const k = ik2(a, tgt, .29 * s, .27 * s, pole);
     R.at('sh' + sd, a); R.put('ua' + sd, a, k.mid); R.at('el' + sd, k.mid); R.put('fa' + sd, k.mid, k.end);
     R.at('hand' + sd, k.end.clone().addScaledVector(k.end.clone().sub(k.mid).normalize(), .05));

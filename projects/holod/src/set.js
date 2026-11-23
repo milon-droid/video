@@ -27,7 +27,7 @@ export function buildSet() {
   bx(-3, -1.9, 0, 2.6, -2.6, -2.5, lrWall); bx(-1.9, -.1, 0, .9, -2.6, -2.5, lrWall); bx(-1.9, -.1, 2.1, 2.6, -2.6, -2.5, lrWall);
   bx(-.1, 1.45, 0, 2.6, -2.6, -2.5, lrWall); bx(1.45, 2.55, 2.1, 2.6, -2.6, -2.5, lrWall); bx(2.55, 3, 0, 2.6, -2.6, -2.5, lrWall);
   // окно: стекло отражает тепло комнаты; за ним — ночь
-  const win = thermalMirror(1.8, 1.2, { glass: 8, refl: .72, res: .75 }); win.position.set(-1, 1.5, -2.53); scene.add(win); S.window = win;
+  const win = thermalMirror(1.8, 1.2, { glass: 9, refl: .9, res: 1 }); win.position.set(-1, 1.5, -2.53); scene.add(win); S.window = win;
   const frameM = tMat({ T: 11.5, nz: .2 });
   bx(-1.95, -.05, .88, .93, -2.62, -2.46, frameM); bx(-1.95, -.05, 2.07, 2.12, -2.62, -2.46, frameM); bx(-1.95, -1.9, .9, 2.1, -2.62, -2.46, frameM); bx(-.1, -.05, .9, 2.1, -2.62, -2.46, frameM);
   bx(-1.03, -.97, .9, 2.1, -2.58, -2.5, frameM); bx(-1.9, -.1, 1.48, 1.52, -2.58, -2.5, frameM);

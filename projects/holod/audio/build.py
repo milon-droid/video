@@ -55,7 +55,7 @@ L += room + whine; Rr += room * .9 + whine
 # гул: низкие синусы с биениями, напряжение растёт к зеркалу; провал до тишины на «это я»
 def curve(points):
     xs, ys = zip(*points); return np.interp(t, xs, ys)
-tens = curve([(0, .7), (S('A'), .25), (S('E'), .35), (S('F'), .55), (S('I'), .8), (S('L'), 1.0), (V('M') + D['l14'] + .1, 1.0), (V('M') + D['l14'] + .25, 0), (S('N') + .9, 0.05), (S('O'), .7), (S('P') + 1.6, 1), (S('P') + 2.3, 0), (TOTAL, 0)])
+tens = curve([(0, .45), (S('A'), .25), (S('E'), .35), (S('F'), .55), (S('I'), .8), (S('L'), 1.0), (V('M') + D['l14'] + .1, 1.0), (V('M') + D['l14'] + .25, 0), (S('N') + .9, 0.05), (S('O'), .7), (S('P') + PEND - .2, 1), (S('P') + PEND + .5, 0), (S('P') + PEND + 2.0, 0), (S('P') + PEND + 2.2, .6), (TOTAL, .5)])
 drone = (tone(N, 41.2) + .8 * tone(N, 41.9) + .5 * tone(N, 61.7) + .35 * tone(N, 82.6 + .3 * np.sin(t * .2))) * .075
 diss = (tone(N, 233.1) + tone(N, 246.9 + .8 * np.sin(t * .13)) + .6 * tone(N, 349.2)) * .012 * np.clip((tens - .4) / .6, 0, 1)
 air = band(N, 1500, 6000, -.3) * .02
@@ -66,7 +66,7 @@ def boom(tt, g=1, f0=55):
     n = int(2.4 * R); x = np.arange(n) / R; f = f0 * (1 + 1.4 * np.exp(-x * 9))
     y = np.sin(2 * np.pi * np.cumsum(f) / R) * np.exp(-x * 1.6) + band(n, 30, 300) * np.exp(-x * 8) * .5; put(y * .55, tt, g)
 put(load(lib('sfx-kit/sounds/digital/digital-corrupt.wav')) * .35, 0.0, 1)
-boom(0.02, 1)
+boom(0.02, .7)
 put(tone(int(.09 * R), 2200) * env(int(.09 * R), .005, .04) * .1, S('H') + .3)   # писк изотермы
 
 # ===== РЫЧАНИЕ (синтез): шум в полосе 90–700 Гц × неровные пульсы голосовых связок =====
@@ -84,7 +84,8 @@ put(growl(SH['O']['d'] + SH['P']['d'] - 1.8, .8, 31), S('O') + .2, 1, .1)
 
 # ===== КАМЕРА: включение, затвор NUC, писки замеров =====
 shutter = load(lib('sfx-kit/sounds/mechanical/mechanical-shutter-light.wav'))
-nucs = [S('B') + .35, S('F') + .15, S('P') + SH['P']['d'] - 2.0]
+PEND = SH['P']['d'] - 4.4
+nucs = [S('B') + .35, S('F') + .15, S('P') + PEND]
 for n_ in nucs: put(shutter, n_ + .27, .9); put(shutter, n_ + .02, .35)
 for k, f in enumerate([880, 1320, 1760]): n = int(.07 * R); put(tone(n, f) * env(n, .003, .03) * .09, S('B') + .1 + k * .12)
 put(tone(int(.16 * R), 660) * env(int(.16 * R), .003, .1) * .09, S('B') + 1.3)
@@ -133,11 +134,35 @@ n = int(4 * R); x = np.arange(n) / R; put(tone(n, 4100) * np.exp(-x * .7) * .025
 n = int(3 * R); x = np.arange(n) / R
 put((tone(n, 1046) + tone(n, 1108) + tone(n, 1567)) * .012 * env(n, 1.2, 1), S('N') + .5, 1)
 # конец: сбой, выключение
-n_end = S('P') + SH['P']['d'] - 2.0
+n_end = S('P') + PEND
 put(load(lib('sfx-kit/sounds/digital/digital-interference.wav')), S('P') + .3, .35)
 put(load(lib('sfx-kit/sounds/digital/digital-corrupt.wav')), n_end - .1, .8)
 n = int(.7 * R); x = np.arange(n) / R; put(np.sin(2 * np.pi * np.cumsum(900 * np.exp(-x * 5) + 40) / R) * env(n, .005, .2) * .12, n_end + .35)
 boom(n_end + .4, .8, 38)
+
+# ===== СТРАХ: новые сцены =====
+# F2: каждый новый след — тихое ледяное «тшш» и хруст
+for k in range(5): n = int(.35 * R); put(band(n, 3000, 9000) * env(n, .01, .3) * .05, S('F2') + .5 + k * (SH['F2']['d'] - .8) / 5, 1, rng.uniform(-.3, .3))
+for k in range(6): step(S('F2') + .3 + k * .62, .9)
+# G2: она смотрит — резкий удар-стинг + визг струн
+boom(S('G2') + .02, 1.3, 50)
+n = int(2.2 * R); x = np.arange(n) / R
+screech = sum(np.sin(2 * np.pi * np.cumsum(f0 * (1 + .03 * np.sin(x * 37 + f0))) / R) for f0 in (1480, 1568, 1661, 2217)) * np.exp(-x * 1.6) * .03
+put(screech + band(n, 2000, 8000) * np.exp(-x * 4) * .08, S('G2') + .02, 1)
+# дыхание героя в коридоре — всё чаще к зеркалу
+mbr = load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/HMNBrth_MaleBreathing_OS_01.ogg'))
+n = int((S('L') - S('F')) * R); mb = np.tile(mbr, n // len(mbr) + 1)[:n]; put(mb * env(n, 2, 1) * .22, S('F'), 1)
+n = int((S('M') - S('L') + .8) * R); mb2 = load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/HMNBrth_MaleBreathing_OS_01.ogg'), 1.25); mb2 = np.tile(mb2, n // len(mb2) + 1)[:n]; put(mb2 * env(n, .3, .4) * .28, S('L'), 1)
+# тревога LOW TEMP: двойной писк, мигает 3 раза в секунду
+a0 = S('I') + 1.1
+for k in range(int((S('M') - a0) * 1.5)):
+    tt = a0 + k / 1.5; n = int(.08 * R); put(tone(n, 2900) * env(n, .003, .03) * .06, tt); put(tone(n, 2900) * env(n, .003, .03) * .06, tt + .12)
+# пульс-удары снизу (давление) от I до M
+for k in range(int((S('M') - S('I')) / .9)): boom(S('I') + .5 + k * .9, .25 + .25 * k / 10, 48)
+# финал: LAST RECORDING → TODAY (удар) → «опять рычит»
+boom(S('P') + PEND + 2.1, 1.1, 40)
+n = int(.6 * R); x = np.arange(n) / R; put(band(n, 300, 6000) * (x / .6) ** 3 * .25, S('P') + PEND + 1.5)
+put(growl(3.2, .6, 27), S('P') + PEND + 3.0, 1, .4)
 
 # ===== ГОЛОС =====
 fx = {'holod_dan': 'highpass=f=80,equalizer=f=180:t=q:w=1:g=2,equalizer=f=3200:t=q:w=1.2:g=2.5,acompressor=threshold=-22dB:ratio=3:makeup=4',
@@ -145,7 +170,7 @@ fx = {'holod_dan': 'highpass=f=80,equalizer=f=180:t=q:w=1:g=2,equalizer=f=3200:t
 lines = {l['id']: l for l in json.load(open(os.path.join(PRJ, 'vo/lines.json')))['lines']}
 vo = np.zeros(N)
 for lid, tt in VO:
-    p = subprocess.run(['ffmpeg', '-v', 'error', '-i', os.path.join(PRJ, 'vo/take1', lid + '.wav'), '-af', fx[lines[lid]['role']], '-ac', '1', '-ar', str(R), '-f', 'f32le', '-'], capture_output=True, check=True).stdout
+    p = subprocess.run(['ffmpeg', '-v', 'error', '-i', os.path.join(PRJ, 'vo/take2' if os.path.exists(os.path.join(PRJ, 'vo/take2', lid + '.wav')) else 'vo/take1', lid + '.wav'), '-af', fx[lines[lid]['role']], '-ac', '1', '-ar', str(R), '-f', 'f32le', '-'], capture_output=True, check=True).stdout
     x = np.frombuffer(p, np.float32).astype(np.float64); i = int(tt * R); x = x[:N - i]; vo[i:i + len(x)] += x
 # фон под голосом приглушить (≈ −9 дБ), голос по центру
 w_ = int(.25 * R); cs = np.cumsum(np.concatenate([np.zeros(w_), (np.abs(vo) > .01).astype(float), np.zeros(w_)])); envv = (cs[w_ + w_ // 2:w_ + w_ // 2 + N] - cs[w_ // 2:w_ // 2 + N]) / w_; duck = 1 - .62 * np.clip(envv * 3, 0, 1)
