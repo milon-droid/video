@@ -124,7 +124,7 @@ for i, (tf, snd) in enumerate([(34.95, L('celebration-applause-small', 0, .9)), 
     put(L('click-clip-soft'), tf, .5, 0); put(echo(snd), tf + .03, .18, (i - 1.5) * .3)
 for j, m in enumerate([48, 55, 60, 64, 67, 72]): put(pluck(m, 3.5, 1, .3), 34.95 + j * .06, .22, (j - 2.5) * .15, 'mus')
 # ---------- голос ----------
-VO = {'k1': 1.35, 'k2a': 3.55, 'k2': 5.3, 'o1': 32.0, 'o2': 35.2, 'o3': 37.0}
+VO = {'k1': 1.35, 'k2a': 3.7, 'k2': 5.95, 'o1': 31.25, 'o2a': 35.1, 'o2b': 36.6, 'o3': 37.3}
 for b in bus:                                            # петля: через стык переходит только ровный фон
     tl = bus[b][N:].copy(); bus[b] = bus[b][:N].copy()
     if b == 'amb': bus[b][:len(tl)] += tl

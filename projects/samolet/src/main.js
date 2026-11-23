@@ -25,12 +25,13 @@ function camera(t) {
 }
 // титры (английский)
 const CAPS = [
-  [1.35, 3.2, ['“No… better”?', 'What?']],
-  [3.55, 5.15, ['Are we rich?', 'Are we famous?']],
-  [5.25, 6.6, ['Hello, future me!']],
-  [31.95, 34.6, ['“Hello, future me.', 'Are we rich? Are we famous?”']],
-  [35.15, 36.9, ['No… Better.']],
-  [36.95, 39.7, ['It goes fast.', 'Have fun.']],
+  [1.35, 3.65, ['“No… better”?', 'What?']],
+  [3.7, 5.85, ['Are we rich?', 'Are we famous?']],
+  [5.95, 7.4, ['Hello, future me!']],
+  [31.2, 35.0, ['“Hello, future me.', 'Are we rich? Are we famous?”']],
+  [35.1, 36.55, ['No…']],
+  [36.55, 37.25, ['No… Better.']],
+  [37.3, 40.0, ['It goes fast.', 'Have fun.']],
 ];
 // вспышки-воспоминания старика: квартал, p, камера
 const FLASH = [[34.95, 1, .55, V(3700, 760, 900)], [35.4, 2, .72, V(5300, 1230, 900)], [35.85, 3, .6, V(6850, 1060, 800)], [36.3, 4, .62, V(8380, 1330, 1000)]];
