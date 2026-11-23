@@ -16,7 +16,7 @@
   const S = (dur, f) => shots.push({ dur, f });
 
   // 1. ХУК — трос лопается прядь за прядью
-  S(2.7, t => {
+  S(2.55, t => {
     const snaps = [.25, .9, 2.0]; const left = 3 - snaps.filter(s => t >= s).length;
     const drop = Math.max(0, t - 2.0);
     const [sx, sy] = [0, 1, 2].map(i => shake(t, snaps[i], i === 2 ? 7 : 3, .35)).reduce((a, b) => [a[0] + b[0], a[1] + b[1]]);
@@ -63,8 +63,8 @@
     const r = []; lit(c => r.push(diver(c, P)), [{ x: P.x + Math.cos(ang) * 50, y: P.y - 40, r: 90, l: .15 }]);
     beam(r[0].lamp[0], r[0].lamp[1], ang, 230, .26, .38);
     WD.bubbles(r[0].head[0], r[0].head[1], t, 6, .5, 3, 12);
-    text('DEPTH', 120, 54, 2, { l: .85 });
-    text(depthStr(d) + ' M', 120, 74, 4, { l: 1 });
+    text('DEPTH', 110, 54, 2, { l: .85 });
+    text(depthStr(d) + ' M', 110, 74, 3, { l: 1 });
     return { gain: 1 };
   });
 
@@ -90,13 +90,13 @@
     // ил: главный взрыв + боковые клубы
     if (t > ti) {
       const k = t - ti, R = 70 * E.o(clamp(k / 1.4)), al = 1 - inv(1.2, 2.8, k) * .75;
-      WD.silt(120, base + 2, R, .3, 0, 3, al);
-      WD.silt(120 - k * 30, base - 4 - k * 6, R * .55, .26, 0, 7, al * .8);
-      WD.silt(120 + k * 34, base - 2 - k * 5, R * .5, .26, 0, 9, al * .8);
+      WD.silt(120, base + 2, R, .5, 0, 3, al);
+      WD.silt(120 - k * 40, base - 6 - k * 8, R * .6, .42, 0, 7, al * .85);
+      WD.silt(120 + k * 46, base - 4 - k * 7, R * .55, .45, 0, 9, al * .85);
     }
     ctx.restore();
-    if (t > .7) text(depthStr(MAXD) + ' M', 120, 58, 4, { l: 1, chars: Math.floor((t - .7) * 30) });
-    if (t > 1.25) { text('DEEPER THAN', 120, 96, 2, { l: .9, chars: Math.floor((t - 1.25) * 30) }); text('EVEREST IS TALL', 120, 114, 2, { l: .9, chars: Math.floor((t - 1.5) * 30) }); }
+    if (t > .7) text(depthStr(MAXD) + ' M', 110, 58, 3, { l: 1, chars: Math.floor((t - .7) * 30) });
+    if (t > 1.25) { text('DEEPER THAN', 110, 92, 2, { l: .9, chars: Math.floor((t - 1.25) * 30) }); text('EVEREST IS TALL', 110, 110, 2, { l: .9, chars: Math.floor((t - 1.5) * 30) }); }
     return { flash: t > ti && t < ti + .06 ? .15 : 0 };
   });
 
@@ -147,10 +147,10 @@
   // 6. ИДЁТ НА СВЕТ — трекинг сбоку, огонёк приближается; за ним угадывается силуэт
   S(3.8, t => {
     const camX = t * 34, base = 312, w = t * 5.4;
-    const lx = 300 - t * 26, ly = 236 + Math.sin(t * 1.7) * 5;
+    const lx = 222 - t * 17, ly = 236 + Math.sin(t * 1.7) * 5;
     WD.water(0, 0);
     const F = fishAt(lx, ly, { s: .9, dir: -1, amb: .04, mouth: .55, eye: 0, sway: t * 1.7, lure: { ang: -.15, len: 115 } });
-    const AL = [AMBER(lx, ly, 150, 1)];
+    const AL = [AMBER(lx, ly, 210, 1.5)];
     lit(c => fish(c, F), [AMBER(lx, ly, 90, .9)]);
     WD.seabed({ base, camX, amb: .05, lights: [AMBER(lx, ly + 70, 170, 1)], far: false });
     const P = { x: 92, y: base - 26, s: 2.4, dir: 1, amb: .05, lamp: 0, eye: .35, eyeA: .9, pupil: .8, walk: w, arms: [[-Math.sin(w) * .35, -.4], [Math.sin(w) * .35 + .2, -.5]], head: -.05, hose: t * 2 };
@@ -200,8 +200,15 @@
       lit(c => fish(c, F), [AMBER(bx, by, 220, 1.2)]);
       // рука водолаза входит снизу слева
       const reach = E.o(inv(0, 1.1, t)) * .9;
-      const P = { x: lerp(-30, -6, reach), y: 470, s: 6.5, dir: 1, amb: .06, lamp: 0, eye: 0, arms: [[0, 0], [2.3 - reach * .1, -.15]], legs: [[0, 0], [0, 0]] };
-      lit(c => diver(c, P), [AMBER(bx, by, 160, 1)]);
+      // рука в перчатке тянется снизу слева к огоньку
+      const hx = lerp(30, 78, reach), hy = lerp(330, 228, reach);
+      lit(c => { c.lineCap = 'round';
+        c.strokeStyle = C(.02); c.lineWidth = 34; c.beginPath(); c.moveTo(-20, 470); c.quadraticCurveTo(20, 330, hx, hy); c.stroke();
+        c.strokeStyle = C(.15); c.lineWidth = 31; c.stroke();
+        c.fillStyle = C(.02); c.beginPath(); c.arc(hx + 4, hy - 4, 19, 0, 7); c.fill(); c.fillStyle = C(.2); c.beginPath(); c.arc(hx + 4, hy - 4, 17, 0, 7); c.fill();
+        for (let i = 0; i < 3; i++) { c.strokeStyle = C(.02); c.lineWidth = 9; c.beginPath(); c.moveTo(hx + 8, hy - 12 + i * 8); c.lineTo(hx + 22 - i * 2, hy - 18 + i * 7); c.stroke();
+          c.strokeStyle = C(.22); c.lineWidth = 7; c.stroke(); }
+      }, [AMBER(bx, by, 170, 1.4)]);
       // стебель удочки сверху
       ctx.strokeStyle = C(.03, .3); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(bx, by - 4); ctx.quadraticCurveTo(bx + 40, by - 120, 160, -10); ctx.stroke();
       WD.snow(0, 0, 0, .03, [AMBER(bx, by, 90, 1)], 120, t);
@@ -258,8 +265,8 @@
     // фонарь водолаза светит вниз — в морду рыбе
     beam(b[0] + 6, b[1] + 6, Math.PI / 2 + .2, 160, .3, .35);
     bulb(ctx, b[0], b[1], 2.4, 1);
-    text('DEPTH', 120, 54, 2, { l: .85 });
-    text(depthStr(d) + ' M', 120, 74, 4, { l: 1 });
+    text('DEPTH', 110, 54, 2, { l: .85 });
+    text(depthStr(d) + ' M', 110, 74, 3, { l: 1 });
     return { pal: y => k * k * .65 + (1 - y / H) * k * .2 };
   });
 
@@ -334,14 +341,14 @@
     for (let i = 0; i < N; i++) {
       const t0 = i === 0 ? 2.7 : i < 7 ? 3.3 + i * .08 : 3.8 + hash(i) * .7;
       if (t < t0) continue;
-      const x = i === 0 ? 120 : 14 + hash(i * 3.3) * 212, y = i === 0 ? 300 : wl + 150 + hash(i * 7.1) * (H - wl - 150) + Math.sin(t * 1.3 + i) * 2;
+      const x = i === 0 ? 110 : 14 + hash(i * 3.3) * 190, y = i === 0 ? 300 : wl + 165 + hash(i * 7.1) * (340 - wl - 165) + Math.sin(t * 1.3 + i) * 2;
       const zz = .5 + hash(i * 1.7) * .6;
       let on = Math.min(1, (t - t0) / .25);
       if (i === 0 && t < 3.3) on = ((t - 2.7) % .4) < .2 ? 1 : .1; // первый отвечает двумя миганиями
       on *= end;
       if (on > 0) bulb(ctx, x, y, 1.6 * zz, on * .9);
     }
-    if (t > 4.0 && end) { text('THEY WANT', 120, 236, 3, { l: 1, chars: Math.floor((t - 4.0) * 25) }); text('IT BACK', 120, 262, 3, { l: 1, a: 1, chars: Math.floor((t - 4.3) * 25) }); }
+    if (t > 4.0 && end) { text('THEY WANT', 110, 156, 3, { l: 1, chars: Math.floor((t - 4.0) * 25) }); text('IT BACK', 110, 182, 3, { l: 1, a: 1, chars: Math.floor((t - 4.3) * 25) }); }
     return { pal: y => y < wl + 2 ? 1 : lerp(.8, 0, clamp((y - wl) / 160)), fade: inv(5.2, 5.6, t) * .0 };
   });
 
