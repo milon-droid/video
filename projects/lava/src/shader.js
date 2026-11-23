@@ -219,8 +219,8 @@ vec3 cityView(vec3 rd, vec2 wuv){
   if(wuv.y<hgt){
     vec3 b=mix(vec3(.01,.012,.03),vec3(.18,.10,.14),uEnv.x);
     vec2 g=vec2(wuv.x*60.,wuv.y*55.);
-    float lit=step(.62,hash(floor(g)))*step(.25,fract(g.x))*step(.3,fract(g.y));
-    b+=vec3(1.,.75,.35)*lit*.55*(1.-uEnv.x*.85);
+    float lit=step(.7,hash(floor(g)))*smoothstep(.2,.4,fract(g.x))*smoothstep(.25,.45,fract(g.y));
+    b+=vec3(1.,.75,.35)*lit*.32*(1.-uEnv.x*.85);
     c=b;
   }
   return c;
@@ -403,11 +403,11 @@ vec3 liquidInscatter(vec3 a, vec3 b){
 }
 const vec3 ABS=vec3(.9,2.2,.55);
 
-float marchT(vec3 ro, vec3 rd, int mode, float tmax, out float mat){
+float marchT(vec3 ro, vec3 rd, int mode, float tmax, float t0, out float mat){
   float t=0.; mat=0.;
   for(int i=0;i<96;i++){
     float d=map(ro+rd*t,mode);
-    if(abs(d)<.0009*(1.+t*1.5)){ mat=gMat; return t; }
+    if(abs(d)<.0009*(1.+(t+t0)*.8)){ mat=gMat; return t; }
     t+=d*.9; if(t>tmax) break;
   }
   return -1.;
@@ -429,9 +429,9 @@ void main(){
   for(int k=0;k<4;k++){
     float mat;
     int md=stage==1?1:(stage==2?2:0);
-    float t=marchT(ro,rd,md,stage==1?3.:30.,mat);
+    float t=marchT(ro,rd,md,stage==1?3.:30.,tot,mat);
     if(t<0.){
-      if(stage==1){ break; }
+      if(stage==1){ vec3 pe=ro+rd*1.2; col+=tr*liquidInscatter(ro,pe); tr*=exp(-ABS*1.2); col+=tr*room(pe,rd)*.8; tr=vec3(0.); if(depth<0.) depth=tot+3.; break; }
       col+=tr*room(ro,rd); if(depth<0.) depth=tot+12.; tr=vec3(0.); break;
     }
     vec3 p=ro+rd*t; tot+=t;
@@ -446,7 +446,7 @@ void main(){
       tr*=1.-fr;
       vec3 r2=refract(rd,n,1.03);
       if(dot(r2,r2)<.1) r2=reflect(rd,-n);
-      rd=r2; ro=p+n*.004; stage=2;
+      rd=r2; ro=p+n*(.004+.0015*tot); stage=2;
       continue;
     }
     if(mat>2.5&&mat<3.5){
@@ -454,7 +454,7 @@ void main(){
       float fr=.03+.75*pow(1.-max(dot(-rd,n),0.),5.);
       col+=tr*fr*env(reflect(rd,n))*1.3;
       tr*=(1.-fr)*vec3(.97,.95,1.);
-      rd=refract(rd,n,1./1.03); ro=p-n*.004; stage=1;
+      rd=refract(rd,n,1./1.03); ro=p-n*(.004+.0015*tot); stage=1;
       continue;
     }
     if(depth<0.) depth=tot;
