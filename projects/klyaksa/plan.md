@@ -11,4 +11,4 @@ src/story.js — тайминг 48,2 с: brushAt, blotAt, camAt, dragonAt, ка�
 Рендер: node render.cjs render/klyaksa.mp4 (~5 мин); лист: node tools/sheet.cjs out.png t1 t2…; звук: python3 audio/sound.py
 ## Статус
 - [x] движок, мир, персонажи, сюжет, рендер видео v1
-- [ ] звук audio/sound.py → master → render/klyaksa-v1.mp4
+- [x] звук audio/sound.py, мастер −13,8 LUFS, сдан v1 (render/klyaksa-v1.mp4, 10 МБ) — ждём отзыв

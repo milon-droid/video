@@ -215,7 +215,7 @@ window.DURATION = 48.2;
     dragonAt(t);
     const cam = camAt(t, B, S); Object.assign(E.cam, cam);
     E.post.FL = .5 * Math.max(0, 1 - Math.abs(t - 35.32) / .12) + .35 * Math.max(0, 1 - Math.abs(t - 37.55) / .15);
-    E.post.FD = t < .12 ? 1 - t / .12 : 0; E.post.FDC = .93;
+    E.post.FD = 0; E.post.FDC = .93;
     E.begin();
     Wd.paint(t);
     splash(t); swipe(t);
