@@ -104,6 +104,7 @@ const SHOT = {
     return { counter: 1 };
   },
   H2(u, s) { // «Стой на свету» — быстрые вспышки, а оно всё равно ближе
+    R.doorPivot.rotation.y = 0;
     const st = u < 1.45 ? 0 : u < 2.45 ? 1 : 2;
     fig.g.visible = true;
     if (st === 0) { cam(V3(.1, 1.18, .45), V3(1.15, 1.3, -.4), u, 1.6, 60); poseFigure(fig, { pos: V3(1.25, 0, -.45), yaw: -Math.PI / 2 - .3, crouch: .05, lean: .2, headTilt: 1.0, curl: .8, mouth: 1, t: u }); }
@@ -112,25 +113,29 @@ const SHOT = {
     return { counter: 1 };
   },
   I(u, s) { // «Последний.» — пусто
-    cam(V3(.1, 1.18, .3), V3(1.0, 1.1, -.2), u, 1, 60);
+    R.doorPivot.rotation.y = 0;
+    cam(V3(-.2, 1.18, .6), V3(.9, 1.05, -1.4), u, 1, 62);
     setBolt(bolt(u, [2.6]) * .9);
     return { counter: 1 };
   },
   J(u, s) { // свет вернулся
+    R.doorPivot.rotation.y = 0;
     const on = u > .4 ? (u < .7 ? (Math.floor(u * 30) % 3 ? 1 : 0) : 1) : 0;
     lamp.intensity = on * 9; lamp.position.set(0, 2.2, 0); R.bulb.material.emissive.setHex(on ? 0xffe0b0 : 0); moon.intensity = .15;
     const k = ease(u, 1.2, s.d, inoutE);
-    cam(V3(.1, 1.2, .3), V3(lerp(1.0, 1.98, k), lerp(1.1, 1.55, k), lerp(-.2, 1.45, k)), u, .6, 60);
+    cam(V3(-.2, 1.2, .6), V3(lerp(.9, 1.98, k), lerp(1.05, 1.55, k), lerp(-1.4, 1.45, k)), u, .6, 62);
     return { lit: 1 };
   },
   Kp(u, s) { // фото деда, 1961
+    R.doorPivot.rotation.y = 0;
     lamp.intensity = 9; lamp.position.set(0, 2.2, 0); R.bulb.material.emissive.setHex(0xffe0b0);
     cam(V3(lerp(1.15, 1.45, ease(u, 0, s.d)), 1.55, 1.45), V3(1.99, 1.55, 1.45), u, .4, 40 - u * 1.5);
     return { lit: 1 };
   },
   L(u, s) { // лампа гаснет; вспышка заряжается сама — лицо в объективе (СКРИМЕР 2)
+    R.doorPivot.rotation.y = 0;
     const on = u < .5 ? 1 : 0; lamp.intensity = on * 9; lamp.position.set(0, 2.2, 0); R.bulb.material.emissive.setHex(on ? 0xffe0b0 : 0);
-    cam(V3(.1, 1.2, .3), V3(1.0, 1.15, -.2), u, .8, 60);
+    cam(V3(-.2, 1.2, .6), V3(.9, 1.1, -1.4), u, .8, 62);
     if (u >= 2.5) { fig.g.visible = true; const p = camera.position.clone().add(camera.getWorldDirection(V3()).multiplyScalar(.5)); poseFigure(fig, { pos: V3(p.x, 0, p.z), yaw: Math.atan2(camera.position.x - p.x, camera.position.z - p.z), lean: .25, crouch: .45, headTilt: .55, mouth: 1.3, curl: 1, reach: .6, t: u }); fig.g.position.y = 0;
       // голова — точно перед объективом
       const hp = fig.head.position.clone(); const dir = camera.getWorldDirection(V3()), rt = V3(1, 0, 0).applyQuaternion(camera.quaternion); const want = camera.position.clone().addScaledVector(dir, .55).addScaledVector(rt, .02).add(V3(0, .02, 0)); fig.g.position.add(want.sub(hp)); }
@@ -193,7 +198,7 @@ window.renderFrame = async T => {
   const s = SHOTS.find(x => T >= x.t0 && T < x.t0 + x.d) || SHOTS[SHOTS.length - 1]; const u = T - s.t0;
   // 1) кадр вспышки (сцена в момент последней вспышки)
   const lf = lastFlash(T); let age = null;
-  if (lf && T - lf.t < 2.6) { const fs = SH[lf.s]; reset(); SHOT[lf.s](lf.t - fs.t0, fs); let fi = 55; if (fig.g.visible) { const dd = fig.head.getWorldPosition(V3()).distanceTo(camera.position); fi = 55 * clamp(Math.pow(dd / 2.6, 2), .045, 1); } flash.intensity = fi; lightning.intensity = 0; moon.intensity = 0; lamp.intensity = 0; renderer.render(scene, camera); snap('flash'); age = T - lf.t; }
+  if (lf && T - lf.t < 2.6) { const fs = SH[lf.s]; reset(); SHOT[lf.s](lf.t - fs.t0 + 1e-4, fs); let fi = 55; if (fig.g.visible) { const dd = fig.head.getWorldPosition(V3()).distanceTo(camera.position); fi = 55 * clamp(Math.pow(dd / 2.6, 2), .045, 1); } flash.intensity = fi; lightning.intensity = 0; moon.intensity = 0; lamp.intensity = 0; renderer.render(scene, camera); snap('flash'); age = T - lf.t; }
   // 2) тёмный кадр «сейчас»
   reset(); const o = SHOT[s.id](u, s) || {}; flash.intensity = 0; renderer.render(scene, camera); snap('dark');
   if (o.end) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); txt('12 SHOTS', 540, 980, 96, { font: TYPO, alpha: ease(u - 3.2, 0, .3) }); return; }
