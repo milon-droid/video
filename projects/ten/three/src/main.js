@@ -75,9 +75,9 @@ S.S3 = (t) => { useSet('kitchen'); hideAll();
 // письмо на стене коридора (общая функция для S4/S6)
 const LET1 = ['I QUIT.'], LET2 = ['26 years following you,', 'and you never', 'go anywhere.'], PS = [];
 const paintLetter = (t, t0, psT0 = 1e9) => hall.paint(c => {
-  handLines(c, LET1, { x: 400, y: 140, size: 122, reveal: (t - t0) * 16, drips: ease(t, t0 + .8, t0 + 2.5), seed: 1 });
-  handLines(c, LET2, { x: 400, y: 265, size: 74, lh: 1.0, reveal: (t - t0 - .9) * 24, drips: ease(t, t0 + 2.5, t0 + 4), seed: 5, rot: -.03 });
-  handLines(c, ['FUCK THIS.'], { x: 400, y: 575, size: 176, reveal: (t - t0 - 2.6) * 12, drips: ease(t, t0 + 2.9, t0 + 4.2) * 1.6, seed: 7, rot: -.07 });
+  handLines(c, LET1, { x: 400, y: 140, size: 118, reveal: (t - t0) * 16, drips: ease(t, t0 + .8, t0 + 2.5), seed: 1 });
+  handLines(c, LET2, { x: 400, y: 265, size: 64, lh: 1.0, reveal: (t - t0 - .9) * 24, drips: ease(t, t0 + 2.5, t0 + 4), seed: 5, rot: -.03 });
+  handLines(c, ['FUCK THIS.'], { x: 400, y: 575, size: 132, reveal: (t - t0 - 2.6) * 12, drips: ease(t, t0 + 2.9, t0 + 4.2) * 1.6, seed: 7, rot: -.07 });
   if (t > t0 + 3.2) { c.save(); c.globalAlpha = clamp((t - t0 - 3.2) * 4); c.fillStyle = '#0a0910'; c.translate(400, 600); c.rotate(-.07); c.fillRect(-300, 0, 600 * clamp((t - t0 - 3.2) * 3), 12); c.restore(); }
   handLines(c, ['— your Shadow'], { x: 330, y: 720, size: 74, reveal: (t - t0 - 3.9) * 10, seed: 9, rot: -.08 });
   if (t > t0 + 3.7) { c.save(); c.globalAlpha = clamp((t - t0 - 3.7) * 5); handPrint(c, 590, 700, .95, -.22, '#0a0910'); c.restore(); }
@@ -172,7 +172,7 @@ S.S8 = (t) => { useSet('day'); hideAll(); day.fence.position.x = 5.4;
   const [jx, jy] = hh(t, .03); cam(camX + jx, 1.35 + jy, 7.4, camX, .85, -.5, 40, -.07);
   FX = { fy: .52, fw: .26, blur: 7, bloom: .15, warm: .04 };
   return () => { if (jk > .95 && jk < 1.4) {} if (t > J1 && t < J1 + .5) { const [sx, sy] = toScreen(5.9, .02, 1.6); burst(t - J1, sx, sy, '#cfc0a8', 12); }
-    narr(t, .3, 4.9, 'It rode other people’s buses…', { y: 330, size: 66, n: 18, accent: ['buses'] }); shadowSay(t, 1.2, 3.4, ['Catch me, loser!'], { y: 600, size: 92 }); shadowSay(t, 3.55, 4.95, ['Fuuuuck!'], { y: 600, size: 110 }); };
+    narr(t, .3, 4.9, 'It rode other people’s buses…', { y: 330, size: 66, n: 18, accent: ['buses'] }); shadowSay(t, 1.2, 3.4, ['Catch me, loser!'], { y: 640, size: 92 }); shadowSay(t, 3.55, 4.95, ['Fuuuuck!'], { y: 640, size: 110 }); };
 };
 // танец по кругу (для танцоров, тени и Сени)
 const DANCE = [{ aL: [0, 2.6, .3], aR: [0, -.4, .2], crouch: .05, hipsZ: .1 }, { aL: [.3, .6, 1.8], aR: [.3, -.6, 1.8], crouch: .1, lean: .1, lL: [.5, .6] }, { aL: [0, .4, .2], aR: [0, -2.6, .3], crouch: .05, hipsZ: -.1 }, { aL: [1.4, .2, .2], aR: [-.6, -.3, .2], twist: .4, lR: [.6, .4] }];
@@ -189,7 +189,7 @@ S.S9 = (t) => { useSet('plaza'); hideAll(); plaza.sun.position.set(6, 3.6, -.8);
   heroAt(hx, .6, t < 2.1 ? Math.PI / 2 : .5, pose, t, { expr: t < 2.5 ? 'determined' : 'happy', mouth: t > 2.5 ? .5 : .2 }, { sat: .72, alpha: .92 }); fadeHand(hero.aL.el, .9);
   const [jx, jy] = hh(t, .02); cam(-.55 + jx, 2.2 + jy, lerp(8.6, 8.0, ease(t, 0, 5)), -.55, .55, -.5, 38);
   FX = { fy: .55, fw: .25, blur: 7, bloom: .12, warm: .05 };
-  return () => { narr(t, .3, 4.9, '…danced with strangers’ shadows…', { y: 330, size: 66, n: 18, accent: ['shadows'] }); shadowSay(t, 2.7, 4.95, ['Watch and learn,', 'dumbass.'], { y: 560, size: 84 }); };
+  return () => { narr(t, .3, 4.9, '…danced with strangers’ shadows…', { y: 330, size: 66, n: 18, accent: ['shadows'] }); shadowSay(t, 2.7, 4.95, ['Watch and learn,', 'dumbass.'], { y: 1500, size: 84 }); };
 };
 // 10. Фонтан: бежит через струи, смеётся; руки уже прозрачные
 S.S10 = (t, T) => { useSet('plaza'); hideAll(); plaza.sun.position.set(7, 4.6, -1); plaza.sun.target.position.set(0, 0, 0); plaza.dancers.forEach(d => d.root.visible = false); plaza.crowd.forEach(d => d.root.visible = false);
@@ -216,7 +216,7 @@ S.S11 = (t, T) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fi
 };
 // 12. Тень складывается в буквы → город → лицо
 const VENT = (() => { const yaw = -.5, cx = 2.6 + Math.sin(yaw) * .62, cz = -.8 + Math.cos(yaw) * .62; return { yaw, cx, cz, nx: Math.sin(yaw), nz: Math.cos(yaw) }; })();
-const ventLetters = (t, t0, fadeOut = 1) => roof.paint(c => { c.globalAlpha = fadeOut; handLines(c, ['You chased me', 'all day long.', 'Did you see the city?'], { x: 512, y: 200, size: 138, lh: 1.0, reveal: (t - t0) * 26, seed: 21, rot: -.03, drips: .4 }); c.globalAlpha = 1; });
+const ventLetters = (t, t0, fadeOut = 1) => roof.paint(c => { c.globalAlpha = fadeOut; handLines(c, ['You chased me', 'all day long.', 'Did you see the city?'], { x: 512, y: 210, size: 92, lh: 1.0, reveal: (t - t0) * 26, seed: 21, rot: -.03, drips: .4 }); c.globalAlpha = 1; });
 S.S12 = (t) => { useSet('roof'); hideAll(); roof.vent.visible = true; roof.fill.intensity = t < 2.5 ? 7 : 0;
   if (t < 2.5) { ventLetters(t, .5);
     applyPose(shade, POSE.stand, t, { mood: 'happy' }, 3); const melt = ease(t, .3, 1.4);

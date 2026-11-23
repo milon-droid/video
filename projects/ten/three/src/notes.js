@@ -100,7 +100,7 @@ export function feedUI(t, r) {
   // летящие сердечки
   for (let i = 0; i < 6; i++) { const ph = (t * .9 + i / 6) % 1; ctx.globalAlpha = 1 - ph; ctx.fillStyle = i % 2 ? '#ff6a9a' : '#ff2a5a'; const hx = col - 10 - Math.sin(ph * 6 + i) * 18, hy = 500 - ph * 220; ctx.beginPath(); ctx.moveTo(hx, hy + 7); ctx.bezierCurveTo(hx - 15, hy - 5, hx - 9, hy - 16, hx, hy - 8); ctx.bezierCurveTo(hx + 9, hy - 16, hx + 15, hy - 5, hx, hy + 7); ctx.fill(); } ctx.globalAlpha = 1;
   ctx.textAlign = 'left'; ctx.fillStyle = '#fff'; ctx.font = '800 20px Unb'; ctx.fillText('@swallow_club', 18, 760);
-  ctx.font = '500 18px Unb'; ctx.fillText('a shadow is dancing in the club. ALONE', 18, 790); ctx.fillText('is this normal??', 18, 815);
+  ctx.font = '500 18px Unb'; ctx.fillText('a shadow dancing in the club.', 18, 790); ctx.fillText('ALONE. is this normal??', 18, 815);
   ctx.font = '500 15px Unb'; ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillText('♫ Swallow Club · last night', 18, 845);
   ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(0, 872, 440, 4); ctx.fillStyle = '#fff'; ctx.fillRect(0, 872, 440 * ((t * .35) % 1), 4);
   ctx.restore();
