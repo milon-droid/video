@@ -1,0 +1,70 @@
+{
+ "roles": {
+  "sm_kid": {
+   "instruct": "A 10-year-old American boy, bright clear childish voice, curious and playful, natural, close to the microphone.",
+   "ref": "Wait, what? Who sent this? Is this a joke?",
+   "f0": 260
+  },
+  "sm_old": {
+   "instruct": "An 80-year-old American man, warm gentle raspy voice, slow, kind grandfatherly tone, a soft smile in the voice.",
+   "ref": "Well, look at that. It has been a long, long time.",
+   "f0": 110
+  }
+ },
+ "lines": [
+  {
+   "id": "k1",
+   "role": "sm_kid",
+   "text": "No... better? What?",
+   "emo": "Puzzled, reading a strange note, each word a confused question."
+  },
+  {
+   "id": "k2a",
+   "role": "sm_kid",
+   "text": "Are we rich? Are we famous?",
+   "emo": "Excited and hopeful, quick, writing while talking."
+  },
+  {
+   "id": "k2",
+   "role": "sm_kid",
+   "text": "Hello, future me!",
+   "emo": "Shouting happily out of a window, excited."
+  },
+  {
+   "id": "o1",
+   "role": "sm_old",
+   "text": "Hello, future me. Are we rich? Are we famous?",
+   "emo": "Reading a child's note aloud slowly, amused, a smile in the voice."
+  },
+  {
+   "id": "o3",
+   "role": "sm_old",
+   "text": "It goes fast. Have fun.",
+   "emo": "Tender, nostalgic, slow, a little emotional, like advice to a grandchild."
+  },
+  {
+   "id": "k1b",
+   "role": "sm_kid",
+   "text": "From... me?!",
+   "emo": "Stunned amazed whisper, slowly realizing, the end rises in disbelief."
+  },
+  {
+   "id": "r1",
+   "role": "sm_old",
+   "text": "Rich? Famous?",
+   "emo": "Amused, gently teasing, a soft little chuckle, like smiling at his younger self."
+  },
+  {
+   "id": "r2",
+   "role": "sm_old",
+   "text": "No.",
+   "emo": "Soft, warm, smiling, calm and certain, not sad at all."
+  },
+  {
+   "id": "r3",
+   "role": "sm_old",
+   "text": "Better...",
+   "emo": "Slow, drawn out, whispered with deep love and quiet happiness, a smile you can hear, savoring the word, holding the hand of his wife."
+  }
+ ]
+}

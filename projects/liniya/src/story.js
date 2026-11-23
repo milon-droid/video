@@ -87,16 +87,34 @@ function room(t, rev, wifeK, wifeOpen, wifeDir) {
   const hx = lerp(316, 262, ease.io(wifeK)), hy = lerp(846, 808, ease.io(wifeK));
   draw(fromStrokes(ART.wifeHead(hx, hy - 1104 * br * 0, wifeDir, wifeOpen), 2), 0, p(2), { col: COL.a, al: 1, head: 0 });
 }
-function monitorTrace(t) {
-  // ЭКГ: история слева от головы и старая развёртка справа (стирается щелью)
-  const hx = headX(t);
-  draw(fromStrokes([ecgPts(X0, Math.min(hx, 562 + SPD * JERK), BEATS_NOW)], 1.5), 0, 1, { col: COL.g, al: 1, head: t < JERK ? 1.2 : 0, fresh: 40 });
-  if (hx + 16 < 656) draw(fromStrokes([ecgPts(hx + 16, 656, BEATS_OLD)], 1.5), 0, 1, { col: COL.g, al: .45, head: 0, fresh: 0 });
-  // показания
-  const hr = t < .2 ? '72' : t < JERK ? '0' : (t < WRITE1 ? (Math.floor(t * 20) % 2 ? '0' : '?') : '?');
+// ---- умирание (0–5.5 с): удары реже и слабее, пульс падает, тревога, ровная линия
+const OPEN = 5.5, OFF = OPEN - JERK, HXE = 562 + SPD * JERK, BW2 = 44;
+const DB = [[.3, 1], [1.55, .7], [2.95, .36]];
+const dX = t => 452 + (HXE - 452) * clamp(t / OPEN);
+function dyingPts(t) { const hx = dX(t), p = [];
+  for (let x = X0; x <= hx; x += 1.1) { let y = BASE; for (const [bt, am] of DB) { const bx = dX(bt) - .42 * BW2; if (x >= bx && x <= bx + BW2) y = BASE - AMP * am * ART.ecg((x - bx) / BW2); } p.push(x, y); }
+  p.push(hx, BASE); return p; }
+function monitorTrace(t, gt) {
+  if (gt == null) gt = t + OFF;
+  const hx = dX(gt), live = gt < OPEN;
+  draw(fromStrokes([dyingPts(gt)], 1.4), 0, 1, { col: COL.g, al: 1, head: live ? 1.2 : 0, fresh: 40 });
+  if (hx + 16 < 656) { const op = []; for (let x = hx + 16; x <= 656; x += 1.2) { const bx = 590; op.push(x, x >= bx && x <= bx + BW2 ? BASE - AMP * ART.ecg((x - bx) / BW2) : BASE); } draw(fromStrokes([op], 1.5), 0, 1, { col: COL.g, al: .4, head: 0, fresh: 0 }); }
+  const hr = gt < 1.55 ? '38' : gt < 2.95 ? '24' : gt < 3.4 ? '11' : gt < OPEN ? '0' : (gt < OPEN + .7 ? (Math.floor(gt * 20) % 2 ? '0' : '?') : '?');
+  const low = gt < OPEN && Math.floor(gt * 3) % 2 === 0;
   draw(textShape('HR', 'futural', 9, 'l'), 0, 1, { x: 450, y: 318, col: COL.g, al: .8, head: 0, fresh: 0, wob: 0 });
-  draw(textShape(hr, 'futural', 18, 'l'), 0, 1, { x: 472, y: 322, col: COL.g, al: 1, head: 0, fresh: 0, wob: 0 });
-  if (t > .3 && t < JERK + .25 && Math.floor(t * 4) % 2 === 0) draw(textShape('ASYSTOLE', 'futural', 9, 'r'), 0, 1, { x: 652, y: 318, col: COL.a, al: 1, head: 0, fresh: 0, wob: 0 });
+  draw(textShape(hr, 'futural', 18, 'l'), 0, 1, { x: 472, y: 322, col: gt < OPEN ? COL.a : COL.g, al: low ? .55 : 1, head: 0, fresh: 0, wob: 0 });
+  if (gt < OPEN + .25 && Math.floor(gt * 4) % 2 === 0) draw(textShape(gt < 3.4 ? 'HR LOW' : 'ASYSTOLE', 'futural', 9, 'r'), 0, 1, { x: 652, y: 318, col: COL.a, al: 1, head: 0, fresh: 0, wob: 0 });
+}
+function shotDying(t) {
+  const wide = t >= 3.55 && t < 4.95;
+  const cam = t < 3.55 ? camAt(t, [[0, 552, 384, 3.0], [3.55, 552, 380, 3.5, ease.io]]) : wide ? camAt(t, [[3.55, 410, 770, 1.3], [4.95, 480, 812, 1.55, ease.o]]) : camAt(t, [[4.95, 552, 378, 3.12], [5.5, 552, 378, 3.25, ease.o]]);
+  E.setCam(cam);
+  if (wide) room(t, null, 0, 0, 1); else { draw(S(ART.monitor), 0, 1, { col: COL.g, al: .75, head: 0 });
+    for (let gx = 0; gx <= 8; gx++) for (let gy = 0; gy <= 6; gy++) glow('bg', 444 + gx * 26.5, 304 + gy * 25.5, 1.6, COL.g, .35); }
+  monitorTrace(0, t);
+  // тревожный янтарный отсвет на каждом ударе и при остановке
+  for (const [bt] of DB) { const k = Math.exp(-(((t - bt) / .12) ** 2)); if (k > .02) glow('mid', 550, 380, 120, COL.a, .12 * k); }
+  return { cam, bgBlur: wide ? 2.2 : 1.2, fade: wide ? .12 : .1 * k01(t, 3.4, 5.4) };
 }
 function shotRoom(t) {
   const cam = camAt(t, [[0, 552, 378, 3.25], [1.6, 552, 378, 3.25], [3.0, 552, 376, 3.42, ease.o], [4.6, 372, 760, 1.15], [6.0, 384, 780, 1.22, ease.o],
@@ -120,7 +138,7 @@ function shotRoom(t) {
       const h = heroA(), wl = wait().len / h.len, k = ease.io(k01(t, 3.2, 5.7));
       const b = wl + (1 - wl) * k, a = Math.max(0, b - (k < 1 ? .1 + .12 * Math.sin(k * Math.PI) : .05));
       if (b < .999 || t < 5.75) draw(h, k > .02 ? a : 0, b, { col: COL.g, al: 1, head: 1.2, fresh: 70, w: 2.2 });
-      draw(fromStrokes([[X0, BASE, 562 + SPD * JERK, BASE]], 2), 0, 1, { col: COL.g, al: .5, head: 0, fresh: 0 });
+      draw(fromStrokes([dyingPts(OPEN)], 1.5), 0, 1, { col: COL.g, al: .5, head: 0, fresh: 0 });
     }
   }
   if (t >= 5.7) {
@@ -133,8 +151,8 @@ function shotRoom(t) {
 }
 
 // ================= сборка =================
-window.SHOTS = [[0, 9.3, shotRoom]];
-window.ST = { seq, camAt, rain, R, S, F, room, heroA, wait, HAND, BASE, X0, monitorTrace };
+window.SHOTS = [[0, OPEN, shotDying], [OPEN, 9.3 + OFF, (lt) => shotRoom(lt + JERK)]];
+window.ST = { OFF, OPEN, seq, camAt, rain, R, S, F, room, heroA, wait, HAND, BASE, X0, monitorTrace };
 window.DURATION = 52;
 window.story = t => { const SH = window.SHOTS; for (const [a, b, fn] of SH) if (t >= a && t < b) return fn(t - a, t); const l = SH[SH.length - 1]; return l[2](t - l[0], t); };
 })();
