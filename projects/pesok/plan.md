@@ -23,6 +23,6 @@
 Мастер: acompressor→alimiter→loudnorm −14→alimiter, видео 2 прохода 1400k (~11,5 МБ). Итог −14,2 LUFS, пик −1,3.
 
 ## Статус
-- v1 сдан. v2 (render/pesok-v2-720.mp4): озвучка (vo/ep1.json, Qwen3-TTS --direct --cands 3, тайминги audio/vo_times.json, n2 ускорена ×1,12), фон под голосом −14 дБ, отец держит свёрток на двух руках. v3: хук n1c — клон голоса с финальной n5 (Qwen Base, ref_wav). Ждём отзыв.
+- v1 сдан. v2 (render/pesok-v2-720.mp4): озвучка (vo/ep1.json, Qwen3-TTS --direct --cands 3, тайминги audio/vo_times.json, n2 ускорена ×1,12), фон под голосом −14 дБ, отец держит свёрток на двух руках. v3: хук n1c — клон голоса с финальной n5 (Qwen Base, ref_wav). v4: 4K (`RS=3 node render.cjs …`, 40 мин), субтитры печатные с подсветкой полосы, зерно без квадратов. Ждём отзыв.
 
 Подпись: He always said "later". 🏖️⏳ #sandart #animation #fatherdaughter #shorts #life
