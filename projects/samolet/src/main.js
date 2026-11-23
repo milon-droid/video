@@ -1,5 +1,5 @@
 // Камера, кадр, титры, печать.
-window.SCENE = { duration: REAL_DUR, fps: 30, width: CW, height: CH };
+window.SCENE = { duration: REAL_DUR, fps: 30, width: CW * RES, height: CH * RES };
 var CUR_T = 0;
 const V = (cx, cy, vw) => ({ cx, cy, vw });
 const mixC = (a, b, u) => V(lerp(a.cx, b.cx, u), lerp(a.cy, b.cy, u), Math.exp(lerp(Math.log(a.vw), Math.log(b.vw), u)));
@@ -90,7 +90,13 @@ function stampS(ctx, txt, x, y, r, col, size) {
 
 let dens, dctx, ready = false;
 async function setup() {
-  dens = document.createElement('canvas'); dens.width = CW; dens.height = CH; dctx = dens.getContext('2d');
+  dens = document.createElement('canvas'); dens.width = CW * RES; dens.height = CH * RES; dctx = dens.getContext('2d');
+  if (RES !== 1) {                                   // весь код рисует в «единицах 720p», холст — в RES раз крупнее
+    const st = dctx.setTransform.bind(dctx), gt = dctx.getTransform.bind(dctx), R = RES;
+    dctx.setTransform = (a, b, c, d, e, f) => st(a * R, b * R, c * R, d * R, e * R, f * R);
+    dctx.getTransform = () => { const m = gt(); return new DOMMatrix([m.a / R, m.b / R, m.c / R, m.d / R, m.e / R, m.f / R]); };
+    const cv = document.getElementById('c'); cv.width = CW * R; cv.height = CH * R;
+  }
   Riso.init(document.getElementById('c'));
   await Promise.all(['900 40px Inter', '700 20px Inter'].map(f => document.fonts.load(f)));
   ready = true;

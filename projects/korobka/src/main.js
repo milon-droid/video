@@ -1,6 +1,6 @@
 // Камера, титры, эффекты печати, кадр.
 const DUR = 40.5; const SH = 4;   // +3 с на «планы» героя после 20.6                    // хлопок в 39, 1.5 с наезда на этикетку → первый кадр (стык ≈3 с)
-window.SCENE = { duration: DUR, fps: 30, width: CW, height: CH };
+window.SCENE = { duration: DUR, fps: 30, width: CW * RES, height: CH * RES };
 const V = (cx, cy, vw) => ({ cx, cy, vw });
 const atLevel = (c, z) => V(PX + (c.cx - PX) * Math.pow(S, -z), PY + (c.cy - PY) * Math.pow(S, -z), c.vw * Math.pow(S, -z));
 const F1 = V(BX + BW / 2, BY + BH / 2, BW), RM = V(600, 960, 940), CBg = V(570, 1010, 600);
@@ -140,7 +140,13 @@ function overlays(ctx, t, cam) {
 // ---------- кадр ----------
 let dens, dctx, ready = false;
 async function setup() {
-  dens = document.createElement('canvas'); dens.width = CW; dens.height = CH; dctx = dens.getContext('2d');
+  dens = document.createElement('canvas'); dens.width = CW * RES; dens.height = CH * RES; dctx = dens.getContext('2d');
+  if (RES !== 1) {                                   // весь код рисует в «единицах 720p», холст — в RES раз крупнее
+    const st = dctx.setTransform.bind(dctx), gt = dctx.getTransform.bind(dctx), R = RES;
+    dctx.setTransform = (a, b, c, d, e, f) => st(a * R, b * R, c * R, d * R, e * R, f * R);
+    dctx.getTransform = () => { const m = gt(); return new DOMMatrix([m.a / R, m.b / R, m.c / R, m.d / R, m.e / R, m.f / R]); };
+    const cv = document.getElementById('c'); cv.width = CW * R; cv.height = CH * R;
+  }
   Riso.init(document.getElementById('c'));
   await Promise.all(['900 40px Inter', '800 20px Inter', '700 20px Inter', 'italic 600 20px Inter'].map(f => document.fonts.load(f)));
   ready = true;
