@@ -1,7 +1,8 @@
 // Движок «ТЕНЬ»: three.js (пластилиновые игрушки, настоящие тени) + 2D-компоновщик (тилт-шифт, свет, зерно, текст).
 import * as THREE from 'three';
 export { THREE };
-export const W = 720, H = 1280, K = W / 1080; // вывод 720p; 2D-координаты пишем в сетке 1080×1920
+export const RS = window.RENDER_SCALE || 1; // 1 = 720p, 1.5 = 1080p, 3 = 4K (2160×3840)
+export const W = Math.round(720 * RS), H = Math.round(1280 * RS), K = W / 1080; // 2D-координаты пишем в сетке 1080×1920
 export const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 export const lerp = (a, b, k) => a + (b - a) * k;
 export const win = (t, a, b) => clamp((t - a) / (b - a));
@@ -61,6 +62,6 @@ export function composite({ tilt = 1, fy = .5, fw = .22, blur = 7, vign = .5, gr
   }
   if (warm) { ctx.save(); ctx.globalCompositeOperation = 'soft-light'; ctx.globalAlpha = Math.abs(warm); ctx.fillStyle = warm > 0 ? '#ff9a3a' : '#3a6aff'; ctx.fillRect(0, 0, W, H); ctx.restore(); }
   if (vign) { const g = ctx.createRadialGradient(W / 2, H * .45, H * .25, W / 2, H * .5, H * .78); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(10,6,20,${vign})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
-  if (grain) { const f = Math.floor(t * 24); ctx.save(); ctx.globalAlpha = grain; for (let i = 0; i < 900; i++) { ctx.fillStyle = i % 2 ? '#fff' : '#000'; ctx.fillRect(h1(i * 3.1 + f * 17.7) * W, h1(i * 7.3 + f * 3.9) * H, 1.4, 1.4); } ctx.restore(); }
+  if (grain) { const f = Math.floor(t * 24); ctx.save(); ctx.globalAlpha = grain; for (let i = 0; i < 900 * RS * RS; i++) { ctx.fillStyle = i % 2 ? "#fff" : "#000"; ctx.fillRect(h1(i * 3.1 + f * 17.7) * W, h1(i * 7.3 + f * 3.9) * H, 1.4 * RS, 1.4 * RS); } ctx.restore(); }
   ctx.setTransform(K, 0, 0, K, 0, 0); // дальше рисуем в сетке 1080×1920
 }

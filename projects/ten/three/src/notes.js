@@ -41,9 +41,9 @@ export function psNote(t, t0, out = 99) {
   [['No shadow?', -210], ['You last', -125]].forEach(([l, y], i) => { const kk = ease(t, a + i * .25, a + i * .25 + .25); ctx.globalAlpha = o * kk; ctx.fillText(l, 0, y); }); ctx.globalAlpha = o;
   const k2 = ease(t, a + .6, a + .85, back); ctx.save(); ctx.translate(0, 0); ctx.scale(k2, k2); ctx.fillStyle = RED; ctx.font = '900 92px Unb'; ctx.fillText('TILL SUNSET', 0, 16); ctx.restore();
   scribbleOval(0, -16, 405, 84, ease(t, a + .85, a + 1.35));
-  [['Then you become', 150], ['a shadow yourself.', 230]].forEach(([l, y], i) => { const kk = ease(t, a + 1.3 + i * .25, a + 1.55 + i * .25); ctx.globalAlpha = o * kk; ctx.fillStyle = INK; ctx.font = '700 60px Unb'; ctx.fillText(l, 0, y); }); ctx.globalAlpha = o;
+  [].forEach(([l, y], i) => { const kk = ease(t, a + 1.3 + i * .25, a + 1.55 + i * .25); ctx.globalAlpha = o * kk; ctx.fillStyle = INK; ctx.font = '700 60px Unb'; ctx.fillText(l, 0, y); }); ctx.globalAlpha = o;
   // песочные часы-солнце и печать
-  if (t > a + 1.9) { const kk = ease(t, a + 1.9, a + 2.1); ctx.save(); ctx.translate(250, 345); ctx.rotate(-.2); ctx.scale(lerp(2.4, 1, kk), lerp(2.4, 1, kk)); ctx.globalAlpha = o * kk; ctx.strokeStyle = RED; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(0, 0, 70, 0, 7); ctx.stroke(); ctx.fillStyle = RED; ctx.font = '800 22px Unb'; ctx.fillText('NO', 0, -14); ctx.fillText('EXCEP-', 0, 12); ctx.fillText('TIONS', 0, 36); ctx.restore(); }
+  if (t > a + 1.45) { const kk = ease(t, a + 1.45, a + 1.65); ctx.save(); ctx.translate(250, 345); ctx.rotate(-.2); ctx.scale(lerp(2.4, 1, kk), lerp(2.4, 1, kk)); ctx.globalAlpha = o * kk; ctx.strokeStyle = RED; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(0, 0, 70, 0, 7); ctx.stroke(); ctx.fillStyle = RED; ctx.font = '800 22px Unb'; ctx.fillText('NO', 0, -14); ctx.fillText('EXCEP-', 0, 12); ctx.fillText('TIONS', 0, 36); ctx.restore(); }
   ctx.globalAlpha = o; ctx.fillStyle = '#ffb84a'; ctx.beginPath(); ctx.arc(-330, 340, 34, Math.PI, 0); ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(-390, 342); ctx.lineTo(-270, 342); ctx.stroke();
   ctx.restore();
 }
@@ -67,7 +67,8 @@ export function contract(t, t0, out) {
   ctx.fillStyle = '#fbf6ea'; ctx.fillRect(-W / 2, -Hh / 2, W, Hh); ctx.strokeStyle = '#c9b38a'; ctx.lineWidth = 4; ctx.strokeRect(-W / 2 + 22, -Hh / 2 + 22, W - 44, Hh - 44);
   ctx.textAlign = 'center'; ctx.fillStyle = INK; ctx.font = '800 62px Unb'; ctx.fillText('CONTRACT #1', 0, -Hh / 2 + 120);
   ctx.font = '700 54px Cav'; ctx.fillText('between Sam and his Shadow', 0, -Hh / 2 + 185);
-  let y = -Hh / 2 + 300;
+  ctx.fillStyle = RED; ctx.font = '700 50px Cav'; ctx.fillText(typed('New terms: sign it — I’ll come back.', t, t0 + .2, 30), 0, -Hh / 2 + 250); ctx.fillStyle = INK;
+  let y = -Hh / 2 + 340;
   ITEMS.forEach((it, i) => { const ti = t0 + .4 + i * .42; if (t < ti) return; const k = ease(t, ti, ti + .2); const lines = it.split('|');
     ctx.globalAlpha = k; ctx.strokeStyle = INK; ctx.lineWidth = 5; ctx.strokeRect(-W / 2 + 70, y - 46, 56, 56);
     ctx.textAlign = 'left'; lines.forEach((l, j) => { ctx.font = '700 58px Cav'; ctx.fillStyle = i === 3 ? RED : INK; ctx.fillText(l, -W / 2 + 160, y + j * 56); });
@@ -81,7 +82,7 @@ export function contract(t, t0, out) {
   if (t > t0 + 2.45) { const k = clamp((t - t0 - 2.45) * 6); handPrint(ctx, 210, sy + 40, lerp(1.8, .75, k), -.25); }
   if (t > t0 + 2.7) { const k = ease(t, t0 + 2.7, t0 + 2.9); ctx.save(); ctx.translate(230, -60); ctx.rotate(-.2); ctx.scale(lerp(2.6, 1, k), lerp(2.6, 1, k)); ctx.globalAlpha = k; ctx.strokeStyle = RED; ctx.lineWidth = 10; ctx.strokeRect(-230, -62, 460, 112); ctx.fillStyle = RED; ctx.textAlign = 'center'; ctx.font = '900 68px Unb'; ctx.fillText('SIGNED', 0, 22); ctx.restore(); }
   // курсор: рука тени ставит галочки
-  const cur = Math.min(3, Math.floor((t - t0 - .4) / .42)); if (t > t0 + .45 && t < t0 + 2.1) { let yy = -Hh / 2 + 300; for (let i = 0; i < cur; i++) yy += 70 + ITEMS[i].split('|').length * 56; handPrint(ctx, -W / 2 + 150, yy + 10, .55, -.6); }
+  const cur = Math.min(3, Math.floor((t - t0 - .4) / .42)); if (t > t0 + .45 && t < t0 + 2.1) { let yy = -Hh / 2 + 340; for (let i = 0; i < cur; i++) yy += 70 + ITEMS[i].split('|').length * 56; handPrint(ctx, -W / 2 + 150, yy + 10, .55, -.6); }
   ctx.restore();
 }
 
