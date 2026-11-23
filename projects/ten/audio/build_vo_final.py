@@ -4,7 +4,7 @@ import json, os, subprocess, wave
 from warp import warp, TOTAL
 ROOT = os.path.dirname(os.path.abspath(__file__)); VO = os.path.join(ROOT, '..', 'vo')
 FX = {'senya_en': "highpass=f=90,equalizer=f=3200:t=q:w=1:g=2,acompressor=threshold=-20dB:ratio=3:makeup=3",
-      'shadow2_en': "highpass=f=100,equalizer=f=2800:t=q:w=1:g=2,acompressor=threshold=-20dB:ratio=3:makeup=3,aecho=0.5:0.3:18:0.12",
+      'shadow2_en': "highpass=f=100,equalizer=f=2800:t=q:w=1:g=4,acompressor=threshold=-22dB:ratio=4:makeup=5,volume=6dB,alimiter=limit=0.95",
       'narrator_en': "highpass=f=60,equalizer=f=120:t=q:w=1:g=4,equalizer=f=3000:t=q:w=1:g=-2,acompressor=threshold=-22dB:ratio=4:makeup=4,aecho=0.6:0.5:60|110:0.18|0.1,atempo=1.2"}
 cfg = json.load(open(os.path.join(VO, 'ep1-en-final.json')))
 items = []

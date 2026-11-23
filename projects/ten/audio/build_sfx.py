@@ -32,14 +32,14 @@ lib(25.0, "time-clock-fast", .2, align="start")
 lib(27.6, "notification-message-in-clear", .6); lib(28.7, "pop-small-bubble", .5)
 lib(29.9, "whoosh-medium-soft", .5, align="start"); lib(31.3, "whoosh-fast-soft", .7, align="start")
 # 8 погоня: город, автобус, бег, прыжок
-lib(32.2, "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .35, dur=15, align="start")
-lib(32.3, "oc-VEHCar_CarEngineHigh_LOOP_01", .25, dur=4.8, align="start", rate=.6)
+lib(32.2, "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .22, dur=15, align="start")
+lib(32.3, "oc-VEHCar_CarEngineHigh_LOOP_01", .13, dur=4.8, align="start", rate=.6)
 lib(33.0, "whoosh-slow-hard", .4, align="start")
 for i in range(9): lib(32.3 + i * .38, "oc-FEETHmn_ShoeConcreteRun_OS_0%d" % (1 + i % 2), .4, align="start")
 lib(35.7, "whoosh-fast-soft", .6, align="start"); lib(36.3, "impact-heavy-soft", .7)
 for i in range(2): lib(36.6 + i * .38, "oc-FEETHmn_ShoeConcreteRun_OS_0%d" % (1 + i % 2), .4, align="start")
 # 9 танцы
-lib(38.6, "celebration-applause-small", .45, align="start"); lib(39.8, "celebration-applause-big", .4, align="start")
+lib(38.6, "celebration-applause-small", .28, align="start"); lib(39.8, "celebration-applause-big", .22, align="start")
 for i in range(5): lib(37.3 + i * .38, "oc-FEETHmn_ShoeConcreteRun_OS_0%d" % (1 + i % 2), .3, align="start")
 # 10 фонтан
 syn(42.2, "hiss", .25, dur=5, lo=500, hi=4000, pulse=0)
@@ -73,10 +73,16 @@ for i in range(4): lib(65.0 + i * .42, "writing-marker-tick", .7); lib(64.8 + i 
 lib(66.55, "writing-scribble", .55, align="start"); lib(66.85, "impact-heavy-soft", .7); lib(67.1, "impact-deep-hard", .6); lib(67.3, "whoosh-fast-soft", .6, align="start")
 lib(68.3, "impact-light-soft", .8); lib(68.3, "shimmer-medium-bright", .45, align="start")
 lib(35.55, "impact-heavy-firm", .5)
-# EN-финал: всё в новое время + звуки альтернативной концовки
+# EN-финал: старый крючок (неон, забастовка) убран: всё в v5 68.8–73.2, кроме шторки
+C[:] = [c for c in C if not (68.8 <= c["t"] < 73.2)]
 from warp import warp
 for c in C: c["t"] = round(warp(c["t"]), 3)
 A0 = warp(68.8 - .001)
 for o, idd, g in [(.35, "click-clap-medium", .3), (1.7, "pop-small-bubble", .5), (2.55, "shimmer-long-soft", .5), (5.4, "whoosh-medium-soft", .5), (5.6, "pop-large-in", .6), (7.4, "foley-card-slide", .5)]: lib(A0 + o, idd, g, align="start")
+G0 = warp(68.8)
+for i in range(4): lib(G0 + .1 + i * .4, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .3, align="start")
+for i in range(6): lib(G0 + .5 + i * .36, "click-clip-soft", .35)
+lib(G0 + 2.65, "notification-success-sparkle", .5); lib(G0 + 3.7, "whoosh-medium-soft", .6, align="start"); lib(G0 + 4.4, "move-spring", .45, align="start")
+lib(G0, "oc-AMBForst_Night_LOOP_01", .25, dur=10, align="start")
 json.dump(C, open("sfx.json", "w"), ensure_ascii=False, indent=0)
 print(len(C), "cues")
