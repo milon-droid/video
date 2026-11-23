@@ -54,3 +54,4 @@ projects/*/remotion/public/audio/
 # «Тень»: сборка и звук генерируются (score.py, build_sfx.py)
 projects/ten/three/dist/
 projects/ten/audio/*.wav
+projects/pesok/audio/mix.wav
