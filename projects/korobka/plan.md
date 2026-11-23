@@ -37,6 +37,7 @@ Oculus Audio Pack (CC BY 4.0) — скрип и керамика.
 Превью: `node tools/render.mjs projects/korobka/src/scene.html --still T`. Рендер — без `--scale` (холст уже 720×1280).
 
 ## Статус
+- 4K (2026-11-23): `render/korobka_en_4k.mp4` (2160×3840, 40,5 с, 705 МБ) — `src/scene_en_4k.html` (window.RES=3).
 - v4 EN (2026-11-22): 40,5 с, `render/korobka_v4_en.mp4`. После 20.6 время героя стоит 4 с (warp в story.js, PLAN=4) — «планы»; всё после сдвинуто на +4. Русская v3 осталась на старом тайминге: для новой RU нужно озвучить «планы» и сдвинуть vo_times.json на +4 после 20.6.
 Подпись к посту (EN): «What would you do with 3 seconds? 👇 Sounds: Freesound CC0, Oculus Audio Pack by Meta (CC BY 4.0)».
 - v3 (2026-11-22): RU + EN (`render/korobka_v3_ru.mp4`, `korobka_v3_en.mp4`), 36,5 с. Стык петли ≈3 с: хлопок 35.0 → плавный наезд до кадра 0 (скорость в стыке = 0), шкатулка с 35.25 идёт через стык, тик каждые 1 с через стык (на x.5). Стрелка «Я/ME» на раскрытии великана. Звук: все шины сворачиваются по петле ДО дакинга.

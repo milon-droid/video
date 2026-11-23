@@ -17,6 +17,7 @@
 Подпись: «A paper plane from me, age 80. ✈️ What would you write to your future self? 👇 Sounds: Freesound (CC0)»
 
 ## Статус
+- 4K (2026-11-23): `render/samolet_4k.mp4` (2160×3840, 55,8 с, 657 МБ) — `src/scene_4k.html` (window.RES=3).
 - v6 (2026-11-23): 55,8 с, `render/samolet_v6.mp4`. Начало — тот же вид снаружи (пауза 0: holdPlane), мальчик влюблённо смотрит на соседку (сердечко), замечает самолётик сбоку. Сердце: замедление курса HXS + heartOff.
 - v5 (2026-11-23): 55,8 с, `render/samolet_v5.mp4`. HOLDS: [0, 2.2] класс изнутри (interior), [3.2, 1.6] «From… me?!», [35.0, 6.0] ответ старика. Сердце — смещение от курса (story.js heartOff), камера идёт за курсом.
 - v4 (2026-11-23): 57,5 с, `render/samolet_v4.mp4`. HOLDS: петля в классе, «From… me?!», сердце над свадьбой, ответ старика (8 карточек). Голос мальчика для новых реплик — клон (`assets/voices/qwen-ref/sm_kid_c.*`, нужна модель ~/models/base).
