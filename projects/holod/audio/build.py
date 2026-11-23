@@ -18,7 +18,7 @@ for m in re.finditer(r"\{ id: '(\w+)', lines: \[([^\]]*)\], lead: ([\d.]+)(?:, g
         if k: t += float(gap or .3)
         VO.append((l, T + t)); v.append(t); t += D[l]
     d = max(float(mn), t + float(tail)); SH[i] = dict(t0=T, d=d, v=v); T += d
-TOTAL = T; N = int((TOTAL + .05) * R)
+TOTAL = T; N = int((TOTAL + .05) * R); PEND = SH['P']['d'] - 4.4
 L = np.zeros(N); Rr = np.zeros(N)
 
 def load(path, rate=1.0):
@@ -126,7 +126,7 @@ g0 = SH['G']; n = int(g0['d'] * R); put(br[:n] * env(n, .4, .6) * .35, S('G'), 1
 hb = load(lib('bigsoundbank/1930.flac'))
 a0, a1 = S('I') + 1.0, V('M') + D['l14'] + .08; n = int((a1 - a0) * R)
 h = hb[:n] if len(hb) >= n else np.pad(hb, (0, n - len(hb)))
-put(h * np.linspace(.35, .9, n) * env(n, .5, .02), a0, 1)
+put(h * np.linspace(.3, .6, n) * env(n, .5, .02), a0, 1)
 # «это я»: удар + звон в ушах
 boom(V('M') + D['l14'] + .1, 1.2, 45)
 n = int(4 * R); x = np.arange(n) / R; put(tone(n, 4100) * np.exp(-x * .7) * .025 * env(n, .05, 1), V('M') + D['l14'] + .1, 1)
@@ -151,14 +151,14 @@ screech = sum(np.sin(2 * np.pi * np.cumsum(f0 * (1 + .03 * np.sin(x * 37 + f0)))
 put(screech + band(n, 2000, 8000) * np.exp(-x * 4) * .08, S('G2') + .02, 1)
 # дыхание героя в коридоре — всё чаще к зеркалу
 mbr = load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/HMNBrth_MaleBreathing_OS_01.ogg'))
-n = int((S('L') - S('F')) * R); mb = np.tile(mbr, n // len(mbr) + 1)[:n]; put(mb * env(n, 2, 1) * .22, S('F'), 1)
-n = int((S('M') - S('L') + .8) * R); mb2 = load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/HMNBrth_MaleBreathing_OS_01.ogg'), 1.25); mb2 = np.tile(mb2, n // len(mb2) + 1)[:n]; put(mb2 * env(n, .3, .4) * .28, S('L'), 1)
+n = int((S('L') - S('F')) * R); mb = np.tile(mbr, n // len(mbr) + 1)[:n]; put(mb * env(n, 2, 1) * .12, S('F'), 1)
+n = int((S('M') - S('L') + .8) * R); mb2 = load(lib('meta-open-sound/corpora/oculus-audio-pack/ogg/HMNBrth_MaleBreathing_OS_01.ogg'), 1.25); mb2 = np.tile(mb2, n // len(mb2) + 1)[:n]; put(mb2 * env(n, .3, .4) * .14, S('L'), 1)
 # тревога LOW TEMP: двойной писк, мигает 3 раза в секунду
 a0 = S('I') + 1.1
 for k in range(int((S('M') - a0) * 1.5)):
-    tt = a0 + k / 1.5; n = int(.08 * R); put(tone(n, 2900) * env(n, .003, .03) * .06, tt); put(tone(n, 2900) * env(n, .003, .03) * .06, tt + .12)
+    tt = a0 + k / 1.5; n = int(.08 * R); put(tone(n, 2900) * env(n, .003, .03) * .03, tt); put(tone(n, 2900) * env(n, .003, .03) * .03, tt + .12)
 # пульс-удары снизу (давление) от I до M
-for k in range(int((S('M') - S('I')) / .9)): boom(S('I') + .5 + k * .9, .25 + .25 * k / 10, 48)
+for k in range(int((S('M') - S('I')) / .9)): boom(S('I') + .5 + k * .9, .14 + .14 * k / 10, 48)
 # финал: LAST RECORDING → TODAY (удар) → «опять рычит»
 boom(S('P') + PEND + 2.1, 1.1, 40)
 n = int(.6 * R); x = np.arange(n) / R; put(band(n, 300, 6000) * (x / .6) ** 3 * .25, S('P') + PEND + 1.5)
