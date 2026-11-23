@@ -123,7 +123,9 @@ put(L('faller-1s-strong'), 30.35, .6); put(rs(L('faller-1s-soft'), .7), 30.5, .4
 hb = L('bsb-heartbeat-fast'); put(hb[:int(4.0 * SR)], 31.0, .8)
 put(L('cinematic-thunder-big')[:int(2.5 * SR)], 32.6, .55); put(L('impact-deep-hard'), 32.62, .7)          # шок + трещина
 n = int(4 * SR); x = np.arange(n) / SR; put((np.sin(2 * np.pi * 55 * x) + .6 * np.sin(2 * np.pi * 58.5 * x)) * np.minimum(1, x / 1.5) * .5, 31.0, .5, 0, 'amb')
-for j, t0 in enumerate((35.6, 36.6, 37.1, 37.9, 38.4)): put(L('impact-heavy-soft'), t0, .7 if j in (0, 4) else .45)   # урок
+for j in range(24): put(sine(1200 + j * 30, .05, r=.02), 35.5 + .8 * (1 - (1 - j / 24) ** .5), .25)                      # годы бегут
+for j, t0 in enumerate((36.35, 36.9, 37.45, 38.0, 38.4)): put(L('impact-heavy-soft'), t0, .7 if j in (2, 4) else .45)   # урок
+put(L('glitch-short') if 'glitch-short' in IDX else L('digital-corrupt'), 31.9, .45)                            # молодой → старый
 put(L('phone-vibrate-table'), 39.0, .8); put(ping(), 39.05, .5)
 put(L('whoosh-fast-medium'), 40.7, .45)
 for a, b in FACE: n = int((b - a) * SR); x = np.arange(n) / SR; put(np.sin(2 * np.pi * 55 * x) * .5 * np.minimum(1, x / .1), a, .5, 0, 'amb')

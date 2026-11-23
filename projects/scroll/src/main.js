@@ -9,7 +9,7 @@ function screenContent(ctx, t, ra) {
   const dead = t > DEAD[0] && t < DEAD[1];
   if (dead) {                                                     // чёрное стекло: отражение старого лица
     ctx.fillStyle = ink(.75, 1, .7); ctx.fillRect(0, 0, 1080, 1920);
-    ctx.globalAlpha = .8 * sstep(DEAD[0] + 1.0, DEAD[0] + 2.0, t); faceRef(ctx, t); ctx.globalAlpha = 1;
+    ctx.globalAlpha = .85 * sstep(DEAD[0] + .5, DEAD[0] + 1.1, t); faceRef(ctx, t); ctx.globalAlpha = 1;
     ctx.fillStyle = ink(0, .2, 0, .5); ctx.beginPath(); ctx.moveTo(0, 300); ctx.lineTo(1080, 0); ctx.lineTo(1080, 200); ctx.lineTo(0, 500); ctx.fill();   // блик
     return;
   }
@@ -19,8 +19,8 @@ function screenContent(ctx, t, ra) {
   if (f.sw > 0) { ctx.save(); ctx.translate(0, -1920 * E.io(f.sw)); CLIPS[f.k2](ctx, f.lt2); ctx.restore(); ctx.save(); ctx.translate(0, 1920 * (1 - E.io(f.sw))); CLIPS[f.k](ctx, f.lt); ctx.restore(); }
   else CLIPS[f.k](ctx, f.lt);
   // строка состояния: батарея
-  const lp = t > 40.6, bat = lp ? 100 : Math.max(1, Math.round(100 - ra * 99)), low = bat < 5;   // на стыке петли — как в начале
-  ctx.font = '800 34px Inter'; ctx.textAlign = 'left'; ctx.fillStyle = PAPER; ctx.fillText(t < 26 || lp ? '23:59' : '04:12', 40, 50);
+  const lp = t > 40.6, bat = t < 26.2 || lp ? 87 : Math.max(1, Math.round(lerp(40, 1, clamp((t - 26.2) / 4.1)))), low = bat < 5;   // на стыке петли — как в начале
+  ctx.font = '800 34px Inter'; ctx.textAlign = 'left'; ctx.fillStyle = PAPER; ctx.fillText(phoneClock(t), 40, 50);
   rr(ctx, 900, 22, 110, 44, 8); stroke(ctx, 4, PAPER); ctx.fillStyle = low ? NEON : PAPER; ctx.fillRect(906, 28, 98 * bat / 100 + 2, 32);
   if (low && Math.floor(t * 4) % 2) { ctx.font = '900 40px Inter'; ctx.fillStyle = NEON; ctx.textAlign = 'right'; ctx.fillText('1%', 885, 58); }
   // уведомления
@@ -31,7 +31,15 @@ function screenContent(ctx, t, ra) {
   if (t > 39.0 && t < 40.8) { const u = sstep(39.0, 39.2, t); const y = lerp(-240, 90, u); rr(ctx, 40, y, 1000, 200, 36); fill(ctx, NEON); stroke(ctx, 6);
     ctx.textAlign = 'center'; ctx.fillStyle = PAPER; ctx.font = '900 64px Inter'; ctx.fillText('NEW FOR YOU ▶', 540, y + 122); }
 }
-function faceRef(ctx, t) {                 // отражение: старое лицо, медленный наезд, глаза расширяются от ужаса
+function faceYoung(ctx, t, al) {
+  ctx.save(); ctx.globalAlpha *= al; const sc = 1 + clamp((t - 31.4) / 3) * .25; ctx.translate(540, 960); ctx.scale(sc, sc); ctx.translate(-540, -960);
+  drawPerson(ctx, { x: 540, y: 2780, R: 300, kind: 'man', age: 25, outfit: 'tee', hair: 'short', hairCol: ink(.7, .95, .7), browCol: ink(.7, .95, .7), t, seed: 3, look: [0, 0], eye: .8, smile: 0, furrow: .3 });
+  ctx.restore();
+}
+function faceRef(ctx, t) { const mo = sstep(31.9, 32.6, t);   // сначала молодой, потом переход в старика
+  if (mo < 1) faceYoung(ctx, t, 1 - mo);
+  if (mo <= 0) return;
+  ctx.save(); ctx.globalAlpha *= mo; const gl = Math.sin(mo * Math.PI); if (gl > .1) ctx.translate(Math.sin(t * 90) * 30 * gl, 0);                 // отражение: старое лицо, медленный наезд, глаза расширяются от ужаса
   const u = clamp((t - 31.4) / 3), shock = sstep(32.6, 32.9, t);
   ctx.save(); ctx.translate(540, 960); ctx.scale(1 + u * .25, 1 + u * .25); ctx.translate(-540, -960);
   const P = { x: 540, y: 2780, R: 300, kind: 'old', age: 80, outfit: 'tee', hair: 'grey', hairCol: PAPER, browCol: PAPER, t, seed: 3, look: [0, 0], wide: shock, O: shock, brow: shock, furrow: -shock, eye: 1 - .3 * (1 - shock), tremble: shock };
@@ -46,7 +54,7 @@ function faceRef(ctx, t) {                 // отражение: старое �
     if (shock > .3) { ctx.beginPath(); ctx.ellipse(0, 72, 14 * shock + 4, 22 * shock, 0, 0, 7); fill(ctx, ink(.75, .9, .45)); stroke(ctx, 3); }
     ctx.restore(); }
   const G = personGeom(P); for (let i = 0; i < 9; i++) { ctx.beginPath(); const y = G.hc[1] - 260 + i * 40; ctx.moveTo(G.hc[0] - 200 + hash(i) * 60, y); ctx.lineTo(G.hc[0] - 120 + hash(i + 2) * 40, y + 6); stroke(ctx, 6, ink(.45, .3, .5)); }   // морщины
-  ctx.restore();
+  ctx.restore(); ctx.restore();
   // трещина по стеклу в момент шока
   if (shock > .5) { ctx.beginPath(); ctx.moveTo(760, 380); for (let i = 1; i < 7; i++) ctx.lineTo(760 + Math.cos(i * 2.2) * i * 60, 380 + i * 120 + Math.sin(i * 3) * 40); stroke(ctx, 7, PAPER); ctx.beginPath(); ctx.moveTo(760, 380); ctx.lineTo(1000, 520); ctx.moveTo(760, 380); ctx.lineTo(640, 200); stroke(ctx, 5, PAPER); }
 }
@@ -73,7 +81,7 @@ window.renderFrame = async t => {
   CUR_T = t;
   const ctx = dctx, ra = raAt(t), face = FACE.find(f => t >= f[0] && t < f[1]);
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = PAPER; ctx.fillRect(0, 0, CW, CH);
-  if (face) { const a = CW / 1080; ctx.setTransform(a, 0, 0, a, 0, 0); faceShot(ctx, face[2], t); }
+  if (face) { const a = CW / 1080; ctx.setTransform(a, 0, 0, a, 0, 0); faceShot(ctx, raAt(t), t); }
   else {
     const z = zoomAt(t), cam = mixC(FULL, SCR, z), a = CW / cam.vw;
     const lower = sstep(34.6, 35.6, t) * (1 - sstep(39.4, 40.3, t)) * 520;          // опустил телефон и поднял снова
@@ -99,12 +107,13 @@ window.renderFrame = async t => {
   Riso.print(dens, t, mis);
 };
 
-function lesson(ctx, t) {                    // урок в конце (поверх тёмной комнаты)
-  const L = [[35.6, '47 YEARS. GONE.', 72, NEON], [36.4, 'THE WORLD MOVED ON.', 48, PAPER], [37.0, 'YOU DIDN’T.', 84, PAPER], [37.8, 'PUT IT DOWN.', 78, NEON_Y], [38.3, 'LOOK UP.', 110, NEON_Y]];
+function lesson(ctx, t) {                    // урок: годы бегут → мир изменился → ты нет
   if (t < 35.4 || t > 39.4) return;
   const out = 1 - sstep(39.0, 39.4, t);
   ctx.save(); ctx.globalAlpha = .55 * sstep(35.4, 35.8, t) * out; ctx.fillStyle = OUT; ctx.fillRect(0, 0, CW, CH); ctx.restore();
-  L.forEach(([t0, txt, size, col], i) => { if (t < t0) return; const u = E.back(clamp((t - t0) / .2));
-    ctx.save(); ctx.globalAlpha = out; ctx.translate(360, 300 + i * 150 + (i > 2 ? 40 : 0)); ctx.scale(u, u); ctx.font = `900 ${size}px Inter`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const yr = 2026 + Math.floor(47 * E.out(clamp((t - 35.5) / .8)));
+  const L = [[35.5, String(yr), 120, NEON], [36.35, 'YEARS GO BY.', 66, PAPER], [36.9, 'THE WORLD MOVES ON.', 48, PAPER], [37.45, 'YOU DON’T.', 84, PAPER], [38.0, 'PUT IT DOWN.', 72, NEON_Y], [38.4, 'LOOK UP.', 104, NEON_Y]];
+  L.forEach(([t0, txt, size, col], i) => { if (t < t0) return; const u = i ? E.back(clamp((t - t0) / .2)) : 1;
+    ctx.save(); ctx.globalAlpha = out; ctx.translate(360, 250 + i * 128 + (i > 3 ? 30 : 0)); ctx.scale(u, u); ctx.font = `900 ${size}px Inter`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.lineJoin = 'round'; ctx.lineWidth = size * .18; ctx.strokeStyle = OUT; ctx.strokeText(txt, 0, 0); ctx.fillStyle = col; ctx.fillText(txt, 0, 0); ctx.restore(); });
 }

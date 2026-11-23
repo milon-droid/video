@@ -1,23 +1,23 @@
 // Комната от первого лица и телефон в руках. Мир 1080×1920 (как экран), экран телефона R0.
 const R0 = { x: 325, y: 968, w: 430, h: 764 };
 function roomPOV(ctx, t, ra) {
-  const spin = lapse(t), day = spin ? .5 + .5 * Math.sin(t * 9) : (t > 33 ? .7 : 0);
+  const spin = lapse(t), hod = (elapsed(t) + 23.98) % 24, day = hod > 6 && hod < 20 ? 1 : 0;
   ctx.fillStyle = ink(lerp(.25, .4, ra), lerp(.55, .45, ra), lerp(.15, .45, ra)); ctx.fillRect(-200, -200, 1480, 1700);      // стена (темнеет и желтеет)
   ctx.fillStyle = ink(.45, .3, .6); ctx.fillRect(-200, 1480, 1480, 640);                                                  // пол
   // окно: город растёт — домики → многоэтажки → неоновые небоскрёбы
   const WX = 600, WY = 300, WW = 440, WH = 640;
   rr(ctx, WX - 22, WY - 22, WW + 44, WH + 44, 8); fill(ctx, ink(.5, .3, .6)); stroke(ctx, 7);
   ctx.save(); ctx.beginPath(); ctx.rect(WX, WY, WW, WH); ctx.clip();
-  const night = ra > .7 ? 1 : day < .5 ? 1 - day * 2 : 0;
+  const night = 1;
   ctx.fillStyle = ink(lerp(.4, .2, ra), lerp(1, .5, ra) * (night ? 1 : .35) + (night ? 0 : .1), lerp(.2, .05, ra)); ctx.fillRect(WX, WY, WW, WH);
-  if (ra < .12) {                                                  // маленькие дома и деревья
+  if (yearsAt(t) < 2) {                                                  // маленькие дома и деревья
     for (let i = 0; i < 5; i++) { const x = WX + 10 + i * 88, h = 90 + hash(i) * 40, y = WY + WH - 60;
       ctx.fillStyle = [ink(.6, .05, .5), ink(.2, .5, .7), ink(.5, .2, .9)][i % 3]; ctx.fillRect(x, y - h, 74, h); ctx.strokeStyle = OUT; ctx.lineWidth = 4; ctx.strokeRect(x, y - h, 74, h);
       ctx.beginPath(); ctx.moveTo(x - 6, y - h); ctx.lineTo(x + 37, y - h - 46); ctx.lineTo(x + 80, y - h); fill(ctx, ink(.75, .4, .6)); stroke(ctx, 4);
       ctx.fillStyle = NEON_Y; ctx.fillRect(x + 24, y - h + 24, 26, 26); }
     for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(WX + 50 + i * 110, WY + WH - 40, 40, 0, 7); fill(ctx, ink(0, .75, .9)); stroke(ctx, 4); }
   } else {
-    const lvl = clamp((ra - .12) / .88), n = 7;
+    const lvl = clamp((yearsAt(t) - 2) / 40), n = 7;
     for (let i = 0; i < n; i++) { const x = WX + i * 64 - 4, h = lerp(200, 560, lvl) * (.55 + .45 * hash(i + 3)), y = WY + WH;
       ctx.fillStyle = lvl > .6 ? ink(.65, 1, .55) : ink(.45, .6, .4); ctx.fillRect(x, y - h, 60, h); ctx.strokeStyle = OUT; ctx.lineWidth = 3; ctx.strokeRect(x, y - h, 60, h);
       for (let wy = y - h + 16; wy < y - 10; wy += 30) for (let wx = x + 8; wx < x + 52; wx += 18) if (hash(wx * 3 + wy) > .45) { ctx.fillStyle = lvl > .6 ? (hash(wx + wy) > .7 ? NEON : NEON_Y) : ink(0, 0, .8); ctx.fillRect(wx, wy, 9, 14); }
@@ -28,27 +28,27 @@ function roomPOV(ctx, t, ra) {
   ctx.restore(); ctx.fillStyle = ink(.5, .3, .6); ctx.fillRect(WX + WW / 2 - 6, WY, 12, WH); ctx.fillRect(WX, WY + WH * .45, WW, 12);
   // часы
   ctx.beginPath(); ctx.arc(480, 300, 80, 0, 7); fill(ctx, PAPER); stroke(ctx, 7);
-  const hm = spin ? t * 40 : 0.05 + t * .002, hh = spin ? t * 3.3 : 0;
+  const eh = elapsed(t) + 23 + 59 / 60, hm = eh * Math.PI * 2, hh = eh / 12 * Math.PI * 2;
   ctx.beginPath(); ctx.moveTo(480, 300); ctx.lineTo(480 + Math.sin(hm) * 62, 300 - Math.cos(hm) * 62); ctx.moveTo(480, 300); ctx.lineTo(480 + Math.sin(hh) * 40, 300 - Math.cos(hh) * 40); stroke(ctx, 7);
   // календарь: год
   rr(ctx, 370, 450, 190, 220, 6); fill(ctx, PAPER); stroke(ctx, 6); ctx.fillStyle = NEON; ctx.fillRect(370, 450, 190, 50);
-  ctx.font = '900 60px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = OUT; ctx.fillText(String(2026 + Math.floor(ra * 47)), 465, 610);
+  ctx.font = '900 60px Inter'; ctx.textAlign = 'center'; ctx.fillStyle = OUT; ctx.fillText(String(2026 + Math.floor(yearsAt(t))), 465, 610);
   // полка с цветком (вянет)
   rr(ctx, 120, 760, 220, 20, 4); fill(ctx, ink(.5, .2, .7)); stroke(ctx, 5);
-  const wilt = clamp(ra / .45), dead = ra > .5;
+  const wilt = clamp(yearsAt(t) / 1.5), dead = yearsAt(t) > 2;
   ctx.beginPath(); ctx.moveTo(150, 760); ctx.lineTo(310, 760); ctx.lineTo(290, 680); ctx.lineTo(170, 680); ctx.closePath(); fill(ctx, ink(.6, .08, .8)); stroke(ctx, 5);
   for (const [dx, a] of [[-30, -.5], [0, 0], [30, .5]]) { ctx.save(); ctx.translate(230 + dx, 680); ctx.rotate(a + wilt * 1.6 * Math.sign(a || 1)); ctx.beginPath(); ctx.ellipse(0, -60, 18, 60, 0, 0, 7); fill(ctx, dead ? ink(.6, .5, .85) : ink(0, .75, .9)); stroke(ctx, 4); ctx.restore(); }
   // дверь и пёс
   rr(ctx, 40, 420, 300, 1060, 8); fill(ctx, ink(.55, .25, .7)); stroke(ctx, 7); ctx.beginPath(); ctx.arc(300, 980, 16, 0, 7); fill(ctx, NEON_Y); stroke(ctx, 4);
   ctx.beginPath(); ctx.moveTo(330, 640); ctx.lineTo(330, 700); stroke(ctx, 8);                                          // крючок
-  if (ra < .7) dog(ctx, 190, 1480, ra, t); else { ctx.beginPath(); ctx.moveTo(330, 700); ctx.quadraticCurveTo(360, 820, 320, 900); stroke(ctx, 14, NEON); }   // остался только поводок
+  if (yearsAt(t) < 14) dog(ctx, 190, 1480, ra, t); else { ctx.beginPath(); ctx.moveTo(330, 700); ctx.quadraticCurveTo(360, 820, 320, 900); stroke(ctx, 14, NEON); }   // остался только поводок
   ctx.beginPath(); ctx.ellipse(110, 1470, 60, 18, 0, 0, 7); fill(ctx, ink(.1, .9, .1)); stroke(ctx, 5);                   // миска
   // паутина
   if (ra > .6) { ctx.globalAlpha = clamp((ra - .6) * 3); for (const [x, y, s] of [[-10, -10, 1], [1090, -10, -1]]) for (let i = 1; i < 5; i++) { ctx.beginPath(); ctx.arc(x, y, i * 60, s > 0 ? 0 : Math.PI / 2, s > 0 ? Math.PI / 2 : Math.PI); stroke(ctx, 3, PAPER); } ctx.globalAlpha = 1; }
   // журнальный стол: коробки пиццы, торт
   rr(ctx, -40, 1560, 1160, 60, 8); fill(ctx, ink(.5, .2, .75)); stroke(ctx, 6);
-  const boxes = Math.min(7, Math.floor(ra * 14)); for (let i = 0; i < boxes; i++) { rr(ctx, 780 + (i % 2) * 14, 1500 - i * 36, 260, 36, 4); fill(ctx, ink(.1, .05, .5)); stroke(ctx, 4); }
-  if (ra > .25) { const melt = clamp((ra - .25) / .25); rr(ctx, 40, 1440, 220, 120, 14); fill(ctx, PAPER); stroke(ctx, 5); ctx.fillStyle = NEON; ctx.fillRect(40, 1480, 220, 14);
+  const boxes = Math.min(7, Math.floor(elapsed(t) / 3 + yearsAt(t) * 2)); for (let i = 0; i < boxes; i++) { rr(ctx, 780 + (i % 2) * 14, 1500 - i * 36, 260, 36, 4); fill(ctx, ink(.1, .05, .5)); stroke(ctx, 4); }
+  if (yearsAt(t) > .5) { const melt = clamp((yearsAt(t) - .5) / 2); rr(ctx, 40, 1440, 220, 120, 14); fill(ctx, PAPER); stroke(ctx, 5); ctx.fillStyle = NEON; ctx.fillRect(40, 1480, 220, 14);
     for (let i = 0; i < 5; i++) { const h = 70 * (1 - melt) + 8; ctx.fillStyle = ink(0, .7, .1); ctx.fillRect(70 + i * 38, 1440 - h, 10, h); if (melt < 1) { ctx.beginPath(); ctx.ellipse(75 + i * 38, 1430 - h, 7, 13, 0, 0, 7); fill(ctx, ink(.6, 0, 1)); } } }
 }
 function dread(ctx, ra, t) {                 // с годами комната тонет во тьме, свет — только от экрана
@@ -58,7 +58,7 @@ function dread(ctx, ra, t) {                 // с годами комната �
   ctx.fillStyle = g; ctx.fillRect(-300, -300, 1680, 2600); ctx.globalCompositeOperation = 'source-over';
 }
 function dog(ctx, x, y, ra, t) {
-  const old = ra > .45, lying = ra > .15, wag = lying ? 0 : Math.sin(t * 12) * .5, col = old ? ink(.25, .3, .3) : ink(.55, .2, .85);
+  const Y = yearsAt(t), old = Y > 8, lying = elapsed(t) > 3, wag = lying ? 0 : Math.sin(t * 12) * .5, col = old ? ink(.25, .3, .3) : ink(.55, .2, .85);
   ctx.save(); ctx.translate(x, y);
   if (!lying) {
     ctx.beginPath(); ctx.ellipse(0, -110, 80, 110, 0, 0, 7); fill(ctx, col); stroke(ctx, 6);
@@ -90,7 +90,7 @@ function phone(ctx, t, ra, drawScreen, z = 0) {
 // крупно лицо, освещённое телефоном
 function faceShot(ctx, ra, t) {
   ctx.fillStyle = ink(.7, 1, .6); ctx.fillRect(-200, -200, 1480, 2400);
-  const P = { x: 540, y: 2900, R: 330, kind: 'man', age: 25 + ra * 50, outfit: 'tee', hair: ra > .5 ? 'grey' : 'short', hairCol: ra > .5 ? ink(.18, .32, .2) : ink(.7, .95, .7), browCol: ra > .5 ? ink(.18, .32, .2) : ink(.7, .95, .7), t, seed: 3, look: [0, .7], eye: .55, smile: 0, open: .1 };
+  const P = { x: 540, y: 2900, R: 330, kind: 'man', age: 25 + ra * 47, outfit: 'tee', hair: ra > .5 ? 'grey' : 'short', hairCol: ra > .5 ? ink(.18, .32, .2) : ink(.7, .95, .7), browCol: ra > .5 ? ink(.18, .32, .2) : ink(.7, .95, .7), t, seed: 3, look: [0, .7], eye: .55, smile: 0, open: .1 };
   const G = drawPerson(ctx, P);
   if (false) { ctx.save(); ctx.translate(G.hc[0], G.hc[1]); ctx.scale(3.3, 3.3); ctx.globalAlpha = .9; ctx.beginPath(); ctx.moveTo(-90, 20); ctx.quadraticCurveTo(-80, 125, 0, 130); ctx.quadraticCurveTo(80, 125, 90, 20); ctx.quadraticCurveTo(40, 95, 0, 95); ctx.quadraticCurveTo(-40, 95, -90, 20); fill(ctx, P.hairCol); ctx.restore(); }   // борода
   for (const s of [-1, 1]) { const ex = G.hc[0] + s * 34 * 3.3, ey = G.hc[1] - 6 * 3.3 + 30; ctx.save(); ctx.translate(ex, ey); ctx.rotate(t * 6 * s); ctx.beginPath(); for (let a = 0; a < 14; a += .2) ctx.lineTo(Math.cos(a) * a * 2.2, Math.sin(a) * a * 2.2); stroke(ctx, 5, NEON); ctx.restore(); }   // спирали в глазах
