@@ -2,13 +2,14 @@
 // Слои bg/mid/fg (глубина резкости), свечение (bloom), голова луча, шлейф свежего люминофора, обратные ходы, зерно.
 (() => {
 const W = 720, H = 1280;
-const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const RS = +(new URLSearchParams(location.search).get('rs') || 1);
+const cv = document.getElementById('c'); cv.width = W * RS; cv.height = H * RS;
 const out = cv.getContext('2d');
 const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
-const LAY = { bg: mk(W, H), mid: mk(W, H), fg: mk(W, H) };
+const LAY = { bg: mk(W * RS, H * RS), mid: mk(W * RS, H * RS), fg: mk(W * RS, H * RS) };
 const LX = {}; for (const k in LAY) LX[k] = LAY[k].getContext('2d');
-const P = mk(W, H), PX = P.getContext('2d');
-const B = [mk(W / 4, H / 4), mk(W / 8, H / 8), mk(W / 16, H / 16)], BX = B.map(c => c.getContext('2d'));
+const P = mk(W * RS, H * RS), PX = P.getContext('2d');
+const B = [mk(W / 4 * RS, H / 4 * RS), mk(W / 8 * RS, H / 8 * RS), mk(W / 16 * RS, H / 16 * RS)], BX = B.map(c => c.getContext('2d'));
 const GR = []; for (let i = 0; i < 6; i++) { const c = mk(W / 2, H / 2), x = c.getContext('2d'), d = x.createImageData(W / 2, H / 2);
   let s = 1234 + i * 777; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
   for (let j = 0; j < d.data.length; j += 4) { const v = r() ** 3 * 255; d.data[j] = v * .6; d.data[j + 1] = v; d.data[j + 2] = v * .8; d.data[j + 3] = 255; }
@@ -165,24 +166,24 @@ function line(pts, o = {}) { return draw(fromStrokes([pts], o.step || 3), o.a ||
 // ---------- кадр
 function frame(t, story) {
   T = t; GA = 1;
-  for (const k in LX) { LX[k].setTransform(1, 0, 0, 1, 0, 0); LX[k].globalCompositeOperation = 'source-over'; LX[k].clearRect(0, 0, W, H); }
+  for (const k in LX) { LX[k].setTransform(RS, 0, 0, RS, 0, 0); LX[k].globalCompositeOperation = 'source-over'; LX[k].clearRect(0, 0, W, H); }
   const st = story(t) || {}; CAM = st.cam || CAM;
-  PX.globalCompositeOperation = 'source-over'; PX.clearRect(0, 0, W, H); PX.globalCompositeOperation = 'lighter';
-  PX.filter = `blur(${st.bgBlur == null ? 2.2 : st.bgBlur}px)`; PX.globalAlpha = .75; PX.drawImage(LAY.bg, 0, 0);
+  PX.globalCompositeOperation = 'source-over'; PX.clearRect(0, 0, P.width, P.height); PX.globalCompositeOperation = 'lighter';
+  PX.filter = `blur(${(st.bgBlur == null ? 2.2 : st.bgBlur) * RS}px)`; PX.globalAlpha = .75; PX.drawImage(LAY.bg, 0, 0);
   PX.filter = 'none'; PX.globalAlpha = 1; PX.drawImage(LAY.mid, 0, 0);
-  PX.filter = `blur(${st.fgBlur == null ? 5 : st.fgBlur}px)`; PX.drawImage(LAY.fg, 0, 0); PX.filter = 'none';
+  PX.filter = `blur(${(st.fgBlur == null ? 5 : st.fgBlur) * RS}px)`; PX.drawImage(LAY.fg, 0, 0); PX.filter = 'none';
   // свечение
-  BX[0].globalCompositeOperation = 'copy'; BX[0].filter = 'blur(2px)'; BX[0].drawImage(P, 0, 0, W / 4, H / 4); BX[0].filter = 'none';
-  BX[1].globalCompositeOperation = 'copy'; BX[1].filter = 'blur(3px)'; BX[1].drawImage(B[0], 0, 0, W / 8, H / 8); BX[1].filter = 'none';
-  BX[2].globalCompositeOperation = 'copy'; BX[2].filter = 'blur(4px)'; BX[2].drawImage(B[1], 0, 0, W / 16, H / 16); BX[2].filter = 'none';
+  BX[0].globalCompositeOperation = 'copy'; BX[0].filter = `blur(${2 * RS}px)`; BX[0].drawImage(P, 0, 0, B[0].width, B[0].height); BX[0].filter = 'none';
+  BX[1].globalCompositeOperation = 'copy'; BX[1].filter = `blur(${3 * RS}px)`; BX[1].drawImage(B[0], 0, 0, B[1].width, B[1].height); BX[1].filter = 'none';
+  BX[2].globalCompositeOperation = 'copy'; BX[2].filter = `blur(${4 * RS}px)`; BX[2].drawImage(B[1], 0, 0, B[2].width, B[2].height); BX[2].filter = 'none';
   // фон: тёмное стекло люминофора
-  out.globalCompositeOperation = 'source-over'; out.globalAlpha = 1;
+  out.setTransform(RS, 0, 0, RS, 0, 0); out.globalCompositeOperation = 'source-over'; out.globalAlpha = 1;
   const bgc = st.bg || [5, 12, 11];
   const g = out.createRadialGradient(W / 2, H * .45, 50, W / 2, H * .5, H * .75);
   g.addColorStop(0, `rgb(${bgc[0] + 7},${bgc[1] + 10},${bgc[2] + 9})`); g.addColorStop(1, `rgb(${bgc[0] * .4 | 0},${bgc[1] * .4 | 0},${bgc[2] * .4 | 0})`);
   out.fillStyle = g; out.fillRect(0, 0, W, H);
   out.globalCompositeOperation = 'lighter';
-  out.drawImage(P, 0, 0);
+  out.drawImage(P, 0, 0, W, H);
   out.imageSmoothingQuality = 'high';
   const bl = st.bloom == null ? 1 : st.bloom;
   out.globalAlpha = .55 * bl; out.drawImage(B[0], 0, 0, W, H);
@@ -204,5 +205,5 @@ function shift(q, dx, dy, s = 1) { const r = mkShape(Array.from(q.x, v => v * s 
 function at(q, f) { const L = f * q.len; let i = 0; while (i < q.n - 2 && q.c[i + 1] < L) i++; const sg = q.c[i + 1] - q.c[i], k = sg > 0 ? clamp((L - q.c[i]) / sg) : 0; return [lerp(q.x[i], q.x[i + 1], k), lerp(q.y[i], q.y[i + 1], k)]; }
 window.E = { W, H, mkShape, cat, shift, at, clamp, lerp, k01, ease, COL, sampleD, fromStrokes, morph, textShape, draw, line, glow, headDot, frame, toScreen, LX,
   setT: t => T = t, setCam: c => CAM = c, setGA: v => GA = v, get cam() { return CAM; } };
-window.grab = () => out.getImageData(0, 0, W, H).data;
+window.grab = () => out.getImageData(0, 0, W * RS, H * RS).data;
 })();
