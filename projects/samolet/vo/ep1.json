@@ -9,14 +9,25 @@
    "instruct": "An 80-year-old American man, warm gentle raspy voice, slow, kind grandfatherly tone, a soft smile in the voice.",
    "ref": "Well, look at that. It has been a long, long time.",
    "f0": 110
+  },
+  "sm_kid_c": {
+   "instruct": "",
+   "ref": "Are we rich? Are we famous?",
+   "f0": 290
   }
  },
  "lines": [
   {
    "id": "k1",
    "role": "sm_kid",
-   "text": "It goes fast... have fun?",
-   "emo": "Puzzled, reading a strange note slowly, the end is a confused question."
+   "text": "No... better? What?",
+   "emo": "Puzzled, reading a strange note, each word a confused question."
+  },
+  {
+   "id": "k2a",
+   "role": "sm_kid",
+   "text": "Are we rich? Are we famous?",
+   "emo": "Excited and hopeful, quick, writing while talking."
   },
   {
    "id": "k2",
@@ -27,20 +38,38 @@
   {
    "id": "o1",
    "role": "sm_old",
-   "text": "Hello, future me.",
-   "emo": "Reading a note aloud slowly, amused and touched."
-  },
-  {
-   "id": "o2",
-   "role": "sm_old",
-   "text": "Hi, kid.",
-   "emo": "One tiny soft breath of a laugh, then tender and short."
+   "text": "Hello, future me. Are we rich? Are we famous?",
+   "emo": "Reading a child's note aloud slowly, amused, a smile in the voice."
   },
   {
    "id": "o3",
    "role": "sm_old",
    "text": "It goes fast. Have fun.",
    "emo": "Tender, nostalgic, slow, a little emotional, like advice to a grandchild."
+  },
+  {
+   "id": "k1b",
+   "role": "sm_kid_c",
+   "text": "From... me?!",
+   "emo": "Stunned amazed whisper, slowly realizing, the end rises in disbelief."
+  },
+  {
+   "id": "r1",
+   "role": "sm_old",
+   "text": "Rich? Famous?",
+   "emo": "Amused, gently teasing, a soft little chuckle, like smiling at his younger self."
+  },
+  {
+   "id": "r2",
+   "role": "sm_old",
+   "text": "No.",
+   "emo": "Soft, warm, smiling, calm and certain, not sad at all."
+  },
+  {
+   "id": "r3",
+   "role": "sm_old",
+   "text": "Better...",
+   "emo": "Slow, drawn out, whispered with deep love and quiet happiness, a smile you can hear, savoring the word, holding the hand of his wife."
   }
  ]
 }

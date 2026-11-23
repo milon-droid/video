@@ -1,6 +1,6 @@
 // Человек целиком, анфас: ноги, тело, руки по IK, голова из частей. Все размеры — в радиусах головы R.
 const SKIN = ink(.3, .02, .36), SKIN_D = ink(.48, .1, .5);
-const HAIRC = { mop: ink(.72, .05, .92), short: ink(.72, .05, .92), grey: ink(.18, .32, .2), white: PAPER, bun: ink(.7, .95, .7), dark: ink(.7, .95, .7), pig: ink(.72, .05, .92) };
+const HAIRC = { mop: ink(.72, .05, .92), short: ink(.72, .05, .92), grey: ink(.18, .32, .2), white: PAPER, bun: ink(.7, .95, .7), dark: ink(.7, .95, .7), greybun: ink(.12, .28, .14), pig: ink(.72, .05, .92) };
 const OUTFIT = {
   stripes: [ink(0, 0, .95), ink(0, .8, .1)], tee: [ink(0, .75, .15), null], suit: [ink(.55, 1, .45), ink(0, 0, 0)],
   gown: [ink(.4, 1, .25), null], dress: [PAPER, ink(.9, 0, .2)], cardigan: [ink(.75, .2, .55), null],
@@ -19,7 +19,7 @@ function ikArm(s, h, L, side) {
 
 function personGeom(P) {
   const R = P.R, [leg, tor, shw] = BODY[P.kind], sit = P.sit || 0;
-  const br = Math.sin(P.t * 2 * Math.PI * 12 / DUR + (P.seed || 0)) * .03 * R;
+  const TT = typeof CUR_T === 'number' ? CUR_T : P.t, br = Math.sin(TT * 2 * Math.PI * 12 / REAL_DUR + (P.seed || 0)) * .03 * R;
   const hipY = P.y - leg * R * (1 - .52 * sit) + (P.bob || 0), hx = P.x;
   const shY = hipY - tor * R * (1 - .08 * (P.lean || 0)) + br + (P.kind === 'old' ? .15 * R : 0);
   const shX = hx + (P.lean2 || 0) * R;
@@ -85,7 +85,7 @@ function drawHeadP(ctx, G, P, lw) {
   ctx.save(); ctx.translate(cx, cy); ctx.rotate(P.tilt || 0); ctx.scale(R / 100, R / 100);
   const L = lw * 100 / R;
   // пучок/хвостики — за головой
-  if (P.hair === 'bun') { ctx.beginPath(); ctx.arc(0, -118, 42, 0, 7); fill(ctx, hairC); stroke(ctx, L); }
+  if (P.hair === 'bun' || P.hair === 'greybun') { ctx.beginPath(); ctx.arc(0, -118, 42, 0, 7); fill(ctx, hairC); stroke(ctx, L); }
   if (P.hair === 'pig') for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * 108, -10, 26, 44, s * .5, 0, 7); fill(ctx, hairC); stroke(ctx, L); }
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * 94 + f * 20, 8, 18, 24, 0, 0, 7); fill(ctx, SKIN); stroke(ctx, L); }
   ctx.beginPath(); ctx.ellipse(0, 0, 94, 100, 0, 0, 7); fill(ctx, SKIN); stroke(ctx, L);
@@ -94,6 +94,7 @@ function drawHeadP(ctx, G, P, lw) {
   if (P.hair === 'white') {
     for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * 82, -36, 26, 34, s * .3, 0, 7); fill(ctx, PAPER); stroke(ctx, L); }
     ctx.beginPath(); ctx.ellipse(-30, -70, 26, 12, -.4, 0, 7); fill(ctx, ink(.05, 0, .1));
+    ctx.beginPath(); ctx.moveTo(-10, -98); ctx.quadraticCurveTo(0, -150, 40, -146); stroke(ctx, 14, OUT); stroke(ctx, 9, PAPER);   // тот же вихор, только седой
   } else if (P.hair) {
     const sh = P.hair === 'short' || P.hair === 'grey' || P.hair === 'dark', fr = sh ? -62 : -46, cap = sh ? .78 : 1;
     ctx.beginPath(); ctx.moveTo(-100, 10);
@@ -109,7 +110,7 @@ function drawHeadP(ctx, G, P, lw) {
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(s * 54 + f * 30, 30, 15, 0, 7); fill(ctx, ink(.55, 0, .12, P.blow ? 1 : .75)); }
   if (P.age < 20) for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc((i % 3 - 1) * 12 + (i < 3 ? -52 : 52) + f * 30, 18 + Math.floor(i % 2) * 8, 3, 0, 7); fill(ctx, ink(.6, .1, .7)); }
   // глаза
-  const op = clamp((P.eye ?? 1) * blink(((P.t % DUR) + DUR) % DUR * .999 + (P.seed || 0) + .7)), ex0 = f * 30;
+  const op = clamp((P.eye ?? 1) * blink(((CUR_T % REAL_DUR) + REAL_DUR) % REAL_DUR * .999 + (P.seed || 0) + .7)), ex0 = f * 30;
   for (const s of [-1, 1]) {
     const ex = s * 34 + ex0, ey = -6, rx = 19, ry = 23 * (1 + .2 * (P.wide || 0));
     if (op < .15) { ctx.beginPath(); ctx.moveTo(ex - rx, ey + 2); ctx.quadraticCurveTo(ex, ey + (P.happyEyes ? -10 : 10), ex + rx, ey + 2); stroke(ctx, 6); }
@@ -123,7 +124,7 @@ function drawHeadP(ctx, G, P, lw) {
   }
   if (P.glasses) { for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(s * 34 + ex0, -6, 28, 0, 7); stroke(ctx, 5); } ctx.beginPath(); ctx.moveTo(-6 + ex0, -8); ctx.lineTo(6 + ex0, -8); stroke(ctx, 5); }
   // брови
-  const bc = P.hair === 'white' ? ink(.2, .35, .2) : (P.hair === 'bun' ? HAIRC.bun : HAIRC.mop), by = -44 - (P.brow || 0) * 11, fu = P.furrow || 0;
+  const bc = P.hair === 'white' ? ink(.2, .35, .2) : (P.hair === 'bun' ? HAIRC.bun : P.hair === 'greybun' ? HAIRC.greybun : HAIRC.mop), by = -44 - (P.brow || 0) * 11, fu = P.furrow || 0;
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.moveTo(s * 13 + ex0, by + fu * 9); ctx.quadraticCurveTo(s * 34 + ex0, by - 7 - fu * 2, s * 54 + ex0, by + 2 - fu * 3); stroke(ctx, 10, bc); }
   // нос
   ctx.beginPath(); ctx.moveTo(-4 + f * 40, 12); ctx.quadraticCurveTo(8 + f * 40, 26, -3 + f * 40, 29); stroke(ctx, 4.5, ink(.6, .15, .5));
