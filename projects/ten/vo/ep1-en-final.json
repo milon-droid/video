@@ -176,19 +176,12 @@
    "say": "Signing."
   },
   {
-   "id": "e25",
-   "role": "senya_en",
-   "t": 71.6,
-   "text": "Tomorrow, they all leave.",
-   "say": "Tomorrow, they all leave."
-  },
-  {
    "id": "sx1",
    "role": "shadow2_en",
    "t": 68.8,
    "text": "Oh. And… one more term.",
    "say": "Oh. And... one more term.",
-   "alt": 0.4
+   "alt": 0.3
   },
   {
    "id": "x2",
@@ -196,7 +189,7 @@
    "t": 68.8,
    "text": "…what now?",
    "say": "What now?",
-   "alt": 1.8
+   "alt": 2.15
   },
   {
    "id": "sx3",
@@ -204,7 +197,7 @@
    "t": 68.8,
    "text": "That shadow at the club… the ponytail… the moves…",
    "say": "That shadow at the club... the ponytail... the moves...",
-   "alt": 2.7
+   "alt": 3.0
   },
   {
    "id": "sx4",
@@ -212,7 +205,7 @@
    "t": 68.8,
    "text": "Introduce me to her owner.",
    "say": "Introduce me to her owner.",
-   "alt": 5.5
+   "alt": 13.2
   },
   {
    "id": "x5",
@@ -220,7 +213,7 @@
    "t": 68.8,
    "text": "…deal. I guess.",
    "say": "Deal... I guess.",
-   "alt": 7.0
+   "alt": 14.5
   },
   {
    "id": "c1",
@@ -228,6 +221,45 @@
    "t": 73.5,
    "text": "So… do we help the Shadow get the girl? Tell us in the comments.",
    "say": "So... do we help the Shadow get the girl? Tell us in the comments!"
+  },
+  {
+   "id": "f2",
+   "role": "shadow2_en",
+   "t": 68.8,
+   "alt": 6.05,
+   "text": "When she flipped that hair, I forgot I'm 2D.",
+   "say": "When she flipped that hair... I forgot I'm two-dimensional."
+  },
+  {
+   "id": "f3",
+   "role": "shadow2_en",
+   "t": 68.8,
+   "alt": 8.45,
+   "text": "She moonwalked. On a wall!",
+   "say": "She moonwalked. On a WALL!"
+  },
+  {
+   "id": "f5",
+   "role": "senya_en",
+   "t": 68.8,
+   "alt": 10.1,
+   "text": "Dude. You're a shadow.",
+   "say": "Dude. You're a shadow."
+  },
+  {
+   "id": "f4",
+   "role": "shadow2_en",
+   "t": 68.8,
+   "alt": 11.45,
+   "text": "And she's a ten. In every light.",
+   "say": "And she's a ten. In every light."
+  },
+  {
+   "id": "cl1",
+   "role": "senya_en",
+   "t": 72.75,
+   "text": "Oh no. Not again.",
+   "say": "Oh no. Not again."
   }
  ]
 }
