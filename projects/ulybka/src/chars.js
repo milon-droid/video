@@ -157,12 +157,12 @@ export function pig(P) {
   // пятачок
   ell(0, 20, 40, 27); fillStroke(G1, 6); ell(-13, 20, 7, 11); g.fillStyle = INK; g.fill(); ell(13, 20, 7, 11); g.fill();
   // лицо под улыбкой: крик
-  if (sc > 0) { g.globalAlpha = sc; ell(0, 90, 42 * (.6 + sc * .4), 58 * (.5 + sc * .5)); g.fillStyle = INK; g.fill(); g.globalAlpha = 1;
+  if (sc > 0) { g.globalAlpha = sc; ell(0, 80, 42 * (.6 + sc * .4), 58 * (.5 + sc * .5)); g.fillStyle = INK; g.fill(); g.globalAlpha = 1;
     g.lineWidth = 4; g.strokeStyle = INK; for (const sd of [-1, 1]) { g.beginPath(); g.moveTo(sd * 70, 40); g.quadraticCurveTo(sd * 60, 90, sd * 40, 130); g.stroke(); } }
   // улыбка-наклейка
   const pe = P.peel || 0;
   if (pe < 1) {
-    g.save(); g.translate(0, 62 + pe * pe * 260); g.rotate(pe * .9 * (P.peelDir || 1)); g.globalAlpha = 1 - clamp((pe - .85) / .15);
+    g.save(); g.translate(0, 46 + pe * pe * 260); g.scale(.9, .9); g.rotate(pe * .9 * (P.peelDir || 1)); g.globalAlpha = 1 - clamp((pe - .85) / .15);
     const w = P.grinW || 1; g.scale(w, 1);
     g.beginPath(); g.moveTo(-74, -8); g.quadraticCurveTo(0, 74, 74, -8); g.quadraticCurveTo(0, 22, -74, -8); fillStroke(INK, 0);
     g.save(); g.clip(); g.fillStyle = PAPER; for (let k = -4; k <= 4; k++) { g.beginPath(); g.roundRect(k * 15 - 6, -4 + Math.abs(k) * 1.5, 12, 22, 3); g.fill(); } g.restore();

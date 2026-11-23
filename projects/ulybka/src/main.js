@@ -46,7 +46,7 @@ function flowersFront(t, o = {}) {
   const fr = o.freeze ? 0 : 1;
   [[60, 1900, .95, 0], [250, 1960, 1.05, 1.2], [880, 1930, 1, 2.1], [1040, 1880, .9, .6]].forEach(([x, y, s, ph], i) => {
     const turnTo = o.turnTo ?? 0; // поворот голов к Типпи
-    flower({ x, y, s, t: on12(t) * fr, ph, sway: fr ? undefined : .02 * Math.sin(i), look: [turnTo * (x < 540 ? 1 : -1), 0], tilt: turnTo * (x < 540 ? .35 : -.35) + (o.lean || 0) * (x < 540 ? .3 : -.3), grinW: o.grin || 1, shrink: 0 });
+    flower({ x, y, s, t: on12(t) * fr, ph, sway: fr ? undefined : .02 * Math.sin(i), look: [turnTo * (x < 540 ? 1 : -1), 0], tilt: turnTo * (x < 540 ? .35 : -.35) + (o.lean || 0) * (x < 540 ? .3 : -.3), grinW: o.grin || 1, shrink: 0, hollow: o.hollowIdx === i ? 1 : 0 });
   });
 }
 const tippyDefault = (t, extra) => ({ t, s: 1, mouth: 'grin', blink: (t % 3.1) < .1 ? 1 : 0, ...extra });
@@ -76,7 +76,7 @@ const SHOT = {
     town(u);
     sign(330, 1640, .95, on12(u), LIME);
     pig({ x: 800, y: 1760, s: .8, t: on12(u), bob: beat(u), handL: [-250, -330 + Math.sin(on12(u) * 6) * 10], poseL: 'point', handR: [150, -180], look: [-.6, 0], tilt: Math.sin(on12(u) * 3) * .05 });
-    flowersFront(u);
+    flowersFront(u, { hollowIdx: (u > 2.6 && u < 2.69) ? 2 : -1 });
     return {};
   },
   S4a(u, s) { // спотыкается о камень, мороженое летит
@@ -120,7 +120,7 @@ const SHOT = {
   S7(u, s) { // крупно мэр: улыбка-наклейка сползает → крик (СКРИМЕР 1)
     const pk = ease(u, s.v[0] + .9, s.v[0] + 2.4, inE), scr = ease(u, s.v[0] + 2.1, s.v[0] + 2.35);
     const punch = scr > 0 ? 1 + spring(u, s.v[0] + 2.1, 4, 6) * .25 : 1;
-    camera(540, 1000, (1.6 + u * .04) * punch, scr * noise(4, u * 40) * .03);
+    camera(540, 1170, (1.6 + u * .04) * punch, scr * noise(4, u * 40) * .03);
     sky(u, .5); hills(u, 0);
     pig({ x: 540, y: 1600, s: 1.2, t: 0, peel: pk, peelDir: 1, scream: scr, grinW: 1.3, handL: [-190, -150], handR: [190, -150], look: [0, 0], shrink: 0 });
     // Типпи — затылок на переднем плане
