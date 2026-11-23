@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """HELLO, FUTURE ME — звук: синтез гитары (Карплус–Стронг) + свист мелодии, SFX сценок, голоса. → mix.wav"""
 import json, subprocess, os, wave, numpy as np
-SR = 48000; DUR = 43.5; N = int(SR * DUR); NE = N + 12 * SR
+SR = 48000; DUR = 46; N = int(SR * DUR); NE = N + 12 * SR
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.abspath(os.path.join(HERE, '../../..'))
 LIB = os.path.join(ROOT, 'assets/sfx-library'); IDX = {e['id']: e for e in json.load(open(os.path.join(LIB, 'index.json')))}
 SF = os.path.join(HERE, '../assets/sfx'); rng = np.random.default_rng(3)
@@ -55,14 +55,14 @@ for i, ch in enumerate(PROG):
     if i >= 1 and not night: whistle(MEL[(i - 1) % 8], tb, BEAT, .2)
 for k, ch in enumerate(['Am', 'F', 'C', 'G']):                                          # скамейка — тихо, медленно
     for j, m in enumerate(CH[ch][1:4]): put(pluck(m, 2.2, 1, .25), 31.4 + k * 1.3 + j * .25, .3, (j - 1) * .2, 'mus')
-put(pluck(48, 3, 1, .3), 36.25, .4, 0, 'mus'); put(pluck(64, 3, 1, .3), 36.3, .3, 0, 'mus')
+put(pluck(48, 3, 1, .3), 38.75, .4, 0, 'mus'); put(pluck(64, 3, 1, .3), 38.8, .3, 0, 'mus')
 # зимой — колокольчики
 for i in range(10): put(pluck(84 + [0, 3, 7, 12][i % 4], 1.2, 1, .9), 27.0 + i * .6, .12, .4, 'mus')
 # перемотка: музыка полёта задом наперёд с ускорением
 seg = bus['mus'][int(8 * SR):int(30 * SR), 0].copy()[::-1]
-T = 41.3 - 36.6; n = int(SR * T); u = np.arange(n) / n; pos = np.cumsum(.9 + 5 * np.sin(np.pi * u) ** 2); pos = pos / pos[-1] * (len(seg) - 1)
-put(np.interp(pos, np.arange(len(seg)), seg) * np.minimum(1, u * 8) * np.minimum(1, (1 - u) * 6), 36.6, .6, 0, 'mus')
-put(L('bsb-cassette-rewind')[:n], 36.6, .35)
+T = 43.8 - 39.1; n = int(SR * T); u = np.arange(n) / n; pos = np.cumsum(.9 + 5 * np.sin(np.pi * u) ** 2); pos = pos / pos[-1] * (len(seg) - 1)
+put(np.interp(pos, np.arange(len(seg)), seg) * np.minimum(1, u * 8) * np.minimum(1, (1 - u) * 6), 39.1, .6, 0, 'mus')
+put(L('bsb-cassette-rewind')[:n], 39.1, .35)
 
 # ---------- где самолётик проходит кварталы (та же формула, что в story.js) ----------
 def herm(keys, t):
@@ -72,10 +72,10 @@ def herm(keys, t):
             return (2 * u**3 - 3 * u**2 + 1) * x0 + (u**3 - 2 * u**2 + u) * h * v0 + (-2 * u**3 + 3 * u**2) * x1 + (u**3 - u**2) * h * v1
     return keys[-1][1]
 FX = [[5.62, 790, 1200], [6.8, 1650, 450], [29.8, 11000, 400], [31.0, 11560, 0]]
-RX = [[36.3, 11380, -900], [37.3, 10400, -2400], [41.0, 2500, -2000], [42.0, 1700, -540]]
+RX = [[38.8, 11380, -900], [39.8, 10400, -2400], [43.5, 2500, -2000], [44.5, 1700, -540]]
 TS = np.arange(5.62, 31.0, .005); XS = np.array([herm(FX, t) for t in TS])
 def when(x): return float(TS[np.argmin(np.abs(XS - x))])
-TR = np.arange(36.3, 42.0, .005); XR = np.array([herm(RX, t) for t in TR])
+TR = np.arange(38.8, 44.5, .005); XR = np.array([herm(RX, t) for t in TR])
 def whenR(x): return float(TR[np.argmin(np.abs(XR - x))])
 BL = [(1500, 1500), (3000, 1500), (4500, 1600), (6100, 1500), (7600, 1600), (9200, 1500)]
 P = lambda b, p: when(BL[b][0] + p * BL[b][1])
@@ -96,8 +96,8 @@ put(L('celebration-applause-small'), P(4, .45), .25, .2)
 put(F('candle-blow-b16be1.mp3', 1.0, 2.6), P(5, .47) - .34, .7, 0); put(L('celebration-applause-small'), P(5, .52), .45, 0)
 # скамейка
 put(L('whoosh-slow-soft'), 30.4, .35); put(L('impact-light-soft'), 31.0, .3)
-for tt in (31.5, 33.8, 35.3): put(PR(), tt - .28, .5, 0)
-put(L('whoosh-fast-medium'), 36.15, .55, -.3)
+for tt in (31.5, 36.3, 37.8): put(PR(), tt - .28, .5, 0)
+put(L('whoosh-fast-medium'), 38.65, .55, -.3)
 for x in (9950, 8400, 6850, 5300, 3750, 2250): put(rs(L('whoosh-fast-soft'), 1.1), whenR(x) - .1, .3, -.2)
 # фон: птицы и тихая комната на стыке (фон переходит через стык — он ровный); на улице — ветер, зимой — снег
 birds = F('birds-chirping-01-down-small-park-lane-71d69c.mp3')
@@ -115,8 +115,16 @@ wind = lpv(rng.standard_normal(int(25 * SR)), 900) * np.sin(np.linspace(0, np.pi
 put(wind, 6.0, .08, 0, 'amb')
 snow = L('bsb-wind-foley')[:int(8 * SR)]; put(snow * np.sin(np.linspace(0, np.pi, len(snow))), 28.5, .12, 0, 'amb')
 
+# вспышки-воспоминания: щелчок «фото», тёплый аккорд, далёкий звук каждого момента (с эхом)
+def echo(x, d=.18, k=.4, n=4):
+    y = np.zeros(len(x) + int(d * SR * n)); 
+    for i in range(n): y[int(i * d * SR):int(i * d * SR) + len(x)] += x * k ** i
+    return lpv(y, 3500)
+for i, (tf, snd) in enumerate([(34.95, L('celebration-applause-small', 0, .9)), (35.4, L('celebration-applause-big', 0, 1.0)), (35.85, F('baby-giggle-b38737.mp3', .3, 1.3)), (36.3, F('bicycle-bell-c6-c6e543.mp3'))]):
+    put(L('click-clip-soft'), tf, .5, 0); put(echo(snd), tf + .03, .18, (i - 1.5) * .3)
+for j, m in enumerate([48, 55, 60, 64, 67, 72]): put(pluck(m, 3.5, 1, .3), 34.95 + j * .06, .22, (j - 2.5) * .15, 'mus')
 # ---------- голос ----------
-VO = {'k1': 1.4, 'k2': 5.3, 'o1': 32.0, 'o2': 33.05, 'o3': 34.5}
+VO = {'k1': 1.35, 'k2a': 3.55, 'k2': 5.3, 'o1': 32.0, 'o2': 35.2, 'o3': 37.0}
 for b in bus:                                            # петля: через стык переходит только ровный фон
     tl = bus[b][N:].copy(); bus[b] = bus[b][:N].copy()
     if b == 'amb': bus[b][:len(tl)] += tl

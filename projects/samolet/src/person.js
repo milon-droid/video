@@ -1,6 +1,6 @@
 // Человек целиком, анфас: ноги, тело, руки по IK, голова из частей. Все размеры — в радиусах головы R.
 const SKIN = ink(.3, .02, .36), SKIN_D = ink(.48, .1, .5);
-const HAIRC = { mop: ink(.72, .05, .92), short: ink(.72, .05, .92), grey: ink(.18, .32, .2), white: PAPER, bun: ink(.7, .95, .7), dark: ink(.7, .95, .7), pig: ink(.72, .05, .92) };
+const HAIRC = { mop: ink(.72, .05, .92), short: ink(.72, .05, .92), grey: ink(.18, .32, .2), white: PAPER, bun: ink(.7, .95, .7), dark: ink(.7, .95, .7), greybun: ink(.12, .28, .14), pig: ink(.72, .05, .92) };
 const OUTFIT = {
   stripes: [ink(0, 0, .95), ink(0, .8, .1)], tee: [ink(0, .75, .15), null], suit: [ink(.55, 1, .45), ink(0, 0, 0)],
   gown: [ink(.4, 1, .25), null], dress: [PAPER, ink(.9, 0, .2)], cardigan: [ink(.75, .2, .55), null],
@@ -85,7 +85,7 @@ function drawHeadP(ctx, G, P, lw) {
   ctx.save(); ctx.translate(cx, cy); ctx.rotate(P.tilt || 0); ctx.scale(R / 100, R / 100);
   const L = lw * 100 / R;
   // пучок/хвостики — за головой
-  if (P.hair === 'bun') { ctx.beginPath(); ctx.arc(0, -118, 42, 0, 7); fill(ctx, hairC); stroke(ctx, L); }
+  if (P.hair === 'bun' || P.hair === 'greybun') { ctx.beginPath(); ctx.arc(0, -118, 42, 0, 7); fill(ctx, hairC); stroke(ctx, L); }
   if (P.hair === 'pig') for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * 108, -10, 26, 44, s * .5, 0, 7); fill(ctx, hairC); stroke(ctx, L); }
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(s * 94 + f * 20, 8, 18, 24, 0, 0, 7); fill(ctx, SKIN); stroke(ctx, L); }
   ctx.beginPath(); ctx.ellipse(0, 0, 94, 100, 0, 0, 7); fill(ctx, SKIN); stroke(ctx, L);
@@ -123,7 +123,7 @@ function drawHeadP(ctx, G, P, lw) {
   }
   if (P.glasses) { for (const s of [-1, 1]) { ctx.beginPath(); ctx.arc(s * 34 + ex0, -6, 28, 0, 7); stroke(ctx, 5); } ctx.beginPath(); ctx.moveTo(-6 + ex0, -8); ctx.lineTo(6 + ex0, -8); stroke(ctx, 5); }
   // брови
-  const bc = P.hair === 'white' ? ink(.2, .35, .2) : (P.hair === 'bun' ? HAIRC.bun : HAIRC.mop), by = -44 - (P.brow || 0) * 11, fu = P.furrow || 0;
+  const bc = P.hair === 'white' ? ink(.2, .35, .2) : (P.hair === 'bun' ? HAIRC.bun : P.hair === 'greybun' ? HAIRC.greybun : HAIRC.mop), by = -44 - (P.brow || 0) * 11, fu = P.furrow || 0;
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.moveTo(s * 13 + ex0, by + fu * 9); ctx.quadraticCurveTo(s * 34 + ex0, by - 7 - fu * 2, s * 54 + ex0, by + 2 - fu * 3); stroke(ctx, 10, bc); }
   // нос
   ctx.beginPath(); ctx.moveTo(-4 + f * 40, 12); ctx.quadraticCurveTo(8 + f * 40, 26, -3 + f * 40, 29); stroke(ctx, 4.5, ink(.6, .15, .5));

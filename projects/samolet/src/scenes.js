@@ -1,8 +1,10 @@
 // Класс (начало), скамейка (конец), самолётик, записка, фон.
-const SIDE_A = ['IT GOES FAST.', 'HAVE FUN.', '— YOU, 80'], SIDE_B = ['HELLO,', 'FUTURE ME!', '— ME, 10'];
+const SIDE_A = ['NO. BETTER.', 'IT GOES FAST.', 'HAVE FUN.', '— YOU, 80'], SIDE_B = ['HELLO, FUTURE ME!', 'ARE WE RICH?', 'ARE WE FAMOUS?', '— ME, 10'];
+const NB = SIDE_B.join('').length;
 
-function handText(ctx, lines, x, y, size, col, reveal = 1e9, seed = 0) {
-  ctx.font = `900 ${size}px Inter`; ctx.textBaseline = 'middle'; ctx.fillStyle = col;
+function handText(ctx, lines, x, y, size, col, reveal = 1e9, seed = 0, maxW = 1e9) {
+  ctx.font = `900 ${size}px Inter`;
+  const mw = Math.max(...lines.map(l => ctx.measureText(l).width)); if (mw > maxW) { size *= maxW / mw; ctx.font = `900 ${size}px Inter`; } ctx.textBaseline = 'middle'; ctx.fillStyle = col;
   let n = 0;
   lines.forEach((l, li) => {
     const w = ctx.measureText(l).width; let cx = x - w / 2;
@@ -22,7 +24,7 @@ function sheet(ctx, cx, cy, w, side, flipX, fold, reveal = 1e9) {
   rr(ctx, -w / 2, -h / 2, w, h, 4); fill(ctx, PAPER); stroke(ctx, w * .012);
   for (const fx of [-.25, 0, .25]) { ctx.beginPath(); ctx.moveTo(fx * w, -h / 2); ctx.lineTo(fx * w, h / 2); stroke(ctx, w * .004, ink(.1, .2, .05)); }
   if (flipX < 0) ctx.scale(-1, 1);
-  if (fold < .5) handText(ctx, side === 'A' ? SIDE_A : SIDE_B, 0, -h * .26, w * .12, side === 'A' ? ink(.15, 1, .1) : ink(1, .05, .6), reveal, side === 'A' ? 1 : 2);
+  if (fold < .5) handText(ctx, side === 'A' ? SIDE_A : SIDE_B, 0, -h * .3, w * .11, side === 'A' ? ink(.15, 1, .1) : ink(1, .05, .6), reveal, side === 'A' ? 1 : 2, w * .86);
   ctx.restore();
 }
 function plane(ctx, x, y, L, ang, bank, dir = 1) {
@@ -65,6 +67,7 @@ function bench(ctx, t, O) {
   rr(ctx, BENCH_X - 360, 1250, 720, 60, 10); fill(ctx, ink(.45, .12, .72)); stroke(ctx, 6);
   rr(ctx, BENCH_X - 360, 1330, 720, 50, 10); fill(ctx, ink(.45, .12, .72)); stroke(ctx, 6);
   ctx.beginPath(); ctx.ellipse(BENCH_X - 200, 1245, 120, 18, 0, 0, 7); fill(ctx, PAPER);             // снег на спинке
+  drawPerson(ctx, wifePose(t));
   const G = drawPerson(ctx, O);
   ctx.beginPath(); ctx.moveTo(G.hc[0] - 80, G.shY - 6); ctx.quadraticCurveTo(G.hc[0], G.shY + 40, G.hc[0] + 80, G.shY - 6);   // шарф
   stroke(ctx, 44, OUT); stroke(ctx, 34, ink(.9, .05, .3));

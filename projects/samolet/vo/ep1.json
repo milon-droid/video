@@ -15,8 +15,14 @@
   {
    "id": "k1",
    "role": "sm_kid",
-   "text": "It goes fast... have fun?",
-   "emo": "Puzzled, reading a strange note slowly, the end is a confused question."
+   "text": "No... better? What?",
+   "emo": "Puzzled, reading a strange note, each word a confused question."
+  },
+  {
+   "id": "k2a",
+   "role": "sm_kid",
+   "text": "Are we rich? Are we famous?",
+   "emo": "Excited and hopeful, quick, writing while talking."
   },
   {
    "id": "k2",
@@ -27,14 +33,14 @@
   {
    "id": "o1",
    "role": "sm_old",
-   "text": "Hello, future me.",
-   "emo": "Reading a note aloud slowly, amused and touched."
+   "text": "Hello, future me. Are we rich? Are we famous?",
+   "emo": "Reading a child's note aloud slowly, amused, a smile in the voice."
   },
   {
    "id": "o2",
    "role": "sm_old",
-   "text": "Hi, kid.",
-   "emo": "One tiny soft breath of a laugh, then tender and short."
+   "text": "No... Better.",
+   "emo": "Very soft and tender, almost a whisper, a long pause after 'No', deeply happy and moved."
   },
   {
    "id": "o3",
