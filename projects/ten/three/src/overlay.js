@@ -36,7 +36,7 @@ export function sunHud(t, T, { t0 = 0, y = 330, k: kk = 1 } = {}) {
   // солнышко над горизонтом
   ctx.save(); ctx.beginPath(); ctx.rect(-240, -50, 80, 62); ctx.clip(); ctx.fillStyle = red ? '#ff6a3a' : '#ffc04a'; ctx.beginPath(); ctx.arc(-200, 8 + clamp(1 - left / 33000) * 34, 26, 0, 7); ctx.fill(); ctx.restore();
   ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-240, 12); ctx.lineTo(-160, 12); ctx.stroke();
-  ctx.textAlign = 'left'; ctx.fillStyle = '#e0d8f0'; ctx.font = '700 24px Unb'; ctx.fillText('ДО ЗАКАТА', -135, -12);
+  ctx.textAlign = 'left'; ctx.fillStyle = '#e0d8f0'; ctx.font = '700 24px Unb'; ctx.fillText('TILL SUNSET', -135, -12);
   ctx.fillStyle = red ? '#ff7a6a' : '#fff'; ctx.font = '800 46px Unb'; ctx.fillText(hms(left), -137, 36); ctx.restore();
 }
 function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
