@@ -60,7 +60,7 @@ C.head=(c,s,f,o={})=>{const k=o.kind||'man';const lw=Math.max(1.2,s*.018);const 
   // кумадори: красные полосы от глаз вверх (рисуются сами, kuma 0..1)
   const ku=o.kuma||0;
   if(ku>0){const L=(pts,a,b,w)=>{const u=cl((ku-a)/(b-a));if(u<=0)return;const n=pts.length;const q=[];for(let i=0;i<n;i++){const tt=i/(n-1);if(tt<=u)q.push(pts[i]);}
-      if(q.length>1)E.fill(E.brush(P(q),w*s,w*s*.2,.6),{BENI:.95},false);};
+      if(q.length>1)E.fill(E.brush(P(q),w*s*2.2,w*s*.5,.5),{BENI:1,KEY:.08},false);};
     const arc=(x0,y0,x1,y1,bx,by)=>{const r=[];for(let i=0;i<=10;i++){const t=i/10;r.push([lerp(lerp(x0,bx,t),lerp(bx,x1,t),t),lerp(lerp(y0,by,t),lerp(by,y1,t),t)]);}return r;};
     L(arc(.18,-.06,.0,-.44,.14,-.28),0,.4,.04);L(arc(.27,-.07,.28,-.42,.33,-.26),.15,.55,.03);L(arc(.04,-.03,-.18,-.30,-.08,-.10),.3,.7,.03);
     L(arc(.06,.03,-.12,.16,-.02,.14),.45,.85,.03);L(arc(.31,.20,.22,.36,.31,.32),.6,1,.025);}
@@ -88,6 +88,9 @@ C.head=(c,s,f,o={})=>{const k=o.kind||'man';const lw=Math.max(1.2,s*.018);const 
     if(!old)E.fill(E.ell(...Rf(.21*s,(my+.018)*s),.03*s,.01*s),{BENI:.6},false);}
   if(o.tear){const tp=Rf(.18*s,(-.0+o.tear*.25)*s);const td=E.smooth([[tp[0],tp[1]-s*.04],[tp[0]+s*.018,tp[1]+s*.01],[tp[0],tp[1]+s*.03],[tp[0]-s*.018,tp[1]+s*.01]]);E.fill(td,{GOFUN:1,AI:.25});E.stroke(td,0,lw*.5,.8);}
   E.stroke(face,0,lw*.55,.85);
+  if(o.scar)E.line(P([[.20,.02],[.28,.12],[.33,.20]]),lw*.9,lw*.4,0,.9,BENI);
+  if(o.kasa){const hp=E.smooth(P([[-.85,-.22],[-.2,-.62],[.05,-.78],[.3,-.62],[.95,-.20],[.05,-.34]]));E.fill(hp,{KI:.65,NEZU:.35,BENI:.08});E.stroke(hp,0,lw);
+    for(let i=-3;i<=3;i++)E.line(P([[.05,-.76],[.05+i*.26,-.26-Math.abs(i)*.0]]),lw*.4,lw*.4,0,.6);}
 };
 // ---------- меч ----------
 C.sword=(g,ang,h,o={})=>{const d=[Math.cos(ang),Math.sin(ang)],n=[-d[1],d[0]];const L=h*.40,sw=h*.012;
