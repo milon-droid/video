@@ -55,3 +55,4 @@ projects/*/remotion/public/audio/
 projects/ten/three/dist/
 projects/ten/audio/*.wav
 projects/pesok/audio/mix.wav
+out/
