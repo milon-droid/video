@@ -44,7 +44,7 @@ Wd.cart=(s,x,y,size,o={})=>{const a=o.a==null?1:o.a;if(a<=0)return;const font=o.
 Wd.tanzaku=(s,x,y,size,a=1,sub)=>{if(a<=0)return;const n=[...s].length;const w=size*1.45,h=size*(n*1.08+.7)*E.eo(a);
   const box=E.rect(x-w/2,y,w,h);E.fill(box,{KI:.6,MOMO:.35});E.stroke(box,0,size*.06);E.stroke(E.rect(x-w/2+size*.12,y+size*.12,w-size*.24,h-size*.24),0,size*.025);
   E.clipped(box,()=>{[...s].forEach((ch,i)=>E.text(ch,x,y+size*(.85+i*1.08),size,{font:'Yuji',w:400}));});
-  if(sub&&a>.6){E.text(sub,x,y+h+size*.6,size*.42,{ls:size*.06});}};
+  if(sub&&a>.6){Wd.cart(sub,x-size*.9,y+h+size*.75,size*.36,{a:cl((a-.6)/.4)});}};
 // печать ханко
 Wd.seal=(x,y,s,a=1,txt)=>{if(a<=0)return;const k=a<1?1+(1-E.eo(a))*.6:1;const sz=s*k;
   const p=E.rect(x-sz/2,y-sz/2,sz,sz);E.fill(p,{BENI:.95*cl(a*2)},true);

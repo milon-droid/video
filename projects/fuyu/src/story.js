@@ -270,6 +270,13 @@ shot(31.8,35.8,(lt)=>{E.cam={x:lerp(560,600,lt/4),y:900,z:lerp(1.0,1.07,lt/4),r:
   Wd.snow(lt,30,{size:6,speed:40,wind:30});
 });
 cue(31.8,'wind_howl',.5,{dur:4});cue(31.8,'drone_low',.6,{dur:4});cue(32.3,'heartbeat',.9);cue(33.1,'heartbeat',.9);cue(33.0,'paper_rustle',.6);cue(33.85,'heartbeat',1);cue(34.5,'heartbeat',1);cue(34.9,'paper_rustle',.4);
+// бюст для крупных планов: шея, плечи, ворот кимоно
+const bust=(white)=>{const nk=E.poly([[470,980],[610,990],[620,1180],[460,1180]]);E.fill(nk,{HADA:.85*(1-white),GOFUN:.9*white});E.stroke(nk,0,5);
+  const sh=E.smooth([[60,1560],[230,1190],[460,1110],[560,1150],[700,1110],[900,1190],[1060,1560],[1150,2050],[-50,2050]]);E.fill(sh,{AI:1});
+  E.clipped(sh,()=>{for(let i=0;i<9;i++){const x=120+i*110;E.line([[x,1200],[x-60,2000]],4,4,0,.35);}});E.stroke(sh,0,7);
+  E.fill(E.poly([[455,1120],[505,1110],[640,1480],[590,1500]]),{GOFUN:.95});E.fill(E.poly([[690,1115],[640,1105],[520,1420],[570,1440]]),{GOFUN:.95});
+  E.line([[455,1120],[590,1500]],6,6,0,1);E.line([[505,1110],[640,1480]],5,5,0,1);E.line([[690,1115],[570,1440]],6,6,0,1);E.line([[640,1105],[520,1420]],5,5,0,1);
+  E.fill(E.poly([[560,1440],[620,1440],[640,1500],[590,1500]]),{KEY:.0});};
 // ===== 12. Ми-э: грим кумадори, удары цукэ =====
 shot(35.8,38.8,(lt)=>{const pk=[1.6,1.95,2.3];let zb=0;for(const p of pk){const u=lt-p;if(u>0&&u<.25)zb+=.06*(1-u/.25);}
   E.cam={x:540,y:880,z:1.0+lt*.04+zb,r:0};E.view(.4);
@@ -279,8 +286,7 @@ shot(35.8,38.8,(lt)=>{const pk=[1.6,1.95,2.3];let zb=0;for(const p of pk){const 
   E.view(1);
   const kuma=ss(.25,1.55,lt);const mie=lt>1.6;const tilt=mie?K(lt,[[1.6,0],[1.7,.18,E.eo],[1.95,.18],[2.05,-.08,E.eo],[2.3,-.08],[2.4,.05,E.eo]]):0;
   // тело (плечи) и рука на рукояти
-  const sh=E.smooth([[100,1500],[300,1150],[540,1080],[800,1150],[1000,1500],[1100,2000],[0,2000]]);E.fill(sh,{AI:1});E.stroke(sh,0,6);
-  E.line([[470,1090],[560,1300],[640,1560]],40,30,0,1,GOFUN);E.line([[470,1090],[560,1300],[640,1560]],8,6,0,1);
+  bust(1);
   C.head([540,800],640,1,{kind:'man',kuma,brow:-1,stub:1,scar:1,tilt,cross:mie?1:0,wide:mie,mouth:mie?.25:0,blink:0});
   // меч чуть из ножен — блик
   const gl=ss(2.4,2.9,lt);C.sword([300,1700],-0.62,1700,{glint:gl});
@@ -332,7 +338,7 @@ cue(45.6,'hook_motif',1);cue(45.6,'drone_low',.7,{dur:2.3});cue(46.1,'heartbeat'
 // ===== 15b. Лицо: он понял =====
 shot(47.9,49.8,(lt)=>{if(lt>.75&&lt<.88){E.cam={x:540,y:900,z:1.1,r:0};E.view();SH[0].draw(.2);E.P.fade=.0;return;}
   E.cam={x:540,y:860,z:1.05+lt*.05,r:0};E.view(.4);E.fill(E.rect(-300,-300,1700,2600),{NEZU:.8,AI:.4,KI:{r:[700,1300,50,900],s:[[0,.7],[1,0]]}});E.view(1);
-  const sh=E.smooth([[100,1500],[300,1150],[540,1080],[800,1150],[1000,1500],[1100,2000],[0,2000]]);E.fill(sh,{AI:1});E.stroke(sh,0,6);
+  bust(1);
   const real=ss(.9,1.4,lt);
   C.head([540,780],640,1,{kind:'man',kuma:1-real*.15,brow:lerp(-1,.9,ss(.95,1.3,lt)),stub:1,scar:1,wide:lt>.95,look:lt<.7?.0:-.15,tear:ss(1.2,1.9,lt)*.9+(lt>1.2?.1:0),mouth:real*.25,blink:0});
 });

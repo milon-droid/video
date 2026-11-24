@@ -106,7 +106,7 @@ void main(){
   float pg=fbm(pp*.08)*.5+vn(pp*.9)*.5;
   vec3 col=vec3(.955,.925,.85)*(1.-.035*pg)+fib*.03-vec3(0.,.01,.03)*fbm(pp*.004);
   float mot=fbm(pp*.012);
-  for(int ii=1;ii<10;ii++){int i=ii==9?0:ii;
+  for(int ii=0;ii<9;ii++){int i=ii==0?8:ii==8?0:ii;
     vec2 jit=(vec2(h(vec2(fr,float(i))),h(vec2(float(i),fr+3.)))-.5)*.5;
     vec2 q=sp+uReg[i]*(R.x/720.)+jit;
     float d=chan(i,q);

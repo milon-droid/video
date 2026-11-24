@@ -27,5 +27,15 @@
 | 49.5–53 | Удар — гравюра разрезана; половины расходятся — разрублена его тень на стене, старик цел; кумадори смывается |
 | 53–58 | Рассвет: меч воткнут в снег, он спускается; весна печатается поверх зимы (розовая доска) |
 | 58–64 | «20 WINTERS HE HUNTED A SHADOW.» → «ONE SECOND MORE — AND HE'D HAVE BECOME IT.» → печать, хёсиги, занавес |
+## Карта кода
+src/engine.js — E: 9 «досок» в каналах RGB трёх холстов (KEY AI BENI | KI MIDORI NEZU | MOMO HADA GOFUN); E.fill(path,{ИНК:плотность|градиент},carve) вырезает всё под формой и печатает;
+  E.silhouette (тень одной краской с размытием), E.clipped, E.xf, E.brush/line; шейдер печати: васи, волокна доски, барэн, «кунжут», приводка с дрожью, печать по доскам (E.P.rev), разрез гравюры (E.P.cut/slide).
+src/chars.js — C.fig (кимоно/хакама, IK рук и ног, рукава с запаздыванием, меч/ножны, kneel, walk), C.head (укиё-э лицо: моргание, брови, зрачки, рот, кумадори kuma, cross ми-э, слеза, шрам, щетина, каса), C.sword/C.saya.
+src/world.js — Wd: небо, снег, дождь Хиросигэ, хребты, сосны, сёдзи, брызги, картуши/тандзаку/ханко, занавес кабуки, дым, луна, лепестки, клён.
+src/story.js — 18 планов (shot), cue() → audio/cues.json (node cues.cjs), killerPose/strike/kata.
+audio/score.py — микшер: сямисэн по нотам (запись D2–D6, нота n в 2n с), лады мияко-буси→ё, цукэ, хёсиги, тайко, атмосферы, свёртка-зал, тишина перед ударом.
+Рендер: node render.cjs render/fuyu_raw.mp4 (~12 мин, 720p) → python3 ../../tools/master.py render/fuyu_raw.mp4 render/fuyu.mp4 --audio audio/mix.wav; лист: node stills.cjs out.png t…
+Звуки: audio/rec (Freesound CC0, CREDITS.md) + sfx-kit CC0. Без Oculus — подпись не нужна. Шрифты: Shippori Mincho B1 + Yuji Syuku (OFL).
+Подпись: «He hunted a shadow for 20 winters. 🗡️» #samurai #ukiyoe #animation #shortfilm #japan
 ## Статус
-- [ ] движок печати, персонажи, сцены, звук, рендер 720p
+- v1 (2026-11-24): движок, 18 планов, звук, рендер 720p — сдаётся на отзыв
