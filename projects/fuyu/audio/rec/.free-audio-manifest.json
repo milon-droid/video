@@ -298,5 +298,53 @@
     "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
     "landingUrl": "https://freesound.org/people/Kloudkicker1/sounds/234907",
     "attribution": "\"kabuki.wav\" by Kloudkicker1 is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/."
+  },
+  {
+    "id": "787844c2-63f2-485a-8eaf-e23be80af3e0",
+    "file": "katana-sheath-787844.mp3",
+    "title": "Katana sheath.wav",
+    "creator": "Scottrex05",
+    "provider": "freesound",
+    "license": "cc0",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "landingUrl": "https://freesound.org/people/Scottrex05/sounds/593485",
+    "attribution": "\"Katana sheath.wav\" by Scottrex05 is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/."
+  },
+  {
+    "id": "eebb19d2-c9f1-4820-8ce7-f0afd5053bbe",
+    "file": "unsheathing-a-katana-sword-blade-sfx-eebb19.mp3",
+    "title": "Unsheathing a Katana Sword Blade SFX",
+    "creator": "Soup_UnderScore",
+    "provider": "freesound",
+    "license": "cc0",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "landingUrl": "https://freesound.org/people/Soup_UnderScore/sounds/708027",
+    "attribution": "\"Unsheathing a Katana Sword Blade SFX\" by Soup_UnderScore is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/."
+  },
+  {
+    "id": "f17a90d0-ffe0-4a17-a938-81aef5c70225",
+    "file": "single-heartbeat-clean-hq-beatsmith-f17a90.mp3",
+    "title": "Single Heartbeat Clean HQ_BeatSmith.wav",
+    "creator": "Lunardrive",
+    "provider": "freesound",
+    "license": "cc0",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "landingUrl": "https://freesound.org/people/Lunardrive/sounds/22440",
+    "attribution": "\"Single Heartbeat Clean HQ_BeatSmith.wav\" by Lunardrive is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/."
+  },
+  {
+    "id": "5e6822e4-2388-44fa-9b23-fdb0ba0c797e",
+    "file": "french-birds-morning-spring-5e6822.mp3",
+    "title": "french birds morning spring",
+    "creator": "bruno.auzet",
+    "provider": "freesound",
+    "license": "cc0",
+    "licenseVersion": "1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "landingUrl": "https://freesound.org/people/bruno.auzet/sounds/718564",
+    "attribution": "\"french birds morning spring\" by bruno.auzet is marked with CC0 1.0. To view the terms, visit https://creativecommons.org/publicdomain/zero/1.0/."
   }
 ]
