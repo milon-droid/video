@@ -24,3 +24,7 @@
 
 ## Статус
 - 2026-11-26: сценарий написан (полная воля), голос `vo/ep2-en.json` → `vo/ep2en/` (новая роль `mia_en`). Код — `three/src/ep2.js` + `index-ep2.html`.
+- 2026-11-26: пользователь: «Сначала дай без озвучки, потом разберемся если сценарий ок» → синтез голоса остановлен (готово 15 реплик в vo/ep2en),
+  v1 без голоса: реплики текстом, музыка `audio/ep2/score2.py`, звуки `audio/ep2/build_sfx2.py` → `mix2-novo.wav`. Рендер `render/ep2-v1-video.mp4` → `shadow-quit-ep2-v1-novo.mp4`.
+  Монтаж и время реплик — `three/src/ep2-lines.js` (`build(durs)`: план удлиняется под реплики); длительности — `audio/ep2/durs.py`.
+  Сборка: `python3 audio/ep2/durs.py` → esbuild `src/ep2.js` → `dist/bundle-ep2.js` → render `index-ep2.html`; превью `bash three/sheet2.sh out.jpg t…`.

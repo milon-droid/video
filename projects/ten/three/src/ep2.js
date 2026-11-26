@@ -15,8 +15,10 @@ let SHOT0 = 0; // начало текущего плана (глобально)
 const talkG = (T, ...ids) => { for (const id of ids) { const [a, b] = line(id); if (T > a && T < b) return clamp(.45 + .55 * Math.sin((T - a) * 16) * Math.sin((T - a) * 5.1 + 1)); } return 0; };
 const lt = id => AT[id] - SHOT0; // время реплики в координатах плана
 const wrapS = (s, n = 20) => { const o = []; let c = ''; for (const w of s.split(' ')) { if ((c + ' ' + w).trim().length > n && c) { o.push(c); c = w; } else c = (c + ' ' + w).trim(); } if (c) o.push(c); return o; };
+const kind = id => TEXT[id][0] === 'shadow2_en' ? 's' : TEXT[id][0] === 'narrator_en' ? 'n' : 'p';
+const NEXT = {}; { const ids = Object.keys(AT).sort((x, y) => AT[x] - AT[y]); ids.forEach((id, i) => { const nx = ids.slice(i + 1).find(j => kind(j) === kind(id)); NEXT[id] = nx ? AT[nx] : 1e9; }); }
 function drawLines(T, opt = {}) {
-  for (const id in AT) { const [a, b] = line(id); const [role, text] = TEXT[id]; const o = opt[id] || {}; if (o.hide) continue; const t1 = b + (o.hold ?? .35);
+  for (const id in AT) { const [a, b] = line(id); const [role, text] = TEXT[id]; const o = opt[id] || {}; if (o.hide) continue; const t1 = Math.min(b + (o.hold ?? .35), NEXT[id] - .06);
     if (T < a - .05 || T > t1) continue;
     if (role === 'shadow2_en') shadowSay(T, a, t1, o.lines || wrapS(text, o.n || 20), { y: o.y ?? 400, size: o.size ?? 84 });
     else if (role === 'narrator_en') { if (o.show) narr(T, a, t1, text, { y: o.y ?? 1450, size: 64, n: 20 }); }
@@ -46,7 +48,7 @@ const wpos = o => { o.updateWorldMatrix(true, false); return o.getWorldPosition(
 function cam(px, py, pz, lx, ly, lz, fov = 34, roll = 0) { camera.fov = fov; camera.updateProjectionMatrix(); camera.position.set(px, py, pz); camera.up.set(0, 1, 0); camera.lookAt(lx, ly, lz); if (roll) camera.rotateZ(roll); }
 const hh = (t, amp = .02, seed = 1) => [noise(seed, t * .8) * amp, noise(seed + 5, t * .7) * amp];
 function put(T, x, z, yaw, pose, t, face = {}, y = 0, seed = 1) { T.root.visible = true; T.root.position.set(x, y, z); T.root.rotation.set(0, yaw, 0); applyPose(T, pose, t, face, seed); }
-const hideAll = () => { if (typeof sunDisc !== 'undefined') sunDisc.visible = false; [hero.root, mia.root].forEach(r => r.visible = false); shade.holder.visible = false; miaSh.holder.visible = false; hat.visible = false; tie.visible = false; flower.visible = false; };
+const hideAll = () => { shade.aR.sh.scale.y = 1; if (typeof sunDisc !== 'undefined') sunDisc.visible = false; [hero.root, mia.root].forEach(r => r.visible = false); shade.holder.visible = false; miaSh.holder.visible = false; hat.visible = false; tie.visible = false; flower.visible = false; };
 setFade(hero, 1, 1, false); setFade(mia, 1, 1, false);
 let FX = {};
 // сидя: бёдра вперёд, колени вниз; SY — опускание корня до сиденья
@@ -71,32 +73,34 @@ const S = {};
 // 1. ХУК: Sam струсил у двери кафе — его тень хватает его и вталкивает внутрь
 S.S1 = (t, T) => { useSet('front'); hideAll(); flower.visible = true;
   const WZ = front.wallZ + .03, DX = front.doorX;
-  const GRAB = 1.25, PUSH = lt('a3') + .15, IN = PUSH + .35;
-  // Sam: стоит у двери с цветком → разворачивается и уходит влево → рывок назад (тень держит) → тянется назад к двери → толчок → влетает в дверь
-  let x, z = -.55, yaw, pose, face = { expr: 'scared', smile: 0, lookX: -.4 };
-  if (t < .55) { x = DX - .05; yaw = Math.PI * .85; pose = { ...POSE.stand, aR: [.3, -.1, 1.6], headX: .15, lean: -.05 }; face = { expr: 'scared', smile: 0, lookY: -.5 }; }
-  else if (t < GRAB) { const d = (t - .55) * .9; x = DX - .05 - d; yaw = lerp(Math.PI * .85, -Math.PI / 2, ease(t, .55, .8)); pose = walk(d * 1.6, 0, { aR: [.4, -.1, 1.4] }); face = { expr: 'calm', smile: .1 }; }
-  else if (t < PUSH) { const xg = DX - .05 - (GRAB - .55) * .9; const k = ease(t, GRAB + .2, PUSH - .1, sm); x = lerp(xg, DX - .25, k) + Math.exp(-(t - GRAB) * 8) * Math.sin((t - GRAB) * 30) * -.03; yaw = -Math.PI / 2;
-    pose = { ...POSE.stand, lean: -.35, crouch: .04, aL: [-.6, .5, .4], aR: [-.2, -.6, 1.2], lL: [-.25, .15], lR: [.2, .1], headX: -.15 }; face = { expr: 'surprised', mouth: .7, wide: true }; }
-  else { const k = ease(t, PUSH, IN + .2, sm); x = lerp(DX - .25, DX + .02, k); z = lerp(-.55, -1.25, ease(t, PUSH + .1, IN + .3)); yaw = lerp(-Math.PI / 2, Math.PI, ease(t, PUSH, PUSH + .15)); pose = { ...walk(k * 3, 1), lean: .45, aL: [1.4, .4, .2], aR: [1.2, -.5, .3] }; face = { expr: 'scared', mouth: .9, wide: true }; }
-  const inside = t > IN + .35; if (!inside) put(hero, x, z, yaw, pose, t, face);
-  front.door.rotation.y = -lerp(0, 1.5, ease(t, PUSH + .05, PUSH + .35)) * (1 - ease(t, IN + .5, IN + 1.0, sm));
-  // тень на стене: копирует → остаётся на месте и тянет руку, хватает за худи → тащит → толкает двумя руками
-  const sx0 = DX + .45; let sx, sPose, turn, mood = 'calm';
-  if (t < .55) { sx = x + .5; sPose = pose; turn = Math.PI / 2; }
-  else if (t < GRAB) { sx = lerp(DX + .45, DX + .35, ease(t, .55, GRAB)); sPose = keys(t, [[.55, 'stand'], [.9, { ...POSE.stand, headY: -.4 }], [GRAB, { ...POSE.reach, aR: [0, -1.6, .1], lean: .2 }]]); turn = -Math.PI / 2; mood = 'angry'; }
-  else if (t < PUSH) { sx = lerp(DX + .35, DX + .25, ease(t, GRAB, PUSH)); sPose = { ...POSE.stand, aR: [0, -1.5, .2 + ease(t, GRAB + .2, PUSH - .1) * 1.2], lean: -.25, lL: [.3, .1], lR: [-.25, .1] }; turn = -Math.PI / 2; mood = 'angry'; }
-  else { sx = lerp(DX + .25, DX + .05, ease(t, PUSH, PUSH + .25)); sPose = { ...POSE.stand, aL: [1.5, .1, .1], aR: [1.5, -.1, .1], lean: .35, lL: [.5, .2], lR: [-.4, .2] }; turn = -Math.PI / 2; mood = 'angry'; }
+  const TURN = .45, GRAB = 1.2, PUSH = Math.max(2.4, lt('a3') + .1), IN = PUSH + .4;
+  // Sam: мнётся у двери → разворачивается и уходит влево → рывок назад (тень тянет за капюшон) → толчок → влетает в дверь
+  let x, z = -.6, yaw, pose, face;
+  const x1 = DX - .05 - (GRAB - TURN) * .8;
+  if (t < TURN) { x = DX - .05; yaw = Math.PI * .9; pose = { ...POSE.stand, aR: [.3, -.1, 1.6], headX: .25, lean: -.05, headY: Math.sin(t * 8) * .1 }; face = { expr: 'scared', smile: 0, lookY: -.6 }; }
+  else if (t < GRAB) { const d = (t - TURN) * .8; x = DX - .05 - d; yaw = lerp(Math.PI * .9, -Math.PI / 2, ease(t, TURN, TURN + .25)); pose = walk(d * 1.6, 0, { aR: [.4, -.1, 1.4] }); face = { expr: 'calm', smile: .2, lookX: -.3 }; }
+  else if (t < PUSH) { const k = ease(t, GRAB + .15, PUSH - .2, sm); x = lerp(x1, DX - .35, k) + Math.exp(-(t - GRAB) * 9) * Math.sin((t - GRAB) * 30) * .04; yaw = -Math.PI / 2;
+    pose = { ...POSE.stand, lean: -.4, crouch: .04, aL: [-.7, .6, .4], aR: [-.3, -.7, 1.2], lL: [-.3, .2], lR: [.25, .1], headX: -.2 }; face = { expr: 'surprised', mouth: .8, wide: true }; }
+  else { const k = ease(t, PUSH, IN + .15, sm); x = lerp(DX - .35, DX + .02, k); z = lerp(-.6, -1.25, ease(t, PUSH + .1, IN + .3)); yaw = lerp(-Math.PI / 2, Math.PI, ease(t, PUSH, PUSH + .12)); pose = { ...walk(k * 3, 1), lean: .45, aL: [1.4, .4, .2], aR: [1.2, -.5, .3] }; face = { expr: 'scared', mouth: .9, wide: true }; }
+  const inside = t > IN + .3; if (!inside) put(hero, x, z, yaw, pose, t, face);
+  front.door.rotation.y = -lerp(0, 1.5, ease(t, PUSH + .05, PUSH + .3)) * (1 - ease(t, IN + .5, IN + 1.0, sm));
+  // тень (солнце слева — тень правее Sam): копирует → остаётся, вытягивает руку-резину, хватает → тащит → обегает и толкает двумя руками
+  let sx, sPose, turn, mood = 'calm', stretch = 0;
+  if (t < TURN) { sx = x + .85; sPose = pose; turn = Math.PI * .9 - Math.PI / 2; mood = 'calm'; }
+  else if (t < GRAB) { sx = DX + .8; const k = ease(t, TURN + .2, GRAB, sm); sPose = { ...POSE.stand, aR: [lerp(.1, 1.55, k), -.05, .05], lean: k * .15, headY: -.3 }; turn = -Math.PI / 2; mood = 'angry'; stretch = k * (DX + .8 - .2 - x1) / .43; }
+  else if (t < PUSH) { sx = DX + .8; const k = ease(t, GRAB + .15, PUSH - .2, sm); sPose = { ...POSE.stand, aR: [1.55, -.05, .05], lean: -.3, lL: [.35, .1], lR: [-.3, .1] }; turn = -Math.PI / 2; mood = 'angry'; stretch = (DX + .8 - .2 - lerp(x1, DX - .35, k)) / .43; }
+  else { sx = lerp(DX + .8, DX + .1, ease(t, PUSH - .1, PUSH + .15)); sPose = { ...POSE.stand, aL: [1.5, .1, .1], aR: [1.5, -.1, .1], lean: .35, lL: [.5, .2], lR: [-.4, .2] }; turn = -Math.PI / 2; mood = 'angry'; }
   applyPose(shade, sPose, t, { mood: t > IN ? 'happy' : mood, look: -1 }, 3);
-  placeShade(shade, { x: inside ? DX + .05 : sx, z: WZ, rise: 1, scale: 1.35, turn: t > IN + .3 ? 0 : turn, op: 1 });
-  shade.holder.position.y = -.05;
-  const [jx, jy] = hh(t, .03); const pk = spring(t, PUSH, 2.5, 6) * .15;
-  cam(lerp(-.6, .1, ease(t, 0, 4.2, sm)) + jx, 1.05 + jy, lerp(4.6, 3.9, ease(t, 0, 4.2)) - pk, DX - .1, .85, -1.2, 36, -.04 + pk * .2);
+  shade.aR.sh.scale.y = Math.max(1, stretch * 1.4);
+  placeShade(shade, { x: inside ? DX + .1 : sx, z: WZ, rise: 1, scale: 1.15, turn: t > IN + .3 ? 0 : turn, op: 1 });
+  shade.holder.position.y = -.02;
+  const [jx, jy] = hh(t, .03); const pk = spring(t, PUSH, 2.5, 6) * .12;
+  cam(DX + .2 + jx, 1.15 + jy, lerp(5.4, 4.9, ease(t, 0, 4.2)) - pk, DX + .25, .9, -1.2, 36, -.03 + pk * .2);
   FX = { fy: .5, fw: .3, blur: 6, bloom: .2, warm: .06 };
-  return () => { if (t > GRAB && t < GRAB + .5) { const [bx, by] = toScreen(x + .05, .8, z); burst(t - GRAB, bx, by, '#07060c', 10, 300); }
+  return () => { if (t > GRAB && t < GRAB + .5) { const [bx, by] = toScreen(x + .1, 1.0, z); burst(t - GRAB, bx, by, '#07060c', 10, 300); }
     if (t > IN && t < IN + .55) { const [bx, by] = toScreen(DX, 1.0, WZ); burst(t - IN, bx, by, '#ffd36a', 16, 420); }
-    if (t > IN + .4) { const [ex, ey] = toScreen(DX + .05, 1.6, WZ); heartsFloat(t - IN, ex, ey, .5, 300, 6); }
-    drawLines(T, { a1: { y: 1420, accent: ['crush'] }, a2: { y: 1420 }, a3: { y: 380, size: 120 } }); };
+    if (t > IN + .4) { const [ex, ey] = toScreen(DX + .1, 1.5, WZ); heartsFloat(t - IN, ex, ey, .5, 300, 6); }
+    drawLines(T, { a1: { y: 1440, accent: ['crush'] }, a2: { y: 1440 }, a3: { y: 380, size: 120 } }); };
 };
 // 2. Коридор, утро: на стене записка «Term #5» + «DUE TODAY»; тень стучит по ней
 let paintedS2 = false;
@@ -125,7 +129,7 @@ S.S3 = (t, T) => { useSet('hall'); hideAll(); hall.paint(c => paintNote(c, 1));
   applyPose(shade, pose, t, { mood: t > c3 ? 'sly' : t > c2 + .9 ? 'happy' : 'calm', look: t < c2 ? 1 : 0 }, 3);
   placeShade(shade, { x: .2, z: -1.47, rise: 1, scale: 1.2, turn: t > c2 && t < c3 ? .4 : 0, op: 1 }); shade.holder.position.y = -.05;
   put(hero, -.45, .3, .45, keys(t, [[0, POSE.stand], [c2 + .2, { ...POSE.shrug }], [c3 - .3, POSE.stand], [c3 + .5, POSE.facepalm]]), t, { expr: t > c3 ? 'sad' : 'calm', lookY: .9, lookX: .6, mouth: talkG(T, 'c2'), smile: .1 });
-  const [jx, jy] = hh(t, .02); cam(lerp(.6, .3, ease(t, 0, 6)) + jx, 1.3 + jy, lerp(3.9, 3.6, ease(t, 0, 6)), .1, 1.05, -1.4, 34);
+  const [jx, jy] = hh(t, .02); cam(lerp(.6, .3, ease(t, 0, 6)) + jx, 1.55 + jy, lerp(4.5, 4.2, ease(t, 0, 6)), .1, 1.4, -1.4, 34);
   FX = { fy: .4, fw: .3, blur: 6, warm: .08, bloom: .15 };
   return () => { if (hat.visible && t < c1 + .6) { const [bx, by] = toScreen(.2, 2.1, -1.47); burst(t - c1 - .1, bx, by, '#fff6c8', 12, 300); }
     if (t > c2 + .9 && t < c2 + 1.4) { const [bx, by] = toScreen(.2, 1.4, -1.47); burst(t - c2 - .9, bx, by, '#fff6c8', 10, 260); }
@@ -287,7 +291,7 @@ const sunDisc = mesh(G.sph(2.2, 32), glow('#ffd8a0', 1.6), false, false); sunDis
 S.S11 = (t, T) => { useSet('day'); hideAll(); scene.background = sunsetSky; scene.fog = new THREE.Fog('#f0a088', 16, 60); sunDisc.visible = true;
   day.sun.color.set('#ffa860'); day.sun.intensity = 3.0; day.bus.visible = false; day.fence.visible = false;
   // идут к камере (+z) рядом; солнце низко позади — длинные тени ложатся вперёд, к зрителю
-  const Z = -1.2 + t * .5, Xs = -.32, Xm = .32;
+  const Z = -1.2 + t * .5, Xs = -1.77, Xm = -1.13;
   put(hero, Xs, Z, 0, walk(t * .5 * 1.6, 0, { headY: .45 }), t, { expr: 'happy', smile: 1, mouth: .3 * Math.abs(Math.sin(t * 9)) * (Math.sin(t * 2.5) > .2 ? 1 : 0), lookX: .7 });
   put(mia, Xm, Z, 0, walk(t * .5 * 1.6 + .7, 0, { headY: -.45 }), t, { expr: 'happy', smile: 1, mouth: .3 * Math.abs(Math.sin(t * 8)) * (Math.sin(t * 2.5 + 2) > .3 ? 1 : 0), lookX: -.7 }, 0, 8); mia.tail.rotation.x = Math.sin(t * 7) * .2;
   day.sun.position.set(0, 1.5, Z - 9); day.sun.target.position.set(0, 0, Z + 1);
@@ -296,7 +300,7 @@ S.S11 = (t, T) => { useSet('day'); hideAll(); scene.background = sunsetSky; scen
   applyPose(miaSh, spin ? { ...POSE.stand, aL: [.2, 2.6, .2], aR: [.0, -.3, .2], hipsZ: .1 } : { ...walk(t * .5 * 1.6 + .7, 0), aL: [.2, 1.25, .15] }, t, { mood: 'happy' }, 7);
   placeShade(shade, { x: Xs, z: Z + .03, rise: 0, len: 2.3, yaw: 0, scale: 1.0, turn: Math.PI, op: .9 });
   placeShade(miaSh, { x: Xm, z: Z + .03, rise: 0, len: 2.3, yaw: 0, scale: 1.0, turn: Math.PI + spin, op: .9 });
-  const [jx, jy] = hh(t, .02); cam(.1 + jx, 1.55 + jy, Z + 5.0, 0, .75, Z + .6, 36);
+  const [jx, jy] = hh(t, .02); cam(-1.35 + jx, 1.55 + jy, Z + 5.0, -1.45, .75, Z + .6, 36);
   FX = { fy: .55, fw: .3, blur: 7, warm: .2, bloom: .5 };
   return () => { warmGlow(.3); heartsFloat(t, 540, 1150, .45, 700, 8); drawLines(T, { k1: { y: 1500 }, k2: { y: 1500 } }); };
 };
