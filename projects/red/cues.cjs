@@ -1,0 +1,2 @@
+const {chromium}=require('playwright');(async()=>{const ep=process.env.EP||1;const b=await chromium.launch();const p=await b.newPage();await p.goto('file://'+__dirname+'/src/scene.html?ep='+ep);await p.evaluate(()=>window.ready);
+const c=await p.evaluate(()=>({cues:window.CUES,dur:window.DURATION,shots:STORY.SH.map(s=>[s.a,s.b])}));require('fs').writeFileSync(__dirname+`/audio/cues${ep}.json`,JSON.stringify(c));console.log(c.cues.length,c.dur);await b.close();})();
