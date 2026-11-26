@@ -46,7 +46,20 @@ Tell them — while they can still hear you.»
 | 54–62 | Финал | SOMEONE TAUGHT YOU HOW THE WORLD FEELS. / TELL THEM — WHILE THEY CAN STILL HEAR YOU. · RED |
 
 ## Карта кода
-(заполнить: src/paint.js — движок; src/chars.js — Лео/дед; src/world.js — мастерская, класс, улица; src/ep1.js …)
+src/paint.js — E: 2D-холсты A/B (цвет) + MA/MB (маска R=детали G=правда-цвет B=глянец) + T (текст). GLSL: mix (переход-мазок MRT) → тензор
+  структуры (½) → размытие → анизотропный Кувахара (½, stride 2) + Кувахара деталей (полное, только по маске) → мазки-дэбы (ячейки в мировых
+  координатах по E.cam, эллипс вдоль потока, щетина, цвет из центра мазка, «перекраска» 6 р/с) → финал: импасто-свет, блик, холст, дейтеранопия
+  (Machado, S.cvd), лак, виньетка. E.detail/E.truth/E.shine — маска; E.text/E.sub — текст-краской; E.cam — камера для цвета и маски.
+src/chars.js — C.face (лицо из частей: моргание, взгляд, брови worry/raise, рот open/smile, слеза, wet, cloudy, очки, борода деда, turn 3/4),
+  C.fig (торс, IK рук, кисти, ноги/шаг/сидя, шарф, фартук, hold-предметы), C.sleeve (рукав-конус), C.bust (плечи крупного плана).
+src/world.js, world2.js — Wd: мастерская (day/night/dust, лампа, пыль), мольберт, картины (закат, мама), класс, дети, улица под дождём, галерея,
+  стол, тюбики (лёжа/стоя), мороз, крыльцо, посылка, кресло, тюльпаны, холст спиной, окно по сезонам.
+src/story.js — STORY (планы, переходы smear/dip/cut, cue-лист), K (drift, quote, card). src/epN.js — планы серии.
+Рендер: EP=1 node render.cjs render/ep1_raw.mp4 (≈1,4 с/кадр, 4 воркера ≈ 35 мин на серию) → node cues.cjs (EP=1) → python3 audio/score.py 1 →
+  python3 ../../tools/master.py render/ep1_raw.mp4 render/ep1.mp4 --audio audio/mix1.wav. Лист: EP=1 SCALE=.3 node stills.cjs out.png t…
+Звук: audio/rec (Freesound CC0, CREDITS.md): фортепиано C4 (TEDAgame), виолончели F#2/F#4, кисть по холсту, дождь, класс, смех, чай; sfx-kit + BigSoundBank CC0.
+Без Oculus — подпись не нужна.
 
 ## Статус
-- 2026-11-26: план, шрифты (Fraunces, Caveat Brush — OFL). Дальше движок.
+- 2026-11-26: движок, персонажи, EP1 (13 планов, 59 с) собран; EP2 черновик кода (ep2.js), EP3 не начат.
+- Пользователь: «Мне сначала первую серию рендери только», «вторую и третью приступишь если понравится первая» → EP1 рендер 720p, ждём отзыва.

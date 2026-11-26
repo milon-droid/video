@@ -126,7 +126,7 @@ const E = (() => {
     if(gn<1e-6) return base; vec2 tg=vec2(-g.y,g.x)/gn; tg*=sign(dot(tg,base)+1e-4);
     return normalize(mix(base,tg,clamp((E+G)*60.,0.,1.))); }
   void main(){ vec2 p=gl_FragCoord.xy, uv=p/res;
-    float det=texture(M,uv).r; float cs=mix(13.,6.,det)/zoom;
+    float det=texture(M,uv).r; float cs=mix(17.,7.,det)/zoom;
     vec2 wp=(p-pan)/zoom; vec2 gi=floor(wp/cs);
     float best=-1., hh=0., rid=0.; vec2 off=vec2(0.);
     float bj=boil*.37;
@@ -187,7 +187,7 @@ const E = (() => {
     gl.drawArrays(gl.TRIANGLES, 0, 3); }
 
   // ---------- состояние кадра ----------
-  const S = { seed: 0, pr: 0, dir: [1, 0], cvd: 1, fade: 0, gloss: 1, warm: .6, rad: 9, radD: 2.5, stride: 2, boil: 0, pan: [0, 0], zoom: 1 };
+  const S = { seed: 0, pr: 0, dir: [1, 0], cvd: 1, fade: 0, gloss: 1, warm: .6, rad: 11, radD: 3, stride: 2, boil: 0, pan: [0, 0], zoom: 1 };
   let cur = 'A';
   const E = { W, H, S, X, gl };
   E.ctx = () => X[cur]; E.msk = () => X['M' + cur];
@@ -195,7 +195,7 @@ const E = (() => {
   E.clear = () => { for (const k of ['A', 'B']) { X[k].setTransform(1, 0, 0, 1, 0, 0); X[k].globalAlpha = 1; X[k].globalCompositeOperation = 'source-over'; X[k].filter = 'none'; X[k].fillStyle = '#000'; X[k].fillRect(0, 0, W, H); }
     for (const k of ['MA', 'MB']) { X[k].setTransform(1, 0, 0, 1, 0, 0); X[k].globalAlpha = 1; X[k].globalCompositeOperation = 'source-over'; X[k].fillStyle = '#000'; X[k].fillRect(0, 0, W, H); X[k].globalCompositeOperation = 'lighter'; }
     X.T.setTransform(1, 0, 0, 1, 0, 0); X.T.clearRect(0, 0, W, H); cur = 'A';
-    Object.assign(S, { pr: 0, dir: [1, 0], cvd: 1, fade: 0, gloss: 1, warm: .6, rad: 9, radD: 2.5, pan: [0, 0], zoom: 1 }); };
+    Object.assign(S, { pr: 0, dir: [1, 0], cvd: 1, fade: 0, gloss: 1, warm: .6, rad: 11, radD: 3, pan: [0, 0], zoom: 1 }); };
   E.present = t => {
     S.seed = Math.floor(t * 6) * 0.137 % 50; S.boil = Math.floor(t * 6);       // мазки «перекрашиваются» 8 раз в секунду
     up(tA, cA); up(tMA, cMA); if (S.pr > 0) { up(tB, cB); up(tMB, cMB); } up(tT, cT);

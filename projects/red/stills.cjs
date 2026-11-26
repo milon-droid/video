@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const fs=require('fs');const {execFileSyn
 const out=process.argv[2];const ts=process.argv.slice(3).map(Number);const SC=+(process.env.SCALE||.5);
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:720,height:1280}});
 p.on('console',m=>console.log('>',m.text()));p.on('pageerror',e=>console.log('ERR',e.message));
-await p.goto('file://'+__dirname+'/src/scene.html');await p.evaluate(()=>window.ready);
+await p.goto('file://'+__dirname+'/src/scene.html?ep='+(process.env.EP||1));await p.evaluate(()=>window.ready);
 const tmp='/tmp/red_st';fs.mkdirSync(tmp,{recursive:true});const files=[];
 for(const t of ts){const px=await p.evaluate(t=>{renderFrame(t);const a=grab();let s='';for(let i=0;i<a.length;i+=32768)s+=String.fromCharCode.apply(null,a.subarray(i,i+32768));return btoa(s);},t);
  const f=`${tmp}/${t}.raw`;fs.writeFileSync(f,Buffer.from(px,'base64'));files.push(f);}

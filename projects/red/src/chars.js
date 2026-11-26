@@ -142,7 +142,9 @@ const C = (() => {
   function limb(x, pts, w0, w1, col, col2) { x.lineCap = 'round'; x.lineJoin = 'round';
     x.strokeStyle = col2; x.lineWidth = w0 * 1.12; x.beginPath(); x.moveTo(pts[0], pts[1]); for (let i = 2; i < pts.length; i += 2) x.lineTo(pts[i], pts[i + 1]); x.stroke();
     x.strokeStyle = col; x.lineWidth = w0; x.beginPath(); x.moveTo(pts[0], pts[1]); x.lineTo(pts[2], pts[3]); x.stroke();
-    x.lineWidth = (w0 + w1) / 2; x.beginPath(); x.moveTo(pts[2], pts[3]); x.lineTo(pts[4], pts[5]); x.stroke(); }
+    x.lineWidth = (w0 + w1) / 2; x.beginPath(); x.moveTo(pts[2], pts[3]); x.lineTo(pts[4], pts[5]); x.stroke();
+    x.save(); x.translate(-w0 * .18, -w0 * .18); x.strokeStyle = 'rgba(255,240,215,.22)'; x.lineWidth = w0 * .35; x.beginPath(); x.moveTo(pts[0], pts[1]); x.lineTo(pts[2], pts[3]); x.lineTo(pts[4], pts[5]); x.stroke(); x.restore();
+    if (pts.length >= 6) { const a = Math.atan2(pts[5] - pts[3], pts[4] - pts[2]); x.strokeStyle = col2; x.lineWidth = w1 * 1.05; x.lineCap = 'butt'; x.beginPath(); x.moveTo(pts[4] - Math.cos(a) * w1 * .45, pts[5] - Math.sin(a) * w1 * .45); x.lineTo(pts[4] - Math.cos(a) * w1 * .1, pts[5] - Math.sin(a) * w1 * .1); x.stroke(); x.lineCap = 'round'; } }
   // кисть руки: варежка с большим пальцем; grip = сжата; ang = направление предплечья
   function hand(x, hx, hy, ang, sz, sk, o = {}) { x.save(); x.translate(hx, hy); x.rotate(ang); if (o.flip) x.scale(1, -1);
     const s = sz; x.fillStyle = rgrad(x, -s * .2, -s * .2, 0, s * 1.1, [[0, pal(sk[0], sk[1], sk[2] + 6)], [1, pal(sk[0], sk[1] + 6, sk[2] - 12)]]);
@@ -194,7 +196,7 @@ const C = (() => {
       x.strokeStyle = pal(sc[0], sc[1], sc[2] + 20, .6); x.lineWidth = s * .03; for (let i = 0; i < 4; i++) { x.beginPath(); x.moveTo(s * .14 + i * s * .05 + sv * s * .2, s * 1.08); x.lineTo(s * .14 + i * s * .05 + sv * s * .2, s * 1.2); x.stroke(); } }
     x.restore();
     // руки
-    const ua = (kid ? .62 : .85) * s, fa = (kid ? .58 : .8) * s; const aw = (kid ? .2 : .24) * s;
+    const ua = (kid ? .62 : .85) * s, fa = (kid ? .58 : .8) * s; const aw = (kid ? .18 : .21) * s;
     const H = o.hands || [[-.5, 1.5], [.5, 1.5]];
     const arms = [];
     for (let i = 0; i < 2; i++) { const sd = i ? 1 : -1; const sx = sd * sw * .62, sy = s * .14; const hx = H[i][0] * s, hy = H[i][1] * s;
@@ -220,6 +222,17 @@ const C = (() => {
     apple: (col) => (x, s) => { x.fillStyle = E.rgrad(x, s * .55, -s * .15, 0, s * .5, [[0, col[0]], [1, col[1]]]); x.beginPath(); x.ellipse(s * .6, 0, s * .42, s * .4, 0, 0, 6.283); x.fill(); },
     paper: (x, s) => { x.save(); x.rotate(-.3); x.fillStyle = '#efe9dc'; x.fillRect(-s * .1, -s * .6, s * .7, s * .9); x.restore(); },
   };
-  return { face, fig, hand, props, ik, P, blink: C_blink };
+  // рукав-конус от края кадра к кисти
+  function sleeve(x, x0, y0, x1, y1, w0, w1, col) { const a = Math.atan2(y1 - y0, x1 - x0), nx = -Math.sin(a), ny = Math.cos(a);
+    x.fillStyle = grad(x, x0 + nx * w0, y0 + ny * w0, x0 - nx * w0, y0 - ny * w0, [[0, pal(col[0], col[1], col[2] + 10)], [.5, pal(col[0], col[1], col[2])], [1, pal(col[0], col[1], col[2] - 14)]]);
+    x.beginPath(); x.moveTo(x0 + nx * w0, y0 + ny * w0); x.lineTo(x1 + nx * w1, y1 + ny * w1); x.arc(x1, y1, w1, a + 1.57, a - 1.57, true); x.lineTo(x0 - nx * w0, y0 - ny * w0); x.fill();
+    x.strokeStyle = pal(col[0], col[1], col[2] - 16); x.lineWidth = w1 * .5; x.beginPath(); x.moveTo(x1 + nx * w1 * .95 - Math.cos(a) * w1 * .3, y1 + ny * w1 * .95 - Math.sin(a) * w1 * .3); x.lineTo(x1 - nx * w1 * .95 - Math.cos(a) * w1 * .3, y1 - ny * w1 * .95 - Math.sin(a) * w1 * .3); x.stroke(); }
+  // плечи для крупного плана
+  function bust(x, cx, ny, s, col, o = {}) { x.fillStyle = rgrad(x, cx - s * .4, ny + s * .5, s * .1, s * 1.8, [[0, pal(col[0], col[1], col[2] + 8)], [1, pal(col[0], col[1], col[2] - 14)]]);
+    x.beginPath(); x.moveTo(cx - s * .2, ny); x.bezierCurveTo(cx - s * .5, ny + s * .1, cx - s * 1.2, ny + s * .15, cx - s * 1.4, ny + s * 1.2); x.lineTo(cx + s * 1.4, ny + s * 1.2); x.bezierCurveTo(cx + s * 1.2, ny + s * .15, cx + s * .5, ny + s * .1, cx + s * .2, ny); x.fill();
+    const sk = P[o.who || 'leo'].skin; x.fillStyle = pal(sk[0], sk[1] + 4, sk[2] - 12); x.beginPath(); x.moveTo(cx - s * .15, ny - s * .25); x.lineTo(cx + s * .15, ny - s * .25); x.lineTo(cx + s * .17, ny + s * .05); x.quadraticCurveTo(cx, ny + s * .15, cx - s * .17, ny + s * .05); x.fill();
+    x.strokeStyle = pal(col[0], col[1], col[2] - 18); x.lineWidth = s * .06; x.beginPath(); x.moveTo(cx - s * .22, ny + s * .02); x.quadraticCurveTo(cx, ny + s * .2, cx + s * .22, ny + s * .02); x.stroke();
+    if (o.scarf) { const c = o.scarf; x.fillStyle = pal(c[0], c[1], c[2]); x.beginPath(); x.ellipse(cx, ny + s * .04, s * .36, s * .14, 0, 0, 6.283); x.fill(); x.beginPath(); x.moveTo(cx + s * .05, ny + s * .1); x.lineTo(cx + s * .3, ny + s * .1); x.lineTo(cx + s * .34, ny + s * 1.2); x.lineTo(cx + s * .1, ny + s * 1.2); x.fill(); } }
+  return { face, fig, hand, props, ik, P, blink: C_blink, sleeve, bust };
 })();
 var C_blink;
