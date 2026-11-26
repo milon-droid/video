@@ -1,0 +1,110 @@
+{
+ "roles": {
+  "holod_dan": {
+   "instruct": "Man in his early thirties, hushed low voice close to the microphone, tense and frightened but controlled, breathy, slow careful delivery, American English, found-footage horror narrator speaking quietly at night so nobody wakes up.",
+   "ref": "Okay. It's three in the morning. I'm going to walk down the hallway now. Just... stay quiet."
+  },
+  "holod_jess": {
+   "instruct": "Young woman around thirty, just woke up, sleepy, scared trembling whisper, American English, quiet and fragile.",
+   "ref": "Hello? Is somebody there? Please... I can hear you breathing."
+  }
+ },
+ "lines": [
+  {
+   "id": "l01",
+   "role": "holod_dan",
+   "text": "Never point a thermal camera at a mirror."
+  },
+  {
+   "id": "l02",
+   "role": "holod_dan",
+   "text": "Every night at 3:14, my dog growls at the hallway.",
+   "say": "Every night at three fourteen, my dog growls at the hallway."
+  },
+  {
+   "id": "l03",
+   "role": "holod_dan",
+   "text": "So I bought this."
+  },
+  {
+   "id": "l04",
+   "role": "holod_dan",
+   "text": "It sees heat. Anything alive glows."
+  },
+  {
+   "id": "l05",
+   "role": "holod_dan",
+   "text": "Anything cold stays dark."
+  },
+  {
+   "id": "l06",
+   "role": "holod_dan",
+   "text": "And glass doesn't let heat through. It bounces it back. Like a mirror."
+  },
+  {
+   "id": "l07",
+   "role": "holod_dan",
+   "text": "Biscuit wouldn't come with me."
+  },
+  {
+   "id": "l08",
+   "role": "holod_dan",
+   "text": "The hallway was freezing. Someone had been touching the walls."
+  },
+  {
+   "id": "l08b",
+   "role": "holod_dan",
+   "text": "Then I looked down. Every step I took... left a cold print."
+  },
+  {
+   "id": "l09",
+   "role": "holod_dan",
+   "text": "Jess was asleep. My side of the bed... was cold."
+  },
+  {
+   "id": "l09b",
+   "role": "holod_dan",
+   "text": "She wasn't asleep. She was staring right at me."
+  },
+  {
+   "id": "l10",
+   "role": "holod_dan",
+   "text": "Then I saw it. At the end of the hall."
+  },
+  {
+   "id": "l11",
+   "role": "holod_dan",
+   "text": "It didn't move. Until I did."
+  },
+  {
+   "id": "l12",
+   "role": "holod_dan",
+   "text": "Then I remembered. Glass bounces heat."
+  },
+  {
+   "id": "l13",
+   "role": "holod_dan",
+   "text": "If that's a mirror..."
+  },
+  {
+   "id": "l14",
+   "role": "holod_dan",
+   "text": "...then that's me."
+  },
+  {
+   "id": "l15",
+   "role": "holod_jess",
+   "text": "Hello? Who's there?"
+  },
+  {
+   "id": "l16",
+   "role": "holod_dan",
+   "text": "Biscuit was never growling at the hallway."
+  },
+  {
+   "id": "l17",
+   "role": "holod_dan",
+   "text": "He was growling at me."
+  }
+ ]
+}

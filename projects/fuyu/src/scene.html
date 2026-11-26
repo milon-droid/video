@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:Ship;font-weight:800;src:url(../fonts/shippori-mincho-b1-latin-800-normal.woff2)}
+@font-face{font-family:Yuji;src:url(../fonts/yuji-syuku-102-400-normal.woff2);unicode-range:U+51AC}
+@font-face{font-family:Yuji;src:url(../fonts/yuji-syuku-105-400-normal.woff2);unicode-range:U+5341}
+@font-face{font-family:Yuji;src:url(../fonts/yuji-syuku-107-400-normal.woff2);unicode-range:U+5F71}
+@font-face{font-family:Yuji;src:url(../fonts/yuji-syuku-111-400-normal.woff2);unicode-range:U+4E8C}
+@font-face{font-family:Yuji;src:url(../fonts/yuji-syuku-119-400-normal.woff2);unicode-range:U+306E}
+@font-face{font-family:Yuji;src:url(../fonts/yuji-syuku-latin-400-normal.woff2);unicode-range:U+0000-00FF}
+body{margin:0;background:#000}canvas{display:block}</style></head><body><canvas id="c"></canvas>
+<script src="engine.js"></script><script src="chars.js"></script><script src="world.js"></script><script src="story.js"></script>
+<script>
+window.ready=(async()=>{await document.fonts.load('800 40px Ship');await document.fonts.load('400 40px Yuji','二十の冬影');})();
+window.renderFrame=t=>{E.clear();STORY.draw(t);E.present(t);};
+window.grab=()=>E.grab();
+</script></body></html>

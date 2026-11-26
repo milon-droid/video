@@ -1,0 +1,21 @@
+{
+ "roles": {
+  "vs_nora": {"instruct": "Teenage girl around sixteen, frightened hushed whisper close to the microphone, trembling breath, American English, telling a true scary story quietly at night.",
+              "ref": "I'm whispering because I don't want it to hear me. Please, just listen. This really happened."}
+ },
+ "lines": [
+  {"id": "v01", "role": "vs_nora", "text": "The storm took the power at 2 AM.", "say": "The storm took the power at two a.m."},
+  {"id": "v02", "role": "vs_nora", "text": "My phone was dead. All I had was Grandpa's old camera."},
+  {"id": "v03", "role": "vs_nora", "text": "Twelve shots left. And a flash that takes forever to charge."},
+  {"id": "v04", "role": "vs_nora", "text": "Grandpa had one rule about this house. It only moves in the dark."},
+  {"id": "v05", "role": "vs_nora", "text": "There was someone at the end of the hall."},
+  {"id": "v06", "role": "vs_nora", "text": "Every time the flash was charging... it got closer."},
+  {"id": "v07", "role": "vs_nora", "text": "I locked my door. Five shots left."},
+  {"id": "v08", "role": "vs_nora", "text": "The knocking wasn't coming from the door."},
+  {"id": "v09", "role": "vs_nora", "text": "Stay in the light. Stay in the light."},
+  {"id": "v10", "role": "vs_nora", "text": "Last one."},
+  {"id": "v11", "role": "vs_nora", "text": "Then the power came back."},
+  {"id": "v12", "role": "vs_nora", "text": "Grandpa's photo. Taken in this room. Nineteen sixty-one."},
+  {"id": "v13", "role": "vs_nora", "text": "He had twelve shots too."}
+ ]
+}

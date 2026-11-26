@@ -1,0 +1,23 @@
+{
+ "roles": {
+  "ul_announcer": {"instruct": "1930s American newsreel announcer, mid-Atlantic accent, very cheerful and theatrical, bright fast delivery, old radio showman, big smile in the voice.",
+                   "ref": "Hello, boys and girls! Welcome back to another jolly picture show, brought to you in glorious sound!"},
+  "ul_chorus": {"instruct": "Many voices whispering in unison, eerie, breathy, slow and creepy, like a crowd of children and adults whispering together in a dark room.",
+                "ref": "We are all very happy here. We are always smiling. Always."},
+  "ul_tippy": {"instruct": "Little cartoon kitten girl, high-pitched small child voice, terrified, trembling, about to cry.",
+               "ref": "Please, I don't want to play anymore. I want to go home."}
+ },
+ "lines": [
+  {"id": "a01", "role": "ul_announcer", "text": "Welcome to Sunnyville, where everybody smiles!"},
+  {"id": "a02", "role": "ul_announcer", "text": "And in Sunnyville, there's only one rule!"},
+  {"id": "t01", "role": "ul_tippy", "text": "Oh no... my ice cream!"},
+  {"id": "a03", "role": "ul_announcer", "text": "Uh-oh! Tippy forgot to smile."},
+  {"id": "c01", "role": "ul_chorus", "text": "Smile. Smile. Smile."},
+  {"id": "t02", "role": "ul_tippy", "text": "Mister Mayor? Your face..."},
+  {"id": "c02", "role": "ul_chorus", "text": "Found you."},
+  {"id": "a04", "role": "ul_announcer", "text": "That's better! Now everybody's happy!"},
+  {"id": "t03", "role": "ul_tippy", "text": "Somebody help me..."},
+  {"id": "a05", "role": "ul_announcer", "text": "Oh dear. Someone in the audience... stopped smiling."},
+  {"id": "c03", "role": "ul_chorus", "text": "Smile."}
+ ]
+}

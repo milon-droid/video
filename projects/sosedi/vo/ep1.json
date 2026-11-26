@@ -1,0 +1,75 @@
+{
+ "roles": {
+  "ss_leo": {
+   "instruct": "Young American man, about 25, warm soft voice with a smile, gentle humor, natural and intimate, close to the microphone.",
+   "ref": "So, this is my apartment. It is small, but it is mine.",
+   "f0": 125
+  },
+  "ss_mia": {
+   "instruct": "Young American woman, about 24, bright witty voice, playful and teasing, natural, close to the microphone.",
+   "ref": "Oh, come on. You call that music?",
+   "f0": 220
+  },
+  "ss_oleo": {
+   "instruct": "American man about 75, warm soft slightly raspy voice, tender and loving, slow, close to the microphone.",
+   "ref": "We have been here a long, long time, my dear.",
+   "f0": 110
+  },
+  "ss_omia": {
+   "instruct": "American woman about 74, warm gentle voice, playful and tender, a smile in the voice, close to the microphone.",
+   "ref": "Oh, you old fool. I know.",
+   "f0": 200
+  },
+  "ss_leo_c": {
+   "instruct": "",
+   "ref": "She lives right above me. We've never met.",
+   "f0": 130
+  }
+ },
+ "lines": [
+  {
+   "id": "l1",
+   "role": "ss_leo",
+   "text": "She lives right above me. We've never met.",
+   "emo": "Quiet, amused, a little dreamy."
+  },
+  {
+   "id": "m1",
+   "role": "ss_mia",
+   "text": "You're terrible at guitar.",
+   "emo": "Teasing, laughing, flirty."
+  },
+  {
+   "id": "o1",
+   "role": "ss_oleo",
+   "text": "Fifty years ago... you knocked first.",
+   "emo": "Tender, smiling, nostalgic, slow with a pause."
+  },
+  {
+   "id": "om1",
+   "role": "ss_omia",
+   "text": "And you knocked back.",
+   "emo": "Warm, loving, a soft laugh."
+  },
+  {
+   "id": "l2",
+   "role": "ss_leo_c",
+   "text": "Every night, we talked like this."
+  },
+  {
+   "id": "l3",
+   "role": "ss_leo_c",
+   "text": "Play the one about the moon."
+  },
+  {
+   "id": "l4",
+   "role": "ss_leo_c",
+   "text": "Two knocks. That's a yes!"
+  },
+  {
+   "id": "l5",
+   "role": "ss_leo_c",
+   "text": "You're terrible at knocking."
+  }
+ ]
+}

@@ -4,7 +4,7 @@
   const W = E.W;
   // полоса толстого песка внизу экрана (зона текста) — экранные координаты
   E.band = function (c, y0 = 975, a = 1) {
-    c.save(); c.setTransform(1, 0, 0, 1, 0, 0);
+    c.save(); c.setTransform(E.RS, 0, 0, E.RS, 0, 0);
     const g = c.createLinearGradient(0, y0 - 60, 0, y0 + 50);
     g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, `rgba(255,255,255,${a})`);
     c.fillStyle = g; c.fillRect(-10, y0 - 60, W + 20, 400);
