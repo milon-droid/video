@@ -30,4 +30,4 @@ audio/score.py — микшер: записи audio/rec (Freesound CC0, CREDITS.
 Рендер: node render.cjs render/vit_raw.mp4 (~?) → python3 ../../tools/master.py render/vit_raw.mp4 render/vitrazh.mp4 --audio audio/mix.wav; лист: node stills.cjs out.png t…
 Шрифты: Cinzel, Cormorant Garamond (OFL). Подпись: «A stained glass window is just broken glass someone refused to throw away. 🪟» #stainedglass #animation #shortfilm
 ## Статус
-- v1 (2026-11-26): движок, 12 планов, звук, рендер 720p — сдаётся на отзыв
+- v1 (2026-11-26): сдан на отзыв, 720p 59 с, −14.4 LUFS, пик −1.8 dBTP; превью PIECES_720.mp4 (8 МБ)
