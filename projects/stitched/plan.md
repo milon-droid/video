@@ -29,4 +29,4 @@ audio/score.py — синтез (шкатулка, пианино, пэд, пу�
 Рендер: node render.cjs render/stitched_raw.mp4 (~10 мин, WORKERS=4) → python3 ../../tools/master.py render/stitched_raw.mp4 render/stitched.mp4 --audio audio/mix.wav; лист: SCALE=.4 node stills.cjs out.png t…
 Шрифты: Fredoka, Caveat Brush (OFL), Inter. Подпись: «If it feels too perfect — pull the thread. 🧵» #animation #embroidery #trumanshow #shortfilm
 ## Статус
-- v1 (2026-11-26): собран, рендер 720p.
+- v1 (2026-11-26): сдан на отзыв, 720p 57.5 с, −14.0 LUFS, пик −2.5 dBTP; превью STITCHED_720.mp4 (11 МБ, не в git).
