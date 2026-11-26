@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:Fr;font-weight:700;src:url(../fonts/fraunces-latin-700-normal.woff2)}
+@font-face{font-family:Fr;font-weight:900;src:url(../fonts/fraunces-latin-900-normal.woff2)}
+@font-face{font-family:Hand;src:url(../fonts/caveat-brush-latin-400-normal.woff2)}
+body{margin:0;background:#000}canvas{display:block}</style></head><body><canvas id="c"></canvas>
+<script src="paint.js"></script><script src="chars.js"></script><script src="world.js"></script><script src="story.js"></script>
+<script>
+const EP=+(new URLSearchParams(location.search).get('ep')||1);
+window.ready=(async()=>{await document.fonts.load('900 40px Fr');await document.fonts.load('700 40px Fr');await document.fonts.load('40px Hand');STORY.init(EP);})();
+window.renderFrame=t=>{E.clear();STORY.draw(t);E.present(t);};
+window.grab=()=>E.grab();
+</script></body></html>
