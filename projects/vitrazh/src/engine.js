@@ -269,10 +269,10 @@ void main(){
 // осколки (переход): треугольники с текстурой снимка
 const VS3=`#version 300 es
 in vec3 p;in vec2 t;in float sh;out vec2 uv;out float s;uniform vec2 res;
-void main(){uv=t;s=sh;float f=1.6;vec2 c=vec2(.5*res.x,.5*res.y);vec2 q=(p.xy-c)*f/(f-p.z/res.y)+c;gl_Position=vec4(q/res*2.-1.,0.,1.);gl_Position.y*=-1.;}`;
+void main(){uv=t;s=sh;float f=2.4;vec2 c=vec2(.5*res.x,.5*res.y);vec2 q=(p.xy-c)*f/(f-min(p.z/res.y,1.6))+c;gl_Position=vec4(q/res*2.-1.,0.,1.);gl_Position.y*=-1.;}`;
 const FS3=`#version 300 es
 precision highp float;in vec2 uv;in float s;out vec4 o;uniform sampler2D SN;
-void main(){vec3 c=texture(SN,vec2(uv.x,1.-uv.y)).rgb;c=c*(.55+.6*s)+vec3(1.,.95,.85)*pow(max(s-.75,0.)*4.,3.)*.6;o=vec4(c,1.);}`;
+void main(){vec3 c=textureLod(SN,vec2(uv.x,1.-uv.y),0.).rgb;c=c*(.55+.6*s)+vec3(1.,.95,.85)*pow(max(s-.75,0.)*4.,3.)*.6;o=vec4(c,1.);}`;
 const P1=prog(VQ,FS1),P2=prog(VQ,FS2),P3=prog(VS3,FS3);
 const qb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,qb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
 const vao=gl.createVertexArray();gl.bindVertexArray(vao);const lp=gl.getAttribLocation(P1,'p');gl.enableVertexAttribArray(lp);gl.vertexAttribPointer(lp,2,gl.FLOAT,false,0,0);
@@ -322,7 +322,7 @@ E.shards=(cx,cy,seed=3)=>{ // сетка: лучи от удара × кольц
 const drawShards=(sh)=>{const{cx,cy,u}=sh;const list=sh.list||(sh.list=E.shards(cx,cy,sh.seed||3));const data=[];
   for(const s of list){const dx=s.c[0]-cx,dy=s.c[1]-cy,dist=Math.hypot(dx,dy)+1;const del=Math.min(.25,dist/4000);const k=E.cl((u-del)/(1-del));if(sh.hold&&dist>sh.hold&&u<1){}
     const sp=(1200+s.r*900)/Math.sqrt(dist/200+1);const tt=k*1.2;
-    const mx=dx/dist*sp*tt*(sh.out||1)*.6,my=dy/dist*sp*tt*.5+1800*tt*tt*(sh.grav==null?1:sh.grav),mz=(sh.toward||900)*tt*(1+s.r);
+    const mx=dx/dist*sp*tt*(sh.out||1)*.6,my=dy/dist*sp*tt*.5+1800*tt*tt*(sh.grav==null?1:sh.grav),mz=(sh.toward||650)*tt*(1+s.r*.6);
     const ax=(E.rnd(s.k*3.1)-.5)*9*tt,ay=(E.rnd(s.k*4.7)-.5)*9*tt,az=(E.rnd(s.k*5.9)-.5)*5*tt;
     const ca=Math.cos(ax),sa=Math.sin(ax),cb=Math.cos(ay),sbb=Math.sin(ay),cc=Math.cos(az),sc=Math.sin(az);
     const rotv=(x,y,z)=>{let y1=y*ca-z*sa,z1=y*sa+z*ca;let x2=x*cb+z1*sbb,z2=-x*sbb+z1*cb;return[x2*cc-y1*sc,x2*sc+y1*cc,z2];};

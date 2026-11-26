@@ -81,9 +81,9 @@ const S3=(t,lt)=>{Wd.mood('day');E.cam={x:K(lt,[[0,560],[4.6,530]]),y:K(lt,[[0,1
   for(let i=0;i<16;i++)Wd.shard(150+rnd(i*3+1)*800,1360+rnd(i*5+2)*240,14+rnd(i*7)*18,Wd.SHC[i%8],rnd(i)*6,i+40,.3+.7*Math.max(0,Math.sin(lt*2.5+i)));
   // стекольщик (по пояс) поднимает красный осколок к солнцу и смотрит сквозь него на мальчика
   const lift=eio((lt-.9)/1.1);const look=eio((lt-2.3)/.6);
-  const shardHold=()=>{if(lift>0.02){E.xf(-4,34,0,1,()=>{const p=E.P([[-34,-44],[30,-52],[42,10],[2,48],[-40,14]]);piece(p,'#c80c10',{seed:.9,lw:7});E.emit(p,.05+.12*look);});}};
+  const shardHold=()=>{if(lift>0.02){E.xf(-4,30,0,.62,()=>{const p=E.P([[-34,-44],[30,-52],[42,10],[2,48],[-40,14]]);piece(p,'#c80c10',{seed:.9,lw:7});E.emit(p,.05+.12*look);});}};
   C.fig({x:320,y:1560,kind:'old',s:2.25,lean:K(lt,[[0,.32],[.9,.32],[2.0,.06]]),legL:[.1,0],legR:[-.1,0],
-    armL:[K(lt,[[0,.5],[.9,.6],[2.0,1.75]]),K(lt,[[0,.4],[.9,.5],[2.0,1.25]])],armR:[.2,.4],hold:shardHold,
+    armL:[K(lt,[[0,.5],[.9,.6],[2.0,1.2]]),K(lt,[[0,.4],[.9,.5],[2.0,2.3]])],armR:[.2,.4],hold:shardHold,
     head:{mouth:look>.5?'smile':'flat',open:.15,look:[K(lt,[[0,.2],[1.8,.4],[2.4,.9]]),K(lt,[[0,.7],[1.6,-.5],[2.4,0]])],blink:blinkAt(lt,[.6,2.0,3.9]),brow:-.15*look}});
   if(look>0)E.emitDot(560,1000,120*look,.18*look);
   // мальчик съёжился → открывает глаза
@@ -111,7 +111,7 @@ const S4=(t,lt)=>{Wd.mood('eve');E.cam={x:K(lt,[[0,520],[3.8,560]]),y:1000,z:K(l
   Wd.box(700,1400,240,150,1);
   for(let i=0;i<Math.min(n,8);i++)Wd.shard(740+i*22,1270,13,Wd.SHC[i%8],i,i+120,.6);
   const held=()=>{if(ph>.3&&ph<.85)Wd.shard(0,36,14,Wd.SHC[(n+3)%8],n,n+80,.8);};
-  C.fig({x:500,y:1400,kind:'boy',s:2.1,lean:.2+reach*.45,legL:[.2,0],legR:[-.1,0],
+  C.fig({x:500,y:1350,kind:'boy',s:2.1,lean:.12+reach*.3,legL:[.2,0],legR:[-.1,0],
     armL:[lerp(.5,.15,reach)+(ph>.45?lerp(0,1.0,eio((ph-.45)/.35)):0),lerp(.7,.05,reach)],armR:[.35,1.2],hold:held,
     head:{mouth:'sad',look:[lerp(.8,.2,reach),lerp(-.1,.8,reach)],blink:blinks(lt,2),brow:-.3}});
   const fg=E.P([[-300,1390],[400,1370],[1380,1400],[1380,2300],[-300,2300]]);E.mosaic(fg,[-300,1360,1680,900],130,(x,y,i)=>E.jit('#5a4a42',i,.25),{split:.15,seed:48,ky:.55});
