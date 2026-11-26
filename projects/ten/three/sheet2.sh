@@ -1,0 +1,3 @@
+#!/bin/bash
+# Лист превью серии 2: bash sheet2.sh out.jpg t1 t2 ...
+ENTRY=ep2 BUNDLE=bundle-ep2 PAGE=index-ep2.html bash "$(dirname "$0")/sheet.sh" "$@"

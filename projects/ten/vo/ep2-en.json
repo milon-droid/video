@@ -1,0 +1,238 @@
+{
+ "roles": {
+  "senya_en": {
+   "instruct": "Young man around 20, energetic and fast-talking, sarcastic Gen Z storyteller, casual American English, bright youthful timbre, expressive and a little dramatic, like a viral TikTok narrator.",
+   "ref": "Okay, so this is gonna sound insane, but my shadow literally walked out on me last night. Like, packed up and left."
+  },
+  "shadow2_en": {
+   "instruct": "Playful, cheeky young male voice, early twenties, smooth and charismatic, mischievous grin in the voice, quick comedic timing, clear natural delivery, slightly higher pitch than average, like a cocky best friend.",
+   "ref": "Relax, man. I'm not gone gone. I'm just living a little. You should try it sometime, seriously."
+  },
+  "narrator_en": {
+   "instruct": "Deep, calm, resonant adult male narrator, movie-trailer voice, slow, authoritative and mysterious, low pitch, clear diction.",
+   "ref": "In a world where shadows have rules, only one thing matters. Never lose yours."
+  },
+  "mia_en": {
+   "instruct": "Young woman in her early twenties, warm and witty, a little shy but playful, bright smile in the voice, quick natural delivery, clear casual American English.",
+   "ref": "Okay, I know this sounds weird, but I swear I'm usually way less awkward than this. Usually."
+  }
+ },
+ "lines": [
+  {
+   "id": "a1",
+   "role": "senya_en",
+   "text": "My shadow has a crush.",
+   "say": "My shadow has a crush."
+  },
+  {
+   "id": "a2",
+   "role": "senya_en",
+   "text": "Guess who has to ask her out.",
+   "say": "Guess who has to ask her out."
+  },
+  {
+   "id": "a3",
+   "role": "shadow2_en",
+   "text": "Move, Sam!",
+   "say": "Move, Sam!"
+  },
+  {
+   "id": "b1",
+   "role": "senya_en",
+   "text": "Term five: introduce him to her owner.",
+   "say": "Term five. Introduce him... to her owner."
+  },
+  {
+   "id": "b2",
+   "role": "shadow2_en",
+   "text": "Today. Or I quit again.",
+   "say": "Today. Or I quit again."
+  },
+  {
+   "id": "c1",
+   "role": "shadow2_en",
+   "text": "Hat? Or no hat?",
+   "say": "Hat? ...Or no hat?"
+  },
+  {
+   "id": "c2",
+   "role": "senya_en",
+   "text": "Dude, you're a shadow. Everything you wear is black.",
+   "say": "Dude. You're a shadow. Everything you wear is black."
+  },
+  {
+   "id": "c3",
+   "role": "shadow2_en",
+   "text": "Black is slimming.",
+   "say": "Black is slimming."
+  },
+  {
+   "id": "d1",
+   "role": "narrator_en",
+   "text": "Rule number two. In daylight, a shadow copies its owner.",
+   "say": "Rule number two. In daylight... a shadow copies its owner."
+  },
+  {
+   "id": "d2",
+   "role": "narrator_en",
+   "text": "When anyone's looking.",
+   "say": "When anyone's looking."
+  },
+  {
+   "id": "e1",
+   "role": "shadow2_en",
+   "text": "That's her. Ponytail. Ten out of ten.",
+   "say": "That's her. Ponytail. Ten out of ten."
+  },
+  {
+   "id": "e2",
+   "role": "senya_en",
+   "text": "Which one?",
+   "say": "Which one?"
+  },
+  {
+   "id": "e3",
+   "role": "shadow2_en",
+   "text": "Both, dumbass. Go!",
+   "say": "Both, dumbass. Go!"
+  },
+  {
+   "id": "f1",
+   "role": "senya_en",
+   "text": "Hi. Is this seat... taken?",
+   "say": "Hi. Is this seat... taken?"
+  },
+  {
+   "id": "f2",
+   "role": "mia_en",
+   "text": "It is now.",
+   "say": "It is now."
+  },
+  {
+   "id": "g1",
+   "role": "shadow2_en",
+   "text": "Lean in.",
+   "say": "Lean in."
+  },
+  {
+   "id": "g2",
+   "role": "shadow2_en",
+   "text": "Closer...",
+   "say": "Closer..."
+  },
+  {
+   "id": "g3",
+   "role": "senya_en",
+   "text": "Shit! Sorry!",
+   "say": "Shit! Sorry!"
+  },
+  {
+   "id": "h1",
+   "role": "shadow2_en",
+   "text": "Now. Her hand.",
+   "say": "Now. Her hand."
+  },
+  {
+   "id": "i1",
+   "role": "mia_en",
+   "text": "Stop it! He'll notice!",
+   "say": "Stop it! He'll notice!"
+  },
+  {
+   "id": "i2",
+   "role": "senya_en",
+   "text": "Did your shadow just tell you to touch my hand?",
+   "say": "Wait. Did your shadow just tell you to touch my hand?"
+  },
+  {
+   "id": "i3",
+   "role": "mia_en",
+   "text": "...Did yours?",
+   "say": "...Did yours?"
+  },
+  {
+   "id": "j1",
+   "role": "mia_en",
+   "text": "Mine dragged me here. Three blocks.",
+   "say": "Mine dragged me here. Three blocks."
+  },
+  {
+   "id": "j2",
+   "role": "senya_en",
+   "text": "Mine shoved me through the door.",
+   "say": "Mine shoved me through the door."
+  },
+  {
+   "id": "j3",
+   "role": "mia_en",
+   "text": "I'm Mia.",
+   "say": "I'm Mia."
+  },
+  {
+   "id": "j4",
+   "role": "senya_en",
+   "text": "Sam.",
+   "say": "Sam."
+  },
+  {
+   "id": "k1",
+   "role": "senya_en",
+   "text": "We talked for three hours.",
+   "say": "We talked for three hours."
+  },
+  {
+   "id": "k2",
+   "role": "senya_en",
+   "text": "The shadows never stopped dancing.",
+   "say": "The shadows... never stopped dancing."
+  },
+  {
+   "id": "l1",
+   "role": "shadow2_en",
+   "text": "Sam. Lean. LEAN!",
+   "say": "Sam. Lean. Lean!"
+  },
+  {
+   "id": "l2",
+   "role": "shadow2_en",
+   "text": "No. No no no no!",
+   "say": "No. No, no, no, no!"
+  },
+  {
+   "id": "m1",
+   "role": "mia_en",
+   "text": "Sam? Next time...",
+   "say": "Sam? Next time..."
+  },
+  {
+   "id": "m2",
+   "role": "mia_en",
+   "text": "...without them.",
+   "say": "...without them."
+  },
+  {
+   "id": "m3",
+   "role": "shadow2_en",
+   "text": "Without WHO?!",
+   "say": "Without WHO?!"
+  },
+  {
+   "id": "n1",
+   "role": "senya_en",
+   "text": "Stargazing. Zero light. Zero shadows.",
+   "say": "Stargazing. Zero light. Zero shadows."
+  },
+  {
+   "id": "n2",
+   "role": "shadow2_en",
+   "text": "You sneaky little shit.",
+   "say": "You sneaky... little shit."
+  },
+  {
+   "id": "o1",
+   "role": "senya_en",
+   "text": "Should I go... without him?",
+   "say": "Should I go... without him?"
+  }
+ ]
+}
