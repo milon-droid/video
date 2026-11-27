@@ -31,7 +31,7 @@ fi
 if [ "$what" = all ] || [ "$what" = kokoro ]; then
   V=~/.venvs/kokoro
   [ -x $V/bin/python ] || { uv venv -q -p 3.11 $V; VIRTUAL_ENV=$V uv pip install -q torch --index-url https://download.pytorch.org/whl/cpu;
-    VIRTUAL_ENV=$V uv pip install -q kokoro soundfile huggingface_hub ruaccent https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl; }
+    VIRTUAL_ENV=$V uv pip install -q kokoro soundfile huggingface_hub ruaccent faster-whisper librosa https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl; }
   [ -f ~/models/kokoro-ru/kokoro-ru-v2-dima.pth ] || $V/bin/python -c "from huggingface_hub import snapshot_download as s; s('zaakirio/kokoro-ru', local_dir='$HOME/models/kokoro-ru', allow_patterns=['*.py','*.json','*.pth','voices/*','espeak-data/*'])"
   echo "kokoro: ок"
 fi
