@@ -2,7 +2,7 @@
 // Реплика: [id, план, время в плане]. Реальные длительности — ep2-durs.json (из wav); наложения раздвигаются.
 // часть: main (основная, без клиффхэнгера) или вариант концовки A/B/C (window.EP2_PART)
 const PARTS = {
-  main: [['H', 5.0], ['FB', 4.4], ['S2', 6.6], ['S2B', 8.0], ['CAT', 4.6], ['S4', 6.4], ['SS', 6.8], ['S1', 3.0], ['S5', 6.0], ['S6', 4.8], ['S7', 5.6], ['S8', 5.0], ['S9', 6.6], ['S10', 8.0], ['S11', 9.0], ['S12', 6.2], ['S13', 5.6]],
+  main: [['H', 4.6], ['FB', 4.0], ['S2', 6.6], ['S2B', 8.0], ['CAT', 4.3], ['S4', 6.4], ['SS', 6.8], ['S1', 3.0], ['S5', 6.0], ['S6', 4.8], ['S7', 5.6], ['S8', 4.3], ['S9', 5.5], ['S10', 8.0], ['S11', 8.2], ['S12', 6.2], ['S13', 5.1]],
   A: [['XA', 8.0], ['CA', 3.6]], B: [['XB', 8.0], ['CB', 3.6]], C: [['XC', 8.0], ['CC', 3.6]],
 };
 const PART = (typeof window !== 'undefined' && window.EP2_PART) || (typeof process !== 'undefined' && process.env.EP2_PART) || 'main';
@@ -34,6 +34,6 @@ export const CUES = [
 const TAIL = { S1: .15, XA: 1.0, XB: 1.0, XC: 1.0, S4: .6, S9: 1.7, S10: 3.4, S13: .7, S14: 1.4, H: .9, SS: .7 };
 export function build(durs) { const AT = {}, starts = {}, shots = []; let acc = 0, end = 0;
   for (const [id, base] of SHOTS) { starts[id] = acc; let last = 0;
-    for (const [cid, sh, t] of CUES) if (sh === id && SHOTS.some(x => x[0] === sh)) { const t0 = Math.max(acc + t, end + .12); AT[cid] = t0; end = t0 + (durs[cid] ?? 1.2); last = end; }
+    for (const [cid, sh, t] of CUES) if (sh === id && SHOTS.some(x => x[0] === sh)) { const t0 = Math.max(acc + t, end + .06); AT[cid] = t0; end = t0 + (durs[cid] ?? 1.2); last = end; }
     const d = Math.max(base, last ? last - acc + (TAIL[id] ?? .45) : 0); shots.push([id, +d.toFixed(3)]); acc += d; }
   return { AT, starts, TOTAL: acc, shots }; }

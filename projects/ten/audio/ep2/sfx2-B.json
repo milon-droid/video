@@ -4,11 +4,11 @@
 "type": "lib",
 "id": "oc-AMBHome_RoomTone_LOOP_01",
 "gain": 0.3,
-"dur": 8.31,
+"dur": 8.69,
 "align": "start"
 },
 {
-"t": 2.75,
+"t": 2.415,
 "type": "lib",
 "id": "pop-large-in",
 "gain": 0.4
@@ -26,21 +26,21 @@
 "align": "start"
 },
 {
-"t": 6.6,
+"t": 7.022,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 7.91,
+"t": 8.294,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.7,
 "align": "start"
 },
 {
-"t": 8.51,
+"t": 8.894,
 "type": "lib",
 "id": "time-clock-fast",
 "gain": 0.2,

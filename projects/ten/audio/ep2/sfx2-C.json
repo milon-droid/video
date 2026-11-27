@@ -4,32 +4,32 @@
 "type": "lib",
 "id": "oc-AMBHome_RoomTone_LOOP_01",
 "gain": 0.3,
-"dur": 8.04,
+"dur": 8.34,
 "align": "start"
 },
 {
-"t": 3.19,
+"t": 2.713,
 "type": "lib",
 "id": "props-doorbell",
 "gain": 0.0
 },
 {
-"t": 3.19,
+"t": 2.713,
 "type": "tick",
 "gain": 0.4
 },
 {
-"t": 3.49,
+"t": 3.013,
 "type": "tick",
 "gain": 0.4
 },
 {
-"t": 3.79,
+"t": 3.313,
 "type": "tick",
 "gain": 0.4
 },
 {
-"t": 4.09,
+"t": 3.613,
 "type": "tick",
 "gain": 0.4
 },
@@ -47,14 +47,14 @@
 "gain": 0.4
 },
 {
-"t": 7.64,
+"t": 7.94,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.7,
 "align": "start"
 },
 {
-"t": 8.24,
+"t": 8.54,
 "type": "lib",
 "id": "time-clock-fast",
 "gain": 0.2,
