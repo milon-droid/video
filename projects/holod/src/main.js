@@ -52,9 +52,9 @@ const SHOTS = [
 ];
 let T0 = 0; const VO = [];
 for (const s of SHOTS) {
-  let t = s.lead; s.t0 = T0;
+  let t = s.lead || 0; s.t0 = T0;
   s.lines.forEach((id, i) => { if (i) t += s.gap || .3; VO.push({ id, t: T0 + t, d: D(id), text: LINES.lines.find(l => l.id === id).text, role: LINES.lines.find(l => l.id === id).role }); s['v' + i] = t; t += D(id); });
-  s.d = Math.max(s.min, t + s.tail); T0 += s.d;
+  s.d = Math.max(s.min, t + (s.tail || 0)); T0 += s.d;
 }
 export const TOTAL = T0;
 window.VO_TIMELINE = VO; window.SHOTS = SHOTS.map(s => ({ id: s.id, t0: s.t0, d: s.d }));
