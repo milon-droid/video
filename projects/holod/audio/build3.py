@@ -63,7 +63,7 @@ def loop(x, n): return np.tile(x, n // len(x) + 1)[:n]
 t = np.arange(N) / R
 def curve(points): xs, ys = zip(*points); return np.interp(t, xs, ys)
 Mz = V('M') + D['l14']
-tens = curve([(0, .4), (S('H') + 2.9, .4), (S('A'), .3), (S('E'), .4), (S('F'), .6), (S('I'), .85), (S('L'), 1.0), (Mz + .1, 1.0), (Mz + .25, .05), (S('N') + .9, .15), (S('O'), .8), (S('Q'), .6), (S('Q') + 1.5, .5), (S('Q') + 1.8, 0), (TOTAL, 0)])
+tens = curve([(0, .4), (S('H') + 2.9, .4), (S('A'), .3), (S('E'), .4), (S('F'), .6), (S('I'), .85), (S('L'), 1.0), (Mz + .1, 1.0), (Mz + .25, .05), (S('N') + .9, .15), (S('O'), .8), (S('Q'), .6), (S('Q') + 1.1, .5), (S('Q') + 1.3, 0), (TOTAL, 0)])
 drone = loop(DRONE, N) * .14; amb = loop(AMB, N) * .05
 whine = tone(N, 11800) * .0012
 L += drone * tens + amb + whine; Rr += np.roll(drone, 2400) * tens + np.roll(amb, 4800) + whine
@@ -78,11 +78,13 @@ def riser(t0, dur, g=.25):
     n = int(dur * R); x = X(n); y = band(n, 300, 6000) * (x / dur) ** 2.5 + np.sin(2 * np.pi * np.cumsum(200 + 900 * (x / dur) ** 2) / R) * (x / dur) ** 2 * .3; put(y * g, t0)
 
 # ===== ХУК =====
-put(CORRUPT * .25, 0.0); boom(0.02, .6)
-put(seg(STING_M, 0, 4, .002, 1.5) * .5, 2.45)
-put(seg(GROWL2, 3, 6.6, .3, .4) * .3, 0.2, 1, .3)
-put(CORRUPT * .6, 2.45); boom(2.45, 1.1, 42); put(seg(WHISP_R, 0, 1.5, .05, .4) * .4, 2.4, 1, -.3)
-blip(.3, 2200, .08)
+SCR0 = np.zeros(int(.6 * R)); a0_ = seg(SCREAM_D, .05, .65, .001, .1); b0_ = seg(SCREAM_M, 0, .6, .001, .1); SCR0[:len(a0_)] += a0_ * .9; SCR0[:len(b0_)] += b0_ * .8
+SCR0 = np.tanh(SCR0 * 2.2) * .8; put(SCR0[:int(.4 * R)] * env(int(.4 * R), .001, .05) * 1.3, 0.0)
+put(seg(STING_M, 0, .4, .0005, .05) * .9, 0.0); boom(0.0, 1.0, 36); n = int(.38 * R); put(band(n, 80, 9000) * env(n, .0005, .04) * .8, 0.0); put(CORRUPT[:int(.4 * R)] * .9, .02)
+put(seg(STING_M, 0, 4, .002, 1.5) * .5, 2.78)
+put(seg(GROWL2, 3, 6.2, .2, .4) * .3, 0.45, 1, .3)
+put(CORRUPT * .6, 2.78); boom(2.78, 1.1, 42); put(seg(WHISP_R, 0, 1.5, .05, .4) * .4, 2.73, 1, -.3)
+blip(.6, 2200, .08)
 
 # ===== КАМЕРА: включение, NUC =====
 NUC = [S('B') + .35, S('F') + .15]
@@ -127,9 +129,9 @@ put(seg(FLOOR, 1, 3, .1, .4) * .35, S('N') + .2, 1, -.4)
 
 # ===== ФИНАЛ: пустое зеркало → затемнение, «03:14», почти тишина (зритель думает — конец) → ВНЕЗАПНЫЙ скример =====
 q = S('Q')
-put(seg(BREATH2, 0, 1.6, .2, .4) * .25, q + .2, 1, 0)
-blip(q + 1.75, 1200, .05)                                                           # REC выключился
-n = int((QS - 1.8) * R); put(tone(n, 6200) * .004 * env(n, .5, .1), q + 1.8)       # тонкий звон в тишине
+put(seg(BREATH2, 0, 1.1, .2, .3) * .25, q + .2, 1, 0)
+blip(q + 1.25, 1200, .05)                                                           # REC выключился
+n = int((QS - 1.3) * R); put(tone(n, 6200) * .004 * env(n, .5, .1), q + 1.3)       # тонкий звон в тишине
 qs = q + QS
 SCR = np.zeros(int(2.0 * R)); a_ = seg(SCREAM_D, .05, 2.0, .001, .3); b_ = seg(SCREAM_M, 0, 2.0, .001, .3)
 SCR[:len(a_)] += a_ * .9; SCR[:len(b_)] += b_ * .8

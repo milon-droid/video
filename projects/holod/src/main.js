@@ -32,7 +32,7 @@ fh.visible = false;
 // --- монтаж: длительность плана = реплики + запас (реплики из durations.json) ---
 const D = id => DUR[id] ?? 2.5;
 const SHOTS = [
-  { id: 'H', lines: ['l01'], lead: .15, tail: .75, min: 3.2 },
+  { id: 'H', lines: ['l01'], lead: .5, tail: .45, min: 3.2 },
   { id: 'A', lines: ['l02'], lead: .45, tail: .5, min: 4.2 },
   { id: 'B', lines: ['l03'], lead: .35, tail: .65, min: 2.4 },
   { id: 'C', lines: ['l04', 'l05'], lead: .2, gap: .35, tail: .45, min: 4.6 },
@@ -48,7 +48,7 @@ const SHOTS = [
   { id: 'N', lines: ['l15'], lead: 1.1, tail: .7, min: 3.6 },
   { id: 'O', lines: ['l16'], lead: .55, tail: .5, min: 3.6 },
   { id: 'P', lines: ['l17'], lead: 1.4, tail: .5, min: 3.8 },
-  { id: 'Q', lines: [], min: 4.75 },
+  { id: 'Q', lines: [], min: 2.95 },
 ];
 let T0 = 0; const VO = [];
 for (const s of SHOTS) {
@@ -60,7 +60,7 @@ export const TOTAL = T0;
 window.VO_TIMELINE = VO; window.SHOTS = SHOTS.map(s => ({ id: s.id, t0: s.t0, d: s.d }));
 const SH = Object.fromEntries(SHOTS.map(s => [s.id, s]));
 // NUC: камера калибруется — кадр замирает, щелчок, серое поле
-const QS = 3.9; // финал: ложный конец «03:14», затем внезапный скример
+const QS = 2.2; // финал: ложный конец «03:14», затем внезапный скример
 // подсознательные вспышки силуэта (план, локальное время; отрицательное — от конца плана) и короткие сбои картинки
 const MICRO = [8.9, 17.3, 23.6, 29.0, 35.8, 41.2, 50.0, 62.3]; // короткие сбои картинки (с)
 const GFL = [['C', .95], ['E', -.65], ['F', .9], ['G', 2.2]];
@@ -83,6 +83,20 @@ function syncMe(t, ph = 0, walkAmp = 0, armL = null, o = {}) {
   const pos = camera.position.clone().addScaledVector(fh2, -.12).setY(0);
   me.dev.visible = false; me.lens.visible = false;
   poseHuman(me, { pos, yaw, headPitch: o.pitch || 0, headRoll: o.roll || 0, walk: ph, walkAmp, t: 0, armR: null, armL: armL || null });
+}
+// СКРИМЕР: дёргающееся лицо в упор, рот вывихнут, руки тянутся к объективу, палитра мигает (w — время от начала удара)
+function screamer(w, p, u, len = .55) {
+  hideAll(); me.g.visible = false; dog.g.visible = false; jb.visible = false; jess.g.visible = false; ghost.g.visible = true;
+  cam(p, p.clone().add(V3(0, .12, -2)), u, { fov: 50, shake: 6 });
+  const jt = (a, f) => noise(a, w * f + p.z * 3);
+  const gz = lerp(-8.25, -7.95, clamp(w / .12)) + (p.z + 7.32);
+  const pr = poseHuman(ghost, { pos: V3(p.x + jt(1, 30) * .03, 0, gz), yaw: jt(2, 26) * .25, t: 0, headRoll: .3 + jt(3, 34) * .28, headPitch: -.25 + jt(4, 29) * .25, lean: 0,
+    armL: V3(p.x - .3 + jt(5, 20) * .05, 1.6, p.z - .28), armR: V3(p.x + .3 + jt(6, 22) * .05, 1.52, p.z - .28) });
+  ghost.balls.head.scale.set(.86, 1.55, 1.0); ghost.balls.hairCap.visible = false;
+  holes[0].position.copy(pr.hp2(-.034, .05, .085)); holes[1].position.copy(pr.hp2(.034, .044, .085)); holes[2].position.copy(pr.hp2(0, -.12, .07));
+  holes[0].scale.set(.9, 1.5, .9); holes[1].scale.set(.8, 1.3, .9); holes[2].scale.set(1.0, 3.6 + jt(7, 40) * .6, .8);
+  const on = w < len;
+  return { lo: 3, hi: 28, iso: 9, isoK: 1, pal: Math.floor(w * 18) % 3 === 1 ? 1 : 0, zoom: 1.0 + w * .5 + (Math.floor(w * 24) % 2) * .06, glitch: .55 + (Math.floor(w * 20) % 2) * .4, fade: on ? 1 : 0, hudA: on ? 1 : 0, scream: 1 };
 }
 function ghostFlash(id, u, s, pos, yaw, roll = .5) {
   for (const [sid, tt] of GFL) if (sid === id) { const a = tt < 0 ? s.d + tt : tt; if (u >= a && u < a + .1) { ghost.g.visible = true; poseHuman(ghost, { pos, yaw, t: 0, headRoll: roll }); holes.forEach(m => m.scale.setScalar(.01)); return true; } }
@@ -110,13 +124,14 @@ function poseHand(k, t) {
 
 // ===== ПЛАНЫ =====
 const SHOT = {
-  H(u, s) { // хук: собака в упор смотрит в объектив; в зеркале — холодная фигура, которая вдруг склоняет голову
+  H(u, s) { // хук: короткий скример (0,38 с) → собака в упор смотрит в объектив; в зеркале — холодная фигура, которая вдруг склоняет голову
+    if (u < .38) { const o = screamer(u, V3(2.0, 1.6, -7.32), u, .38); o.hook = 0; return o; }
     hideAll(); jb.visible = false;
-    const p = V3(1.86, .82, -6.75 + u * .04); cam(p, V3(1.97, 1.12, -8.97), u, { fov: 54, shake: 1 + (u > 2.43 && u < 2.65 ? 3 : 0) });
-    const jerk = u > 2.45 ? .55 + noise(9, u * 3) * .05 : 0;
+    const p = V3(1.86, .82, -6.75 + u * .04); cam(p, V3(1.97, 1.12, -8.97), u, { fov: 54, shake: 1 + (u > 2.76 && u < 2.98 ? 3 : 0) });
+    const jerk = u > 2.78 ? .55 + noise(9, u * 3) * .05 : 0;
     syncMe(u, 0, 0, null, { roll: jerk });
     const dp = V3(1.78, 0, -8.55); poseDog(dog, { pos: dp, yaw: yawTo(dp, p), t: u + 5, growl: .8, headYaw: 0, look: -.3 });
-    const gl = u < .2 ? .9 : (u > 2.43 && u < 2.58) ? .9 : 0;
+    const gl = u < .5 ? .9 * (1 - (u - .38) / .12) : (u > 2.76 && u < 2.9) ? .9 : 0;
     return { lo: 4, hi: 40, iso: 9, isoK: 1, zoom: 1.04 + u * .015, glitch: gl, hook: 1 };
   },
   A(u, s) { // собака рычит в коридор
@@ -265,22 +280,11 @@ const SHOT = {
     const p = V3(2.0, 1.6, -7.32);
     if (u < QS) {
       const k = ease(u, 0, .35, inoutE), yaw = lerp(0, Math.PI, k);
-      cam(p.clone().add(V3(0, 0, -ease(u, .35, 1.8) * .25)), p.clone().add(V3(Math.sin(yaw) * 2, -.2 * (1 - k), Math.cos(yaw) * 2)), u, { fov: 54, shake: 1 + (1 - k) * 3 });
-      const fo = ease(u, 1.5, 1.8);
-      return { lo: 3, hi: 28, iso: 9, isoK: 1, fade: 1 - fo, end: u > 1.8 ? u - 1.8 + .95 : -1, hudA: 1 - fo };
+      cam(p.clone().add(V3(0, 0, -ease(u, .35, 1.3) * .2)), p.clone().add(V3(Math.sin(yaw) * 2, -.2 * (1 - k), Math.cos(yaw) * 2)), u, { fov: 54, shake: 1 + (1 - k) * 3 });
+      const fo = ease(u, 1.1, 1.3);
+      return { lo: 3, hi: 28, iso: 9, isoK: 1, fade: 1 - fo, end: u > 1.3 ? u - 1.3 + 1.0 : -1, hudA: 1 - fo };
     }
-    // СКРИМЕР: 0,55 с — дёргающееся лицо в упор, рот вывихнут, руки тянутся к объективу, палитра мигает
-    const w = u - QS; ghost.g.visible = true;
-    cam(p, p.clone().add(V3(0, .12, -2)), u, { fov: 50, shake: 6 });
-    const jt = (a, f) => noise(a, w * f) * 1;
-    const gz = lerp(-8.25, -7.95, clamp(w / .12));
-    const pr = poseHuman(ghost, { pos: V3(2.0 + jt(1, 30) * .03, 0, gz), yaw: jt(2, 26) * .25, t: 0, headRoll: .3 + jt(3, 34) * .28, headPitch: -.25 + jt(4, 29) * .25, lean: 0,
-      armL: V3(1.7 + jt(5, 20) * .05, 1.6, -7.6), armR: V3(2.3 + jt(6, 22) * .05, 1.52, -7.6) });
-    ghost.balls.head.scale.set(.86, 1.55, 1.0); ghost.balls.hairCap.visible = false;
-    holes[0].position.copy(pr.hp2(-.034, .05, .085)); holes[1].position.copy(pr.hp2(.034, .044, .085)); holes[2].position.copy(pr.hp2(0, -.12, .07));
-    holes[0].scale.set(.9, 1.5, .9); holes[1].scale.set(.8, 1.3, .9); holes[2].scale.set(1.0, 3.6 + jt(7, 40) * .6, .8);
-    const on = w < .55;
-    return { lo: 3, hi: 28, iso: 9, isoK: 1, pal: Math.floor(w * 18) % 3 === 1 ? 1 : 0, zoom: 1.0 + w * .5 + (Math.floor(w * 24) % 2) * .06, glitch: .55 + (Math.floor(w * 20) % 2) * .4, fade: on ? 1 : 0, hudA: on ? 1 : 0, scream: 1 };
+    return screamer(u - QS, p, u);
   },
 };
 
@@ -344,8 +348,8 @@ function bootScreen(u) {
   ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = '#fff'; ctx.lineWidth = k2(3); ctx.strokeRect(k2(240), k2(990), k2(600), k2(34)); ctx.fillStyle = '#fff'; ctx.fillRect(k2(246), k2(996), k2(588 * ease(u, 0, 1.0)), k2(22)); ctx.restore();
 }
 function hookText(u, d) {
-  const a = ease(u, 0, .1) * (1 - ease(u, d - .3, d - .05)); if (a <= 0) return;
-  const pop = 1 + (1 - ease(u, 0, .22, outE)) * .1, jit = (u > 2.43 && u < 2.58) ? 6 : 0;
+  const a = ease(u, .38, .46) * (1 - ease(u, d - .3, d - .05)); if (a <= 0) return;
+  const pop = 1 + (1 - ease(u, .38, .6, outE)) * .1, jit = (u > 2.76 && u < 2.9) ? 6 : 0;
   ctx.save(); ctx.translate(k2(540 + jit), k2(430)); ctx.scale(pop, pop); ctx.translate(-k2(540), -k2(430));
   txt('never point', 540, 400, 150, { font: HOOK, w: 900, align: 'center', alpha: a });
   txt('it at a mirror.', 540, 545, 150, { font: HOOK, w: 900, align: 'center', alpha: a });
