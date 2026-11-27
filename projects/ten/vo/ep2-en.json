@@ -1,0 +1,570 @@
+{
+ "roles": {
+  "senya_en": {
+   "instruct": "Young man around 20, energetic and fast-talking, sarcastic Gen Z storyteller, casual American English, bright youthful timbre, expressive and a little dramatic, like a viral TikTok narrator.",
+   "ref": "Okay, so this is gonna sound insane, but my shadow literally walked out on me last night. Like, packed up and left."
+  },
+  "shadow2_en": {
+   "instruct": "Playful, cheeky young male voice, early twenties, smooth and charismatic, mischievous grin in the voice, quick comedic timing, clear natural delivery, slightly higher pitch than average, like a cocky best friend.",
+   "ref": "Relax, man. I'm not gone gone. I'm just living a little. You should try it sometime, seriously."
+  },
+  "narrator_en": {
+   "instruct": "Deep, calm, resonant adult male narrator, movie-trailer voice, slow, authoritative and mysterious, low pitch, clear diction.",
+   "ref": "In a world where shadows have rules, only one thing matters. Never lose yours."
+  },
+  "mia_en": {
+   "instruct": "Young woman in her early twenties, warm and witty, a little shy but playful, bright smile in the voice, quick natural delivery, clear casual American English.",
+   "ref": "Okay, I know this sounds weird, but I swear I'm usually way less awkward than this. Usually."
+  },
+  "mshadow_en": {
+   "instruct": "Playful, sultry young female voice, early twenties, confident and teasing, smooth and warm, quick comedic timing, clear casual American English.",
+   "ref": "Oh, relax. I've been watching you two for an hour. It's adorable."
+  },
+  "dude_en": {
+   "instruct": "Very deep, slow, chill male voice, laid-back surfer dude, relaxed and unbothered, low pitch.",
+   "ref": "Hey man. Nice day for a run, huh. Just vibing, you know."
+  },
+  "dad_en": {
+   "instruct": "Huge, intimidating middle-aged father, very deep gravelly voice, slow and menacing but restrained, protective dad.",
+   "ref": "Young man. I've got two questions, and you'd better get both of them right."
+  }
+ },
+ "lines": [
+  {
+   "id": "h1",
+   "role": "senya_en",
+   "text": "Our shadows are making out.",
+   "say": "Our shadows are making out."
+  },
+  {
+   "id": "h2",
+   "role": "mia_en",
+   "text": "We met five minutes ago.",
+   "say": "We met five minutes ago."
+  },
+  {
+   "id": "fb1",
+   "role": "senya_en",
+   "text": "Last night he saw her shadow...",
+   "say": "Last night he saw her shadow..."
+  },
+  {
+   "id": "fb2",
+   "role": "senya_en",
+   "text": "...and ran like a little bitch.",
+   "say": "...and ran like a little bitch."
+  },
+  {
+   "id": "b9",
+   "role": "shadow2_en",
+   "text": "Tactical retreat.",
+   "say": "Tactical retreat."
+  },
+  {
+   "id": "b10",
+   "role": "senya_en",
+   "text": "Tactical? You squealed like a kettle.",
+   "say": "Tactical? You squealed like a kettle."
+  },
+  {
+   "id": "b11",
+   "role": "shadow2_en",
+   "text": "...Shut up. She's out of my league.",
+   "say": "...Shut up. She's out of my league."
+  },
+  {
+   "id": "b12",
+   "role": "senya_en",
+   "text": "Aww. The big bad shadow has a crush.",
+   "say": "Aww. The big bad shadow has a crush."
+  },
+  {
+   "id": "b13",
+   "role": "shadow2_en",
+   "text": "Term five: introduce me. Or I quit — and you fade.",
+   "say": "Term five: introduce me. Or I quit — and you fade."
+  },
+  {
+   "id": "b3",
+   "role": "senya_en",
+   "text": "Term FIVE?! You keep adding terms!",
+   "say": "Term FIVE?! You keep adding terms!"
+  },
+  {
+   "id": "b4",
+   "role": "shadow2_en",
+   "text": "Read the fine print, bitch.",
+   "say": "Read the fine print, bitch."
+  },
+  {
+   "id": "b14",
+   "role": "senya_en",
+   "text": "Wow. Manipulation again?",
+   "say": "Wow. Manipulation again?"
+  },
+  {
+   "id": "b15",
+   "role": "shadow2_en",
+   "text": "...Sorry. I really like her, man. Please.",
+   "say": "...Sorry. I really like her, man. Please."
+  },
+  {
+   "id": "ct1",
+   "role": "shadow2_en",
+   "text": "Hat. Definitely hat.",
+   "say": "Hat. Definitely hat."
+  },
+  {
+   "id": "ct2",
+   "role": "shadow2_en",
+   "text": "Pixel, you little shit!",
+   "say": "Pixel, you little shit!"
+  },
+  {
+   "id": "d3",
+   "role": "narrator_en",
+   "text": "Rule number two. A shadow is tied to its owner. One step — no more.",
+   "say": "Rule number two. A shadow is tied to its owner. One step — no more."
+  },
+  {
+   "id": "d4",
+   "role": "narrator_en",
+   "text": "Want your shadows to touch? Get close.",
+   "say": "Want your shadows to touch? Get close."
+  },
+  {
+   "id": "s1",
+   "role": "shadow2_en",
+   "text": "Ponytail... ponytail...",
+   "say": "Ponytail... ponytail..."
+  },
+  {
+   "id": "s5",
+   "role": "shadow2_en",
+   "text": "Hey, gorgeous—",
+   "say": "Hey, gorgeous—"
+  },
+  {
+   "id": "s6",
+   "role": "dude_en",
+   "text": "...Sup.",
+   "say": "...Sup."
+  },
+  {
+   "id": "s7",
+   "role": "shadow2_en",
+   "text": "Nope. Nope. Nope.",
+   "say": "Nope. Nope. Nope."
+  },
+  {
+   "id": "s4",
+   "role": "shadow2_en",
+   "text": "THERE. Café Luna.",
+   "say": "THERE. Café Luna."
+  },
+  {
+   "id": "p1",
+   "role": "senya_en",
+   "text": "Nope. I can't do this.",
+   "say": "Nope. I can't do this."
+  },
+  {
+   "id": "p2",
+   "role": "shadow2_en",
+   "text": "Move your ass, Romeo!",
+   "say": "Move your ass, Romeo!"
+  },
+  {
+   "id": "e1",
+   "role": "shadow2_en",
+   "text": "Ponytail. Ten out of ten.",
+   "say": "Ponytail. Ten out of ten."
+  },
+  {
+   "id": "e2",
+   "role": "senya_en",
+   "text": "Which one?",
+   "say": "Which one?"
+  },
+  {
+   "id": "e3",
+   "role": "shadow2_en",
+   "text": "Both, dumbass. Go!",
+   "say": "Both, dumbass. Go!"
+  },
+  {
+   "id": "e4",
+   "role": "shadow2_en",
+   "text": "Fucking leash. WALK!",
+   "say": "Fucking leash. WALK!"
+  },
+  {
+   "id": "f1",
+   "role": "senya_en",
+   "text": "Hi. Is this seat... taken?",
+   "say": "Hi. Is this seat... taken?"
+  },
+  {
+   "id": "f2",
+   "role": "mia_en",
+   "text": "It is now.",
+   "say": "It is now."
+  },
+  {
+   "id": "g4",
+   "role": "shadow2_en",
+   "text": "Lean in, coward.",
+   "say": "Lean in, coward."
+  },
+  {
+   "id": "g5",
+   "role": "shadow2_en",
+   "text": "Closer, Casanova. Jesus.",
+   "say": "Closer, Casanova. Jesus."
+  },
+  {
+   "id": "g3",
+   "role": "senya_en",
+   "text": "Shit! Sorry!",
+   "say": "Shit! Sorry!"
+  },
+  {
+   "id": "h3",
+   "role": "shadow2_en",
+   "text": "Her hand. Not like a dead fish!",
+   "say": "Her hand. Not like a dead fish!"
+  },
+  {
+   "id": "i1",
+   "role": "mia_en",
+   "text": "Stop it! He'll notice!",
+   "say": "Stop it! He'll notice!"
+  },
+  {
+   "id": "i2",
+   "role": "senya_en",
+   "text": "Did your shadow just tell you that?",
+   "say": "Did your shadow just tell you that?"
+  },
+  {
+   "id": "i3",
+   "role": "mia_en",
+   "text": "...Did yours?",
+   "say": "...Did yours?"
+  },
+  {
+   "id": "j1",
+   "role": "mia_en",
+   "text": "Mine dragged me three blocks.",
+   "say": "Mine dragged me three blocks."
+  },
+  {
+   "id": "j2",
+   "role": "senya_en",
+   "text": "Mine shoved me through the door.",
+   "say": "Mine shoved me through the door."
+  },
+  {
+   "id": "j3",
+   "role": "mia_en",
+   "text": "I'm Mia.",
+   "say": "I'm Mia."
+  },
+  {
+   "id": "j4",
+   "role": "senya_en",
+   "text": "Sam.",
+   "say": "Sam."
+  },
+  {
+   "id": "k3",
+   "role": "senya_en",
+   "text": "Three hours.",
+   "say": "Three hours."
+  },
+  {
+   "id": "k5",
+   "role": "narrator_en",
+   "text": "Most love stories never start. Someone was too scared to say \"Hi\".",
+   "say": "Most love stories never start. Someone was too scared to say \"Hi\"."
+  },
+  {
+   "id": "k4",
+   "role": "senya_en",
+   "text": "They didn't come up for air.",
+   "say": "They didn't come up for air."
+  },
+  {
+   "id": "l1",
+   "role": "shadow2_en",
+   "text": "Sam. Lean. LEAN!",
+   "say": "Sam. Lean. LEAN!"
+  },
+  {
+   "id": "l2",
+   "role": "shadow2_en",
+   "text": "No. No no no no!",
+   "say": "No. No no no no!"
+  },
+  {
+   "id": "m1",
+   "role": "mia_en",
+   "text": "Sam? Next time...",
+   "say": "Sam? Next time..."
+  },
+  {
+   "id": "m2",
+   "role": "mia_en",
+   "text": "...without them.",
+   "say": "...without them."
+  },
+  {
+   "id": "m4",
+   "role": "shadow2_en",
+   "text": "Without who?",
+   "say": "Without who?"
+  },
+  {
+   "id": "x1",
+   "role": "dad_en",
+   "text": "So. YOU'RE the guy whose shadow was all over my daughter's shadow?",
+   "say": "So. YOU'RE the guy whose shadow was all over my daughter's shadow?"
+  },
+  {
+   "id": "x2",
+   "role": "senya_en",
+   "text": "Technically, sir, that's not—",
+   "say": "Technically, sir, that's not—"
+  },
+  {
+   "id": "x3",
+   "role": "shadow2_en",
+   "text": "Run.",
+   "say": "Run."
+  },
+  {
+   "id": "y1",
+   "role": "shadow2_en",
+   "text": "Sam... we need to talk.",
+   "say": "Sam... we need to talk."
+  },
+  {
+   "id": "y2",
+   "role": "senya_en",
+   "text": "WHAT?! You met her YESTERDAY!",
+   "say": "WHAT?! You met her YESTERDAY!"
+  },
+  {
+   "id": "y3",
+   "role": "shadow2_en",
+   "text": "Shadows move fast.",
+   "say": "Shadows move fast."
+  },
+  {
+   "id": "z1",
+   "role": "senya_en",
+   "text": "Why does my shadow have a ponytail?!",
+   "say": "Why does my shadow have a ponytail?!"
+  },
+  {
+   "id": "z2",
+   "role": "mia_en",
+   "text": "Sam... my shadow keeps scratching its butt.",
+   "say": "Sam... my shadow keeps scratching its butt."
+  },
+  {
+   "id": "z3",
+   "role": "mshadow_en",
+   "text": "Morning, handsome.",
+   "say": "Morning, handsome."
+  },
+  {
+   "id": "b16",
+   "role": "senya_en",
+   "text": "ANOTHER term?! Manipulation again?",
+   "say": "ANOTHER term?! ...Wow. Manipulation again?"
+  },
+  {
+   "id": "d5",
+   "role": "narrator_en",
+   "text": "Rule two: shadows touch only when their owners do.",
+   "say": "Rule two. Shadows touch... only when their owners do."
+  },
+  {
+   "id": "s8",
+   "role": "shadow2_en",
+   "text": "Nope.",
+   "say": "Nope!"
+  },
+  {
+   "id": "p3",
+   "role": "senya_en",
+   "text": "I can't. I can't do this.",
+   "say": "I can't... I can't do this!"
+  },
+  {
+   "id": "e5",
+   "role": "shadow2_en",
+   "text": "Go. GO!",
+   "say": "Go. ...GO!"
+  },
+  {
+   "id": "g6",
+   "role": "shadow2_en",
+   "text": "Touch her hand, coward!",
+   "say": "Touch her hand, you coward!"
+  },
+  {
+   "id": "k7",
+   "role": "senya_en",
+   "text": "...Wow.",
+   "say": "...Wow."
+  },
+  {
+   "id": "k6",
+   "role": "senya_en",
+   "text": "Sometimes you just need a push.",
+   "say": "Sometimes... you just need a push."
+  },
+  {
+   "id": "l3",
+   "role": "shadow2_en",
+   "text": "Sam. Kiss her. KISS HER!",
+   "say": "Sam! Kiss her! KISS HER!"
+  },
+  {
+   "id": "k8",
+   "role": "senya_en",
+   "text": "Even if it comes from your own shadow.",
+   "say": "Even if it comes... from your own shadow."
+  },
+  {
+   "id": "j5",
+   "role": "mia_en",
+   "text": "So... your shadow does that too?",
+   "say": "So... your shadow does that too?"
+  },
+  {
+   "id": "j6",
+   "role": "senya_en",
+   "text": "Every. Single. Day.",
+   "say": "Every. Single. Day."
+  },
+  {
+   "id": "g1",
+   "role": "shadow2_en",
+   "text": "Lean in.",
+   "say": "Lean in."
+  },
+  {
+   "id": "g2",
+   "role": "shadow2_en",
+   "text": "Closer...",
+   "say": "Closer..."
+  },
+  {
+   "id": "b17",
+   "role": "senya_en",
+   "text": "Morning, Speedy. Run far last night?",
+   "say": "Morning, Speedy! ...Run far last night?"
+  },
+  {
+   "id": "b18",
+   "role": "senya_en",
+   "text": "Manipulation again?",
+   "say": "Manipulation again?",
+   "trimmed": true
+  },
+  {
+   "id": "p4",
+   "role": "senya_en",
+   "text": "I can't do this.",
+   "say": "I can't do this.",
+   "trimmed": true
+  },
+  {
+   "id": "s9",
+   "role": "shadow2_en",
+   "text": "Hey, gorgeous…",
+   "say": "Heyyy... gorgeous!"
+  },
+  {
+   "id": "s10",
+   "role": "shadow2_en",
+   "text": "Nope. Nope.",
+   "say": "Nope! Nope!"
+  },
+  {
+   "id": "p5",
+   "role": "shadow2_en",
+   "text": "Move your ass, Romeo!",
+   "say": "Move your ASS, Romeo!"
+  },
+  {
+   "id": "g7",
+   "role": "shadow2_en",
+   "text": "Lean in. Come on.",
+   "say": "Lean in... come on!"
+  },
+  {
+   "id": "g8",
+   "role": "shadow2_en",
+   "text": "Closer… closer!",
+   "say": "Closer... closer!"
+  },
+  {
+   "id": "l4",
+   "role": "shadow2_en",
+   "text": "Sam. Lean. LEAN!",
+   "say": "Sam! Lean! LEAN!!"
+  },
+  {
+   "id": "b19",
+   "role": "shadow2_en",
+   "text": "Ugh. It was a TACTICAL retreat.",
+   "say": "Ugh. It was a TACTICAL retreat."
+  },
+  {
+   "id": "wf1",
+   "role": "shadow2_en",
+   "text": "What the f—",
+   "say": "What the f..."
+  },
+  {
+   "id": "wf2",
+   "role": "mshadow_en",
+   "text": "What the f—",
+   "say": "What the f..."
+  },
+  {
+   "id": "nn1",
+   "role": "senya_en",
+   "text": "Oh no. Not again.",
+   "say": "Oh no... Not again."
+  },
+  {
+   "id": "lp1",
+   "role": "senya_en",
+   "text": "Why is it not coming off?!",
+   "say": "Why... is it not coming off?!"
+  },
+  {
+   "id": "lp2",
+   "role": "shadow2_en",
+   "text": "Never washing this face again.",
+   "say": "Never... washing this face again."
+  },
+  {
+   "id": "dd1",
+   "role": "dad_en",
+   "text": "WHERE IS MY SHADOW?!",
+   "say": "WHERE... IS MY SHADOW?!"
+  },
+  {
+   "id": "dd2",
+   "role": "senya_en",
+   "text": "...Hi?",
+   "say": "...Hi?"
+  }
+ ]
+}

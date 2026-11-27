@@ -359,3 +359,4 @@ export const club = (() => {
 })();
 
 export { makeShade, placeShade, applyPose, lerp, clamp };
+export { reg, add, building };

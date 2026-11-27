@@ -1,0 +1,42 @@
+[
+{
+"t": 0,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.26,
+"dur": 6.6,
+"align": "start"
+},
+{
+"t": 0.8,
+"type": "lib",
+"id": "mechanical-switch-light",
+"gain": 0.5
+},
+{
+"t": 4.263,
+"type": "lib",
+"id": "click-latch-firm",
+"gain": 0.5
+},
+{
+"t": 4.463,
+"type": "lib",
+"id": "click-latch-firm",
+"gain": 0.5
+},
+{
+"t": 6.2,
+"type": "lib",
+"id": "whoosh-slow-soft",
+"gain": 0.7,
+"align": "start"
+},
+{
+"t": 6.8,
+"type": "lib",
+"id": "time-clock-fast",
+"gain": 0.2,
+"align": "start"
+}
+]

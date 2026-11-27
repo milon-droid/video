@@ -15,9 +15,10 @@ export const noise = (seed, t) => { const i = Math.floor(t), f = t - i, a = h1(i
 export const spring = (t, t0, f = 7, d = 5) => t < t0 ? 0 : 1 - Math.exp(-(t - t0) * d) * Math.cos((t - t0) * f * 2);
 
 // --- рендерер ---
-export const glCanvas = document.createElement('canvas'); glCanvas.width = W; glCanvas.height = H;
+export const SS = window.SUPERSAMPLE || 1; // сглаживание: 3D рисуется крупнее и ужимается
+export const glCanvas = document.createElement('canvas'); glCanvas.width = Math.round(W * SS); glCanvas.height = Math.round(H * SS);
 export const renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, preserveDrawingBuffer: true });
-renderer.setSize(W, H, false); renderer.setPixelRatio(1);
+renderer.setSize(glCanvas.width, glCanvas.height, false); renderer.setPixelRatio(1);
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -51,8 +52,8 @@ const tmp = document.createElement('canvas'); tmp.width = W; tmp.height = H; con
 // тилт-шифт: верх и низ кадра размыты, полоса фокуса fy (0…1) шириной fw
 export function composite({ tilt = 1, fy = .5, fw = .22, blur = 7, vign = .5, grain = .06, t = 0, warm = 0, bloom = 0 } = {}) {
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over';
-  ctx.drawImage(glCanvas, 0, 0);
-  if (bloom > 0) { ctx.save(); ctx.filter = `blur(${18 * K}px) brightness(1.3)`; ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = bloom; ctx.drawImage(glCanvas, 0, 0); ctx.restore(); }
+  ctx.imageSmoothingQuality = 'high'; ctx.drawImage(glCanvas, 0, 0, W, H);
+  if (bloom > 0) { ctx.save(); ctx.filter = `blur(${18 * K}px) brightness(1.3)`; ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = bloom; ctx.drawImage(glCanvas, 0, 0, W, H); ctx.restore(); }
   if (tilt > 0) {
     tctx.setTransform(1, 0, 0, 1, 0, 0); tctx.globalCompositeOperation = 'source-over'; tctx.clearRect(0, 0, W, H);
     tctx.filter = `blur(${blur * K * tilt}px)`; tctx.drawImage(out, 0, 0); tctx.filter = 'none';

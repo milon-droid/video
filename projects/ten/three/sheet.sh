@@ -1,8 +1,8 @@
 #!/bin/bash
 # Лист превью: bash sheet.sh out.jpg t1 t2 ... (кадры 720p, лист уменьшен)
 out=$1; shift; d=$(mktemp -d); i=0
-cd "$(dirname "$0")" && node_modules/.bin/esbuild src/main.js --bundle --format=iife --outfile=dist/bundle.js --log-level=warning || exit 1
-for t in "$@"; do node ../../../tools/render.mjs index.html --still $t -o $d/$(printf %03d $i).png >/dev/null 2>&1 & i=$((i+1)); if (( i % 4 == 0 )); then wait; fi; done; wait
+cd "$(dirname "$0")" && node_modules/.bin/esbuild src/${ENTRY:-main}.js --bundle --format=iife --outfile=dist/${BUNDLE:-bundle}.js --log-level=warning || exit 1
+for t in "$@"; do node ../../../tools/render.mjs ${PAGE:-index.html} --still $t -o $d/$(printf %03d $i).png >/dev/null 2>&1 & i=$((i+1)); if (( i % 4 == 0 )); then wait; fi; done; wait
 python3 -c "
 from PIL import Image, ImageDraw; import sys,glob
 fs=sorted(glob.glob('$d/*.png')); ts='$*'.split(); ims=[Image.open(f).convert('RGB') for f in fs]; s=${SC:-0.36}

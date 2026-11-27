@@ -1,0 +1,998 @@
+[
+{
+"t": 4.0,
+"type": "lib",
+"id": "whoosh-slow-soft",
+"gain": 0.75,
+"align": "start"
+},
+{
+"t": 30.011,
+"type": "lib",
+"id": "whoosh-slow-soft",
+"gain": 0.75,
+"align": "start"
+},
+{
+"t": 93.515,
+"type": "lib",
+"id": "whoosh-slow-soft",
+"gain": 0.75,
+"align": "start"
+},
+{
+"t": 0,
+"type": "lib",
+"id": "oc-CRWDConv_Restaurant_LOOP_01",
+"gain": 0.15,
+"dur": 4.4,
+"align": "start"
+},
+{
+"t": 0.3,
+"type": "lib",
+"id": "shimmer-long-soft",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 3.6,
+"type": "lib",
+"id": "transform-stretch",
+"gain": 0.5,
+"align": "start",
+"rate": 1.6
+},
+{
+"t": 3.95,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 4.4,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.3,
+"dur": 4.0,
+"align": "start"
+},
+{
+"t": 4.6,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.2,
+"align": "start"
+},
+{
+"t": 5.05,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.2,
+"align": "start"
+},
+{
+"t": 5.5,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.2,
+"align": "start"
+},
+{
+"t": 5.95,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.2,
+"align": "start"
+},
+{
+"t": 5.809,
+"type": "lib",
+"id": "pop-large-out",
+"gain": 0.5
+},
+{
+"t": 6.309,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.7,
+"align": "start"
+},
+{
+"t": 6.409,
+"type": "lib",
+"id": "move-spring",
+"gain": 0.3,
+"rate": 1.6
+},
+{
+"t": 8.4,
+"type": "lib",
+"id": "oc-AMBHome_RoomTone_LOOP_01",
+"gain": 0.3,
+"dur": 17.71,
+"align": "start"
+},
+{
+"t": 12.801,
+"type": "lib",
+"id": "shimmer-medium-bright",
+"gain": 0.25,
+"align": "start"
+},
+{
+"t": 18.551,
+"type": "lib",
+"id": "foley-paper-touch",
+"gain": 0.7
+},
+{
+"t": 18.571,
+"type": "lib",
+"id": "click-clap-medium",
+"gain": 0.4
+},
+{
+"t": 19.251,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.7
+},
+{
+"t": 19.251,
+"type": "lib",
+"id": "click-clap-firm",
+"gain": 0.4
+},
+{
+"t": 26.111,
+"type": "lib",
+"id": "oc-AMBHome_RoomTone_LOOP_01",
+"gain": 0.3,
+"dur": 4.3,
+"align": "start"
+},
+{
+"t": 26.261,
+"type": "lib",
+"id": "pop-large-in",
+"gain": 0.6
+},
+{
+"t": 27.561,
+"type": "lib",
+"id": "whoosh-fast-medium",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 27.861,
+"type": "lib",
+"id": "foley-fabric-touch",
+"gain": 0.7
+},
+{
+"t": 27.871,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.6
+},
+{
+"t": 27.911,
+"type": "hiss",
+"gain": 0.45,
+"dur": 0.6,
+"lo": 2500,
+"hi": 8000,
+"pulse": 0
+},
+{
+"t": 28.261,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.5
+},
+{
+"t": 28.411,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.5
+},
+{
+"t": 30.411,
+"type": "lib",
+"id": "oc-AMBUrbn_CityEuroDaytime_LOOP_01",
+"gain": 0.2,
+"dur": 11.2,
+"align": "start"
+},
+{
+"t": 30.511,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 30.831,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 31.151,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 31.471,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 31.791,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 32.111,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 32.431,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 32.751,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 33.071,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 33.391,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 33.711,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 34.031,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 34.351,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 34.671,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 34.991,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 35.311,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 35.631,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.18,
+"align": "start"
+},
+{
+"t": 31.411,
+"type": "lib",
+"id": "shimmer-medium-bright",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 33.311,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.4
+},
+{
+"t": 34.711,
+"type": "wah",
+"gain": 0.3
+},
+{
+"t": 36.411,
+"type": "lib",
+"id": "shimmer-long-sparkle",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 39.011,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.8
+},
+{
+"t": 39.011,
+"type": "lib",
+"id": "move-spring",
+"gain": 0.35,
+"rate": 1.3
+},
+{
+"t": 39.811,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 39.861,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.6
+},
+{
+"t": 39.911,
+"type": "lib",
+"id": "oc-DOORGlas_GlassDoorOpen_OS_01",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 39.961,
+"type": "lib",
+"id": "props-shop-bell",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 40.961,
+"type": "lib",
+"id": "shimmer-medium-bright",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 41.611,
+"type": "lib",
+"id": "oc-CRWDConv_Restaurant_LOOP_01",
+"gain": 0.15,
+"dur": 41.8,
+"align": "start"
+},
+{
+"t": 35.791,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 41.391,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 73.092,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 83.195,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 73.312,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 73.912,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 74.512,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 75.112,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 75.712,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 76.312,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 74.662,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.5
+},
+{
+"t": 74.712,
+"type": "lib",
+"id": "props-drip",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 41.911,
+"type": "lib",
+"id": "oc-PAPRHndl_BookPageTurns_OS_01",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 42.311,
+"type": "lib",
+"id": "shimmer-long-soft",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 44.213,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 46.161,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.22,
+"align": "start"
+},
+{
+"t": 46.581,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.22,
+"align": "start"
+},
+{
+"t": 47.001,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.22,
+"align": "start"
+},
+{
+"t": 47.421,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.22,
+"align": "start"
+},
+{
+"t": 47.841,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.22,
+"align": "start"
+},
+{
+"t": 50.809,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.45
+},
+{
+"t": 53.811,
+"type": "lib",
+"id": "foley-glass-touch",
+"gain": 0.8
+},
+{
+"t": 54.111,
+"type": "lib",
+"id": "oc-PLASImpt_PlasticCupDrop_OS_01",
+"gain": 0.55
+},
+{
+"t": 54.131,
+"type": "puff",
+"gain": 0.4
+},
+{
+"t": 59.111,
+"type": "lib",
+"id": "shimmer-long-sparkle",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 59.461,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 59.511,
+"type": "lib",
+"id": "transform-stretch",
+"gain": 0.45,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 65.375,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 77.162,
+"type": "lib",
+"id": "click-clap-soft",
+"gain": 0.5
+},
+{
+"t": 77.612,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.6
+},
+{
+"t": 77.662,
+"type": "lib",
+"id": "shimmer-long-bright",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 77.912,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.8
+},
+{
+"t": 78.362,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.9500000000000001
+},
+{
+"t": 78.812,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 1.1
+},
+{
+"t": 79.262,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.8
+},
+{
+"t": 79.712,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.9500000000000001
+},
+{
+"t": 80.162,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 1.1
+},
+{
+"t": 80.512,
+"type": "lib",
+"id": "oc-METLImpt_MetalObjDrop_OS_01",
+"gain": 0.75
+},
+{
+"t": 80.562,
+"type": "lib",
+"id": "foley-glass-touch",
+"gain": 0.6
+},
+{
+"t": 80.662,
+"type": "lib",
+"id": "oc-PLASImpt_PlasticCupDrop_OS_01",
+"gain": 0.5
+},
+{
+"t": 83.415,
+"type": "lib",
+"id": "oc-AMBForst_ForestBirds_OS_02",
+"gain": 0.22,
+"dur": 10.5,
+"align": "start"
+},
+{
+"t": 83.615,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 84.165,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 84.715,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 85.265,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 85.815,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 86.365,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 86.915,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 87.465,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 88.015,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 88.565,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 89.115,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 89.665,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 90.215,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 90.765,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 91.315,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 91.865,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 92.415,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 92.965,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 93.515,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.12,
+"align": "start"
+},
+{
+"t": 85.015,
+"type": "lib",
+"id": "whoosh-medium-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 88.615,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.5
+},
+{
+"t": 88.665,
+"type": "lib",
+"id": "shimmer-long-soft",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 93.915,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.28,
+"dur": 7.0,
+"align": "start"
+},
+{
+"t": 97.165,
+"type": "lib",
+"id": "mechanical-switch-light",
+"gain": 0.4
+},
+{
+"t": 97.285,
+"type": "lib",
+"id": "mechanical-switch-light",
+"gain": 0.4
+},
+{
+"t": 97.405,
+"type": "lib",
+"id": "mechanical-switch-light",
+"gain": 0.4
+},
+{
+"t": 97.525,
+"type": "lib",
+"id": "mechanical-switch-light",
+"gain": 0.4
+},
+{
+"t": 97.665,
+"type": "lib",
+"id": "mechanical-switch-heavy",
+"gain": 0.7
+},
+{
+"t": 97.685,
+"type": "lib",
+"id": "digital-interference",
+"gain": 0.25
+},
+{
+"t": 99.925,
+"type": "lib",
+"id": "mechanical-switch-light",
+"gain": 0.45
+},
+{
+"t": 100.025,
+"type": "lib",
+"id": "mechanical-switch-light",
+"gain": 0.45
+},
+{
+"t": 100.125,
+"type": "lib",
+"id": "mechanical-switch-light",
+"gain": 0.45
+},
+{
+"t": 6.709,
+"type": "lib",
+"id": "oc-BIRDFowl_Chicken_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 73.912,
+"type": "lib",
+"id": "oc-BIRDFowl_Chicken_OS_01",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 75.112,
+"type": "lib",
+"id": "oc-BIRDFowl_Chicken_OS_01",
+"gain": 0.4,
+"align": "start",
+"rate": 1.2
+},
+{
+"t": 75.712,
+"type": "lib",
+"id": "foley-glass-touch",
+"gain": 0.45
+},
+{
+"t": 75.892,
+"type": "lib",
+"id": "foley-glass-touch",
+"gain": 0.45
+},
+{
+"t": 76.072,
+"type": "lib",
+"id": "foley-glass-touch",
+"gain": 0.45
+},
+{
+"t": 0.3,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.75
+},
+{
+"t": 0.85,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.87
+},
+{
+"t": 1.4,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.99
+},
+{
+"t": 1.95,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.75
+},
+{
+"t": 2.5,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.87
+},
+{
+"t": 3.05,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.99
+},
+{
+"t": 3.6,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.75
+},
+{
+"t": 34.611,
+"type": "lib",
+"id": "move-spring",
+"gain": 0.5,
+"rate": 1.4
+}
+]
