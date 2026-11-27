@@ -39,7 +39,9 @@ def main_sfx():
     lib(PUSH, "whoosh-fast-hard", .6, align="start"); lib(PUSH + .05, "impact-light-soft", .6)
     lib(PUSH + .1, "oc-DOORGlas_GlassDoorOpen_OS_01", .55, align="start"); lib(PUSH + .15, "props-shop-bell", .6, align="start"); lib(IN + .4, "shimmer-medium-bright", .3, align="start")
     # кафе
-    amb('S5', 'S10', "oc-CRWDConv_Restaurant_LOOP_01", .15)
+    amb('S5', 'S10B', "oc-CRWDConv_Restaurant_LOOP_01", .15)
+    for k in ('S1', 'S5', 'S10B', 'S11'): lib(ST[k] - .22, "whoosh-fast-hard", .55, align="start")
+    for k in range(4): lib(ST['S10B'] + k * .75, "click-clap-soft", .25)
     lib(ST['S5'] + .3, "oc-PAPRHndl_BookPageTurns_OS_01", .3, align="start"); lib(ST['S5'] + .7, "shimmer-long-soft", .3, align="start")
     lib(AT['e5'], "whoosh-fast-soft", .45, align="start")
     for i in range(5): lib(ST['S6'] + .15 + i * .42, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .22, align="start")
@@ -47,7 +49,7 @@ def main_sfx():
     K = AT['g3'] - .3; lib(K, "foley-glass-touch", .8); lib(K + .3, "oc-PLASImpt_PlasticCupDrop_OS_01", .55); syn(K + .32, "puff", .4)
     TOUCH = ST['S8'] + 2.9; lib(TOUCH, "shimmer-long-sparkle", .55, align="start"); lib(TOUCH + .35, "whoosh-fast-soft", .5, align="start"); lib(TOUCH + .4, "transform-stretch", .45, align="start", rate=1.4)
     LOOK2 = AT['i3'] + D['i3'] + .2; lib(LOOK2, "whoosh-fast-soft", .45, align="start")
-    SHAKE = AT['j4'] + .15; KISS = SHAKE + .45; DROP = KISS + .8 + 2.0 + .55
+    SHAKE = ST['S10B'] + 3.25; KISS = SHAKE + .45; DROP = KISS + .6 + 1.6 + .4
     lib(SHAKE, "click-clap-soft", .5); lib(KISS, "pop-large-bubble", .6); lib(KISS + .05, "shimmer-long-bright", .45, align="start")
     for i in range(6): lib(KISS + .3 + i * .45, "pop-large-bubble", .35, rate=.8 + (i % 3) * .15)
     lib(DROP + .3, "oc-METLImpt_MetalObjDrop_OS_01", .75); lib(DROP + .35, "foley-glass-touch", .6); lib(DROP + .45, "oc-PLASImpt_PlasticCupDrop_OS_01", .5)

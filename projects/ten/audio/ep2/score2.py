@@ -79,7 +79,7 @@ def main_music():
     # S5–S10 кафе
     KNOCK = AT['g3'] - .3
     lounge(sh('S5') + .2, KNOCK, .9)
-    put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - AT['g6'], 1.5, .1, 2200), AT['g6'], .18, 0, .4); put(riser(KNOCK - AT['g6'] - .3, .5), AT['g6'] + .3, .2, 0, .3)
+    put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - AT['g1'], 1.5, .1, 2200), AT['g1'], .18, 0, .4); put(riser(KNOCK - AT['g1'] - .3, .5), AT['g1'] + .3, .2, 0, .3)
     TOUCH = sh('S8') + 2.9
     for k in range(8): put(pluck(hz(['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'][k]), .3, .6), sh('S8') + .9 + k * .25, .25, 0, .2)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7', 'E7']): put(celesta(hz(n)), TOUCH + k * .07, .22, .4 - k * .15, .6)
@@ -90,19 +90,22 @@ def main_music():
         return s * env(len(t), .03, .06) * .5
     LOOK2 = AT['i3'] + D['i3'] + .2; WH = [('G6', .25), ('E6', .25), ('G6', .25), ('C7', .45), ('B6', .2), ('G6', .5)]
     for k, (n, d) in enumerate(WH): put(whistle(hz(n), d), LOOK2 + .45 + sum(x[1] for x in WH[:k]) * 1.05, .22, .2, .3)
-    HUG = AT['j4'] + .6
+    HUG = sh('S10B') + 3.7
     lounge(sh('S10') + .3, HUG, 1.0, 1)
-    chord(['F3', 'C4', 'F4', 'A4', 'C5'], HUG, end('S10') - HUG + .8, .32, 0, 3000)
+    for k in range(4): put(swell(.25, .5), sh('S10B') + k * .75 - .1, .2, 0, .1)
+    chord(['F3', 'C4', 'F4', 'A4', 'C5'], HUG, end('S10B') - HUG + .8, .32, 0, 3000)
     for k, n in enumerate(['A5', 'C6', 'F6', 'A6']): put(celesta(hz(n)), HUG + .1 + k * .1, .22, .3, .6)
     # S11 тема любви, ритм на танце
     t0, t1 = sh('S11'), end('S11')
-    LOVE = [(0, 'F2', ['F3', 'A3', 'C4', 'E4']), (1.75, 'A1', ['E3', 'A3', 'C4', 'E4']), (3.5, 'Bb1', ['F3', 'Bb3', 'D4', 'F4']), (5.25, 'C2', ['E3', 'G3', 'C4', 'E4'])]
-    for o, bn, ch in LOVE:
-        if t0 + o < t1: put(bass(hz(bn), 1.8, .8), t0 + o, .45, 0, .2); [put(piano(hz(n), 2.6, .5), t0 + o + k * .05, .2, k * .1 - .15, .45) for k, n in enumerate(ch)]; chord(ch, t0 + o, 2.2, .14, 0, 2000)
-    for k in range(8): put(kick(.7), t0 + 3.0 + k * .25, .25, 0, 0); put(clap(.6), t0 + 3.125 + k * .5, .2, .2, .1)
+    LOVE = [('F2', ['F3', 'A3', 'C4', 'E4']), ('A1', ['E3', 'A3', 'C4', 'E4']), ('Bb1', ['F3', 'Bb3', 'D4', 'F4']), ('C2', ['E3', 'G3', 'C4', 'E4'])]
+    o = 0; i = 0
+    while t0 + o < t1:
+        bn, ch = LOVE[i % 4]; put(bass(hz(bn), 1.8, .8), t0 + o, .45, 0, .2); [put(piano(hz(n), 2.6, .5), t0 + o + k * .05, .2, k * .1 - .15, .45) for k, n in enumerate(ch)]; chord(ch, t0 + o, 2.2, .14, 0, 2000); o += 1.75; i += 1
+    for k in range(int((t1 - t0 - 2.8) / .25)): put(kick(.7), t0 + 2.8 + k * .5, .25, 0, 0); put(clap(.6), t0 + 3.05 + k * .5, .2, .2, .1)
     MEL = [(.2, 'C5'), (.6, 'A5'), (1.1, 'G5'), (1.5, 'F5'), (2.0, 'E5'), (2.4, 'C5'), (3.0, 'D5'), (3.8, 'D5'), (4.2, 'F5'), (4.7, 'Bb5'), (5.2, 'A5'), (5.6, 'G5'), (6.2, 'C6'), (6.8, 'A5')]
-    for o, n in MEL:
-        if t0 + o < t1 + .3: put(piano(hz(n), 2.0, .7), t0 + o, .26, .1, .6); put(celesta(hz(n)), t0 + o, .1, -.2, .6)
+    for rep in (0, 7.0):
+        for o, n in MEL:
+            if t0 + rep + o < t1 + .3: put(piano(hz(n), 2.0, .7), t0 + rep + o, .26, .1, .6); put(celesta(hz(n)), t0 + rep + o, .1, -.2, .6)
     # S12 ночь: пэд + сердце → тишина
     t0 = sh('S12'); OFF = AT['l2'] - .45
     chord(['D3', 'F3', 'A3', 'C4'], t0, OFF - t0 + .1, .2, 0, 1400)

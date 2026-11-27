@@ -431,6 +431,36 @@
    "role": "shadow2_en",
    "text": "Sam. Kiss her. KISS HER!",
    "say": "Sam! Kiss her! KISS HER!"
+  },
+  {
+   "id": "k8",
+   "role": "senya_en",
+   "text": "Even if it comes from your own shadow.",
+   "say": "Even if it comes... from your own shadow."
+  },
+  {
+   "id": "j5",
+   "role": "mia_en",
+   "text": "So... your shadow does that too?",
+   "say": "So... your shadow does that too?"
+  },
+  {
+   "id": "j6",
+   "role": "senya_en",
+   "text": "Every. Single. Day.",
+   "say": "Every. Single. Day."
+  },
+  {
+   "id": "g1",
+   "role": "shadow2_en",
+   "text": "Lean in.",
+   "say": "Lean in."
+  },
+  {
+   "id": "g2",
+   "role": "shadow2_en",
+   "text": "Closer...",
+   "say": "Closer..."
   }
  ]
 }

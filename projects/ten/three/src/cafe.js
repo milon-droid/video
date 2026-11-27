@@ -103,7 +103,7 @@ export const front = (() => {
     c.fillStyle = '#f2ece0'; c.beginPath(); c.ellipse(70, 232, 50, 9, 0, 0, 7); c.fill(); c.fillStyle = '#2a2a30'; c.fillRect(67, 236, 6, 50);
     c.fillStyle = '#e8508a'; c.beginPath(); c.ellipse(122, 214, 17, 24, 0, 0, 7); c.fill(); c.fillStyle = '#f2c9ad'; c.beginPath(); c.arc(122, 178, 15, 0, 7); c.fill();
     c.fillStyle = '#3a2018'; c.beginPath(); c.arc(124, 172, 15, Math.PI, 0); c.fill(); c.beginPath(); c.ellipse(139, 186, 6, 16, -.3, 0, 7); c.fill(); c.fillStyle = '#ffd36a'; c.fillRect(132, 165, 8, 6);
-    c.fillStyle = 'rgba(20,12,16,.35)'; c.beginPath(); c.arc(150, 150, 22, 0, 7); c.fill(); c.beginPath(); c.ellipse(170, 165, 8, 22, -.4, 0, 7); c.fill(); }) }), false, false), .55, .875, FZ - .005);
+    c.fillStyle = 'rgba(20,12,16,.35)'; c.beginPath(); c.arc(150, 150, 22, 0, 7); c.fill(); c.beginPath(); c.ellipse(170, 165, 8, 22, -.4, 0, 7); c.fill(); }) }), false, false), .55, .875, FZ + .004);
   const door = new THREE.Group(); door.position.set(.125, 0, FZ + .03); g.add(door);
   add(door, mesh(G.rbox(.85, 1.75, .06, .02), clay('#2e4a3e'), false, true), .425, .875, 0);
   add(door, mesh(G.plane(.55, .9), new THREE.MeshStandardMaterial({ color: '#f4d8a8', emissive: '#ffcf8a', emissiveIntensity: .3, roughness: .2 }), false, false), .425, 1.15, .035);
