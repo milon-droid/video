@@ -541,7 +541,7 @@ const hemi = night.g.children.find(o => o.isHemisphereLight);
 function nightDoor(lampOn, door = true) { useSet('night'); night.neon.visible = false; mdoor.visible = door; if (benchN) benchN.visible = !door;
   porch.intensity = 7 * lampOn; lanternBulb.visible = lampOn > .5; night.sp.intensity = door ? 30 : 95; hemi.intensity = lerp(.1, .7, lampOn); }
 // 12. Тени тянутся поцеловаться — хозяевам надо наклониться… фонарь гаснет
-S.S12 = (t, T) => { hideAll(); const OFF = lt('l2') - .45, ON = (window.EP2_PART === 'Q' || window.EP2_PART === 'R') ? 1e9 : lt('l2') + DURS.l2 + .2;
+S.S12 = (t, T) => { hideAll(); const OFF = lt('l2') - .45, ON = ['Q', 'R', 'QE', 'RE'].includes(window.EP2_PART) ? 1e9 : lt('l2') + DURS.l2 + .2;
   const fl = t > OFF - .5 && t < OFF ? (Math.sin(t * 60) > .2 ? 1 : .3) : 1; const lamp = t < OFF ? fl : t > ON ? (t < ON + .3 ? (Math.sin(t * 50) > 0 ? 1 : .3) : 1) : 0; nightDoor(lamp);
   const lean = ease(t, lt('l4') + .5, OFF, sm);
   put(hero, DX2 - .6, -1.3, Math.PI / 2 - .3, { ...POSE.stand, lean: lean * .35, headX: -lean * .1, aL: [.1, .2, .3], aR: [.1, -.2, .3] }, t, { expr: t > ON ? 'surprised' : 'calm', wide: t > ON, smile: t > ON ? 0 : .6, lookX: .7, lid: t > ON ? 0 : lean * .6, mouth: t > ON ? .5 : 0 });
@@ -812,7 +812,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0); hemi.intensity = .08; car.visible = 
   applyPose(miaSh, t > ms ? { ...POSE.stand, aL: [1.0, .4, 2.4], aR: [.2, -.2, .4], headZ: .15 } : { ...POSE.scared }, t, { mood: t > ms ? 'sad' : 'wide', look: 1 }, 7);
   placeShade(miaSh, { x: DX2 - .1, z: WN + .07, rise: 1, scale: 1.3, turn: t > ms ? 0 : -Math.PI / 2, op: shOp }); miaSh.holder.position.y = .3;
   // самовольная тень: выползает из открытой двери по асфальту (лежит) → поднимается на стену → огромная, разминает шею
-  const OWN = window.EP2_PART === 'R';
+  const OWN = window.EP2_PART === 'R' || window.EP2_PART === 'RE';
   if (OWN) { const dp = wpos(car.userData.door); const w = ease(t, 3.0, 4.4, sm); exMan.root.visible = t > 2.9; const mx = lerp(dp.x - .3, DX2 + 1.4, w), mz = lerp(dp.z + .3, .2, w);
     put(exMan, mx, mz, -Math.PI / 2 - .5, t < 4.4 ? walk(w * 3.5) : { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1 + Math.sin(t * 10) * .3 * (t > 5.2 ? 1 : 0)], headZ: Math.sin(Math.max(0, t - 4.4) * 5) * .25 * (t < 5.4 ? 1 : 0) }, t, { expr: 'angry', smile: .3, mouth: talkG(T, 'ex1') }, 0, 61); }
   const crawl = OWN ? 0 : ease(t, 3.0, 3.9, sm), rise = OWN ? ease(t, 2.95, 3.2) : ease(t, 3.8, 4.4, back), slideX = OWN ? lerp(DX2 + 2.0, DX2 + .9, ease(t, 3.0, 4.4, sm)) : lerp(cx + .1, DX2 + .9, ease(t, 3.0, 4.4, sm));
@@ -825,7 +825,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0); hemi.intensity = .08; car.visible = 
   FX = { fy: .42, fw: .38, blur: 5, bloom: .6, warm: -.05 };
   return () => { if (t < .4) { ctx.fillStyle = `rgba(0,0,8,${.55 * (1 - t / .4)})`; ctx.fillRect(0, 0, 1080, 1920); }
     if (lit > 0) { car.userData.lights.forEach(b => { const p = wpos(b); const [x, y] = toScreen(p.x, p.y, p.z); const g = ctx.createRadialGradient(x, y, 3, x, y, 110); g.addColorStop(0, `rgba(255,248,220,${.9 * lit})`); g.addColorStop(1, 'rgba(255,240,200,0)'); ctx.fillStyle = g; ctx.fillRect(x - 130, y - 130, 260, 260); }); }
-    if (window.EP2_PART !== 'R' && t > 2.6 && t < 3.4) { ctx.save(); ctx.font = '800 46px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd36a'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 10; ctx.strokeText('*empty seat*', 540, 1520); ctx.fillText('*empty seat*', 540, 1520); ctx.restore(); }
+    if (!OWN && t > 2.6 && t < 3.4) { ctx.save(); ctx.font = '800 46px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd36a'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 10; ctx.strokeText('*empty seat*', 540, 1520); ctx.fillText('*empty seat*', 540, 1520); ctx.restore(); }
     drawLines(T, { ms1: { y: 400, n: 18 }, ex1: { y: 1440, size: 76, n: 16 }, sh1: { y: 400, size: 100 } }); };
 };
 // заставка: экран боя файтинга — две тени, полоски здоровья, VS, ROUND 1… FIGHT!

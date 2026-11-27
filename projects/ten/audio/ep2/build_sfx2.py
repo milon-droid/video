@@ -75,6 +75,10 @@ def main_sfx():
     lib(AT['s10'], "move-spring", .5, rate=1.4)
 
 def variants():
+    if PART in ('QE', 'RE'):
+        amb('S12', 'S12', "oc-AMBForst_Night_LOOP_01", .28); OFF = AT['l2'] - .45
+        for i in range(4): lib(OFF - .5 + i * .12, "mechanical-switch-light", .4)
+        lib(OFF, "mechanical-switch-heavy", .7); lib(OFF + .02, "digital-interference", .25)
     if PART == 'A':
         amb('XA', 'XA', "oc-AMBForst_Night_LOOP_01", .28); t0 = ST['XA']; lib(t0 + .4, "oc-DOORGlas_GlassDoorOpen_OS_01", .7, align="start"); lib(t0 + .45, "impact-heavy-firm", .6)
         for i in range(6): lib(AT['x1'] + D['x1'] - .3 + i * .18, "click-latch-firm", .5)
@@ -98,13 +102,13 @@ def variants():
     if PART == 'P':
         amb('XP', 'XP', "oc-AMBHome_RoomTone_LOOP_01", .3); lib(AT['mp1'] - .8, "props-doorbell", .0); lib(AT['sp1'] + .6, "shimmer-long-soft", .3, align="start"); lib(AT['sp1'] + .6, "time-clock-fast", .3, align="start")
         lib(ST['KP'] - .4, "whoosh-slow-soft", .6, align="start")
-    if PART in 'QR':
+    if PART in ('Q', 'R', 'QE', 'RE'):
         t0 = ST['XQ']; lib(t0 + .2, "whoosh-slow-soft", .5, align="start"); lib(t0 + .5, "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .0, dur=.1)
         for k in range(6): lib(t0 + .3 + k * .28, "oc-FEETHmn_ShoeConcreteLand_OS_01", .0)
         lib(t0 + 2.0, "impact-heavy-soft", .5); lib(t0 + 2.6, "oc-DOORGlas_GlassDoorOpen_OS_01", .5, align="start"); lib(t0 + 3.0, "transform-stretch", .6, align="start")
         lib(t0 + 4.3, "impact-deep-hard", .7); lib(AT['sh1'] + .4, "pop-large-in", .5)
         k0 = ST['KQ']; lib(k0 + .1, "impact-deep-hard", .8); lib(k0 + 1.2, "impact-heavy-firm", .7); lib(k0 + 2.2, "cinematic-slam-big", .8, align="start")
-    if PART in 'NOPQR':
+    if PART in ('N', 'O', 'P', 'Q', 'R', 'QE', 'RE'):
         json.dump(C, open(os.path.join(R0, 'sfx2-%s.json' % PART), 'w'), indent=0); return
     if PART == 'D': lib(AT['wf1'] - .3, "whoosh-fast-soft", .45, align="start")
     if PART == 'E':

@@ -113,10 +113,15 @@ def main_music():
     put(boom(.7, 1.4), OFF, .45, 0, .2)
     # финал: свет снова зажёгся — короткий «упс»-аккорд и щипки
     ON = AT['l2'] + D['l2'] + .2
-    if PART in 'QR': return
+    if PART in ('Q', 'R', 'QE', 'RE'): return
     put(pluck(hz('E4'), .4, .8), ON, .35, 0, .2); put(pluck(hz('C4'), .5, .8), ON + .25, .3, 0, .2); chord(['F3', 'Ab3', 'C4'], ON, DUR - ON + .5, .2, 0, 1500)
 
 def variants():
+    if PART in ('QE', 'RE'):
+        t0 = sh('S12'); OFF = AT['l2'] - .45
+        chord(['D3', 'F3', 'A3', 'C4'], t0, OFF - t0 + .1, .2, 0, 1400)
+        for k in range(int((OFF - (t0 + 1.2)) / .6)): put(heart(.8), t0 + 1.2 + k * max(.42, .65 - k * .04), .45, 0, .1)
+        put(boom(.7, 1.4), OFF, .45, 0, .2)
     if PART == 'A':  # «Папа»: удар, низкие струны, бег-щипки
         t0 = sh('XA'); put(boom(.9, 2.0), t0 + .4, .55, 0, .3); put(drone(hz('C2'), SH_('XA'), 1.), t0 + .4, .5, 0, .3); chord(['C3', 'Eb3', 'Gb3', 'A3'], t0 + .4, SH_('XA') - .4, .2, 0, 1300)
         for k in range(8): put(heart(.9), AT['x1'] + D['x1'] + .1 + k * .45, .5, 0, .1)
@@ -150,7 +155,7 @@ def variants():
     if PART == 'P':
         t0 = sh('XP'); comic(t0, AT['mp1'] - .2, 104, .6); put(boom(.8, 1.6), AT['sp1'] - .05, .5, 0, .2); put(drone(hz('D2'), end('XP') - AT['sp1'] + 3, 1.), AT['sp1'], .5, 0, .3)
         for k in range(int((DUR - AT['sp1']) / .5)): put(tick(.6, 1700), AT['sp1'] + .6 + k * .5, .25, 0, .1)
-    if PART in 'QR':  # фары → тяжёлый бит → удар на «Hands off» → гонг ROUND 1 → FIGHT!
+    if PART in ('Q', 'R', 'QE', 'RE'):  # фары → тяжёлый бит → удар на «Hands off» → гонг ROUND 1 → FIGHT!
         t0 = sh('XQ'); put(riser(2.0, .6), t0, .3, 0, .3); put(bass(hz('E1'), 1.5), t0 + 2.0, .6, 0, .1)
         for k in range(int((end('XQ') - t0 - 2.0) / .5)): put(kick(.9), t0 + 2.0 + k * .5, .35, 0, 0); put(hat(.7), t0 + 2.25 + k * .5, .2, .3, 0)
         put(boom(.8, 1.6), t0 + 3.8, .5, 0, .3); put(boom(.7, 1.2), AT['ex1'] - .05, .5, 0, .2); put(riser(1.0, .6), AT['sh1'] - .2, .3, 0, .3)
