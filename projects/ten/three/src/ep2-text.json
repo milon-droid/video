@@ -1,23 +1,55 @@
 {
-"a1": [
+"h1": [
 "senya_en",
-"My shadow has a crush."
+"Our shadows are making out."
 ],
-"a2": [
+"h2": [
+"mia_en",
+"We met five minutes ago."
+],
+"fb1": [
 "senya_en",
-"Guess who has to ask her out."
+"Last night he saw her shadow..."
 ],
-"a3": [
+"fb2": [
+"senya_en",
+"...and ran like a little bitch."
+],
+"b9": [
 "shadow2_en",
-"Move, Sam!"
+"Tactical retreat."
 ],
-"b1": [
+"b10": [
 "senya_en",
-"Term five: introduce him to her owner."
+"Tactical? You squealed like a kettle."
 ],
-"b2": [
+"b11": [
 "shadow2_en",
-"Today. Or I quit again."
+"...Shut up. She's out of my league."
+],
+"b12": [
+"senya_en",
+"Aww. The big bad shadow has a crush."
+],
+"b13": [
+"shadow2_en",
+"Term five: introduce me. Or I quit — and you fade."
+],
+"b3": [
+"senya_en",
+"Term FIVE?! You keep adding terms!"
+],
+"b4": [
+"shadow2_en",
+"Read the fine print, bitch."
+],
+"b14": [
+"senya_en",
+"Wow. Manipulation again?"
+],
+"b15": [
+"shadow2_en",
+"...Sorry. I really like her, man. Please."
 ],
 "c1": [
 "shadow2_en",
@@ -27,21 +59,53 @@
 "senya_en",
 "Dude, you're a shadow. Everything you wear is black."
 ],
-"c3": [
+"c5": [
 "shadow2_en",
-"Black is slimming."
+"Black is slimming. You should try it."
 ],
-"d1": [
-"narrator_en",
-"Rule number two. In daylight, a shadow copies its owner."
+"ct1": [
+"shadow2_en",
+"Hat. Definitely hat."
 ],
-"d2": [
+"ct2": [
+"shadow2_en",
+"Pixel, you little shit!"
+],
+"d3": [
 "narrator_en",
-"When anyone's looking."
+"Rule number two. A shadow can't leave its owner's side."
+],
+"d4": [
+"narrator_en",
+"Unless it quits."
+],
+"s1": [
+"shadow2_en",
+"Ponytail... ponytail..."
+],
+"s2": [
+"shadow2_en",
+"Pixel?! Go home."
+],
+"s3": [
+"shadow2_en",
+"A broom. Seriously?"
+],
+"s4": [
+"shadow2_en",
+"THERE. Café Luna."
+],
+"p1": [
+"senya_en",
+"Nope. I can't do this."
+],
+"p2": [
+"shadow2_en",
+"Move your ass, Romeo!"
 ],
 "e1": [
 "shadow2_en",
-"That's her. Ponytail. Ten out of ten."
+"Ponytail. Ten out of ten."
 ],
 "e2": [
 "senya_en",
@@ -51,6 +115,10 @@
 "shadow2_en",
 "Both, dumbass. Go!"
 ],
+"e4": [
+"shadow2_en",
+"Fucking leash. WALK!"
+],
 "f1": [
 "senya_en",
 "Hi. Is this seat... taken?"
@@ -59,21 +127,21 @@
 "mia_en",
 "It is now."
 ],
-"g1": [
+"g4": [
 "shadow2_en",
-"Lean in."
+"Lean in, coward."
 ],
-"g2": [
+"g5": [
 "shadow2_en",
-"Closer..."
+"Closer, Casanova. Jesus."
 ],
 "g3": [
 "senya_en",
 "Shit! Sorry!"
 ],
-"h1": [
+"h3": [
 "shadow2_en",
-"Now. Her hand."
+"Her hand. Not like a dead fish!"
 ],
 "i1": [
 "mia_en",
@@ -81,7 +149,7 @@
 ],
 "i2": [
 "senya_en",
-"Did your shadow just tell you to touch my hand?"
+"Did your shadow just tell you that?"
 ],
 "i3": [
 "mia_en",
@@ -89,7 +157,7 @@
 ],
 "j1": [
 "mia_en",
-"Mine dragged me here. Three blocks."
+"Mine dragged me three blocks."
 ],
 "j2": [
 "senya_en",
@@ -103,13 +171,13 @@
 "senya_en",
 "Sam."
 ],
-"k1": [
+"k3": [
 "senya_en",
-"We talked for three hours."
+"Three hours."
 ],
-"k2": [
+"k4": [
 "senya_en",
-"The shadows never stopped dancing."
+"They didn't come up for air."
 ],
 "l1": [
 "shadow2_en",
@@ -127,20 +195,20 @@
 "mia_en",
 "...without them."
 ],
-"m3": [
+"q1": [
+"mshadow_en",
+"I quit too."
+],
+"q2": [
 "shadow2_en",
-"Without WHO?!"
+"Oh, hell yes."
 ],
-"n1": [
+"r1": [
+"mia_en",
+"Wait... where's my shadow?!"
+],
+"r2": [
 "senya_en",
-"Stargazing. Zero light. Zero shadows."
-],
-"n2": [
-"shadow2_en",
-"You sneaky little shit."
-],
-"o1": [
-"senya_en",
-"Should I go... without him?"
+"...Oh, fuck."
 ]
 }

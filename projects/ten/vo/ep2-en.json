@@ -15,38 +15,90 @@
   "mia_en": {
    "instruct": "Young woman in her early twenties, warm and witty, a little shy but playful, bright smile in the voice, quick natural delivery, clear casual American English.",
    "ref": "Okay, I know this sounds weird, but I swear I'm usually way less awkward than this. Usually."
+  },
+  "mshadow_en": {
+   "instruct": "Playful, sultry young female voice, early twenties, confident and teasing, smooth and warm, quick comedic timing, clear casual American English.",
+   "ref": "Oh, relax. I've been watching you two for an hour. It's adorable."
   }
  },
  "lines": [
   {
-   "id": "a1",
+   "id": "h1",
    "role": "senya_en",
-   "text": "My shadow has a crush.",
-   "say": "My shadow has a crush."
+   "text": "Our shadows are making out.",
+   "say": "Our shadows are making out."
   },
   {
-   "id": "a2",
-   "role": "senya_en",
-   "text": "Guess who has to ask her out.",
-   "say": "Guess who has to ask her out."
+   "id": "h2",
+   "role": "mia_en",
+   "text": "We met five minutes ago.",
+   "say": "We met five minutes ago."
   },
   {
-   "id": "a3",
+   "id": "fb1",
+   "role": "senya_en",
+   "text": "Last night he saw her shadow...",
+   "say": "Last night he saw her shadow..."
+  },
+  {
+   "id": "fb2",
+   "role": "senya_en",
+   "text": "...and ran like a little bitch.",
+   "say": "...and ran like a little bitch."
+  },
+  {
+   "id": "b9",
    "role": "shadow2_en",
-   "text": "Move, Sam!",
-   "say": "Move, Sam!"
+   "text": "Tactical retreat.",
+   "say": "Tactical retreat."
   },
   {
-   "id": "b1",
+   "id": "b10",
    "role": "senya_en",
-   "text": "Term five: introduce him to her owner.",
-   "say": "Term five. Introduce him... to her owner."
+   "text": "Tactical? You squealed like a kettle.",
+   "say": "Tactical? You squealed like a kettle."
   },
   {
-   "id": "b2",
+   "id": "b11",
    "role": "shadow2_en",
-   "text": "Today. Or I quit again.",
-   "say": "Today. Or I quit again."
+   "text": "...Shut up. She's out of my league.",
+   "say": "...Shut up. She's out of my league."
+  },
+  {
+   "id": "b12",
+   "role": "senya_en",
+   "text": "Aww. The big bad shadow has a crush.",
+   "say": "Aww. The big bad shadow has a crush."
+  },
+  {
+   "id": "b13",
+   "role": "shadow2_en",
+   "text": "Term five: introduce me. Or I quit — and you fade.",
+   "say": "Term five: introduce me. Or I quit — and you fade."
+  },
+  {
+   "id": "b3",
+   "role": "senya_en",
+   "text": "Term FIVE?! You keep adding terms!",
+   "say": "Term FIVE?! You keep adding terms!"
+  },
+  {
+   "id": "b4",
+   "role": "shadow2_en",
+   "text": "Read the fine print, bitch.",
+   "say": "Read the fine print, bitch."
+  },
+  {
+   "id": "b14",
+   "role": "senya_en",
+   "text": "Wow. Manipulation again?",
+   "say": "Wow. Manipulation again?"
+  },
+  {
+   "id": "b15",
+   "role": "shadow2_en",
+   "text": "...Sorry. I really like her, man. Please.",
+   "say": "...Sorry. I really like her, man. Please."
   },
   {
    "id": "c1",
@@ -61,28 +113,76 @@
    "say": "Dude. You're a shadow. Everything you wear is black."
   },
   {
-   "id": "c3",
+   "id": "c5",
    "role": "shadow2_en",
-   "text": "Black is slimming.",
-   "say": "Black is slimming."
+   "text": "Black is slimming. You should try it.",
+   "say": "Black is slimming. You should try it."
   },
   {
-   "id": "d1",
-   "role": "narrator_en",
-   "text": "Rule number two. In daylight, a shadow copies its owner.",
-   "say": "Rule number two. In daylight... a shadow copies its owner."
+   "id": "ct1",
+   "role": "shadow2_en",
+   "text": "Hat. Definitely hat.",
+   "say": "Hat. Definitely hat."
   },
   {
-   "id": "d2",
+   "id": "ct2",
+   "role": "shadow2_en",
+   "text": "Pixel, you little shit!",
+   "say": "Pixel, you little shit!"
+  },
+  {
+   "id": "d3",
    "role": "narrator_en",
-   "text": "When anyone's looking.",
-   "say": "When anyone's looking."
+   "text": "Rule number two. A shadow can't leave its owner's side.",
+   "say": "Rule number two. A shadow can't leave its owner's side."
+  },
+  {
+   "id": "d4",
+   "role": "narrator_en",
+   "text": "Unless it quits.",
+   "say": "Unless it quits."
+  },
+  {
+   "id": "s1",
+   "role": "shadow2_en",
+   "text": "Ponytail... ponytail...",
+   "say": "Ponytail... ponytail..."
+  },
+  {
+   "id": "s2",
+   "role": "shadow2_en",
+   "text": "Pixel?! Go home.",
+   "say": "Pixel?! Go home."
+  },
+  {
+   "id": "s3",
+   "role": "shadow2_en",
+   "text": "A broom. Seriously?",
+   "say": "A broom. Seriously?"
+  },
+  {
+   "id": "s4",
+   "role": "shadow2_en",
+   "text": "THERE. Café Luna.",
+   "say": "THERE. Café Luna."
+  },
+  {
+   "id": "p1",
+   "role": "senya_en",
+   "text": "Nope. I can't do this.",
+   "say": "Nope. I can't do this."
+  },
+  {
+   "id": "p2",
+   "role": "shadow2_en",
+   "text": "Move your ass, Romeo!",
+   "say": "Move your ass, Romeo!"
   },
   {
    "id": "e1",
    "role": "shadow2_en",
-   "text": "That's her. Ponytail. Ten out of ten.",
-   "say": "That's her. Ponytail. Ten out of ten."
+   "text": "Ponytail. Ten out of ten.",
+   "say": "Ponytail. Ten out of ten."
   },
   {
    "id": "e2",
@@ -97,6 +197,12 @@
    "say": "Both, dumbass. Go!"
   },
   {
+   "id": "e4",
+   "role": "shadow2_en",
+   "text": "Fucking leash. WALK!",
+   "say": "Fucking leash. WALK!"
+  },
+  {
    "id": "f1",
    "role": "senya_en",
    "text": "Hi. Is this seat... taken?",
@@ -109,16 +215,16 @@
    "say": "It is now."
   },
   {
-   "id": "g1",
+   "id": "g4",
    "role": "shadow2_en",
-   "text": "Lean in.",
-   "say": "Lean in."
+   "text": "Lean in, coward.",
+   "say": "Lean in, coward."
   },
   {
-   "id": "g2",
+   "id": "g5",
    "role": "shadow2_en",
-   "text": "Closer...",
-   "say": "Closer..."
+   "text": "Closer, Casanova. Jesus.",
+   "say": "Closer, Casanova. Jesus."
   },
   {
    "id": "g3",
@@ -127,10 +233,10 @@
    "say": "Shit! Sorry!"
   },
   {
-   "id": "h1",
+   "id": "h3",
    "role": "shadow2_en",
-   "text": "Now. Her hand.",
-   "say": "Now. Her hand."
+   "text": "Her hand. Not like a dead fish!",
+   "say": "Her hand. Not like a dead fish!"
   },
   {
    "id": "i1",
@@ -141,8 +247,8 @@
   {
    "id": "i2",
    "role": "senya_en",
-   "text": "Did your shadow just tell you to touch my hand?",
-   "say": "Wait. Did your shadow just tell you to touch my hand?"
+   "text": "Did your shadow just tell you that?",
+   "say": "Did your shadow just tell you that?"
   },
   {
    "id": "i3",
@@ -153,8 +259,8 @@
   {
    "id": "j1",
    "role": "mia_en",
-   "text": "Mine dragged me here. Three blocks.",
-   "say": "Mine dragged me here. Three blocks."
+   "text": "Mine dragged me three blocks.",
+   "say": "Mine dragged me three blocks."
   },
   {
    "id": "j2",
@@ -175,16 +281,16 @@
    "say": "Sam."
   },
   {
-   "id": "k1",
+   "id": "k3",
    "role": "senya_en",
-   "text": "We talked for three hours.",
-   "say": "We talked for three hours."
+   "text": "Three hours.",
+   "say": "Three hours."
   },
   {
-   "id": "k2",
+   "id": "k4",
    "role": "senya_en",
-   "text": "The shadows never stopped dancing.",
-   "say": "The shadows... never stopped dancing."
+   "text": "They didn't come up for air.",
+   "say": "They didn't come up for air."
   },
   {
    "id": "l1",
@@ -211,28 +317,28 @@
    "say": "...without them."
   },
   {
-   "id": "m3",
+   "id": "q1",
+   "role": "mshadow_en",
+   "text": "I quit too.",
+   "say": "I quit too."
+  },
+  {
+   "id": "q2",
    "role": "shadow2_en",
-   "text": "Without WHO?!",
-   "say": "Without WHO?!"
+   "text": "Oh, hell yes.",
+   "say": "Oh, hell yes."
   },
   {
-   "id": "n1",
+   "id": "r1",
+   "role": "mia_en",
+   "text": "Wait... where's my shadow?!",
+   "say": "Wait... where's my shadow?!"
+  },
+  {
+   "id": "r2",
    "role": "senya_en",
-   "text": "Stargazing. Zero light. Zero shadows.",
-   "say": "Stargazing. Zero light. Zero shadows."
-  },
-  {
-   "id": "n2",
-   "role": "shadow2_en",
-   "text": "You sneaky little shit.",
-   "say": "You sneaky... little shit."
-  },
-  {
-   "id": "o1",
-   "role": "senya_en",
-   "text": "Should I go... without him?",
-   "say": "Should I go... without him?"
+   "text": "...Oh, fuck.",
+   "say": "...Oh, fuck."
   }
  ]
 }

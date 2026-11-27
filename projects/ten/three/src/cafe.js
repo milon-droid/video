@@ -44,11 +44,11 @@ export const cafe = (() => {
   const chL = chair(-.52, Math.PI / 2), chR = chair(.52, -Math.PI / 2);
   // чашки, книга, вазочка
   const cup = (x, z, col) => { const c = new THREE.Group(); add(c, mesh(G.cyl(.045, .036, .08, 16), clay(col)), 0, .04, 0); add(c, mesh(G.cyl(.04, .04, .005, 16), clay('#7a4a2a')), 0, .078, 0); const hd = mesh(new THREE.TorusGeometry(.022, .007, 6, 12), clay(col)); hd.position.set(.05, .045, 0); c.add(hd); add(c, mesh(G.cyl(.07, .07, .01, 18), clay(col)), 0, .002, 0); add(g, c, x, .44, z); return c; };
-  const cupS = cup(-.18, TZ + .08, '#ffffff'), cupM = cup(.2, TZ + .1, '#f6c8d8');
+  const cupS = cup(-.18, TZ + .08, '#ffffff'), cupM = cup(.06, TZ + .1, '#f6c8d8');
   const book = new THREE.Group(); add(book, mesh(G.box(.16, .025, .22), clay('#3a5a9a')), 0, 0, 0); add(book, mesh(G.box(.15, .02, .21), clay('#f8f2e4')), .005, .004, 0); add(g, book, .16, .45, TZ - .14); book.rotation.y = .3;
   const vase = new THREE.Group(); add(vase, mesh(G.cyl(.03, .04, .1, 14), clay('#9ad0e8', { roughness: .2 })), 0, .05, 0); add(vase, mesh(G.cyl(.005, .005, .14, 6), clay('#3a8a4a')), 0, .15, 0); add(vase, mesh(G.sph(.035, 12), clay('#ff6a8a')), 0, .23, 0); add(g, vase, 0, .44, TZ - .2);
   // пятно пролитого кофе (показывается в сцене 7)
-  const spill = mesh(new THREE.CircleGeometry(.12, 24), clay('#6a3a1e', { roughness: .2 }), false, true); spill.rotation.x = -Math.PI / 2; add(g, spill, -.12, .439, TZ + .12); spill.visible = false;
+  const spill = mesh(new THREE.CircleGeometry(.12, 24), clay('#6a3a1e', { roughness: .2 }), false, true); spill.rotation.x = -Math.PI / 2; add(g, spill, .14, .439, TZ + .12); spill.visible = false;
   // стойка с кофемашиной справа
   const counter = new THREE.Group(); add(counter, mesh(G.rbox(1.6, .62, .5, .03), clay('#6a4a3a')), 0, .31, 0); add(counter, mesh(G.rbox(1.7, .05, .56, .02), clay('#e8e0d4')), 0, .64, 0);
   add(counter, mesh(G.rbox(.4, .32, .3, .04), clay('#c8ccd4', { metalness: .5, roughness: .3 })), -.3, .82, -.05); add(counter, mesh(G.cyl(.1, .1, .24, 16), clay('#f4ecd8', { roughness: .3 })), .35, .78, 0);
@@ -84,7 +84,14 @@ export const front = (() => {
   add(g, vit, -1.7, 1.25, FZ + .02); add(g, mesh(G.rbox(2.35, 1.65, .06, .02), clay('#2e4a3e')), -1.7, 1.25, FZ);
   // дверь
   // дверь на петлях (левый край x=.125), за ней — тёплый проём
-  add(g, mesh(G.plane(.85, 1.75), glow('#ffd49a', .9), false, false), .55, .875, FZ - .005);
+  // за дверью — зал кафе: тёплая стена, лампа, столик, девушка с хвостиком у окна
+  add(g, mesh(G.plane(.85, 1.75), new THREE.MeshBasicMaterial({ toneMapped: false, map: canvasTex(170, 350, (c, w, h) => {
+    const gr = c.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#ffe2b0'); gr.addColorStop(.62, '#f6c88a'); gr.addColorStop(.63, '#9a5a3a'); gr.addColorStop(1, '#6a3a24'); c.fillStyle = gr; c.fillRect(0, 0, w, h);
+    c.fillStyle = '#5a7a6a'; c.fillRect(0, 175, w, 45); c.fillStyle = '#e8a83a'; c.beginPath(); c.moveTo(60, 40); c.lineTo(100, 40); c.lineTo(112, 62); c.lineTo(48, 62); c.fill(); c.fillStyle = '#fff6d0'; c.beginPath(); c.arc(80, 66, 7, 0, 7); c.fill();
+    c.fillStyle = '#f2ece0'; c.beginPath(); c.ellipse(70, 232, 50, 9, 0, 0, 7); c.fill(); c.fillStyle = '#2a2a30'; c.fillRect(67, 236, 6, 50);
+    c.fillStyle = '#e8508a'; c.beginPath(); c.ellipse(122, 214, 17, 24, 0, 0, 7); c.fill(); c.fillStyle = '#f2c9ad'; c.beginPath(); c.arc(122, 178, 15, 0, 7); c.fill();
+    c.fillStyle = '#3a2018'; c.beginPath(); c.arc(124, 172, 15, Math.PI, 0); c.fill(); c.beginPath(); c.ellipse(139, 186, 6, 16, -.3, 0, 7); c.fill(); c.fillStyle = '#ffd36a'; c.fillRect(132, 165, 8, 6);
+    c.fillStyle = 'rgba(20,12,16,.35)'; c.beginPath(); c.arc(150, 150, 22, 0, 7); c.fill(); c.beginPath(); c.ellipse(170, 165, 8, 22, -.4, 0, 7); c.fill(); }) }), false, false), .55, .875, FZ - .005);
   const door = new THREE.Group(); door.position.set(.125, 0, FZ + .03); g.add(door);
   add(door, mesh(G.rbox(.85, 1.75, .06, .02), clay('#2e4a3e'), false, true), .425, .875, 0);
   add(door, mesh(G.plane(.55, .9), new THREE.MeshStandardMaterial({ color: '#f4d8a8', emissive: '#ffcf8a', emissiveIntensity: .3, roughness: .2 }), false, false), .425, 1.15, .035);

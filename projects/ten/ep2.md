@@ -28,3 +28,8 @@
   v1 без голоса: реплики текстом, музыка `audio/ep2/score2.py`, звуки `audio/ep2/build_sfx2.py` → `mix2-novo.wav`. Рендер `render/ep2-v1-video.mp4` → `shadow-quit-ep2-v1-novo.mp4`.
   Монтаж и время реплик — `three/src/ep2-lines.js` (`build(durs)`: план удлиняется под реплики); длительности — `audio/ep2/durs.py`.
   Сборка: `python3 audio/ep2/durs.py` → esbuild `src/ep2.js` → `dist/bundle-ep2.js` → render `index-ep2.html`; превью `bash three/sheet2.sh out.jpg t…`.
+- 2026-11-27 v2 (по отзыву, реестр `ep2-trebovaniya.md` п.3–17): холодное начало (тени целуются, хозяева деревянные) → ◀◀ REWIND → флэшбек LAST NIGHT
+  (тень удрала) → Sam троллит, тень стесняется → Term #5: угроза-манипуляция → «Manipulation again?» → «Sorry. I really like her, man. Please.» →
+  гэг с котом (Пиксель отбирает цилиндр) → правило №2 «A shadow can't leave its owner. *Unless it quits» → поиск (хвост Пикселя, метла, хвостик в окне)
+  → дверь (за ней зал) → кафе (одна чашка — Mia; рука-резина тени не дотягивается: «Fucking leash. WALK!») → прогулка: тени танцуют, дип, поцелуй
+  → ночь: фонарь гаснет → тень Mia увольняется и уходит к тени Sam → «Where's my shadow?!» → RULE #1: TILL SUNSET → «Will Mia make it to sunset?» (~1:59).

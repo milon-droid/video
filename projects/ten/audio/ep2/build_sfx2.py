@@ -9,60 +9,60 @@ C = []
 def lib(t, id, g=.7, **k): C.append({"t": round(t, 3), "type": "lib", "id": id, "gain": g, **k})
 def syn(t, ty, g=.6, **k): C.append({"t": round(t, 3), "type": ty, "gain": g, **k})
 def amb(k0, k1, id, g): lib(ST[k0], id, g, dur=round(end(k1) - ST[k0], 2), align="start")
-# переходы «тень-шторка»
-for k in ('S4', 'S5', 'S11', 'S12', 'S15'): lib(ST[k] - .4, "whoosh-slow-soft", .75, align="start")
-# 1 ХУК: улица, разворот, рывок за худи, толчок, дверь с колокольчиком
-amb('S1', 'S1', "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .22)
-for i in range(3): lib(.6 + i * .3, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .3, align="start")
-lib(1.25, "foley-fabric-slide", .8); lib(1.25, "move-spring", .35, rate=1.3); lib(1.27, "whoosh-fast-soft", .5, align="start")
-PUSH = AT['a3'] + .15; IN = PUSH + .35
+for k in ('FB', 'S4', 'SS', 'S5', 'S11', 'S12', 'S15'): lib(ST[k] - .4, "whoosh-slow-soft", .75, align="start")
+# H: зал, поцелуй теней, «перемотка»
+h = ST['H']; amb('H', 'H', "oc-CRWDConv_Restaurant_LOOP_01", .15); lib(h + .3, "shimmer-long-soft", .35, align="start")
+lib(end('H') - .8, "transform-stretch", .5, align="start", rate=1.6); lib(end('H') - .45, "whoosh-fast-hard", .55, align="start")
+# FB: ночь, шаги, «ой» и побег
+fb = ST['FB']; amb('FB', 'FB', "oc-AMBForst_Night_LOOP_01", .3)
+for i in range(4): lib(fb + .2 + i * .45, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .2, align="start")
+RUN = AT['fb2'] - .2; lib(RUN - .5, "pop-large-out", .5); lib(RUN, "whoosh-fast-soft", .7, align="start"); lib(RUN + .1, "move-spring", .3, rate=1.6)
+# S2–S2B коридор: смех Sam, записка шлёп, штамп
+amb('S2', 'S2B', "oc-AMBHome_RoomTone_LOOP_01", .3)
+lib(AT['b12'] + .1, "shimmer-medium-bright", .25, align="start")
+lib(AT['b13'] + .2, "foley-paper-touch", .7); lib(AT['b13'] + .22, "click-clap-medium", .4)
+lib(AT['b4'] - .05, "impact-heavy-firm", .7); lib(AT['b4'] - .05, "click-clap-firm", .4)
+# CAT: цилиндр «пуф», кот готовится, прыжок, удар, шипение, цилиндр на коте
+c = ST['CAT']; amb('CAT', 'CAT', "oc-AMBHome_RoomTone_LOOP_01", .3)
+lib(c + .15, "pop-large-in", .6); lib(c + 1.45, "whoosh-fast-medium", .6, align="start"); lib(c + 1.75, "foley-fabric-touch", .7); lib(c + 1.76, "impact-light-soft", .6)
+syn(c + 1.8, "hiss", .45, dur=.6, lo=2500, hi=8000, pulse=0); lib(c + 2.15, "impact-light-soft", .5); lib(c + 2.3, "pop-large-bubble", .5)
+# S4 правило
+lib(ST['S4'] + .1, "appear-flip-slow", .5, align="start"); lib(AT['d4'], "impact-heavy-firm", .7); lib(AT['d4'], "click-clap-firm", .35)
+# SS поиск: улица, быстрые шаги, кот, «нашёл»
+amb('SS', 'S1', "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .2)
+for i in range(int(SH['SS'] / .32)): lib(ST['SS'] + .1 + i * .32, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .18, align="start")
+syn(AT['s2'] + .3, "hiss", .35, dur=.5, lo=2500, hi=8000, pulse=0); lib(AT['s4'], "shimmer-long-sparkle", .5, align="start")
+# S1 дверь
+s1 = ST['S1']; lib(s1 + 1.2, "foley-fabric-slide", .8); lib(s1 + 1.2, "move-spring", .35, rate=1.3)
+PUSH = max(s1 + 2.4, AT['p2'] + .1); IN = PUSH + .4
 lib(PUSH, "whoosh-fast-hard", .6, align="start"); lib(PUSH + .05, "impact-light-soft", .6)
-lib(PUSH + .1, "oc-DOORGlas_GlassDoorOpen_OS_01", .55, align="start"); lib(PUSH + .15, "props-shop-bell", .6, align="start")
-lib(IN + .05, "pop-large-bubble", .5); lib(IN + .4, "shimmer-medium-bright", .3, align="start")
-# 2–3 коридор: тук-тук пальцем, штамп, цилиндр и бабочка «пуф», «ба-дум» на шутку
-s2 = ST['S2']; amb('S2', 'S3', "oc-AMBHome_RoomTone_LOOP_01", .3)
-for i in range(6): lib(s2 + .65 + i * .35, "click-latch-soft", .45)
-lib(AT['b2'] - .05, "impact-heavy-firm", .7); lib(AT['b2'] - .05, "click-clap-firm", .4)
-lib(AT['c1'] + .1, "pop-large-in", .6); lib(AT['c1'] + .12, "shimmer-medium-bright", .25, align="start")
-lib(AT['c2'] + .9, "pop-large-in", .55)
-syn(AT['c3'] + D['c3'] + .05, "boing", .25)
-# 4 правило: шелест карточки, штамп
-lib(ST['S4'] + .1, "appear-flip-slow", .5, align="start"); lib(AT['d2'], "impact-heavy-firm", .7); lib(AT['d2'], "click-clap-firm", .35)
-# 5–10 кафе: гул зала, кофемашина, страницы
-amb('S5', 'S10', "oc-CRWDConv_Restaurant_LOOP_01", .16)
-lib(ST['S5'] + .4, "oc-PAPRHndl_BookPageTurns_OS_01", .35, align="start")
-lib(ST['S5'] + 1.0, "shimmer-long-soft", .35, align="start")  # «влюбился»
-s6 = ST['S6']
-for i in range(5): lib(s6 + .15 + i * .42, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .25, align="start")
-lib(AT['f2'] + D['f2'] + .9, "foley-fabric-slide", .45)  # садится
-# 7 чашка: стук, падение, «плюх», пауза
-K = AT['g3'] - .3
-lib(K, "foley-glass-touch", .8); lib(K + .3, "oc-PLASImpt_PlasticCupDrop_OS_01", .55); syn(K + .32, "puff", .4)
-# 8 руки: касание — искра, отдёргивание
-TOUCH = ST['S8'] + 2.9
-lib(TOUCH, "shimmer-long-sparkle", .55, align="start"); lib(TOUCH + .35, "whoosh-fast-soft", .55, align="start"); lib(TOUCH + .36, "foley-fabric-touch", .5)
-# 9 поворот: тени замирают и насвистывают
-LOOK2 = AT['i3'] + D['i3'] + .2
-lib(LOOK2, "whoosh-fast-soft", .45, align="start")
-# 10 знакомство: рукопожатие, объятие теней, поднос
-SHAKE = AT['j4'] + .2; HUG = SHAKE + .3; DROP = HUG + .6
-lib(SHAKE, "click-clap-soft", .5); lib(HUG, "shimmer-long-bright", .45, align="start"); lib(HUG + .1, "whoosh-medium-soft", .45, align="start")
-for i in range(2): lib(ST['S10'] + 1.0 + i * .5, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i), .2, align="start")
+lib(PUSH + .1, "oc-DOORGlas_GlassDoorOpen_OS_01", .55, align="start"); lib(PUSH + .15, "props-shop-bell", .6, align="start"); lib(IN + .4, "shimmer-medium-bright", .3, align="start")
+# кафе
+amb('S5', 'S10', "oc-CRWDConv_Restaurant_LOOP_01", .15)
+lib(ST['S5'] + .3, "oc-PAPRHndl_BookPageTurns_OS_01", .3, align="start"); lib(ST['S5'] + .7, "shimmer-long-soft", .3, align="start")
+E4 = AT['e4']; lib(AT['e3'] + .3, "transform-stretch", .5, align="start"); lib(E4 + .5, "move-spring", .5); lib(E4 + .5, "whoosh-fast-soft", .45, align="start")
+for i in range(5): lib(ST['S6'] + .15 + i * .42, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .22, align="start")
+lib(AT['f2'] + D['f2'] + .9, "foley-fabric-slide", .45)
+K = AT['g3'] - .3; lib(K, "foley-glass-touch", .8); lib(K + .3, "oc-PLASImpt_PlasticCupDrop_OS_01", .55); syn(K + .32, "puff", .4)
+TOUCH = ST['S8'] + 2.9; lib(TOUCH, "shimmer-long-sparkle", .55, align="start"); lib(TOUCH + .35, "whoosh-fast-soft", .5, align="start"); lib(TOUCH + .4, "transform-stretch", .45, align="start", rate=1.4)
+LOOK2 = AT['i3'] + D['i3'] + .2; lib(LOOK2, "whoosh-fast-soft", .45, align="start")
+SHAKE = AT['j4'] + .2; HUG = SHAKE + .3; DROP = HUG + .6; KISS = HUG + 1.7
+lib(SHAKE, "click-clap-soft", .5); lib(HUG, "shimmer-long-bright", .45, align="start"); lib(HUG + .1, "whoosh-medium-soft", .45, align="start"); lib(KISS, "pop-large-bubble", .45)
 lib(DROP + .3, "oc-METLImpt_MetalObjDrop_OS_01", .75); lib(DROP + .35, "foley-glass-touch", .6); lib(DROP + .45, "oc-PLASImpt_PlasticCupDrop_OS_01", .5)
-# 11 закат: птицы, шаги
-amb('S11', 'S11', "oc-AMBForst_ForestBirds_OS_02", .25)
-for i in range(int(SH['S11'] / .55)): lib(ST['S11'] + .2 + i * .55, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .14, align="start")
-lib(ST['S11'] + 3.6, "shimmer-long-soft", .35, align="start")
-# 12–14 ночь: сверчки; фонарь мигает и гаснет; снова включается; дверь
-amb('S12', 'S14', "oc-AMBForst_Night_LOOP_01", .3)
+# S11 закат
+amb('S11', 'S11', "oc-AMBForst_ForestBirds_OS_02", .22)
+for i in range(int(SH['S11'] / .55)): lib(ST['S11'] + .2 + i * .55, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .12, align="start")
+lib(ST['S11'] + 1.6, "whoosh-medium-soft", .4, align="start"); lib(ST['S11'] + 5.2, "pop-large-bubble", .5); lib(ST['S11'] + 5.25, "shimmer-long-soft", .35, align="start")
+# ночь
+amb('S12', 'S14', "oc-AMBForst_Night_LOOP_01", .28)
 OFF = AT['l2'] - .45
 for i in range(4): lib(OFF - .5 + i * .12, "mechanical-switch-light", .4)
 lib(OFF, "mechanical-switch-heavy", .7); lib(OFF + .02, "digital-interference", .25)
 s13 = ST['S13']
 for i in range(3): lib(s13 + .05 + i * .12, "mechanical-switch-light", .4)
-lib(AT['m3'] + .8, "oc-DOORGlas_GlassDoorOpen_OS_01", .35, align="start"); lib(AT['m3'] + .1, "pop-large-out", .5)
-for i in range(int(SH['S14'] / .56)): lib(ST['S14'] + .2 + i * .56, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .22, align="start")
-# 15 финал: мягкий хвост
-lib(ST['S15'] + .2, "shimmer-long-soft", .3, align="start")
+GO = AT['m2'] + D['m2'] + .3; lib(GO + .9, "oc-DOORGlas_GlassDoorOpen_OS_01", .35, align="start"); lib(GO + 1.1, "transform-stretch", .5, align="start"); lib(GO + 1.6, "pop-large-bubble", .5)
+lib(AT['q1'] - .1, "shimmer-long-sparkle", .4, align="start")
+lib(AT['r1'] - .15, "mechanical-switch-light", .5); lib(AT['r2'] + D['r2'] + .2, "impact-heavy-firm", .7)
+lib(ST['S15'] + .2, "time-clock-fast", .2, align="start")
 json.dump(C, open(os.path.join(R0, 'sfx2.json'), 'w'), indent=0)
 print(len(C), 'звуков; длина', round(TM['total'], 2))
