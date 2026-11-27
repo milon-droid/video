@@ -64,22 +64,22 @@ def main_music():
     sneak(sh('CAT') + .6, sh('CAT') + 1.45, .8); put(riser(.4, .5), sh('CAT') + 1.05, .3, 0, .2); put(boom(.5, .8), sh('CAT') + 1.75, .35, 0, .1)
     for k, n in enumerate(['G4', 'F#4', 'F4', 'E4']): put(pluck(hz(n), .5, .5), sh('CAT') + 2.2 + k * .2, .3, 0, .2)
     # S4 правило
-    put(drone(hz('D2'), SH_('S4') + .5, .8), sh('S4'), .5, 0, .3)
-    for k in range(int(SH_('S4') / .5)): put(tick(.5, 1500 if k % 2 else 1900), sh('S4') + .25 + k * .5, .25, .3 if k % 2 else -.3, .1)
-    put(boom(.6, 1.6), AT['d4'], .4, 0, .3)
+    pass  # правило убрано: put(drone(hz('D2'), SH_('S4') + .5, .8),
+    pass  # правило убрано: for k in range(int(SH_('S4') / .5)): put
+    pass  # правило убрано: put(boom(.6, 1.6), AT['d4'], .4, 0, .3)
     # SS поиск: крадущийся шаг; «THERE» — блёстки
     sneak(sh('SS'), AT['s4'], 1.0)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7']): put(celesta(hz(n)), AT['s4'] + k * .08, .25, .3, .6)
     # S1 дверь: рывок, толчок, тёплый аккорд за дверью
     s1 = sh('S1'); PUSH = AT['p2'] + .3
-    put(swell(.5, .7), AT['p3'] + .55, .5, 0, .2); put(pluck(hz('C#3'), .3, .2), AT['p3'] + 1.0, .7, 0, .1)
+    put(swell(.5, .7), AT['p4'] + .55, .5, 0, .2); put(pluck(hz('C#3'), .3, .2), AT['p4'] + 1.0, .7, 0, .1)
     put(riser(.8, .6), PUSH - .8, .35, 0, .3); put(boom(.5, 1.0), PUSH, .5, 0, .2)
     chord(['F3', 'A3', 'C4', 'E4'], PUSH + .3, end('S1') - PUSH + .5, .22)
     for k, n in enumerate(['C5', 'F5', 'A5', 'C6']): put(celesta(hz(n)), PUSH + .45 + k * .12, .25, .3, .5)
     # S5–S10 кафе
     KNOCK = AT['g3'] - .3
     lounge(sh('S5') + .2, KNOCK, .9)
-    put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - AT['g1'], 1.5, .1, 2200), AT['g1'], .18, 0, .4); put(riser(KNOCK - AT['g1'] - .3, .5), AT['g1'] + .3, .2, 0, .3)
+    put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - AT['g7'], 1.5, .1, 2200), AT['g7'], .18, 0, .4); put(riser(KNOCK - AT['g7'] - .3, .5), AT['g7'] + .3, .2, 0, .3)
     TOUCH = sh('S8') + 2.9
     for k in range(8): put(pluck(hz(['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'][k]), .3, .6), sh('S8') + .9 + k * .25, .25, 0, .2)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7', 'E7']): put(celesta(hz(n)), TOUCH + k * .07, .22, .4 - k * .15, .6)

@@ -467,6 +467,62 @@
    "role": "senya_en",
    "text": "Morning, Speedy. Run far last night?",
    "say": "Morning, Speedy! ...Run far last night?"
+  },
+  {
+   "id": "b18",
+   "role": "senya_en",
+   "text": "Manipulation again?",
+   "say": "Manipulation again?",
+   "trimmed": true
+  },
+  {
+   "id": "p4",
+   "role": "senya_en",
+   "text": "I can't do this.",
+   "say": "I can't do this.",
+   "trimmed": true
+  },
+  {
+   "id": "s9",
+   "role": "shadow2_en",
+   "text": "Hey, gorgeous…",
+   "say": "Heyyy... gorgeous!"
+  },
+  {
+   "id": "s10",
+   "role": "shadow2_en",
+   "text": "Nope. Nope.",
+   "say": "Nope! Nope!"
+  },
+  {
+   "id": "p5",
+   "role": "shadow2_en",
+   "text": "Move your ass, Romeo!",
+   "say": "Move your ASS, Romeo!"
+  },
+  {
+   "id": "g7",
+   "role": "shadow2_en",
+   "text": "Lean in. Come on.",
+   "say": "Lean in... come on!"
+  },
+  {
+   "id": "g8",
+   "role": "shadow2_en",
+   "text": "Closer… closer!",
+   "say": "Closer... closer!"
+  },
+  {
+   "id": "l4",
+   "role": "shadow2_en",
+   "text": "Sam. Lean. LEAN!",
+   "say": "Sam! Lean! LEAN!!"
+  },
+  {
+   "id": "b19",
+   "role": "shadow2_en",
+   "text": "Ugh. It was a TACTICAL retreat.",
+   "say": "Ugh. It was a TACTICAL retreat."
   }
  ]
 }

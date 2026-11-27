@@ -7,35 +7,14 @@
 "align": "start"
 },
 {
-"t": 30.782,
+"t": 30.011,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.75,
 "align": "start"
 },
 {
-"t": 37.766,
-"type": "lib",
-"id": "whoosh-slow-soft",
-"gain": 0.75,
-"align": "start"
-},
-{
-"t": 48.966,
-"type": "lib",
-"id": "whoosh-slow-soft",
-"gain": 0.75,
-"align": "start"
-},
-{
-"t": 90.77,
-"type": "lib",
-"id": "whoosh-slow-soft",
-"gain": 0.75,
-"align": "start"
-},
-{
-"t": 101.27,
+"t": 93.515,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.75,
@@ -132,42 +111,42 @@
 "type": "lib",
 "id": "oc-AMBHome_RoomTone_LOOP_01",
 "gain": 0.3,
-"dur": 18.48,
+"dur": 17.71,
 "align": "start"
 },
 {
-"t": 12.1,
+"t": 12.801,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.25,
 "align": "start"
 },
 {
-"t": 17.85,
+"t": 18.551,
 "type": "lib",
 "id": "foley-paper-touch",
 "gain": 0.7
 },
 {
-"t": 17.87,
+"t": 18.571,
 "type": "lib",
 "id": "click-clap-medium",
 "gain": 0.4
 },
 {
-"t": 18.55,
+"t": 19.251,
 "type": "lib",
 "id": "impact-heavy-firm",
 "gain": 0.7
 },
 {
-"t": 18.55,
+"t": 19.251,
 "type": "lib",
 "id": "click-clap-firm",
 "gain": 0.4
 },
 {
-"t": 26.882,
+"t": 26.111,
 "type": "lib",
 "id": "oc-AMBHome_RoomTone_LOOP_01",
 "gain": 0.3,
@@ -175,32 +154,32 @@
 "align": "start"
 },
 {
-"t": 27.032,
+"t": 26.261,
 "type": "lib",
 "id": "pop-large-in",
 "gain": 0.6
 },
 {
-"t": 28.332,
+"t": 27.561,
 "type": "lib",
 "id": "whoosh-fast-medium",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 28.632,
+"t": 27.861,
 "type": "lib",
 "id": "foley-fabric-touch",
 "gain": 0.7
 },
 {
-"t": 28.642,
+"t": 27.871,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.6
 },
 {
-"t": 28.682,
+"t": 27.911,
 "type": "hiss",
 "gain": 0.45,
 "dur": 0.6,
@@ -209,38 +188,19 @@
 "pulse": 0
 },
 {
-"t": 29.032,
+"t": 28.261,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.5
 },
 {
-"t": 29.182,
+"t": 28.411,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.5
 },
 {
-"t": 31.282,
-"type": "lib",
-"id": "appear-flip-slow",
-"gain": 0.5,
-"align": "start"
-},
-{
-"t": 35.549,
-"type": "lib",
-"id": "impact-heavy-firm",
-"gain": 0.7
-},
-{
-"t": 35.549,
-"type": "lib",
-"id": "click-clap-firm",
-"gain": 0.35
-},
-{
-"t": 38.166,
+"t": 30.411,
 "type": "lib",
 "id": "oc-AMBUrbn_CityEuroDaytime_LOOP_01",
 "gain": 0.2,
@@ -248,198 +208,198 @@
 "align": "start"
 },
 {
-"t": 38.266,
+"t": 30.511,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 38.586,
+"t": 30.831,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 38.906,
+"t": 31.151,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 39.226,
+"t": 31.471,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 39.546,
+"t": 31.791,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 39.866,
+"t": 32.111,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 40.186,
+"t": 32.431,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 40.506,
+"t": 32.751,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 40.826,
+"t": 33.071,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 41.146,
+"t": 33.391,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 41.466,
+"t": 33.711,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 41.786,
+"t": 34.031,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 42.106,
+"t": 34.351,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 42.426,
+"t": 34.671,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 42.746,
+"t": 34.991,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 43.066,
+"t": 35.311,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 43.386,
+"t": 35.631,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 39.166,
+"t": 31.411,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 41.066,
+"t": 33.311,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.4
 },
 {
-"t": 42.466,
+"t": 34.711,
 "type": "wah",
 "gain": 0.3
 },
 {
-"t": 44.166,
+"t": 36.411,
 "type": "lib",
 "id": "shimmer-long-sparkle",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 46.766,
+"t": 39.011,
 "type": "lib",
 "id": "foley-fabric-slide",
 "gain": 0.8
 },
 {
-"t": 46.766,
+"t": 39.011,
 "type": "lib",
 "id": "move-spring",
 "gain": 0.35,
 "rate": 1.3
 },
 {
-"t": 47.851,
+"t": 39.811,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 47.901,
+"t": 39.861,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.6
 },
 {
-"t": 47.951,
+"t": 39.911,
 "type": "lib",
 "id": "oc-DOORGlas_GlassDoorOpen_OS_01",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 48.001,
+"t": 39.961,
 "type": "lib",
 "id": "props-shop-bell",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 49.001,
+"t": 40.961,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 49.366,
+"t": 41.611,
 "type": "lib",
 "id": "oc-CRWDConv_Restaurant_LOOP_01",
 "gain": 0.15,
@@ -447,183 +407,183 @@
 "align": "start"
 },
 {
-"t": 43.546,
+"t": 35.791,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 49.146,
+"t": 41.391,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 80.847,
+"t": 73.092,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 90.95,
+"t": 83.195,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 81.067,
+"t": 73.312,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 81.667,
+"t": 73.912,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 82.267,
+"t": 74.512,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 82.867,
+"t": 75.112,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 83.467,
+"t": 75.712,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 84.067,
+"t": 76.312,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 82.417,
+"t": 74.662,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.5
 },
 {
-"t": 82.467,
+"t": 74.712,
 "type": "lib",
 "id": "props-drip",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 49.666,
+"t": 41.911,
 "type": "lib",
 "id": "oc-PAPRHndl_BookPageTurns_OS_01",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 50.066,
+"t": 42.311,
 "type": "lib",
 "id": "shimmer-long-soft",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 51.968,
+"t": 44.213,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 53.916,
+"t": 46.161,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 54.336,
+"t": 46.581,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 54.756,
+"t": 47.001,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 55.176,
+"t": 47.421,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 55.596,
+"t": 47.841,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 58.564,
+"t": 50.809,
 "type": "lib",
 "id": "foley-fabric-slide",
 "gain": 0.45
 },
 {
-"t": 61.566,
+"t": 53.811,
 "type": "lib",
 "id": "foley-glass-touch",
 "gain": 0.8
 },
 {
-"t": 61.866,
+"t": 54.111,
 "type": "lib",
 "id": "oc-PLASImpt_PlasticCupDrop_OS_01",
 "gain": 0.55
 },
 {
-"t": 61.886,
+"t": 54.131,
 "type": "puff",
 "gain": 0.4
 },
 {
-"t": 66.866,
+"t": 59.111,
 "type": "lib",
 "id": "shimmer-long-sparkle",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 67.216,
+"t": 59.461,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 67.266,
+"t": 59.511,
 "type": "lib",
 "id": "transform-stretch",
 "gain": 0.45,
@@ -631,93 +591,93 @@
 "rate": 1.4
 },
 {
-"t": 73.13,
+"t": 65.375,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 84.917,
+"t": 77.162,
 "type": "lib",
 "id": "click-clap-soft",
 "gain": 0.5
 },
 {
-"t": 85.367,
+"t": 77.612,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.6
 },
 {
-"t": 85.417,
+"t": 77.662,
 "type": "lib",
 "id": "shimmer-long-bright",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 85.667,
+"t": 77.912,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 0.8
 },
 {
-"t": 86.117,
+"t": 78.362,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 0.9500000000000001
 },
 {
-"t": 86.567,
+"t": 78.812,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 1.1
 },
 {
-"t": 87.017,
+"t": 79.262,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 0.8
 },
 {
-"t": 87.467,
+"t": 79.712,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 0.9500000000000001
 },
 {
-"t": 87.917,
+"t": 80.162,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 1.1
 },
 {
-"t": 88.267,
+"t": 80.512,
 "type": "lib",
 "id": "oc-METLImpt_MetalObjDrop_OS_01",
 "gain": 0.75
 },
 {
-"t": 88.317,
+"t": 80.562,
 "type": "lib",
 "id": "foley-glass-touch",
 "gain": 0.6
 },
 {
-"t": 88.417,
+"t": 80.662,
 "type": "lib",
 "id": "oc-PLASImpt_PlasticCupDrop_OS_01",
 "gain": 0.5
 },
 {
-"t": 91.17,
+"t": 83.415,
 "type": "lib",
 "id": "oc-AMBForst_ForestBirds_OS_02",
 "gain": 0.22,
@@ -725,160 +685,160 @@
 "align": "start"
 },
 {
-"t": 91.37,
+"t": 83.615,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 91.92,
+"t": 84.165,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 92.47,
+"t": 84.715,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 93.02,
+"t": 85.265,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 93.57,
+"t": 85.815,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 94.12,
+"t": 86.365,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 94.67,
+"t": 86.915,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 95.22,
+"t": 87.465,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 95.77,
+"t": 88.015,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 96.32,
+"t": 88.565,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 96.87,
+"t": 89.115,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 97.42,
+"t": 89.665,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 97.97,
+"t": 90.215,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 98.52,
+"t": 90.765,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 99.07,
+"t": 91.315,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 99.62,
+"t": 91.865,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 100.17,
+"t": 92.415,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 100.72,
+"t": 92.965,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 101.27,
+"t": 93.515,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 92.77,
+"t": 85.015,
 "type": "lib",
 "id": "whoosh-medium-soft",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 96.37,
+"t": 88.615,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.5
 },
 {
-"t": 96.42,
+"t": 88.665,
 "type": "lib",
 "id": "shimmer-long-soft",
 "gain": 0.35,
 "align": "start"
 },
 {
-"t": 101.67,
+"t": 93.915,
 "type": "lib",
 "id": "oc-AMBForst_Night_LOOP_01",
 "gain": 0.28,
@@ -886,57 +846,153 @@
 "align": "start"
 },
 {
-"t": 104.92,
+"t": 97.165,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.4
 },
 {
-"t": 105.04,
+"t": 97.285,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.4
 },
 {
-"t": 105.16,
+"t": 97.405,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.4
 },
 {
-"t": 105.28,
+"t": 97.525,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.4
 },
 {
-"t": 105.42,
+"t": 97.665,
 "type": "lib",
 "id": "mechanical-switch-heavy",
 "gain": 0.7
 },
 {
-"t": 105.44,
+"t": 97.685,
 "type": "lib",
 "id": "digital-interference",
 "gain": 0.25
 },
 {
-"t": 107.68,
+"t": 99.925,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.45
 },
 {
-"t": 107.78,
+"t": 100.025,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.45
 },
 {
-"t": 107.88,
+"t": 100.125,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.45
+},
+{
+"t": 6.709,
+"type": "lib",
+"id": "oc-BIRDFowl_Chicken_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 73.912,
+"type": "lib",
+"id": "oc-BIRDFowl_Chicken_OS_01",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 75.112,
+"type": "lib",
+"id": "oc-BIRDFowl_Chicken_OS_01",
+"gain": 0.4,
+"align": "start",
+"rate": 1.2
+},
+{
+"t": 75.712,
+"type": "lib",
+"id": "foley-glass-touch",
+"gain": 0.45
+},
+{
+"t": 75.892,
+"type": "lib",
+"id": "foley-glass-touch",
+"gain": 0.45
+},
+{
+"t": 76.072,
+"type": "lib",
+"id": "foley-glass-touch",
+"gain": 0.45
+},
+{
+"t": 0.3,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.75
+},
+{
+"t": 0.85,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.87
+},
+{
+"t": 1.4,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.99
+},
+{
+"t": 1.95,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.75
+},
+{
+"t": 2.5,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.87
+},
+{
+"t": 3.05,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.99
+},
+{
+"t": 3.6,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.35,
+"rate": 0.75
+},
+{
+"t": 34.611,
+"type": "lib",
+"id": "move-spring",
+"gain": 0.5,
+"rate": 1.4
 }
 ]
