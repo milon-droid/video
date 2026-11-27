@@ -21,7 +21,7 @@
 | скиллы `remotion-best-practices`, `remotion-create`, `remotion-render`, `remotion-captions` | официальные скиллы движка Remotion — **см. ниже** |
 
 ### Сторонние видео-скиллы (установлены 2026-11-04)
-**2026-11-27 отключены (лежат в `.claude/skills-off/`, вернуть — перенести папку в `.claude/skills/`):** `vizavi-motion`, `video-use`, `video-understand`, `video-edit`, `animation-vocabulary`, `find-skills`, `real-sound`, `audio-mixing-mastering` — дублировали друг друга и наши `tools/`, а описание каждого скилла висит в каждом сообщении. Включены остались: `short-video`, `html-animation`, `voiceover`, `reference-research`, `after-video`, `video-by-reference`, `social`, `free-audio`, `remotion-*`.
+**2026-11-27 отключены (лежат в `.claude/skills-off/`, вернуть — перенести папку в `.claude/skills/`):** `vizavi-motion`, `video-use`, `video-understand`, `video-edit`, `animation-vocabulary`, `find-skills`, `audio-mixing-mastering` — дублировали друг друга и наши `tools/`, а описание каждого скилла висит в каждом сообщении. Включены остались: `short-video`, `html-animation`, `voiceover`, `reference-research`, `after-video`, `video-by-reference`, `social`, `free-audio`, `real-sound` (возвращён: применялся в ОДИНОЧКЕ v3, 2026-11-20), `remotion-*`.
 
 | Скилл | Движок | Когда брать |
 |-------|--------|-------------|
