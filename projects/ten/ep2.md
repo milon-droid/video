@@ -52,3 +52,7 @@
 - 2026-11-29 клиффхэнгеры-отрезки (с момента включения света): `render/shadow-quit-ep2-cliff-{D,E,F,G}.mp4` — D «Next time… without them» → тени «What the f—» → чёрный;
   E соседи аплодируют + вирусное видео → «Oh no. Not again.»; F помада на тени → утром не оттирается; G тень папы Mia на двери → «WHERE IS MY SHADOW?!» → «…Hi?».
   Сборка: `EP2_PART=D bash audio/ep2/mix2.sh`, страницы `index-ep2-{D..G}.html`. Исправлен баг mix2.sh: `echo "-E"` печатал пусто → затирался основной микс.
+- 2026-11-29 клиффхэнгеры v3 (ставка + вопрос в комменты): `render/shadow-quit-ep2-cliff-{N,O,P}.mp4` —
+  N «Next time… without them» → тени переглядываются, щурятся → заставка: глаза в темноте, мел «Final Episode», «Without us? …How cute.», «NO SHADOWS ALLOWED» перечёркнуто тенью, «Can Sam do it ALONE?»;
+  O бывший тени Mia («Hands off my girl, shorty.» — «Sam. Hold my hat.») → SHADOW FIGHT / «Team Shadow or Team Ex?»;
+  P утро: тени сбежали (записка «Back by sunset. Probably.»), Mia: «our shadows eloped», рука Sam тает, таймер TILL SUNSET → «Will they find them in time?». Ждём выбор.
