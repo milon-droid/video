@@ -61,6 +61,18 @@ export const cafe = (() => {
   // пятно солнца из окна на стене (тени-персонажи стоят в нём)
   const patch = mesh(G.plane(3.4, 2.2), new THREE.MeshBasicMaterial({ map: canvasTex(340, 220, (c) => { c.filter = 'blur(10px)'; c.fillStyle = 'rgba(255,214,150,.75)'; [[30, 20], [180, 20], [30, 115], [180, 115]].forEach(([x, y]) => c.fillRect(x, y, 135, 88)); }), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }), false, false);
   add(g, patch, .45, 1.45, WZ + .05);
+  // гирлянда под потолком, неоновая вывеска, часы, большой фикус, второй столик с посетителем, витрина с тортами
+  for (let i = 0; i < 18; i++) { const x = -2.3 + i * .32, y = 3.05 - Math.sin(i / 17 * Math.PI) * .25; add(g, mesh(G.sph(.035, 8), glow(['#ffd36a', '#ff8ab8', '#9ad8ff'][i % 3], 1.6), false, false), x, y, WZ + .12); }
+  const neonC = canvasTex(512, 160, (c) => { c.font = '700 110px Cav'; c.textAlign = 'center'; c.shadowColor = '#ff6ab0'; c.shadowBlur = 24; c.fillStyle = '#ffd0e8'; c.fillText('Luna ☾', 256, 120); });
+  add(g, mesh(G.plane(1.3, .4), new THREE.MeshBasicMaterial({ map: neonC, transparent: true, toneMapped: false }), false, false), -.9, 2.85, WZ + .06);
+  const clock = new THREE.Group(); add(clock, mesh(G.cyl(.16, .16, .03, 24), clay('#f6efe0')), 0, 0, 0); clock.children[0].rotation.x = Math.PI / 2; add(clock, mesh(G.box(.01, .1, .01), clay('#222')), 0, .04, .02); add(clock, mesh(G.box(.07, .01, .01), clay('#222')), .03, 0, .02); add(g, clock, 2.05, 2.75, WZ + .03);
+  const fic = new THREE.Group(); add(fic, mesh(G.cyl(.16, .12, .3, 16), clay('#c86a4a')), 0, .15, 0); [[0, .6, 0, .22], [.12, .8, .05, .18], [-.12, .78, -.04, .18], [0, 1.0, 0, .16], [.1, .45, .1, .14]].forEach(([x, y, z, r]) => add(fic, mesh(G.sph(r, 12), clay('#3a8a5a')), x, y, z)); add(g, fic, -2.2, 0, -1.2);
+  const t2 = new THREE.Group(); add(t2, mesh(G.cyl(.28, .28, .03, 24), clay('#f2ece0')), 0, .42, 0); add(t2, mesh(G.cyl(.025, .035, .4, 10), clay('#2a2a30')), 0, .2, 0); add(g, t2, -1.6, 0, .55);
+  const patron = makeToy({ skin: '#c88a64', hair: '#c8c8c8', top: '#6a7ab8', top2: '#4a5a98', pants: '#3a3a4a', shoes: '#2a2a2a', hood: false, eye: '#1a1210', blush: .2 }); patron.root.position.set(-1.95, -.135, .55); patron.root.rotation.y = Math.PI / 2;
+  patron.hips.rotation.x = 0; [patron.lL, patron.lR].forEach(l => { l.hp.rotation.x = -1.5; l.kn.rotation.x = 1.35; }); [patron.aL, patron.aR].forEach(a => { a.sh.rotation.x = -1.1; a.el.rotation.x = -.6; }); g.add(patron.root);
+  const paper = mesh(G.box(.02, .26, .36), clay('#efe8d8')); paper.position.set(-1.68, .62, .55); add(g, paper, -1.68, .62, .55);
+  [-.2, .2].forEach(x => add(g, mesh(G.cyl(.09, .09, .1, 16), clay(x < 0 ? '#f6c8d8' : '#8a4a2a')), 2.6 + x, .72, -.8));
+  add(g, mesh(G.rbox(.7, .25, .3, .03), clay('#bfe4ff', { roughness: .1, transparent: true, opacity: .4 })), 2.6, .78, -.8);
   reg('cafe', g, new THREE.Color('#2a1e1a'));
   return { g, sun, patch, wallZ: WZ, TX, TZ, chL, chR, cupS, cupM, book, vase, spill, barista, tray, counter };
 })();
@@ -104,6 +116,14 @@ export const front = (() => {
   const board = new THREE.Group(); const bt = mesh(G.box(.5, .7, .03), new THREE.MeshStandardMaterial({ map: canvasTex(100, 140, (c) => { c.fillStyle = '#26302c'; c.fillRect(0, 0, 100, 140); c.fillStyle = '#f0ece0'; c.font = '700 18px Cav'; c.textAlign = 'center'; ['TODAY:', 'first', 'dates', 'welcome ♥'].forEach((l, i) => c.fillText(l, 50, 30 + i * 28)); }) }));
   bt.rotation.x = -.18; add(board, bt, 0, .38, 0); add(g, board, 2.3, 0, FZ + .6); board.rotation.y = -.3;
   for (let i = 0; i < 8; i++) building(g, -16 + i * 4.4, -6, 3.6, 5 + h1(i + 70) * 4, 2.5, ['#f0a878', '#9ad0c8', '#e88a9a', '#a8b8f0'][i % 4], '#fff6dc', 80 + i, .5);
+  // столики с зонтиком, гирлянда под маркизой, велосипед, крупная вывеска-полумесяц
+  const ot = (x) => { const o = new THREE.Group(); add(o, mesh(G.cyl(.25, .25, .03, 20), clay('#f6efe0')), 0, .42, 0); add(o, mesh(G.cyl(.02, .03, .42, 10), clay('#2a2a30')), 0, .21, 0); add(o, mesh(G.cyl(.012, .012, 1.4, 8), clay('#ddd')), 0, .7, 0);
+    const um = mesh(new THREE.ConeGeometry(.6, .25, 16, 1, true), new THREE.MeshStandardMaterial({ map: canvasTex(128, 16, (c) => { for (let i = 0; i < 8; i++) { c.fillStyle = i % 2 ? '#f2e8e0' : '#e8705a'; c.fillRect(i * 16, 0, 16, 16); } }), side: THREE.DoubleSide, roughness: .8 })); um.position.y = 1.45; o.add(um);
+    [-1, 1].forEach(sd => { const ch = mesh(G.rbox(.2, .03, .2, .01), clay('#2e4a3e')); ch.position.set(sd * .38, .22, 0); o.add(ch); }); o.traverse(m => { if (m.isMesh) m.castShadow = true; }); add(g, o, x, 0, -.2); };
+  ot(-3.4); ot(2.9);
+  for (let i = 0; i < 16; i++) add(g, mesh(G.sph(.03, 8), glow(['#ffd36a', '#ff8ab8'][i % 2], 1.5), false, false), -2.4 + i * .24, 2.2 - Math.sin(i / 15 * Math.PI) * .12, FZ + .75);
+  const bike = new THREE.Group(); [-.3, .3].forEach(x => { const w = mesh(new THREE.TorusGeometry(.2, .02, 8, 24), clay('#222')); w.position.set(x, .2, 0); bike.add(w); }); const fr2 = mesh(G.cyl(.015, .015, .62, 6), clay('#e8508a')); fr2.rotation.z = Math.PI / 2; fr2.position.set(0, .35, 0); bike.add(fr2); bike.traverse(m => { if (m.isMesh) m.castShadow = true; }); add(g, bike, 1.9, 0, FZ + .25);
+  const moon = mesh(G.plane(.55, .55), new THREE.MeshBasicMaterial({ transparent: true, map: canvasTex(128, 128, (c) => { c.fillStyle = '#ffd36a'; c.beginPath(); c.arc(64, 64, 54, 0, 7); c.fill(); c.globalCompositeOperation = 'destination-out'; c.beginPath(); c.arc(88, 50, 50, 0, 7); c.fill(); }) }), false, false); add(g, moon, -1.75, 2.95, FZ + .03);
   reg('front', g, skyTex([[0, '#6ab8ff'], [.7, '#bfe0ff'], [1, '#ffe2b8']]), new THREE.Fog('#d8e8ff', 14, 40));
   return { g, sun, wallZ: FZ + .02, doorX: .55, door };
 })();

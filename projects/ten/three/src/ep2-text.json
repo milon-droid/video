@@ -51,18 +51,6 @@
 "shadow2_en",
 "...Sorry. I really like her, man. Please."
 ],
-"c1": [
-"shadow2_en",
-"Hat? Or no hat?"
-],
-"c2": [
-"senya_en",
-"Dude, you're a shadow. Everything you wear is black."
-],
-"c5": [
-"shadow2_en",
-"Black is slimming. You should try it."
-],
 "ct1": [
 "shadow2_en",
 "Hat. Definitely hat."
@@ -73,23 +61,27 @@
 ],
 "d3": [
 "narrator_en",
-"Rule number two. A shadow can't leave its owner's side."
+"Rule number two. A shadow is tied to its owner. One step — no more."
 ],
 "d4": [
 "narrator_en",
-"Unless it quits."
+"Want your shadows to touch? Get close."
 ],
 "s1": [
 "shadow2_en",
 "Ponytail... ponytail..."
 ],
-"s2": [
+"s5": [
 "shadow2_en",
-"Pixel?! Go home."
+"Hey, gorgeous—"
 ],
-"s3": [
+"s6": [
+"dude_en",
+"...Sup."
+],
+"s7": [
 "shadow2_en",
-"A broom. Seriously?"
+"Nope. Nope. Nope."
 ],
 "s4": [
 "shadow2_en",
@@ -175,6 +167,10 @@
 "senya_en",
 "Three hours."
 ],
+"k5": [
+"narrator_en",
+"Most love stories never start. Someone was too scared to say \"Hi\"."
+],
 "k4": [
 "senya_en",
 "They didn't come up for air."
@@ -195,20 +191,44 @@
 "mia_en",
 "...without them."
 ],
-"q1": [
-"mshadow_en",
-"I quit too."
-],
-"q2": [
+"m4": [
 "shadow2_en",
-"Oh, hell yes."
+"Without who?"
 ],
-"r1": [
-"mia_en",
-"Wait... where's my shadow?!"
+"x1": [
+"dad_en",
+"So. YOU'RE the guy whose shadow was all over my daughter's shadow?"
 ],
-"r2": [
+"x2": [
 "senya_en",
-"...Oh, fuck."
+"Technically, sir, that's not—"
+],
+"x3": [
+"shadow2_en",
+"Run."
+],
+"y1": [
+"shadow2_en",
+"Sam... we need to talk."
+],
+"y2": [
+"senya_en",
+"WHAT?! You met her YESTERDAY!"
+],
+"y3": [
+"shadow2_en",
+"Shadows move fast."
+],
+"z1": [
+"senya_en",
+"Why does my shadow have a ponytail?!"
+],
+"z2": [
+"mia_en",
+"Sam... my shadow keeps scratching its butt."
+],
+"z3": [
+"mshadow_en",
+"Morning, handsome."
 ]
 }
