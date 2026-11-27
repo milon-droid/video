@@ -9,6 +9,7 @@
 | (в `projects/stickman-skip/src/scene.html`) | движок планов shot()/rshot(), неоновые кнопки, HUD-таймер, перемотка, спрайты, панорама | stickman-skip |
 | `anim-kit.js` | «оживляж» canvas-сцен: моргание, дыхание, рот по голосу, мягкий дым/пыль, крутящиеся колёса, удар с отдачей, падение с отскоками, разные склейки, ручная камера | ретро 2026-11-05 (tynys ep1 v2) |
 | `projects/schetchik/src/lib.js` | KineticCaption (обводка, автоподложка, зона 1150–1400), HUD, телефон в руке, карточки, иней, EndCard | schetchik |
+| `text-fit.js` | **все надписи в плашках — только через него**: вписывает текст (перенос, кегль, поля), невлезшее печатает `render.mjs` | 2026-11-27 |
 | `templates/short/scene.html` | хук по словам, наезд по фото, призыв, прогресс-бар | шаблон |
 | `projects/kuat/src/lib.js` + `art.js` | HUD с батареей, `ChargeFlow`, `PowerDown`, `GroupChat`, `CityGrid`, кисти `hand`/`armTo`, `person()` с тенью/дыханием/шагом, вахта, аудитория | kuat |
 | `fx-kit.js` | `FX.stamp` (штамп-удар), `FX.emote` (! ? пот злость сердце), `FX.onomato` (звуковое слово), `FX.backGlow`, `FX.xray`, `FX.shake` | kuat с.3 |

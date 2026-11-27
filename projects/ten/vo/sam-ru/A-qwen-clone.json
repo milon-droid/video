@@ -1,0 +1,2 @@
+{"roles":{"sam":{"ref_wav":"assets/voices/qwen-ref/senya_en.wav","ref":"Okay, so this is gonna sound insane, but my shadow literally walked out on me last night. Like, packed up and left.","f0":0}},
+ "lines":[{"id":"A1","role":"sam","text":"Окей, это прозвучит безумно, но вчера ночью моя тень от меня ушла. Просто собрала вещи и ушла."},{"id":"A2","role":"sam","text":"Серьёзно? Ты опять за своё? Вернись немедленно!"}]}

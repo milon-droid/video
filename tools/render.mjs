@@ -30,6 +30,9 @@ import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+// Текст за плашкой (templates/components/text-fit.js) — печать в конце рендера.
+const TEXT_ISSUES = new Map();
+process.on('exit', () => { if (TEXT_ISSUES.size) { console.error(`\n⚠ ТЕКСТ ЗА ПЛАШКОЙ (${TEXT_ISSUES.size}) — не сдавать, пока не исправлено:`); for (const i of TEXT_ISSUES.values()) console.error(`  ${i.t != null ? i.t.toFixed(2) + ' с' : ''}  «${i.text}»  плашка ${i.box}`); } });
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const { chromium } = createRequire(import.meta.url)('playwright');
@@ -145,8 +148,11 @@ async function main() {
           for (const a of document.getAnimations()) { a.pause(); a.currentTime = t * 1000; }
           // GSAP: сцена кладёт главный таймлайн в window.TL (paused) — перематываем его.
           if (window.TL && typeof window.TL.seek === 'function') window.TL.seek(t, false);
+          window.__T = t;
           if (typeof window.renderFrame === 'function') await window.renderFrame(t);
         }, t);
+        const ti = await page.evaluate(() => (window.TEXT_ISSUES || []).splice(0));
+        for (const i of ti) TEXT_ISSUES.set(i.text, i);
         return page.screenshot({ type: 'png', omitBackground: !!o.alpha });
       };
       return shot;
