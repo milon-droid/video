@@ -61,11 +61,13 @@
 | `mia_en` | ten | ✅ | Young woman in her early twenties, warm and witty, a little shy but playful, bright smile in the voice, quick natural delivery, clear casual |
 | `mshadow_en` | ten | ✅ | Playful, sultry young female voice, early twenties, confident and teasing, smooth and warm, quick comedic timing, clear casual American Engl |
 | `narrator_en` | ten | ✅ | Deep, calm, resonant adult male narrator, movie-trailer voice, slow, authoritative and mysterious, low pitch, clear diction. |
+| `sam` | ten | `assets/voices/qwen-ref/senya_en.wav` |  |
 | `senya` | ten | `assets/voices/ru-ref/male_teffi.wav` |  |
 | `senya_en` | ten | ✅ | Young man around 20, energetic and fast-talking, sarcastic Gen Z storyteller, casual American English, bright youthful timbre, expressive an |
 | `shadow2_en` | ten | ✅ | Playful, cheeky young male voice, early twenties, smooth and charismatic, mischievous grin in the voice, quick comedic timing, clear natural |
 | `shadow_en` | ten | ✅ | Raspy, cocky young male voice, mid-twenties, rude and mischievous troublemaker, gravelly and smug, taunting, fast and punchy, slightly sinis |
 | `ten` | ten | `assets/voices/ru-ref/male_zaytsev.wav` |  |
+| `ten_sam_ru` | ten | ✅ | Young Russian man around 20, energetic and fast-talking, sarcastic storyteller, bright youthful timbre, expressive and a little dramatic, li |
 | `ul_announcer` | ulybka | ✅ | 1930s American newsreel announcer, mid-Atlantic accent, very cheerful and theatrical, bright fast delivery, old radio showman, big smile in  |
 | `ul_chorus` | ulybka | ✅ | Many voices whispering in unison, eerie, breathy, slow and creepy, like a crowd of children and adults whispering together in a dark room. |
 | `ul_tippy` | ulybka | ✅ | Little cartoon kitten girl, high-pitched small child voice, terrified, trembling, about to cry. |
