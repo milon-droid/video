@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Установка озвучки одной командой (идемпотентно: что уже стоит — пропускается).
-#   bash tools/setup-voice.sh            — Qwen3-TTS (рус. с ударениями + VoiceDesign + Base для клона) и ESpeech
-#   bash tools/setup-voice.sh qwen       — только Qwen;   bash tools/setup-voice.sh espeech — только ESpeech
+#   bash tools/setup-voice.sh            — Qwen3-TTS (рус. с ударениями + VoiceDesign + Base для клона)
+#   (ESpeech удалён 2026-11-27 — пользователь отклонил дважды)
 # Подходит и для скрипта подготовки облака (запускать из папки репозитория).
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -25,10 +25,3 @@ if [ "$what" = all ] || [ "$what" = qwen ]; then
   echo "qwen: ок"
 fi
 
-if [ "$what" = all ] || [ "$what" = espeech ]; then
-  V=~/.venvs/espeech
-  [ -x $V/bin/python ] || { python3 -m venv $V; $V/bin/"${TORCH[@]}"; $V/bin/pip install -q f5-tts ruaccent soundfile "huggingface_hub[cli]"; $V/bin/pip install -q "transformers<5" "datasets<4"; }
-  HF=$V/bin/hf
-  dl ESpeech/ESpeech-TTS-1_RL-V2 ~/models/espeech-rlv2
-  echo "espeech: ок"
-fi

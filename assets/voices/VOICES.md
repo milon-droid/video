@@ -61,7 +61,7 @@
 | `mia_en` | ten | ✅ | Young woman in her early twenties, warm and witty, a little shy but playful, bright smile in the voice, quick natural delivery, clear casual |
 | `mshadow_en` | ten | ✅ | Playful, sultry young female voice, early twenties, confident and teasing, smooth and warm, quick comedic timing, clear casual American Engl |
 | `narrator_en` | ten | ✅ | Deep, calm, resonant adult male narrator, movie-trailer voice, slow, authoritative and mysterious, low pitch, clear diction. |
-| `sam` | ten | `assets/voices/qwen-ref/senya_en.wav` |  |
+| `sam` | ten | ❌ нет |  |
 | `senya` | ten | `assets/voices/ru-ref/male_teffi.wav` |  |
 | `senya_en` | ten | ✅ | Young man around 20, energetic and fast-talking, sarcastic Gen Z storyteller, casual American English, bright youthful timbre, expressive an |
 | `shadow2_en` | ten | ✅ | Playful, cheeky young male voice, early twenties, smooth and charismatic, mischievous grin in the voice, quick comedic timing, clear natural |
