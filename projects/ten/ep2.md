@@ -60,3 +60,10 @@
   QE: дверь открыта, сиденье пустое, из машины выползает самовольная тень (бывший тени Mia) и вырастает на стене; RE: выходит здоровяк, его огромная тень;
   «Oh. Um… this is my ex.» — «Hands off my girl, shorty.» — «Sam. Hold my hat.» → экран файтинга (полоски здоровья, VS, ROUND 1, FIGHT!), «Team Shadow or Team Ex?».
   Полные серии: части `Q`/`R` (index-ep2-Q/R.html), `EP2_PART=Q bash audio/ep2/mix2.sh`.
+- 2026-11-27 концовка SHADOW FIGHT v2 по отзыву («странные тени в темноте, машина слабая, с человеком непонятно, бой плоский, нет ставки, мат можно»):
+  `render/shadow-quit-ep2-ending-RE2.mp4` (43,3 с, с заходом S12). Только вариант с хозяином (R/RE). Темнота — только глаза теней (починена прозрачность хвостика/юбки) →
+  бас, лоурайдер с гидравликой, фары → «Oh shit. Brad.» — «Who the fuck is Brad?» — «My ex. His shadow's worse.» → нога из двери, стоп-кадр-титр BRAD → тень-гигант,
+  тень Sam крадётся прочь → «Don't you dare run again.» → «Hands off my girl, shorty.» → «She's coming with me.» (тянет тень Mia, Mia тает) → «Sam. Hold my hat.» (Sam ловит шляпу)
+  → «Dude, he's twice your size!» — «Good. More to hit.» → арена-закат силуэтами (та же улица, кот, зрители), ROUND 1 / FIGHT (диктор ann_en), уворот, 9 HITS · DAMAGE 0,
+  «That tickles.», нокдаун, SHADOW POWER READY, прыжок → стоп-кадр TO BE CONTINUED / FINAL EPISODE · tomorrow / Team Shadow or Team Brad?
+  Полная серия с этой концовкой ≈ 2:16 (часть R). Ждём отзыв.
