@@ -5,8 +5,10 @@ import { Reflector } from 'three/examples/jsm/objects/Reflector.js';
 export { THREE };
 THREE.ColorManagement.enabled = false;
 
-export const W = 720, H = 1280, K = W / 1080;      // 2D-координаты пишем в сетке 1080×1920
-export const SW = 432, SH = 768;                   // «матрица» тепловизора
+export const RS = window.RENDER_SCALE || 1;          // 1 = 720p, 3 = 4K (2160×3840)
+export const W = Math.round(720 * RS), H = Math.round(1280 * RS), K = W / 1080;      // 2D-координаты пишем в сетке 1080×1920
+export const SQ = RS > 1.5 ? 2 : 1;                // в 4K матрица вдвое плотнее, а вид (размытие, зерно, ореолы) тот же
+export const SW = 432 * SQ, SH = 768 * SQ;                   // «матрица» тепловизора
 export const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 export const lerp = (a, b, k) => a + (b - a) * k;
 export const win = (t, a, b) => clamp((t - a) / (b - a));
@@ -120,17 +122,17 @@ const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMater
   void main(){
     vec2 uv = vUv;
     // строки «рвутся» при сбое
-    float row = floor(uv.y*${SH}.0/6.0); float g = uGlitch*step(.82, hash(vec2(row, floor(uTime*24.)+uSeed)));
+    float row = floor(uv.y*768.0/6.0); float g = uGlitch*step(.82, hash(vec2(row, floor(uTime*24.)+uSeed)));
     uv.x += g*(hash(vec2(row,uTime))-.5)*.12;
     uv = (uv-.5)/uZoom+.5;
     vec2 c = uv-.5; uv = .5 + c*(1.+.035*dot(c,c));
     vec2 px = 1./vec2(${SW}.0,${SH}.0);
     float T = texture2D(tT, uv).r;
-    float B = 0.; for(int i=0;i<8;i++){ float a = float(i)*.785398; B += texture2D(tT, uv+vec2(cos(a),sin(a))*px*5.).r; } B /= 8.;
-    float B2 = 0.; for(int i=0;i<8;i++){ float a = float(i)*.785398+.39; B2 += texture2D(tT, uv+vec2(cos(a),sin(a))*px*1.6).r; } B2 /= 8.;
+    float B = 0.; for(int i=0;i<8;i++){ float a = float(i)*.785398; B += texture2D(tT, uv+vec2(cos(a),sin(a))*px*5.*${SQ}.0).r; } B /= 8.;
+    float B2 = 0.; for(int i=0;i<8;i++){ float a = float(i)*.785398+.39; B2 += texture2D(tT, uv+vec2(cos(a),sin(a))*px*1.6*${SQ}.0).r; } B2 /= 8.;
     float Tm = mix(T, B2, .35);                       // мягкость оптики
     Tm += uSharp*(T-B)*.6;                            // ореолы вокруг горячих тел (как у настоящих микроболометров)
-    vec2 sp = floor(uv*vec2(${SW}.0,${SH}.0));
+    vec2 sp = floor(uv*vec2(432.0,768.0));
     float n = hash(sp + vec2(floor(uTime*30.)*1.37, uSeed)) - .5;
     float colN = hash(vec2(sp.x, 7.1)) - .5, rowN = hash(vec2(3.3, sp.y + floor(uTime*30.))) - .5;
     float span = uHi-uLo;
@@ -144,7 +146,7 @@ const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMater
     vec3 cold = mix(vec3(.06,.22,.85), vec3(.42,.95,1.), smoothstep(.0,.9,core)) * (.9 + .25*n);
     cold = mix(cold, vec3(.0,.01,.04), smoothstep(uIso-11., uIso-17., Tm));
     col = mix(col, cold, iso);
-    float gm = 0.; for(int i=0;i<12;i++){ float a = float(i)*.5236; float Ts = texture2D(tT, uv+vec2(cos(a),sin(a))*px*vec2(9.,9.)*(1.+float(i-i/2*2))).r; gm += 1.-smoothstep(uIso-.5, uIso+.5, Ts); } gm /= 12.;
+    float gm = 0.; for(int i=0;i<12;i++){ float a = float(i)*.5236; float Ts = texture2D(tT, uv+vec2(cos(a),sin(a))*px*vec2(9.,9.)*${SQ}.0*(1.+float(i-i/2*2))).r; gm += 1.-smoothstep(uIso-.5, uIso+.5, Ts); } gm /= 12.;
     col += vec3(.12,.45,1.)*gm*uIsoK*.6*(1.-iso);
     // виньетка объектива и края матрицы
     float v = dot(c,c); col *= 1.-.55*v; col *= .93+.07*smoothstep(.0,.02,uv.x)*smoothstep(1.,.98,uv.x);
