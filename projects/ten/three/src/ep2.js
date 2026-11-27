@@ -65,7 +65,7 @@ function kissFX(t, x, y, k = 1) { heartsFloat(t, x, y - 20, .9 * k, 260, 14); ct
 { const rim = new THREE.DirectionalLight('#ffd6a0', 1.6); rim.position.set(1.5, 3.0, -3.5); rim.target.position.set(0, .6, -.5); cafe.g.add(rim, rim.target);
   const rim2 = new THREE.PointLight('#9ab8ff', 2.5, 6, 1.5); rim2.position.set(2.2, 2.0, -1.2); night.g.add(rim2); }
 const extraCups = [[-.12, .02], [.25, -.05], [-.25, -.12], [.05, -.25]].map(([x, z]) => { const c = cafe.cupM.clone(); c.position.set(x, .44, cafe.TZ + z); c.rotation.set(0, 0, 0); cafe.g.add(c); c.visible = false; return c; });
-const hideAll = () => { if (typeof exSh !== 'undefined') exSh.holder.visible = false; if (typeof neighbors !== 'undefined') neighbors.forEach(n => n.root.visible = false); extraCups.forEach(c => c.visible = false); if (typeof jogSh !== 'undefined') jogSh.holder.visible = false; cafe.barista.root.visible = true; cafe.barista.root.position.set(2.5, 0, -1.25); cafe.barista.root.rotation.set(0, 0, 0); applyPose(cafe.barista, POSE.stand, 0, {}, 11); cafe.tray.position.set(2.2, .67, -.85); cafe.tray.rotation.set(0, 0, 0); miaSh.tail.scale.setScalar(1); if (typeof dad !== 'undefined') { dad.root.visible = false; dadSh.holder.visible = false; babySh.holder.visible = false; phone2.visible = false; } if (typeof jogger !== 'undefined') jogger.root.visible = false; if (typeof catHat !== 'undefined') { catHat.visible = false; pix2.g.visible = false; } miaSh.aL.sh.scale.y = 1; cafe.cupS.visible = false; cafe.cupM.rotation.z = 0; cafe.cupM.position.set(.06, .44, cafe.TZ + .1); cafe.spill.visible = false;  shade.aR.sh.scale.y = 1; if (typeof sunDisc !== 'undefined') sunDisc.visible = false; [hero.root, mia.root].forEach(r => r.visible = false); shade.holder.visible = false; miaSh.holder.visible = false; hat.visible = false; tie.visible = false; flower.visible = false; };
+const hideAll = () => { if (typeof carFill !== 'undefined') carFill.intensity = 0; if (typeof exMan !== 'undefined') exMan.root.visible = false; if (typeof car !== 'undefined') { car.visible = false; headL.intensity = 0; } if (typeof exSh !== 'undefined') exSh.holder.visible = false; if (typeof neighbors !== 'undefined') neighbors.forEach(n => n.root.visible = false); extraCups.forEach(c => c.visible = false); if (typeof jogSh !== 'undefined') jogSh.holder.visible = false; cafe.barista.root.visible = true; cafe.barista.root.position.set(2.5, 0, -1.25); cafe.barista.root.rotation.set(0, 0, 0); applyPose(cafe.barista, POSE.stand, 0, {}, 11); cafe.tray.position.set(2.2, .67, -.85); cafe.tray.rotation.set(0, 0, 0); miaSh.tail.scale.setScalar(1); if (typeof dad !== 'undefined') { dad.root.visible = false; dadSh.holder.visible = false; babySh.holder.visible = false; phone2.visible = false; } if (typeof jogger !== 'undefined') jogger.root.visible = false; if (typeof catHat !== 'undefined') { catHat.visible = false; pix2.g.visible = false; } miaSh.aL.sh.scale.y = 1; cafe.cupS.visible = false; cafe.cupM.rotation.z = 0; cafe.cupM.position.set(.06, .44, cafe.TZ + .1); cafe.spill.visible = false;  shade.aR.sh.scale.y = 1; if (typeof sunDisc !== 'undefined') sunDisc.visible = false; [hero.root, mia.root].forEach(r => r.visible = false); shade.holder.visible = false; miaSh.holder.visible = false; hat.visible = false; tie.visible = false; flower.visible = false; };
 setFade(hero, 1, 1, false); setFade(mia, 1, 1, false);
 let FX = {};
 // сидя: бёдра вперёд, колени вниз; SY — опускание корня до сиденья
@@ -541,7 +541,7 @@ const hemi = night.g.children.find(o => o.isHemisphereLight);
 function nightDoor(lampOn, door = true) { useSet('night'); night.neon.visible = false; mdoor.visible = door; if (benchN) benchN.visible = !door;
   porch.intensity = 7 * lampOn; lanternBulb.visible = lampOn > .5; night.sp.intensity = door ? 30 : 95; hemi.intensity = lerp(.1, .7, lampOn); }
 // 12. Тени тянутся поцеловаться — хозяевам надо наклониться… фонарь гаснет
-S.S12 = (t, T) => { hideAll(); const OFF = lt('l2') - .45, ON = lt('l2') + DURS.l2 + .2;
+S.S12 = (t, T) => { hideAll(); const OFF = lt('l2') - .45, ON = (window.EP2_PART === 'Q' || window.EP2_PART === 'R') ? 1e9 : lt('l2') + DURS.l2 + .2;
   const fl = t > OFF - .5 && t < OFF ? (Math.sin(t * 60) > .2 ? 1 : .3) : 1; const lamp = t < OFF ? fl : t > ON ? (t < ON + .3 ? (Math.sin(t * 50) > 0 ? 1 : .3) : 1) : 0; nightDoor(lamp);
   const lean = ease(t, lt('l4') + .5, OFF, sm);
   put(hero, DX2 - .6, -1.3, Math.PI / 2 - .3, { ...POSE.stand, lean: lean * .35, headX: -lean * .1, aL: [.1, .2, .3], aR: [.1, -.2, .3] }, t, { expr: t > ON ? 'surprised' : 'calm', wide: t > ON, smile: t > ON ? 0 : .6, lookX: .7, lid: t > ON ? 0 : lean * .6, mouth: t > ON ? .5 : 0 });
@@ -781,6 +781,77 @@ S.KP = (t, T) => { useSet('night'); hideAll(); FX = { skip: true };
     const sun = 560 + t * 40; ctx.save(); ctx.fillStyle = '#ff8a4a'; ctx.shadowColor = '#ffb070'; ctx.shadowBlur = 80; ctx.beginPath(); ctx.arc(540, sun, 130, Math.PI, 0); ctx.fill(); ctx.restore(); ctx.fillStyle = '#05040a'; ctx.fillRect(0, 560, 1080, 300);
     ctx.save(); ctx.globalAlpha = ease(t, .2, .5); ctx.textAlign = 'center'; ctx.font = '900 92px Unb'; ctx.fillStyle = '#fff'; ctx.fillText('TILL SUNSET', 540, 960); ctx.font = '600 42px Unb'; ctx.fillStyle = '#d8b6c8'; ctx.fillText('FINAL EPISODE · tomorrow', 540, 1040); ctx.restore();
     narr(t, .7, 99, 'Will they find them in time?', { y: 1330, size: 62, n: 16, accent: ['time?'] }); narr(t, 1.5, 99, 'Comment below', { y: 1560, size: 52, n: 20, accent: ['comment'] }); };
+};
+
+// ===== Q. SHADOW FIGHT: темнота → фары → из пустой машины выползает самовольная тень (бывший тени Mia) =====
+const car = new THREE.Group(); { const bm = clay('#c8283a', { roughness: .3, metalness: .4 }); const at = (m, x, y, z, ry = 0) => { m.position.set(x, y, z); m.rotation.y = ry; return m; };
+  car.add(at(mesh(G.rbox(1.9, .45, .95, .12), bm), 0, .38, 0)); car.add(at(mesh(G.rbox(1.05, .38, .85, .12), bm), -.1, .76, 0));
+  [-1, 1].forEach(sd => car.add(at(mesh(G.plane(.9, .28), clay('#0a0c14', { roughness: .1 }), false, false), -.1, .78, sd * .43, sd > 0 ? 0 : Math.PI)));
+  [-.62, .62].forEach(x => [-.45, .45].forEach(z => { const w = mesh(G.cyl(.18, .18, .12, 18), clay('#111')); w.rotation.x = Math.PI / 2; w.position.set(x, .18, z); car.add(w); }));
+  car.userData.lights = [-.28, .28].map(z => { const b = mesh(G.sph(.07, 12), glow('#fff6dc', 3), false, false); b.position.set(-.96, .42, z); car.add(b); return b; });
+  const door = new THREE.Group(); door.position.set(.15, 0, .48); door.add(at(mesh(G.rbox(.55, .5, .04, .03), bm), -.27, .5, 0)); car.add(door); car.userData.door = door;
+  car.traverse(o => { if (o.isMesh) o.castShadow = true; }); car.visible = false; night.g.add(car); }
+const exMan = makeToy({ skin: '#e8b898', hair: '#1a1214', top: '#1a1a20', top2: '#2a2a30', pants: '#2a2e44', shoes: '#111', hood: false, eye: '#1a1210', blush: .1 }); exMan.root.scale.setScalar(1.35); exMan.spine.scale.set(1.3, 1.05, 1.2); [exMan.aL, exMan.aR].forEach(a => a.sh.scale.set(1.4, 1, 1.4)); { const gl = mesh(G.rbox(.3, .07, .04, .02), clay('#050505', { roughness: .1, metalness: .5 })); gl.position.set(0, .02, .22); exMan.head.add(gl); } exMan.root.traverse(o => { if (o.isMesh) o.castShadow = false; }); exMan.root.visible = false; night.g.add(exMan.root);
+const carFill = new THREE.PointLight('#8aa0ff', 3, 6, 1.5); night.g.add(carFill);
+const headL = new THREE.SpotLight('#fff2d8', 0, 16, .55, .5, 1.2); headL.castShadow = true; headL.shadow.mapSize.set(1024, 1024); night.g.add(headL, headL.target);
+S.XQ = (t, T) => { hideAll(); nightDoor(0); hemi.intensity = .08; car.visible = true;
+  const ms = lt('ms1'), ex = lt('ex1'), sh = lt('sh1');
+  // машина въезжает справа, разворачивается фарами к стене и встаёт
+  const drive = ease(t, .3, 2.0, k => 1 - Math.pow(1 - k, 2)); const cx = lerp(DX2 + 6.5, DX2 + 1.9, drive), cz = lerp(2.6, 1.6, drive);
+  car.position.set(cx, 0, cz); car.rotation.y = lerp(0, -.75, ease(t, .8, 2.0)); const lit = ease(t, .2, .5);
+  car.userData.lights.forEach(b => b.visible = lit > .5); headL.intensity = 70 * lit; carFill.position.set(cx + 1.2, 2.0, cz + 1.2); carFill.intensity = 3; headL.position.set(cx - .7, .45, cz - .4); headL.target.position.set(DX2 - .2, 1.0, -2.1);
+  car.userData.door.rotation.y = -ease(t, 2.6, 3.0) * 1.1;
+  // Sam и Mia — силуэты в свете фар, щурятся
+  put(hero, DX2 - .6, -1.3, Math.PI / 2 - .3 + ease(t, 1.2, 1.6) * .9, t > 1.4 ? { ...POSE.stand, aR: [1.3, -.2, 2.4], headX: -.1 } : { ...POSE.stand, lean: .3 }, t, { expr: t > 3 ? 'scared' : 'surprised', wide: true, lid: t > 1.4 && t < 3 ? .5 : 0, lookX: .8 });
+  put(mia, DX2 + .1, -1.8, -Math.PI / 2 + .4 + ease(t, 1.2, 1.6) * .5, t > 1.4 ? { ...POSE.stand, aL: [1.3, .2, 2.4] } : { ...POSE.stand, lean: .25 }, t, { expr: t > ms ? 'scared' : 'surprised', wide: true, lookX: .8 }, .2, 8);
+  // их тени проявляются в свете фар; тень Mia узнаёт бывшего
+  const shOp = lit;
+  applyPose(shade, t > sh ? keys(t, [[sh, POSE.stand], [sh + .4, { ...POSE.stand, aR: [0, -2.8, 1.6] }], [sh + .9, { ...POSE.stand, aR: [1.4, -.3, .2], aL: [.9, .5, 2.2] }]]) : t > ex ? { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], lean: .1 } : { ...POSE.scared }, t, { mood: t > ex ? 'angry' : 'wide', look: 1 }, 3);
+  placeShade(shade, { x: DX2 - 1.05, z: WN + .03, rise: 1, scale: 1.3, turn: t > ex ? 0 : Math.PI / 2, op: shOp }); shade.holder.position.y = .1;
+  hat.visible = t > sh + .4; hat.scale.setScalar(1);
+  applyPose(miaSh, t > ms ? { ...POSE.stand, aL: [1.0, .4, 2.4], aR: [.2, -.2, .4], headZ: .15 } : { ...POSE.scared }, t, { mood: t > ms ? 'sad' : 'wide', look: 1 }, 7);
+  placeShade(miaSh, { x: DX2 - .1, z: WN + .07, rise: 1, scale: 1.3, turn: t > ms ? 0 : -Math.PI / 2, op: shOp }); miaSh.holder.position.y = .3;
+  // самовольная тень: выползает из открытой двери по асфальту (лежит) → поднимается на стену → огромная, разминает шею
+  const OWN = window.EP2_PART === 'R';
+  if (OWN) { const dp = wpos(car.userData.door); const w = ease(t, 3.0, 4.4, sm); exMan.root.visible = t > 2.9; const mx = lerp(dp.x - .3, DX2 + 1.4, w), mz = lerp(dp.z + .3, .2, w);
+    put(exMan, mx, mz, -Math.PI / 2 - .5, t < 4.4 ? walk(w * 3.5) : { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1 + Math.sin(t * 10) * .3 * (t > 5.2 ? 1 : 0)], headZ: Math.sin(Math.max(0, t - 4.4) * 5) * .25 * (t < 5.4 ? 1 : 0) }, t, { expr: 'angry', smile: .3, mouth: talkG(T, 'ex1') }, 0, 61); }
+  const crawl = OWN ? 0 : ease(t, 3.0, 3.9, sm), rise = OWN ? ease(t, 2.95, 3.2) : ease(t, 3.8, 4.4, back), slideX = OWN ? lerp(DX2 + 2.0, DX2 + .9, ease(t, 3.0, 4.4, sm)) : lerp(cx + .1, DX2 + .9, ease(t, 3.0, 4.4, sm));
+  exSh.holder.visible = t > 2.9; const big = OWN ? lerp(1.2, 1.9, ease(t, 3.0, 4.4)) : lerp(1.0, 1.9, rise);
+  applyPose(exSh, t < 4.4 ? walk(t * 5, .6) : { ...POSE.stand, aR: [.3, -1.4, .3], aL: [1.0, .6, 2.0], headZ: Math.sin(Math.max(0, t - 4.4) * 5) * .25 * (t < 5.6 ? 1 : 0), headX: -.12 }, t, { mood: 'sly', look: -1 }, 51);
+  placeShade(exSh, { x: slideX, z: rise > .02 ? WN + .1 : cz - .2 - crawl * 2.5, rise, len: 1.8, yaw: rise > .02 ? 0 : -1.0, scale: big, turn: t < 4.4 ? -Math.PI / 2 : 0, op: 1 }); exSh.holder.position.y = .05;
+  const [jx, jy] = hh(t, .02); const wide = 1 - ease(t, 4.6, 5.4, sm), cl = ease(t, sh - .3, sh + .2, sm);
+  if (t < 4.6) cam(lerp(DX2 + 5.2, DX2 + 3.6, ease(t, 0, 4.6, sm)) + jx, 1.7 + jy, lerp(5.6, 5.0, ease(t, 0, 4.6)), lerp(DX2 + 2.6, DX2 + .8, ease(t, 0, 4.6, sm)), .8, -.5, 46);
+  else cam(lerp(DX2 + .1, DX2 - .7, cl) + jx, lerp(1.9, 1.7, cl) + jy, lerp(5.0, 2.9, cl), lerp(DX2 + .05, DX2 - .95, cl), lerp(1.8, 1.55, cl), -1.8, 38);
+  FX = { fy: .42, fw: .38, blur: 5, bloom: .6, warm: -.05 };
+  return () => { if (t < .4) { ctx.fillStyle = `rgba(0,0,8,${.55 * (1 - t / .4)})`; ctx.fillRect(0, 0, 1080, 1920); }
+    if (lit > 0) { car.userData.lights.forEach(b => { const p = wpos(b); const [x, y] = toScreen(p.x, p.y, p.z); const g = ctx.createRadialGradient(x, y, 3, x, y, 110); g.addColorStop(0, `rgba(255,248,220,${.9 * lit})`); g.addColorStop(1, 'rgba(255,240,200,0)'); ctx.fillStyle = g; ctx.fillRect(x - 130, y - 130, 260, 260); }); }
+    if (window.EP2_PART !== 'R' && t > 2.6 && t < 3.4) { ctx.save(); ctx.font = '800 46px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd36a'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 10; ctx.strokeText('*empty seat*', 540, 1520); ctx.fillText('*empty seat*', 540, 1520); ctx.restore(); }
+    drawLines(T, { ms1: { y: 400, n: 18 }, ex1: { y: 1440, size: 76, n: 16 }, sh1: { y: 400, size: 100 } }); };
+};
+// заставка: экран боя файтинга — две тени, полоски здоровья, VS, ROUND 1… FIGHT!
+S.KQ = (t, T) => { useSet('night'); hideAll(); FX = { skip: true };
+  return () => { const g = ctx.createLinearGradient(0, 0, 1080, 1920); g.addColorStop(0, '#ffb23a'); g.addColorStop(.5, '#ff5a2a'); g.addColorStop(1, '#5a0a3a'); ctx.fillStyle = g; ctx.fillRect(0, 0, 1080, 1920);
+    ctx.save(); ctx.globalAlpha = .25; for (let i = 0; i < 16; i++) { ctx.fillStyle = i % 2 ? '#fff' : '#000'; ctx.beginPath(); ctx.moveTo(540, 960); const a = i / 16 * Math.PI * 2 + t * .2; ctx.lineTo(540 + Math.cos(a) * 1600, 960 + Math.sin(a) * 1600); ctx.lineTo(540 + Math.cos(a + .2) * 1600, 960 + Math.sin(a + .2) * 1600); ctx.fill(); } ctx.restore();
+    const shake = t > 2.2 && t < 2.6 ? (Math.random() - .5) * 30 : 0; ctx.save(); ctx.translate(shake, 0);
+    // силуэты бойцов
+    const fighter = (x, y, s, flip, big, hatOn, spikes) => { ctx.save(); ctx.translate(x, y); ctx.scale(flip * s * (big ? 1.25 : 1), s * (big ? 1.25 : 1)); ctx.fillStyle = '#07060c';
+      ctx.beginPath(); ctx.arc(0, -330, 70, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(-90 * (big ? 1.3 : 1), -250); ctx.lineTo(90 * (big ? 1.3 : 1), -250); ctx.lineTo(60, 40); ctx.lineTo(-60, 40); ctx.fill();
+      ctx.lineCap = 'round'; ctx.strokeStyle = '#07060c'; ctx.lineWidth = 46; const bob = Math.sin(t * 6) * 10; ctx.beginPath(); ctx.moveTo(-70, -220); ctx.lineTo(60, -150 + bob); ctx.lineTo(120, -230 + bob); ctx.moveTo(70, -220); ctx.lineTo(150, -120 - bob); ctx.lineTo(180, -200 - bob); ctx.stroke();
+      ctx.lineWidth = 52; ctx.beginPath(); ctx.moveTo(-30, 30); ctx.lineTo(-110, 200); ctx.lineTo(-90, 330); ctx.moveTo(30, 30); ctx.lineTo(120, 190); ctx.lineTo(160, 330); ctx.stroke();
+      if (hatOn) { ctx.fillRect(-80, -400, 160, 18); ctx.fillRect(-48, -510, 96, 112); }
+      if (spikes) for (let k = 0; k < 5; k++) { ctx.beginPath(); ctx.moveTo(-60 + k * 30, -385); ctx.lineTo(-48 + k * 30, -450); ctx.lineTo(-36 + k * 30, -385); ctx.fill(); }
+      ctx.fillStyle = '#fff'; [-1, 1].forEach(sd => { ctx.beginPath(); ctx.ellipse(sd * 26 + 18, -335, 16, 6, sd * .2, 0, 7); ctx.fill(); }); ctx.restore(); };
+    const inL = ease(t, .1, .5, back), inR = ease(t, .25, .65, back);
+    fighter(lerp(-300, 290, inL), 1330, .85, 1, false, true, false); fighter(lerp(1380, 800, inR), 1330, .85, -1, true, false, true);
+    // полоски здоровья
+    const bar = (x, w, name, col, k) => { ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x - 6, 214, w + 12, 52); ctx.fillStyle = col; ctx.fillRect(x, 220, w * k, 40); ctx.font = '800 30px Unb'; ctx.fillStyle = '#fff'; ctx.textAlign = x < 540 ? 'left' : 'right'; ctx.fillText(name, x < 540 ? x : x + w, 200); };
+    const hb = ease(t, .4, .9); bar(60, 420, 'SAM’S SHADOW', '#ffd36a', hb); bar(600, 420, 'THE EX', '#ff3d5a', hb);
+    const vs = ease(t, .6, .85, back); if (vs > 0) { ctx.save(); ctx.translate(540, 560); ctx.scale(vs, vs); ctx.rotate(-.08); ctx.textAlign = 'center'; ctx.font = '900 200px Unb'; ctx.lineWidth = 18; ctx.strokeStyle = '#07060c'; ctx.strokeText('VS', 0, 70); ctx.fillStyle = '#fff'; ctx.fillText('VS', 0, 70); ctx.restore(); }
+    if (t > 1.2 && t < 2.2) { const k = ease(t, 1.2, 1.4, back); ctx.save(); ctx.translate(540, 790); ctx.scale(k, k); ctx.textAlign = 'center'; ctx.font = '900 110px Unb'; ctx.lineWidth = 14; ctx.strokeStyle = '#07060c'; ctx.strokeText('ROUND 1', 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText('ROUND 1', 0, 0); ctx.restore(); }
+    if (t > 2.2) { const k = ease(t, 2.2, 2.4, back); ctx.save(); ctx.translate(540, 800); ctx.scale(k * 1.1, k * 1.1); ctx.rotate(-.06); ctx.textAlign = 'center'; ctx.font = '900 150px Unb'; ctx.lineWidth = 18; ctx.strokeStyle = '#07060c'; ctx.strokeText('FIGHT!', 0, 0); ctx.fillStyle = '#ff2a3a'; ctx.fillText('FIGHT!', 0, 0); ctx.restore(); }
+    ctx.restore();
+    if (t > 2.8) { ctx.save(); ctx.globalAlpha = ease(t, 2.8, 3.1); ctx.fillStyle = 'rgba(0,0,0,.65)'; ctx.fillRect(0, 1560, 1080, 360); ctx.restore();
+      narr(t, 2.8, 99, 'FINAL EPISODE · tomorrow', { y: 1640, size: 46, n: 30 }); narr(t, 3.2, 99, 'Team Shadow or Team Ex?', { y: 1760, size: 54, n: 26, accent: ['shadow', 'ex?'] }); } };
 };
 
 // ---- монтаж ----

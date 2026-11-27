@@ -113,6 +113,7 @@ def main_music():
     put(boom(.7, 1.4), OFF, .45, 0, .2)
     # финал: свет снова зажёгся — короткий «упс»-аккорд и щипки
     ON = AT['l2'] + D['l2'] + .2
+    if PART in 'QR': return
     put(pluck(hz('E4'), .4, .8), ON, .35, 0, .2); put(pluck(hz('C4'), .5, .8), ON + .25, .3, 0, .2); chord(['F3', 'Ab3', 'C4'], ON, DUR - ON + .5, .2, 0, 1500)
 
 def variants():
@@ -149,14 +150,22 @@ def variants():
     if PART == 'P':
         t0 = sh('XP'); comic(t0, AT['mp1'] - .2, 104, .6); put(boom(.8, 1.6), AT['sp1'] - .05, .5, 0, .2); put(drone(hz('D2'), end('XP') - AT['sp1'] + 3, 1.), AT['sp1'], .5, 0, .3)
         for k in range(int((DUR - AT['sp1']) / .5)): put(tick(.6, 1700), AT['sp1'] + .6 + k * .5, .25, 0, .1)
+    if PART in 'QR':  # фары → тяжёлый бит → удар на «Hands off» → гонг ROUND 1 → FIGHT!
+        t0 = sh('XQ'); put(riser(2.0, .6), t0, .3, 0, .3); put(bass(hz('E1'), 1.5), t0 + 2.0, .6, 0, .1)
+        for k in range(int((end('XQ') - t0 - 2.0) / .5)): put(kick(.9), t0 + 2.0 + k * .5, .35, 0, 0); put(hat(.7), t0 + 2.25 + k * .5, .2, .3, 0)
+        put(boom(.8, 1.6), t0 + 3.8, .5, 0, .3); put(boom(.7, 1.2), AT['ex1'] - .05, .5, 0, .2); put(riser(1.0, .6), AT['sh1'] - .2, .3, 0, .3)
+        k0 = sh('KQ'); put(boom(1.0, 1.8), k0 + .1, .6, 0, .3); put(boom(.9, 1.4), k0 + 1.2, .5, 0, .2); put(boom(1.2, 2.0), k0 + 2.2, .7, 0, .3)
+        for k in range(int((DUR - k0 - 2.2) / .25)): put(kick(.8), k0 + 2.2 + k * .25, .28, 0, 0)
+        for k, n in enumerate(['E3', 'G3', 'A3', 'B3', 'E4']): put(pluck(hz(n), .3, .9), k0 + 2.2 + k * .12, .35, 0, .1)
+        return
     if PART in 'NOP': return
     c = ('K' if PART in 'DEFG' else 'C') + PART; t0 = sh(c)
     if PART == 'D': t0 += .6
     for k, (o, n) in enumerate([(0, 'A4'), (.5, 'C5'), (1.0, 'E5'), (1.5, 'D5'), (2.0, 'C5'), (2.6, 'B4'), (3.1, 'A4')]): put(musicbox(hz(n)), t0 + .2 + o, .3, .2, .6)
     chord(['A2', 'C3', 'E3'], t0, DUR - t0 + 1, .16, 0, 1200)
 
-if PART == 'main': main_music()
-else: variants()
+if PART in ('main', 'Q', 'R'): main_music()
+if PART != 'main': variants()
 
 # реверб и запись
 ir_t = T(2.4); ir = rng.uniform(-1, 1, len(ir_t)) * np.exp(-ir_t * 2.4); ir = lp(ir, 5000); ir /= np.abs(ir).sum() ** .5 * 6

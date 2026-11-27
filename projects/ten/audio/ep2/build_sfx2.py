@@ -64,7 +64,8 @@ def main_sfx():
     for i in range(4): lib(OFF - .5 + i * .12, "mechanical-switch-light", .4)
     lib(OFF, "mechanical-switch-heavy", .7); lib(OFF + .02, "digital-interference", .25)
     ON = AT['l2'] + D['l2'] + .2
-    for i in range(3): lib(ON + i * .1, "mechanical-switch-light", .45)
+    if PART not in 'QR':
+        for i in range(3): lib(ON + i * .1, "mechanical-switch-light", .45)
 
     # ещё звуки: курица на побеге и в монтаже, чмоки поцелуев, звон чашек, щелчок «Nope»
     lib(AT['fb2'] + .2, "oc-BIRDFowl_Chicken_OS_01", .45, align="start")
@@ -97,7 +98,13 @@ def variants():
     if PART == 'P':
         amb('XP', 'XP', "oc-AMBHome_RoomTone_LOOP_01", .3); lib(AT['mp1'] - .8, "props-doorbell", .0); lib(AT['sp1'] + .6, "shimmer-long-soft", .3, align="start"); lib(AT['sp1'] + .6, "time-clock-fast", .3, align="start")
         lib(ST['KP'] - .4, "whoosh-slow-soft", .6, align="start")
-    if PART in 'NOP':
+    if PART in 'QR':
+        t0 = ST['XQ']; lib(t0 + .2, "whoosh-slow-soft", .5, align="start"); lib(t0 + .5, "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .0, dur=.1)
+        for k in range(6): lib(t0 + .3 + k * .28, "oc-FEETHmn_ShoeConcreteLand_OS_01", .0)
+        lib(t0 + 2.0, "impact-heavy-soft", .5); lib(t0 + 2.6, "oc-DOORGlas_GlassDoorOpen_OS_01", .5, align="start"); lib(t0 + 3.0, "transform-stretch", .6, align="start")
+        lib(t0 + 4.3, "impact-deep-hard", .7); lib(AT['sh1'] + .4, "pop-large-in", .5)
+        k0 = ST['KQ']; lib(k0 + .1, "impact-deep-hard", .8); lib(k0 + 1.2, "impact-heavy-firm", .7); lib(k0 + 2.2, "cinematic-slam-big", .8, align="start")
+    if PART in 'NOPQR':
         json.dump(C, open(os.path.join(R0, 'sfx2-%s.json' % PART), 'w'), indent=0); return
     if PART == 'D': lib(AT['wf1'] - .3, "whoosh-fast-soft", .45, align="start")
     if PART == 'E':
@@ -114,7 +121,7 @@ def variants():
     if PART != 'D': lib(ST[c] - .4, "whoosh-slow-soft", .7, align="start")
     lib(ST[c] + .2, "time-clock-fast", .2, align="start")
 
-if PART == 'main': main_sfx()
-else: variants()
+if PART in ('main', 'Q', 'R'): main_sfx()
+if PART != 'main': variants()
 json.dump(C, open(os.path.join(R0, 'sfx2%s.json' % ('' if PART == 'main' else '-' + PART)), 'w'), indent=0)
 print(len(C), 'звуков; длина', round(TM['total'], 2))
