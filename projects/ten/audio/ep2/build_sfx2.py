@@ -87,7 +87,18 @@ def variants():
         lib(r0, "props-doorbell", .0); [lib(r0 + i * .5, "digital-radio", .0) for i in range(0)]
         for i in range(4): syn(r0 + i * .3, "tick", .4)
         lib(AT['z3'] + .3, "shimmer-medium-bright", .3, align="start"); lib(AT['z3'] + .5, "pop-large-bubble", .4)
-    if PART in 'DEFG': amb('X' + PART, 'X' + PART, "oc-AMBForst_Night_LOOP_01", .26)
+    if PART in 'DEFGNO': amb('X' + PART, 'X' + PART, "oc-AMBForst_Night_LOOP_01", .26)
+    if PART == 'N':
+        GO = AT['m2'] + D['m2'] + .2; lib(GO + .8, "oc-DOORGlas_GlassDoorOpen_OS_01", .35, align="start"); lib(GO + 1.0, "click-latch-medium", .5); lib(GO + 1.5, "shimmer-medium-bright", .25, align="start")
+        k0 = ST['KN']; lib(k0 + .4, "writing-marker-write", .5, align="start"); lib(AT['cw2'] + 1.2, "impact-heavy-firm", .7); lib(AT['cw2'] + 2.0, "whoosh-fast-hard", .6, align="start")
+    if PART == 'O':
+        for i in range(4): lib(ST['XO'] + .6 + i * .25, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .3, align="start")
+        lib(AT['sh1'] + .4, "pop-large-in", .5); lib(ST['KO'] + .1, "impact-deep-hard", .8)
+    if PART == 'P':
+        amb('XP', 'XP', "oc-AMBHome_RoomTone_LOOP_01", .3); lib(AT['mp1'] - .8, "props-doorbell", .0); lib(AT['sp1'] + .6, "shimmer-long-soft", .3, align="start"); lib(AT['sp1'] + .6, "time-clock-fast", .3, align="start")
+        lib(ST['KP'] - .4, "whoosh-slow-soft", .6, align="start")
+    if PART in 'NOP':
+        json.dump(C, open(os.path.join(R0, 'sfx2-%s.json' % PART), 'w'), indent=0); return
     if PART == 'D': lib(AT['wf1'] - .3, "whoosh-fast-soft", .45, align="start")
     if PART == 'E':
         lib(ST['XE'] + .6, "celebration-applause-big", .6, align="start"); lib(ST['XE'] + 1.0, "celebration-applause-small", .5, align="start")

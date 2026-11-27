@@ -137,6 +137,19 @@ def variants():
     if PART == 'G':
         t0 = sh('XG'); put(boom(.9, 2.0), AT['dd1'] - .05, .55, 0, .3); put(drone(hz('C2'), SH_('XG'), 1.), t0 + .8, .5, 0, .3); chord(['C3', 'Eb3', 'Gb3', 'A3'], AT['dd1'], end('XG') - AT['dd1'], .2, 0, 1300)
         for k in range(6): put(heart(.9), AT['dd1'] + D['dd1'] + .3 + k * .45, .5, 0, .1)
+    if PART == 'N':  # тёплый мьюзик-бокс → тени переглядываются: зловещий низ → заставка: челеста-мотив тени в миноре, удар на «NO SHADOWS»
+        t0 = sh('XN'); [put(musicbox(hz(n)), t0 + .4 + k * .42, .3, .2, .6) for k, n in enumerate(['A5', 'F5', 'C5', 'F5', 'A5', 'G5', 'F5'])]; chord(['F3', 'A3', 'C4', 'E4'], t0, end('XN') - t0 - 1.0, .2, 0, 1600)
+        put(drone(hz('D2'), 3.0, 1.), end('XN') - 1.8, .5, 0, .3); put(riser(1.0, .5), end('XN') - 1.0, .3, 0, .3)
+        k0 = sh('KN'); [put(celesta(hz(n)), k0 + .3 + k * .28, .25, -.2, .6) for k, n in enumerate(['A5', 'G5', 'F5', 'E5', 'D5'])]; chord(['D3', 'F3', 'A3'], k0, DUR - k0, .2, 0, 1200)
+        put(boom(.8, 1.6), AT['cw2'] + 1.2, .5, 0, .3); put(boom(.6, 1.0), AT['cw2'] + 2.0, .4, 0, .2)
+    if PART == 'O':
+        t0 = sh('XO'); put(bass(hz('E1'), 1.5), t0 + .6, .6, 0, .1); [put(kick(.9), t0 + .6 + k * .5, .35, 0, 0) for k in range(int((end('XO') - t0 - .6) / .5))]
+        put(boom(.7, 1.2), AT['ex1'] - .05, .5, 0, .2); put(riser(1.0, .6), AT['sh1'] - .2, .3, 0, .3)
+        k0 = sh('KO'); put(boom(1.0, 1.8), k0 + .1, .6, 0, .3); [put(snare(.9), k0 + .1 + k * .25, .3, 0, .1) for k in range(8)]
+    if PART == 'P':
+        t0 = sh('XP'); comic(t0, AT['mp1'] - .2, 104, .6); put(boom(.8, 1.6), AT['sp1'] - .05, .5, 0, .2); put(drone(hz('D2'), end('XP') - AT['sp1'] + 3, 1.), AT['sp1'], .5, 0, .3)
+        for k in range(int((DUR - AT['sp1']) / .5)): put(tick(.6, 1700), AT['sp1'] + .6 + k * .5, .25, 0, .1)
+    if PART in 'NOP': return
     c = ('K' if PART in 'DEFG' else 'C') + PART; t0 = sh(c)
     if PART == 'D': t0 += .6
     for k, (o, n) in enumerate([(0, 'A4'), (.5, 'C5'), (1.0, 'E5'), (1.5, 'D5'), (2.0, 'C5'), (2.6, 'B4'), (3.1, 'A4')]): put(musicbox(hz(n)), t0 + .2 + o, .3, .2, .6)

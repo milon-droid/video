@@ -27,6 +27,10 @@
   "dad_en": {
    "instruct": "Huge, intimidating middle-aged father, very deep gravelly voice, slow and menacing but restrained, protective dad.",
    "ref": "Young man. I've got two questions, and you'd better get both of them right."
+  },
+  "ex_en": {
+   "instruct": "Big, cocky, deep male voice, gym bro, smug and slow, low pitch, macho swagger.",
+   "ref": "Yeah, that's right. I bench three hundred. What do you bench, little guy?"
   }
  },
  "lines": [
@@ -565,6 +569,48 @@
    "role": "senya_en",
    "text": "...Hi?",
    "say": "...Hi?"
+  },
+  {
+   "id": "cw1",
+   "role": "shadow2_en",
+   "text": "Without us? …Cute.",
+   "say": "Without us? ...Cute."
+  },
+  {
+   "id": "ms1",
+   "role": "mshadow_en",
+   "text": "Oh. Um… this is my ex.",
+   "say": "Oh. Um... this is my ex."
+  },
+  {
+   "id": "ex1",
+   "role": "ex_en",
+   "text": "Hands off my girl, shorty.",
+   "say": "Hands off my girl... shorty."
+  },
+  {
+   "id": "sh1",
+   "role": "shadow2_en",
+   "text": "Sam. Hold my hat.",
+   "say": "Sam. ...Hold my hat."
+  },
+  {
+   "id": "mp1",
+   "role": "mia_en",
+   "text": "Sam… our shadows eloped.",
+   "say": "Sam... our shadows... eloped."
+  },
+  {
+   "id": "sp1",
+   "role": "senya_en",
+   "text": "They WHAT?!",
+   "say": "They WHAT?!"
+  },
+  {
+   "id": "cw2",
+   "role": "shadow2_en",
+   "text": "Without us? …How cute.",
+   "say": "Without us? ...How cute."
   }
  ]
 }
