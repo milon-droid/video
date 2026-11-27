@@ -10,6 +10,14 @@ def lib(t, id, g=.7, **k): C.append({"t": round(t, 3), "type": "lib", "id": id, 
 def syn(t, ty, g=.6, **k): C.append({"t": round(t, 3), "type": ty, "gain": g, **k})
 def amb(k0, k1, id, g): lib(ST[k0], id, g, dur=round(end(k1) - ST[k0], 2), align="start")
 def main_sfx():
+    # дерзкие вставки начала: стоп-кадр, шкала достоинства + K.O., повтор, титр-удар, красные флажки, счёт
+    FZ = AT['h1'] + D['h1'] + .05; lib(FZ, "cinematic-slam-big", .6, align="start"); lib(FZ + .05, "whoosh-fast-hard", .5, align="start")
+    for i in range(3): lib(FZ + .05 + i * .25, "pop-large-in", .4)
+    RUN = AT['fb2'] - .2; lib(RUN, "digital-interference", .3); lib(RUN + 1.0, "oc-FGHTImpt_PunchHardest_OS_01", .7, align="start"); lib(RUN + 1.0, "impact-deep-hard", .5)
+    W0 = AT['b19'] + .3; lib(W0 - .1, "reverse-whoosh-medium-strong", .5, align="start"); lib(W0, "click-latch-firm", .5); lib(W0 + .25, "foley-paper-touch", .4); lib(W0 + 1.6, "whoosh-fast-soft", .45, align="start")
+    lib(AT['b13'] + .1, "whoosh-fast-hard", .55, align="start"); lib(AT['b13'] + .25, "impact-heavy-firm", .5)
+    for i in range(7): lib(AT['b18'] + i * .07, "pop-large-bubble", .3)
+    lib(ST['CAT'] + 1.8, "digital-power-up", .35, align="start"); lib(ST['CAT'] + 2.2, "shimmer-medium-bright", .3, align="start")
     for k in ('FB', 'SS', 'S12'): lib(ST[k] - .4, "whoosh-slow-soft", .75, align="start")
     # H: зал, поцелуй теней, «перемотка»
     h = ST['H']; amb('H', 'H', "oc-CRWDConv_Restaurant_LOOP_01", .15); lib(h + .3, "shimmer-long-soft", .35, align="start")

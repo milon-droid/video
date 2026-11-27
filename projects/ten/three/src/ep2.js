@@ -1023,6 +1023,44 @@ S.KQ = (t, T) => { useSet('night'); hideAll(); night.g.visible = false; arena.vi
     drawLines(T, { an1: { hide: true }, an2: { hide: true }, ex3: { y: 1500, size: 76, n: 16 } }); };
 };
 
+// ===== дерзкий монтаж начала (как в концовке): стоп-кадры с титрами, шкала «достоинства», повтор-разбор, красные флаги, счёт =====
+const slashCard = (t, t0, title, sub, { y = 1290, col = '#ff4a1c', size = 170 } = {}) => { const inn = ease(t, t0, t0 + .18, back);
+  ctx.save(); ctx.translate(lerp(-1200, 0, inn), 0); ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, y - 100); ctx.lineTo(1080, y - 230); ctx.lineTo(1080, y + 40); ctx.lineTo(0, y + 170); ctx.fill();
+  ctx.fillStyle = '#07060c'; ctx.beginPath(); ctx.moveTo(0, y + 170); ctx.lineTo(1080, y + 40); ctx.lineTo(1080, y + 62); ctx.lineTo(0, y + 192); ctx.fill(); ctx.restore();
+  ctx.save(); ctx.translate(lerp(1400, 560, ease(t, t0 + .06, t0 + .28, back)), y); ctx.rotate(-.12); ctx.textAlign = 'center'; ctx.font = `900 ${size}px Unb`; ctx.lineWidth = 20; ctx.strokeStyle = '#07060c'; ctx.strokeText(title, 0, 0); ctx.fillStyle = '#fff'; ctx.fillText(title, 0, 0);
+  ctx.globalAlpha = ease(t, t0 + .3, t0 + .45); ctx.font = '800 40px Unb'; ctx.fillStyle = '#07060c'; ctx.fillText(sub, 0, 102); ctx.restore(); };
+const freezeFX = (t, t0) => { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = 'grayscale(.7) contrast(1.3) brightness(.92)'; ctx.drawImage(OUTC, 0, 0); ctx.restore(); const k = t - t0; if (k < .1) { ctx.fillStyle = `rgba(255,255,255,${1 - k / .1})`; ctx.fillRect(0, 0, 1080, 1920); } };
+const tag = (t, t0, x, y, tx, ty, text, col = '#ffd36a') => { const k = ease(t, t0, t0 + .2, back); if (k <= 0) return; ctx.save(); ctx.globalAlpha = clamp(k); ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(lerp(tx, x, k), lerp(ty, y, k)); ctx.stroke();
+  ctx.translate(tx, ty); ctx.scale(k, k); ctx.rotate(-.06); ctx.font = '900 46px Unb'; ctx.textAlign = 'center'; const w = ctx.measureText(text).width + 40; ctx.fillStyle = '#07060c'; ctx.fillRect(-w / 2, -40, w, 62); ctx.fillStyle = col; ctx.fillText(text, 0, 6); ctx.restore(); };
+const hudBar = (t, x, y, label, k, ghost) => { const w = 560; ctx.save(); ctx.fillStyle = 'rgba(7,6,12,.85)'; ctx.fillRect(x - 8, y - 8, w + 16, 58); ctx.fillStyle = '#fff'; ctx.fillRect(x, y, w * ghost, 42); ctx.fillStyle = k < .3 && Math.sin(t * 20) > 0 ? '#ff2a3a' : '#ffd36a'; ctx.fillRect(x, y, w * k, 42);
+  ctx.font = '800 30px Unb'; ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(label, x, y - 18); ctx.textAlign = 'right'; ctx.fillText(Math.round(k * 100) + '%', x + w, y - 18); ctx.restore(); };
+{ // H: стоп-кадр «кто есть кто»
+  const _H = S.H; S.H = (t, T) => { const FZ0 = lt('h1') + DURS.h1 + .05, FZ1 = FZ0 + 1.35; const fr = t > FZ0 && t < FZ1; const f = _H(fr ? FZ0 : t, T);
+    if (!fr) return f; const hs = wpos(hero.head), hm = wpos(mia.head), hk = wpos(shade.head);
+    return () => { freezeFX(t, FZ0); const [a, b] = toScreen(hs.x, hs.y, hs.z), [c, d] = toScreen(hm.x, hm.y, hm.z), [e, g] = toScreen(hk.x, hk.y + .2, hk.z);
+      tag(t, FZ0 + .05, a, b, 250, 1430, 'SAM · ZERO RIZZ'); tag(t, FZ0 + .3, c, d, 820, 1560, 'MIA · 1ST DATE'); tag(t, FZ0 + .55, e, g, 540, 330, 'THEIR SHADOWS · NO SHAME', '#ff7ab0'); }; }; }
+{ // FB: шкала «достоинства» тени сливается в ноль → K.O.
+  const _FB = S.FB; S.FB = (t, T) => { const f = _FB(t, T); const RUN = lt('fb2') - .2; return () => { f && f(); if (t < RUN - .3) return; const k = 1 - ease(t, RUN, RUN + .9), gh = 1 - ease(t, RUN + .35, RUN + 1.3);
+    ctx.save(); ctx.translate(0, lerp(-200, 0, ease(t, RUN - .3, RUN))); hudBar(t, 260, 470, "SHADOW'S DIGNITY", k, gh); ctx.restore(); if (t > RUN + 1.0) stamp(t, RUN + 1.0, 'K.O.', { y: 760, size: 170, color: '#ff2a3a', rot: -.1 }); }; }; }
+{ // S2: повтор-разбор «TACTICAL retreat» — замедленный флэшбек с маркером, как в спорте
+  const _S2 = S.S2; S.S2 = (t, T) => { const W0 = lt('b19') + .3, W1 = W0 + 1.6; if (t < W0 || t > W1) return _S2(t, T);
+    const keep = SHOT0; SHOT0 = starts.FB; const RUNf = lt('fb2') - .2; const tr = RUNf - .4 + (t - W0) * .5; S.FB(tr, SHOT0 + tr); SHOT0 = keep; const hp = wpos(shade.head);
+    return () => { ctx.save(); ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = 'rgba(128,128,128,.8)'; ctx.fillRect(0, 0, 1080, 1920); ctx.restore(); ctx.save(); ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = 'rgba(200,150,90,.6)'; ctx.fillRect(0, 0, 1080, 1920); ctx.restore();
+      if (t - W0 < .08) { ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillRect(0, 0, 1080, 1920); }
+      ctx.save(); ctx.fillStyle = '#ff2a3a'; if (Math.sin(t * 8) > -.3) { ctx.beginPath(); ctx.arc(110, 250, 20, 0, 7); ctx.fill(); } ctx.font = '900 54px Unb'; ctx.fillStyle = '#fff'; ctx.fillText('REPLAY  ×0.5', 150, 270); ctx.restore();
+      const [x, y] = toScreen(hp.x, hp.y - .25, hp.z); const k = ease(t, W0 + .2, W0 + .6); ctx.save(); ctx.strokeStyle = '#ffe14a'; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.ellipse(x, y, 150, 220, -.2, -1.6, -1.6 + k * 6.6); ctx.stroke();
+      if (t > W0 + .6) { ctx.font = '700 78px Cav'; ctx.fillStyle = '#ffe14a'; ctx.textAlign = 'center'; ctx.save(); ctx.translate(x + 40, y - 300); ctx.rotate(-.1); ctx.fillText('“tactical”', 0, 0); ctx.restore(); } ctx.restore();
+      drawLines(T, { b19: { y: 1500 } }); }; }; }
+{ // S2B: условие — титром-ударом; «Manipulation again?» — летят красные флажки
+  const _S2B = S.S2B; S.S2B = (t, T) => { const f = _S2B(t, T); const a = lt('b13'), m = lt('b18'); return () => { f && f();
+    if (t > a + .1 && t < a + 1.5) slashCard(t, a + .1, 'TERM #5', 'INTRODUCE ME — OR I QUIT', { y: 1330, size: 150 });
+    if (t > m && t < m + 1.8) for (let i = 0; i < 7; i++) { const k = ease(t, m + i * .07, m + i * .07 + .25, back), x = 140 + h1(i + 3) * 800, y = 560 + h1(i + 7) * 700; if (k <= 0) continue; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); ctx.rotate((h1(i) - .5) * .5 + Math.sin(t * 9 + i) * .08);
+      ctx.fillStyle = '#5a3a24'; ctx.fillRect(-4, -70, 8, 120); ctx.fillStyle = '#ff2a3a'; ctx.beginPath(); ctx.moveTo(4, -70); ctx.lineTo(80, -48); ctx.lineTo(4, -24); ctx.fill(); ctx.restore(); } }; }; }
+{ // CAT: счёт как в файтинге
+  const _CAT = S.CAT; S.CAT = (t, T) => { const f = _CAT(t, T); return () => { f && f(); if (t < 1.75) return; const k = ease(t, 1.8, 2.0, back);
+    ctx.save(); ctx.translate(540, 560); ctx.scale(k, k); ctx.fillStyle = 'rgba(7,6,12,.85)'; rr(-380, -70, 760, 130, 24); ctx.fill(); ctx.textAlign = 'center'; ctx.font = '900 60px Unb'; ctx.fillStyle = '#ffd36a'; ctx.fillText('PIXEL 1 : 0 SHADOW', 0, 22); ctx.restore();
+    if (t > 2.2 && t < 3.4) stamp(t, 2.2, '+1 HAT', { x: 760, y: 760, size: 80, color: '#7af0ff', rot: .12 }); }; }; }
+
 // ---- монтаж ----
 const PUNCH = ['b19', 'b18', 'ct2', 's6', 's10', 'p2', 'e5', 'g3', 'k7', 'l2', 'h1'];
 const WHIPS = ['S1', 'S5', 'S10B', 'S11', 'S2'].filter(id => id in starts).map(id => starts[id]);

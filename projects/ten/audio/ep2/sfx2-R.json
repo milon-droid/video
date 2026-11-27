@@ -1,5 +1,151 @@
 [
 {
+"t": 1.626,
+"type": "lib",
+"id": "cinematic-slam-big",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 1.676,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 1.676,
+"type": "lib",
+"id": "pop-large-in",
+"gain": 0.4
+},
+{
+"t": 1.926,
+"type": "lib",
+"id": "pop-large-in",
+"gain": 0.4
+},
+{
+"t": 2.176,
+"type": "lib",
+"id": "pop-large-in",
+"gain": 0.4
+},
+{
+"t": 6.309,
+"type": "lib",
+"id": "digital-interference",
+"gain": 0.3
+},
+{
+"t": 7.309,
+"type": "lib",
+"id": "oc-FGHTImpt_PunchHardest_OS_01",
+"gain": 0.7,
+"align": "start"
+},
+{
+"t": 7.309,
+"type": "lib",
+"id": "impact-deep-hard",
+"gain": 0.5
+},
+{
+"t": 11.242,
+"type": "lib",
+"id": "reverse-whoosh-medium-strong",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 11.342,
+"type": "lib",
+"id": "click-latch-firm",
+"gain": 0.5
+},
+{
+"t": 11.592,
+"type": "lib",
+"id": "foley-paper-touch",
+"gain": 0.4
+},
+{
+"t": 12.942,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 18.451,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 18.601,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.5
+},
+{
+"t": 21.89,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.3
+},
+{
+"t": 21.96,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.3
+},
+{
+"t": 22.03,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.3
+},
+{
+"t": 22.1,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.3
+},
+{
+"t": 22.17,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.3
+},
+{
+"t": 22.24,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.3
+},
+{
+"t": 22.31,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.3
+},
+{
+"t": 27.911,
+"type": "lib",
+"id": "digital-power-up",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 28.311,
+"type": "lib",
+"id": "shimmer-medium-bright",
+"gain": 0.3,
+"align": "start"
+},
+{
 "t": 4.0,
 "type": "lib",
 "id": "whoosh-slow-soft",
@@ -978,104 +1124,524 @@
 "rate": 1.4
 },
 {
-"t": 101.115,
+"t": 100.915,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.22,
+"dur": 23.26,
+"align": "start"
+},
+{
+"t": 101.415,
+"type": "lib",
+"id": "oc-VEHCar_CarEngineSlow_LOOP_01",
+"gain": 0.55,
+"dur": 7.24,
+"align": "start"
+},
+{
+"t": 102.515,
+"type": "lib",
+"id": "bsb-tires-screech",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 103.215,
+"type": "lib",
+"id": "oc-MACHInd_Hydraulic_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 103.335,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.45
+},
+{
+"t": 103.485,
+"type": "lib",
+"id": "oc-MACHInd_Hydraulic_OS_01",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 103.605,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.35
+},
+{
+"t": 103.715,
+"type": "lib",
+"id": "oc-MACHInd_Hydraulic_OS_01",
+"gain": 0.25,
+"align": "start"
+},
+{
+"t": 103.835,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.25
+},
+{
+"t": 101.765,
+"type": "lib",
+"id": "mechanical-switch-heavy",
+"gain": 0.5
+},
+{
+"t": 101.815,
+"type": "lib",
+"id": "shimmer-long-soft",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 108.351,
+"type": "lib",
+"id": "oc-VEHDoor_CarDoorOpen_OS_01",
+"gain": 0.8,
+"align": "start"
+},
+{
+"t": 108.851,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.9,
+"align": "start"
+},
+{
+"t": 108.871,
+"type": "lib",
+"id": "impact-deep-soft",
+"gain": 0.5
+},
+{
+"t": 109.501,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.5
+},
+{
+"t": 109.901,
+"type": "lib",
+"id": "cinematic-slam-big",
+"gain": 0.85,
+"align": "start"
+},
+{
+"t": 110.001,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 110.251,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.5
+},
+{
+"t": 110.501,
+"type": "lib",
+"id": "click-clap-firm",
+"gain": 0.45
+},
+{
+"t": 111.551,
+"type": "lib",
+"id": "oc-VEHDoor_CarDoorClose_OS_01",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 111.601,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 111.901,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 112.201,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 112.501,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 111.701,
+"type": "lib",
+"id": "transform-stretch",
+"gain": 0.6,
+"align": "start",
+"rate": 0.7
+},
+{
+"t": 111.801,
+"type": "lib",
+"id": "reverse-whoosh-long-strong",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 113.001,
+"type": "lib",
+"id": "oc-GOREBone_SkullCracking_OS_01",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 113.351,
+"type": "lib",
+"id": "oc-GOREBone_SkullCracking_OS_02",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 113.101,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 113.351,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 113.601,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 113.851,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 114.101,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 112.815,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 116.315,
+"type": "lib",
+"id": "transform-stretch",
+"gain": 0.5,
+"align": "start",
+"rate": 1.3
+},
+{
+"t": 116.515,
+"type": "lib",
+"id": "shimmer-long-sparkle",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 116.615,
+"type": "lib",
+"id": "digital-interference",
+"gain": 0.2
+},
+{
+"t": 118.815,
+"type": "lib",
+"id": "whoosh-fast-medium",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 119.465,
+"type": "lib",
+"id": "foley-fabric-touch",
+"gain": 0.6
+},
+{
+"t": 121.992,
+"type": "lib",
+"id": "oc-GOREBone_SkullCracking_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 122.392,
+"type": "lib",
+"id": "oc-GOREBone_SkullCracking_OS_02",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 121.842,
+"type": "lib",
+"id": "digital-power-up",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 123.972,
+"type": "lib",
+"id": "whoosh-slow-soft",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 124.222,
+"type": "lib",
+"id": "impact-deep-hard",
+"gain": 0.6
+},
+{
+"t": 125.772,
+"type": "lib",
+"id": "cinematic-slam-big",
+"gain": 0.7,
+"align": "start"
+},
+{
+"t": 126.972,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 127.272,
+"type": "lib",
+"id": "whoosh-medium-hard",
+"gain": 0.7,
+"align": "start"
+},
+{
+"t": 127.292,
+"type": "lib",
+"id": "reverse-whoosh-medium-strong",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 127.922,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_01",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 128.065,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_02",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 128.208,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_03",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 128.351,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_04",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 128.493,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_05",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 128.636,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_01",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 128.779,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_02",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 128.922,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_03",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 129.065,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_04",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 130.703,
+"type": "lib",
+"id": "whoosh-medium-hard",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 131.003,
+"type": "lib",
+"id": "oc-FGHTImpt_PunchHardest_OS_01",
+"gain": 0.95,
+"align": "start"
+},
+{
+"t": 131.003,
+"type": "lib",
+"id": "impact-deep-hard",
+"gain": 0.7
+},
+{
+"t": 131.053,
+"type": "lib",
+"id": "faller-1s-strong",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 131.603,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.7
+},
+{
+"t": 131.623,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 132.453,
+"type": "lib",
+"id": "digital-power-up",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 132.853,
+"type": "lib",
+"id": "oc-UIMisc_Powerup_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 133.103,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 133.203,
+"type": "lib",
+"id": "reverse-whoosh-long-strong",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 133.303,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 101.415,
+"t": 134.053,
 "type": "lib",
-"id": "oc-AMBUrbn_CityEuroDaytime_LOOP_01",
-"gain": 0.0,
-"dur": 0.1
+"id": "oc-FGHTImpt_PunchHarder_OS_01",
+"gain": 0.9,
+"align": "start"
 },
 {
-"t": 101.215,
+"t": 134.053,
 "type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
+"id": "cinematic-slam-big",
+"gain": 0.9,
+"align": "start"
 },
 {
-"t": 101.495,
+"t": 134.103,
 "type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
+"id": "bsb-ice-crack-1",
+"gain": 0.45,
+"align": "start"
 },
 {
-"t": 101.775,
+"t": 134.503,
 "type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
-},
-{
-"t": 102.055,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
-},
-{
-"t": 102.335,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
-},
-{
-"t": 102.615,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
-},
-{
-"t": 102.915,
-"type": "lib",
-"id": "impact-heavy-soft",
-"gain": 0.5
-},
-{
-"t": 103.515,
-"type": "lib",
-"id": "oc-DOORGlas_GlassDoorOpen_OS_01",
+"id": "whoosh-fast-hard",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 103.915,
-"type": "lib",
-"id": "transform-stretch",
-"gain": 0.6,
-"align": "start"
-},
-{
-"t": 105.215,
-"type": "lib",
-"id": "impact-deep-hard",
-"gain": 0.7
-},
-{
-"t": 109.115,
+"t": 134.953,
 "type": "lib",
 "id": "pop-large-in",
-"gain": 0.5
+"gain": 0.4
 },
 {
-"t": 110.7,
+"t": 135.353,
 "type": "lib",
-"id": "impact-deep-hard",
-"gain": 0.8
-},
-{
-"t": 111.8,
-"type": "lib",
-"id": "impact-heavy-firm",
-"gain": 0.7
-},
-{
-"t": 112.8,
-"type": "lib",
-"id": "cinematic-slam-big",
-"gain": 0.8,
-"align": "start"
+"id": "pop-large-in",
+"gain": 0.35
 }
 ]
