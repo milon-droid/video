@@ -19,3 +19,7 @@
 | 31.5–34.5 | DEC 24 ночь | дрон поднимается | окна гаснут, печенье и молоко, сани на фоне луны |
 | 34.5–39 | DEC 25 | утро, рассвет | дети бегут к ёлке, бумага летит; колокола |
 | 39–43 | — | дрон вертикально вверх | огни городка складываются в «glean.» + «Which house is yours?» |
+
+## Статус (2026-11-27)
+- v2 (3D-дрон) собран: `cd projects/dekabr/three && npx esbuild src/main.js --bundle --outfile=bundle.js && node render.cjs render/v.mp4`, звук `python3 projects/dekabr/audio/score.py`, сведение + `tools/master.py`. Кусок — `node render.cjs out.mp4 from to` и склейка.
+- Ждёт фидбека. Подпись: «Watch a town become Christmas ✨ Which house is yours?» #christmas #christmasvibes #cozy #animation #holidayseason

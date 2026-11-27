@@ -33462,8 +33462,8 @@ void main() {
     [34.3, V3(11.5, 2.5, 0.5), V3(-20, 3.8, 0), "m"],
     [35, V3(-1.3, 1.5, 1), V3(-1, 1, -4.2), "c"],
     [38.8, V3(-0.9, 1.4, 0.7), V3(-1, 1, -4.2), "m"],
-    [40.3, V3(2, 9, 6), V3(12, 0, 6), "m"],
-    [43.2, V3(25, 30, 14.01), V3(25, 0, 14), "m"],
+    [40.2, V3(25, 9, 30), V3(25, 0, 15), "c"],
+    [43, V3(25, 29, 14.6), V3(25, 0, 14), "m"],
     [44.6, V3(25, 29, 14.01), V3(25, 0, 14), "m"]
   ];
   function drone(t) {
@@ -33699,7 +33699,7 @@ void main() {
   window.renderFrame = function(t) {
     globalThis.__T = t;
     const { p, tg } = drone(t);
-    const up = ss(41, 43, t);
+    const up = ss(40.6, 43, t) * 0.98;
     camera.up.set(0, 1 - up, -up).normalize();
     camera.position.copy(p);
     camera.lookAt(tg);

@@ -51,7 +51,7 @@ const PATH = [ // [время, позиция, цель, режим сегмен
   [28.3, V(2.9, 1.5, 1.0), V(3.2, 1.0, -4.2), 'c'], [31.3, V(3.5, 1.45, .8), V(3.2, 1.0, -4.2), 'm'],
   [32.0, V(13.5, 2.3, .5), V(-20, 3.4, 0), 'c'], [34.3, V(11.5, 2.5, .5), V(-20, 3.8, 0), 'm'],
   [35.0, V(-1.3, 1.5, 1.0), V(-1, 1.0, -4.2), 'c'], [38.8, V(-.9, 1.4, .7), V(-1, 1.0, -4.2), 'm'],
-  [40.3, V(2, 9, 6), V(12, 0, 6), 'm'], [43.2, V(25, 30, 14.01), V(25, 0, 14), 'm'], [44.6, V(25, 29, 14.01), V(25, 0, 14), 'm'],
+  [40.2, V(25, 9, 30), V(25, 0, 15), 'c'], [43.0, V(25, 29, 14.6), V(25, 0, 14), 'm'], [44.6, V(25, 29, 14.01), V(25, 0, 14), 'm'],
 ];
 function drone(t) {
   let i = 0; while (i < PATH.length - 2 && t >= PATH[i + 1][0]) i++;
@@ -169,7 +169,7 @@ function decor(t) {
 // ---------- кадр
 window.renderFrame = function (t) {
   globalThis.__T = t;
-  const { p, tg } = drone(t); const up = ss(41.0, 43.0, t); camera.up.set(0, 1 - up, -up).normalize(); camera.position.copy(p); camera.lookAt(tg); camera.fov = t >= 31.6 && t < 34.5 ? 50 : (t >= 21 && t < 31.6) || (t >= 34.5 && t < 38.8) ? 56 : t >= 13.4 && t < 21 ? 52 : 40; camera.updateProjectionMatrix();
+  const { p, tg } = drone(t); const up = ss(40.6, 43.0, t) * .98; camera.up.set(0, 1 - up, -up).normalize(); camera.position.copy(p); camera.lookAt(tg); camera.fov = t >= 31.6 && t < 34.5 ? 50 : (t >= 21 && t < 31.6) || (t >= 34.5 && t < 38.8) ? 56 : t >= 13.4 && t < 21 ? 52 : 40; camera.updateProjectionMatrix();
   // небо и свет по фазам
   if (t < 14) { skyMix(DUSK, NIGHT, .4 + .25 * Math.sin(t * 1.6)); hemi.intensity = .75; moon.intensity = .7; FRAME.exposure = 1.05; scene.fog.density = .012; }
   else if (t < 31.5) { skyMix(DUSK, NIGHT, .35); hemi.intensity = .8; moon.intensity = .8; FRAME.exposure = 1.1; scene.fog.density = .02; }
