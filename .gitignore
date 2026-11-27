@@ -39,6 +39,7 @@ projects/*/out/raw*.mp4
 assets/voices/*
 !assets/voices/qwen-ref/
 !assets/voices/ru-ref/
+!assets/voices/VOICES.md
 !projects/popal/assets/vo/
 projects/popal/assets/vo/*
 !projects/popal/assets/vo/ep1v5/
