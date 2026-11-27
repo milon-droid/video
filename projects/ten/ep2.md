@@ -67,3 +67,6 @@
   → «Dude, he's twice your size!» — «Good. More to hit.» → арена-закат силуэтами (та же улица, кот, зрители), ROUND 1 / FIGHT (диктор ann_en), уворот, 9 HITS · DAMAGE 0,
   «That tickles.», нокдаун, SHADOW POWER READY, прыжок → стоп-кадр TO BE CONTINUED / FINAL EPISODE · tomorrow / Team Shadow or Team Brad?
   Полная серия с этой концовкой ≈ 2:16 (часть R). Ждём отзыв.
+- 2026-11-27 «дерзкий монтаж, как концовка — склеивай; начало дерзче, с фишками»: в начало добавлены стоп-кадр «кто есть кто» (H), шкала SHADOW'S DIGNITY → K.O. (FB),
+  повтор ×0.5 с маркером «“tactical”» (S2, во время b19), титр-удар TERM #5 (S2B), красные флажки на «Manipulation again?», табло PIXEL 1 : 0 SHADOW (CAT) + звуки.
+  Полная серия с концовкой Shadow Fight — часть R → `render/shadow-quit-ep2-v8.mp4` (~2:17). Урезать — позже (просьба пользователя).
