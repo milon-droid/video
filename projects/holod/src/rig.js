@@ -31,12 +31,12 @@ const rotAbout = (p, c, axis, ang) => p.clone().sub(c).applyAxisAngle(axis, ang)
 export function makeHuman(look = {}, layer = 0) {
   const R = new Rig(layer);
   const c = look.cold ? 4.1 : null;
-  const M = (n, T, o = {}) => R.mat(n, { T: c ? c + (T - 33) * .12 : T, ...o, ...(look.cold ? { nz: .9, nzs: 7, fres: .3 } : {}) });
+  const M = (n, T, o = {}) => R.mat(n, { T: c ? c + (T - 33) * .45 : T, ...o, ...(look.cold ? { nz: 1.2, nzs: 6, fres: .05, ambK: 0 } : {}) });
   const skin = M('skin', 34.6), face = M('face', 35.3), eye = M('eye', 36.9, { nz: 0 }), nose = M('nose', 30.8), hair = M('hair', 27), cloth = M('cloth', look.cloth ?? 31.2), legs = M('legs', look.legs ?? 30.2), feet = M('feet', 27.5), hand = M('hand', 33.6);
   const sl = look.slim ? .78 : 1; R.sl = sl;
   R.seg('torso', .15 * sl, .17 * sl, cloth); R.seg('belly', .14 * sl, .15 * sl, cloth); R.seg('neck', .055, .05, skin);
-  R.ball('head', .108, face, .93, 1.05, 1.0); R.ball('eyeL', .019, eye); R.ball('eyeR', .019, eye); R.ball('nose', .02, nose, 1, 1, 1.4); R.ball('hairCap', .113, hair, .98, .95, 1.03);
-  if (look.longHair) R.ball('hairBack', .11, hair, .95, 1.15, .6);
+  R.ball('head', .108, face, .95, 1.12, 1.02); R.ball('eyeL', .019, eye); R.ball('eyeR', .019, eye); R.ball('nose', .02, nose, 1, 1, 1.4); R.ball('hairCap', .113, hair, .98, .95, 1.03);
+  if (look.longHair) R.ball('hairBack', .115, hair, 1.0, 1.3, .7);
   R.ball('chest', .17 * sl, cloth, 1.12, .8, .78); R.ball('pelvis', .145 * sl, legs, 1.15, .8, .8);
   for (const s of ['L', 'R']) {
     R.ball('sh' + s, .062 * sl, cloth); R.seg('ua' + s, .058 * sl, .048 * sl, look.short ? skin : cloth); R.ball('el' + s, .046 * sl, look.short ? skin : cloth); R.seg('fa' + s, .045 * sl, .034 * sl, look.short ? skin : cloth); R.ball('hand' + s, .045 * sl, hand, .8, 1.1, .55);
@@ -60,9 +60,9 @@ export function poseHuman(R, P) {
   R.balls.chest.quaternion.setFromAxisAngle(ra, lean); R.balls.pelvis.quaternion.setFromAxisAngle(ra, lean * .3);
   // голова
   const hy = (P.yaw || 0) + (P.headYaw || 0), hp = (P.headPitch || 0) + lean;
-  const hf = V3(Math.sin(hy) * Math.cos(hp), -Math.sin(hp), Math.cos(hy) * Math.cos(hp)), hr = V3(-Math.cos(hy), 0, Math.sin(hy)), hu = hr.clone().cross(hf).negate();
+  const hf = V3(Math.sin(hy) * Math.cos(hp), -Math.sin(hp), Math.cos(hy) * Math.cos(hp)), hr = V3(-Math.cos(hy), 0, Math.sin(hy)); if (P.headRoll) hr.applyAxisAngle(hf, P.headRoll); const hu = hr.clone().cross(hf);
   R.put('neck', neck0, headC.clone().addScaledVector(hu, -.06));
-  R.at('head', headC); R.balls.head.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(hr.clone(), hu, hf));
+  R.at('head', headC); R.balls.head.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(hr.clone().negate(), hu, hf));
   const hp2 = (x, y, z) => headC.clone().addScaledVector(hr, x).addScaledVector(hu, y).addScaledVector(hf, z);
   R.at('eyeL', hp2(-.036, .018, .088)); R.at('eyeR', hp2(.036, .018, .088)); R.at('nose', hp2(0, -.012, .105));
   R.at('hairCap', hp2(0, .028, -.018)); R.balls.hairCap.quaternion.copy(R.balls.head.quaternion);
@@ -73,7 +73,7 @@ export function poseHuman(R, P) {
     const sx = sd === 'L' ? -1 : 1, a = sh[sd];
     const swing = Math.sin(ph + (sd === 'L' ? 0 : Math.PI)) * .18 * wa;
     let tgt = P['arm' + sd] || a.clone().addScaledVector(r, sx * .06).addScaledVector(UP, -.56 * s).addScaledVector(f, .06 + swing);
-    const pole = r.clone().multiplyScalar(sx * .45).addScaledVector(f, -.25).addScaledVector(UP, -1);
+    const pole = r.clone().multiplyScalar(sx * .5).addScaledVector(f, -.8).addScaledVector(UP, -.4);
     const k = ik2(a, tgt, .29 * s, .27 * s, pole);
     R.at('sh' + sd, a); R.put('ua' + sd, a, k.mid); R.at('el' + sd, k.mid); R.put('fa' + sd, k.mid, k.end);
     R.at('hand' + sd, k.end.clone().addScaledVector(k.end.clone().sub(k.mid).normalize(), .05));
@@ -102,7 +102,7 @@ export function makeDog(layer = 0) {
   R.seg('back', .16, .14, fur); R.seg('neck', .1, .085, fur);
   R.ball('head', .1, head, 1, .95, 1.1); R.seg('snout', .062, .045, head); R.seg('jaw', .045, .032, mouth); R.ball('nose', .03, nose, 1.1, .85, 1); R.ball('snTip', .046, head, 1, .9, 1); R.ball('mouthIn', .04, mouth, 1, .7, 1.5);
   R.ball('eyeL', .017, eye); R.ball('eyeR', .017, eye);
-  R.seg('earL', .035, .012, ear); R.seg('earR', .035, .012, ear);
+  R.seg('earL', .028, .042, ear); R.seg('earR', .028, .042, ear);
   for (const s of ['FL', 'FR', 'BL', 'BR']) { R.seg('u' + s, .05, .04, leg); R.ball('j' + s, .038, leg); R.seg('l' + s, .036, .028, leg); R.ball('p' + s, .035, paw, 1, .6, 1.3); if (s[0] === 'B') { R.seg('m' + s, .04, .032, leg); R.ball('h' + s, .032, leg); } }
   for (let i = 0; i < 4; i++) R.seg('tail' + i, .035 - i * .005, .03 - i * .005, tail);
   return R;
@@ -118,11 +118,11 @@ export function poseDog(R, P) {
   const hf = V3(Math.sin(hy), 0, Math.cos(hy)), hr = V3(-Math.cos(hy), 0, Math.sin(hy));
   const pitch = g * .35 - bk * .25 + (P.look || 0);
   const hfp = hf.clone().multiplyScalar(Math.cos(pitch)).add(V3(0, -Math.sin(pitch), 0)).normalize();
-  const hu = hr.clone().cross(hfp).negate();
+  const hu = hr.clone().cross(hfp);
   const neckBase = L(0, .58 - g * .07, .32);
   const headC = neckBase.clone().addScaledVector(hf, .15 + bk * .03 + g * .04).add(V3(0, .2 - g * .19 + bk * .03, 0));
   R.put('neck', neckBase, headC);
-  R.at('head', headC); R.balls.head.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(hr.clone(), hu, hfp));
+  R.at('head', headC); R.balls.head.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(hr.clone().negate(), hu, hfp));
   const hp = (x, y, z) => headC.clone().addScaledVector(hr, x).addScaledVector(hu, y).addScaledVector(hfp, z);
   const sn0 = hp(0, -.02, .06), sn1 = hp(0, -.035, .21);
   R.put('snout', sn0, sn1); R.at('snTip', sn1.clone().addScaledVector(hfp, -.02)); R.at('nose', sn1.clone().addScaledVector(hfp, .012).addScaledVector(hu, .01));
@@ -131,7 +131,7 @@ export function poseDog(R, P) {
   R.at('mouthIn', hp(0, -.055 - jo * .04, .11)); R.balls.mouthIn.scale.set(1, .4 + jo * 1.6, 1.4);
   R.at('eyeL', hp(-.045, .035, .075)); R.at('eyeR', hp(.045, .035, .075));
   const earBack = g * .6; // прижатые уши при рычании
-  for (const [s, sx] of [['L', -1], ['R', 1]]) { const e0 = hp(sx * .06, .07, -.01); R.put('ear' + s, e0, e0.clone().addScaledVector(hr, sx * .04).addScaledVector(hu, .07 * (1 - earBack) - .03 * earBack).addScaledVector(hfp, -.06 - earBack * .05)); }
+  for (const [s, sx] of [['L', -1], ['R', 1]]) { const e0 = hp(sx * .07, .07, -.01); R.put('ear' + s, e0, e0.clone().addScaledVector(hr, sx * (.05 + earBack * .02)).addScaledVector(hu, -.13 + earBack * .04).addScaledVector(hfp, -.01 - earBack * .05)); } // висячие уши
   // лапы
   const legs = { FL: [-1, .26, 0], FR: [1, .26, Math.PI], BL: [-1, -.3, Math.PI], BR: [1, -.3, 0] };
   for (const [s, [sx, z, po]] of Object.entries(legs)) {

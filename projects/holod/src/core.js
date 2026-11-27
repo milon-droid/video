@@ -107,7 +107,7 @@ export function steamPoints(n) {
 const quadScene = new THREE.Scene(), quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 export const POST = {
   tT: { value: rtT.texture }, uLo: { value: 12 }, uHi: { value: 37 }, uPal: { value: 0 }, uIso: { value: -100 }, uIsoK: { value: 0 }, uTime: { value: 0 },
-  uNoise: { value: .25 }, uNuc: { value: 0 }, uZoom: { value: 1 }, uSharp: { value: .9 }, uGlitch: { value: 0 }, uFade: { value: 1 }, uSeed: { value: 0 },
+  uNoise: { value: .34 }, uNuc: { value: 0 }, uZoom: { value: 1 }, uSharp: { value: .9 }, uGlitch: { value: 0 }, uFade: { value: 1 }, uSeed: { value: 0 },
 };
 const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({ uniforms: POST, depthTest: false,
   vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy,0.,1.); }`,
@@ -139,9 +139,13 @@ const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMater
     vec3 col = mix(ironbow(k), vec3(pow(k,.9)), uPal);
     // изотерма: всё холоднее порога — бирюзой
     float iso = (1.-smoothstep(uIso-.25, uIso+.25, Tm))*uIsoK;
-    float ki = clamp((Tm-(uIso-11.))/11., 0., 1.); ki = ki*ki*(3.-2.*ki);
-    vec3 tc = mix(vec3(.0,.10,.16), vec3(.05,.62,.70), smoothstep(0.,.6,ki)); tc = mix(tc, vec3(.6,1.,.95), smoothstep(.55,1.,ki));
-    col = mix(col, tc, iso);
+    // холодное — светится голубым изнутри (как призрак), мягкий ореол вокруг; совсем ледяное (глазницы, рот) — чёрная пустота
+    float core = clamp((uIso - Tm)/5., 0., 1.);
+    vec3 cold = mix(vec3(.06,.22,.85), vec3(.42,.95,1.), smoothstep(.0,.9,core)) * (.9 + .25*n);
+    cold = mix(cold, vec3(.0,.01,.04), smoothstep(uIso-11., uIso-17., Tm));
+    col = mix(col, cold, iso);
+    float gm = 0.; for(int i=0;i<12;i++){ float a = float(i)*.5236; float Ts = texture2D(tT, uv+vec2(cos(a),sin(a))*px*vec2(9.,9.)*(1.+float(i-i/2*2))).r; gm += 1.-smoothstep(uIso-.5, uIso+.5, Ts); } gm /= 12.;
+    col += vec3(.12,.45,1.)*gm*uIsoK*.6*(1.-iso);
     // виньетка объектива и края матрицы
     float v = dot(c,c); col *= 1.-.55*v; col *= .93+.07*smoothstep(.0,.02,uv.x)*smoothstep(1.,.98,uv.x);
     col = mix(col, vec3(.42+.02*n), uNuc);
