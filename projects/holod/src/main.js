@@ -48,7 +48,7 @@ const SHOTS = [
   { id: 'N', lines: ['l15'], lead: 1.1, tail: .7, min: 3.6 },
   { id: 'O', lines: ['l16'], lead: .55, tail: .5, min: 3.6 },
   { id: 'P', lines: ['l17'], lead: 1.4, tail: .5, min: 3.8 },
-  { id: 'Q', lines: [], min: 6.4 },
+  { id: 'Q', lines: [], min: 4.75 },
 ];
 let T0 = 0; const VO = [];
 for (const s of SHOTS) {
@@ -60,7 +60,10 @@ export const TOTAL = T0;
 window.VO_TIMELINE = VO; window.SHOTS = SHOTS.map(s => ({ id: s.id, t0: s.t0, d: s.d }));
 const SH = Object.fromEntries(SHOTS.map(s => [s.id, s]));
 // NUC: камера калибруется — кадр замирает, щелчок, серое поле
-const QL = 2.6; // момент броска в финале
+const QS = 3.9; // финал: ложный конец «03:14», затем внезапный скример
+// подсознательные вспышки силуэта (план, локальное время; отрицательное — от конца плана) и короткие сбои картинки
+const MICRO = [8.9, 17.3, 23.6, 29.0, 35.8, 41.2, 50.0, 62.3]; // короткие сбои картинки (с)
+const GFL = [['C', .95], ['E', -.65], ['F', .9], ['G', 2.2]];
 const NUC = [SH.B.t0 + .35, SH.F.t0 + .15];
 
 // --- камера «с рук» ---
@@ -81,7 +84,11 @@ function syncMe(t, ph = 0, walkAmp = 0, armL = null, o = {}) {
   me.dev.visible = false; me.lens.visible = false;
   poseHuman(me, { pos, yaw, headPitch: o.pitch || 0, headRoll: o.roll || 0, walk: ph, walkAmp, t: 0, armR: null, armL: armL || null });
 }
-function hideAll() { ghost.g.visible = false; me.g.visible = true; jess.g.visible = false; jb.visible = true; dog.g.visible = true; fh.visible = false; }
+function ghostFlash(id, u, s, pos, yaw, roll = .5) {
+  for (const [sid, tt] of GFL) if (sid === id) { const a = tt < 0 ? s.d + tt : tt; if (u >= a && u < a + .1) { ghost.g.visible = true; poseHuman(ghost, { pos, yaw, t: 0, headRoll: roll }); holes.forEach(m => m.scale.setScalar(.01)); return true; } }
+  return false;
+}
+function hideAll() { ghost.g.visible = false; ghost.balls.head.scale.set(.93, 1.05, 1.0); ghost.balls.hairCap.visible = true; me.g.visible = true; jess.g.visible = false; jb.visible = true; dog.g.visible = true; fh.visible = false; }
 const DOG_A = V3(2.0, 0, -1.15), yawTo = (a, b) => Math.atan2(b.x - a.x, b.z - a.z);
 function bedHeat(t, on = 1) {
   S.bodyHeat.forEach(([x, z, r], i) => setHeat(2 + i, x, .62, z, r * 1.7, 31.6 + Math.sin(t * 1.5) * .2));
@@ -135,6 +142,7 @@ const SHOT = {
     poseDog(dog, { pos: DOG_A, yaw: Math.PI, t: u + 30, growl: .9 - ease(u, 0, 1.2) * .5, headYaw: ease(u, .5, 1.3) * .8, look: -.08 });
     steam(S.steam, u + 9, V3(-1.3, .53, .45));
     const spots = k < .5 ? [[dogHead.clone().add(V3(-.04, .02, .08)), 'eye', 'ALIVE']] : [[V3(-1.45, 1.25, -2.53), 'win', 'COLD']];
+    ghostFlash('C', u, s, V3(2.75, 0, -.35), -2.2, .6);
     return { lo: 16, hi: 39, spots };
   },
   D(u, s) { // стекло отражает тепло: собака у окна и её отражение
@@ -154,6 +162,7 @@ const SHOT = {
     const ph = k * 2.2 / .35 * Math.PI;
     cam(L3(V3(.6, 1.6, .2), V3(1.95, 1.6, -2.4), k), L3(V3(-.6, .55, -1.7), V3(2.0, 1.3, -7), sm(clamp(k * 1.3))), u, { fov: 56, walk: k > .05 ? 1 : 0, ph });
     steam(S.steam, u + 15, V3(-1.3, .53, .45));
+    ghostFlash('E', u, s, V3(2.0, 0, -8.45), Math.PI, .4);
     return { lo: lerp(14, 6, k), hi: lerp(40, 36, k) };
   },
   F(u, s) { // коридор: холодно, следы, ладони на стене
@@ -164,6 +173,7 @@ const SHOT = {
     const look = tl > 0 ? L3(look1, look2, tl) : L3(V3(2.0, 1.4, -8), look1, ease(u, .2, 1.4, inoutE));
     cam(V3(2.0 - tl * .12, 1.6, z), look, u, { fov: 56, walk: .7, ph });
     const minT = lerp(14.8, 11.2, k);
+    ghostFlash('F', u, s, V3(2.0, 0, -6.9), Math.PI, .7);
     return { lo: 6, hi: 36, minT, temp: 1 };
   },
   G(u, s) { // спальня: Джесс спит, моя половина холодная… и свеча на моей тумбочке
@@ -174,6 +184,7 @@ const SHOT = {
     S.flame.scale.set(1, 1.8 + noise(4, u * 9) * .3, 1);
     const spots = pan < .5 ? [[V3(-2.1, .79, -6.95), 'jess', null]] : [[V3(-2.3, .72, -5.4), 'flame', '?']];
     if (pan < .5 && u > s.v0 + 1.6) spots.push([V3(-1.5, .58, -6.15), 'cold', null]);
+    ghostFlash('G', u, s, V3(-2.4, 0, -7.45), Math.PI / 2 + .2, .6);
     return { lo: 8, hi: 38, spots };
   },
   I(u, s) { // в конце коридора — фигура
@@ -249,20 +260,27 @@ const SHOT = {
     poseHuman(jess, { pos: V3(1.72, 0, -3.95), yaw: Math.PI + .1, t: u, scale: .96, armL: pr.chest.clone().add(V3(.1, -.08, -.14)) });
     return { lo: 3, hi: 40, iso: 9, isoK: 1, glitch: clamp(bk * .6), bark: bk, breathDog: 1 };
   },
-  Q(u, s) { // поворачиваюсь к зеркалу: МОЕГО отражения нет. У стекла — оно. Склоняет голову… бросок (СКРИМЕР)
-    hideAll(); me.g.visible = false; dog.g.visible = false; jb.visible = false; jess.g.visible = false; ghost.g.visible = true;
-    const k = ease(u, 0, .35, inoutE), yaw = lerp(0, Math.PI, k);
+  Q(u, s) { // разворот к зеркалу: МОЕГО отражения нет, пусто. Тишина. Затемнение, «03:14» — будто конец… и вдруг лицо в упор (СКРИМЕР)
+    hideAll(); me.g.visible = false; dog.g.visible = false; jb.visible = false; jess.g.visible = false;
     const p = V3(2.0, 1.6, -7.32);
-    const lunge = ease(u, QL, QL + .22, t => t * t);
-    const tgt = p.clone().add(V3(Math.sin(yaw) * 2, -.2 * (1 - k), Math.cos(yaw) * 2)).lerp(V3(2.0, 1.6, -7.95), lunge);
-    cam(p, tgt, u, { fov: 54 - lunge * 16, shake: 1 + (1 - k) * 3 + lunge * 4 });
-    const gz = lerp(-8.72, -7.62, lunge), roll = ease(u, .9, QL, inoutE) * .55 * (1 - lunge * .6);
-    const pr = poseHuman(ghost, { pos: V3(2.0, 0, gz), yaw: 0, t: 0, headRoll: roll, headPitch: -.05 - lunge * .1, armL: lunge > 0 ? V3(1.75, 1.45, gz + .45) : null, armR: lunge > 0 ? V3(2.25, 1.45, gz + .45) : null });
-    const op = ease(u, 1.6, QL, sm) * .6 + lunge * .6;
-    holes[0].position.copy(pr.hp2(-.036, .018, .085)); holes[1].position.copy(pr.hp2(.036, .018, .085)); holes[2].position.copy(pr.hp2(0, -.095, .08));
-    holes.forEach((m, i) => m.scale.setScalar(.6 + op * (i < 2 ? .9 : 1.6))); holes[2].scale.set(.7 + op * .6, 1 + op * 2.4, .7);
-    const end = u - (QL + .32);
-    return { lo: 3, hi: 28, iso: 9, isoK: 1, zoom: 1 + lunge * .25, glitch: (u > 1.0 && u < 1.06) ? .7 : clamp(lunge * 1.2), fade: end > 0 ? 0 : 1, end: end > 0 ? end + .9 : -1 };
+    if (u < QS) {
+      const k = ease(u, 0, .35, inoutE), yaw = lerp(0, Math.PI, k);
+      cam(p.clone().add(V3(0, 0, -ease(u, .35, 1.8) * .25)), p.clone().add(V3(Math.sin(yaw) * 2, -.2 * (1 - k), Math.cos(yaw) * 2)), u, { fov: 54, shake: 1 + (1 - k) * 3 });
+      const fo = ease(u, 1.5, 1.8);
+      return { lo: 3, hi: 28, iso: 9, isoK: 1, fade: 1 - fo, end: u > 1.8 ? u - 1.8 + .95 : -1, hudA: 1 - fo };
+    }
+    // СКРИМЕР: 0,55 с — дёргающееся лицо в упор, рот вывихнут, руки тянутся к объективу, палитра мигает
+    const w = u - QS; ghost.g.visible = true;
+    cam(p, p.clone().add(V3(0, .12, -2)), u, { fov: 50, shake: 6 });
+    const jt = (a, f) => noise(a, w * f) * 1;
+    const gz = lerp(-8.25, -7.95, clamp(w / .12));
+    const pr = poseHuman(ghost, { pos: V3(2.0 + jt(1, 30) * .03, 0, gz), yaw: jt(2, 26) * .25, t: 0, headRoll: .3 + jt(3, 34) * .28, headPitch: -.25 + jt(4, 29) * .25, lean: 0,
+      armL: V3(1.7 + jt(5, 20) * .05, 1.6, -7.6), armR: V3(2.3 + jt(6, 22) * .05, 1.52, -7.6) });
+    ghost.balls.head.scale.set(.86, 1.55, 1.0); ghost.balls.hairCap.visible = false;
+    holes[0].position.copy(pr.hp2(-.034, .05, .085)); holes[1].position.copy(pr.hp2(.034, .044, .085)); holes[2].position.copy(pr.hp2(0, -.12, .07));
+    holes[0].scale.set(.9, 1.5, .9); holes[1].scale.set(.8, 1.3, .9); holes[2].scale.set(1.0, 3.6 + jt(7, 40) * .6, .8);
+    const on = w < .55;
+    return { lo: 3, hi: 28, iso: 9, isoK: 1, pal: Math.floor(w * 18) % 3 === 1 ? 1 : 0, zoom: 1.0 + w * .5 + (Math.floor(w * 24) % 2) * .06, glitch: .55 + (Math.floor(w * 20) % 2) * .4, fade: on ? 1 : 0, hudA: on ? 1 : 0, scream: 1 };
   },
 };
 
@@ -381,6 +399,7 @@ window.renderFrame = async T => {
   const s = SHOTS.find(x => t >= x.t0 && t < x.t0 + x.d) || SHOTS[SHOTS.length - 1]; const u = t - s.t0;
   const st = SHOT[s.id](u, s) || {};
   scene.updateMatrixWorld();
+  for (const m of MICRO) if (T >= m && T < m + .07) st.glitch = Math.max(st.glitch || 0, .55);
   POST.uLo.value = st.lo ?? 12; POST.uHi.value = st.hi ?? 37; POST.uPal.value = st.pal || 0; POST.uIso.value = st.iso ?? -100; POST.uIsoK.value = st.isoK || 0;
   POST.uTime.value = T; POST.uNuc.value = nuc; POST.uZoom.value = st.zoom || 1; POST.uGlitch.value = st.glitch || 0; POST.uFade.value = st.fade ?? 1; POST.uSeed.value = s.t0;
   AMB.value = st.lo != null ? (st.lo + 13) : 17;
@@ -392,6 +411,7 @@ window.renderFrame = async T => {
   if (st.frame) mirrorFrame(st.frame);
   if (st.boot != null) bootScreen(st.boot);
   if (st.end > .6) { st.hudA = 0; }
+  if (st.scream) { /* скример: без табличек */ }
   hud(T, st, tc);
   if (st.end > .9) { // финальная табличка
     const a = ease(st.end, .9, 1.2);

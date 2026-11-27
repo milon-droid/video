@@ -18,7 +18,9 @@ for m in re.finditer(r"\{ id: '(\w+)', lines: \[([^\]]*)\](?:, lead: ([\d.]+))?(
 TOTAL = T; N = int((TOTAL + .1) * R); L = np.zeros(N); Rr = np.zeros(N)
 S = lambda k, o=0: SH[k]['t0'] + o
 V = lambda k, i=0: SH[k]['t0'] + SH[k]['v'][i]
-QL = 2.6
+QS = float(re.search(r'const QS = ([\d.]+)', src).group(1))
+MICRO = [float(x) for x in re.search(r'const MICRO = \[([^\]]*)\]', src).group(1).split(',')]
+GFL = [(a_, float(b_)) for a_, b_ in re.findall(r"\['(\w+)', (-?[\d.]+)\]", re.search(r'const GFL = \[(.*?)\];', src).group(1))]
 def put(x, t, g=1., pan=0.):
     i = int(t * R)
     if i >= N or len(x) == 0: return
@@ -61,7 +63,7 @@ def loop(x, n): return np.tile(x, n // len(x) + 1)[:n]
 t = np.arange(N) / R
 def curve(points): xs, ys = zip(*points); return np.interp(t, xs, ys)
 Mz = V('M') + D['l14']
-tens = curve([(0, .4), (S('H') + 2.9, .4), (S('A'), .3), (S('E'), .4), (S('F'), .6), (S('I'), .85), (S('L'), 1.0), (Mz + .1, 1.0), (Mz + .25, .05), (S('N') + .9, .15), (S('O'), .8), (S('Q'), .2), (S('Q') + .8, .45), (S('Q') + QL, .9), (S('Q') + QL + .32, 0), (TOTAL, 0)])
+tens = curve([(0, .4), (S('H') + 2.9, .4), (S('A'), .3), (S('E'), .4), (S('F'), .6), (S('I'), .85), (S('L'), 1.0), (Mz + .1, 1.0), (Mz + .25, .05), (S('N') + .9, .15), (S('O'), .8), (S('Q'), .6), (S('Q') + 1.5, .5), (S('Q') + 1.8, 0), (TOTAL, 0)])
 drone = loop(DRONE, N) * .14; amb = loop(AMB, N) * .05
 whine = tone(N, 11800) * .0012
 L += drone * tens + amb + whine; Rr += np.roll(drone, 2400) * tens + np.roll(amb, 4800) + whine
@@ -123,19 +125,33 @@ boom(Mz + .1, 1.3, 44); n = int(4 * R); put(tone(n, 4100) * np.exp(-X(n) * .7) *
 n = int(3 * R); put((tone(n, 1046) + tone(n, 1108) + tone(n, 1567)) * .012 * env(n, 1.2, 1), S('N') + .5)
 put(seg(FLOOR, 1, 3, .1, .4) * .35, S('N') + .2, 1, -.4)
 
-# ===== ФИНАЛ: тишина → шёпот у самого уха → БРОСОК (крик) → тишина → «03:14» =====
+# ===== ФИНАЛ: пустое зеркало → затемнение, «03:14», почти тишина (зритель думает — конец) → ВНЕЗАПНЫЙ скример =====
 q = S('Q')
-put(seg(BREATH2, 0, 3, .3, .6) * .25, q + .5, 1, 0)
-put(seg(WHISP_R, 4, 4 + QL - .3, .6, .05) * .45, q + .3, 1, -.7)          # шёпот слева, нарастает
-n = int((QL - .9) * R); put(loop(HB, n) * np.linspace(.2, .8, n) * env(n, .3, .02), q + .9)
-riser(q + 1.2, QL - 1.2, .3)
-put(np.zeros(1), q)
-SCR = np.zeros(int(3.2 * R)); a = seg(SCREAM_D, 0, 3.2, .002, .8); b = seg(SCREAM_M, 0, 3.2, .002, .8)
-SCR[:len(a)] += a * .8; SCR[:len(b)] += b * .7
-put(SCR * 1.3, q + QL, 1, 0); put(seg(STING_M, 0, 3, .001, 1) * .9, q + QL); boom(q + QL, 1.8, 38)
-put(CORRUPT * 1.0, q + QL + .05); put(INTERF * .6, q + QL + .1)
-boom(q + QL + 1.3, .6, 34)                                                   # «03:14» — глухой удар
-put(seg(WHISP, 8, 11, .3, 1.5) * .12, q + QL + 1.4, 1, .6)
+put(seg(BREATH2, 0, 1.6, .2, .4) * .25, q + .2, 1, 0)
+blip(q + 1.75, 1200, .05)                                                           # REC выключился
+n = int((QS - 1.8) * R); put(tone(n, 6200) * .004 * env(n, .5, .1), q + 1.8)       # тонкий звон в тишине
+qs = q + QS
+SCR = np.zeros(int(2.0 * R)); a_ = seg(SCREAM_D, .05, 2.0, .001, .3); b_ = seg(SCREAM_M, 0, 2.0, .001, .3)
+SCR[:len(a_)] += a_ * .9; SCR[:len(b_)] += b_ * .8
+SCR = np.tanh(SCR * 2.2) * .8                                                       # перегруз — крик «в лицо»
+put(SCR[:int(.62 * R)] * env(int(.62 * R), .001, .04) * 1.4, qs, 1, 0)
+put(seg(STING_M, 0, .62, .0005, .04) * 1.0, qs); boom(qs, 2.0, 36)
+n = int(.6 * R); put(band(n, 80, 9000) * env(n, .0005, .05) * .9, qs)               # удар шума
+put(CORRUPT[:int(.6 * R)] * 1.0, qs + .03); put(INTERF[:int(.55 * R)] * .7, qs + .08)
+for k in range(6): n = int(.04 * R); put(band(n, 300, 6000) * .5, qs + .05 + k * .09, 1, (-1) ** k * .6)   # рваные сбои
+# после — резкий обрыв: тишина, только короткий гул «в ушах»
+n = int(1.2 * R); put(tone(n, 3100) * np.exp(-X(n) * 2) * .02, qs + .62)
+
+# ===== ТРЕВОГА НЕПРЕРЫВНО: сердце снизу, далёкие стуки, шёпот, сбои, вспышки силуэта =====
+a0, a1 = S('A'), S('I') + 1.0; n = int((a1 - a0) * R); put(loop(HB, n) * np.linspace(.08, .22, n) * env(n, 2, .5), a0)
+for tt, pan in [(S('B') + 1.6, -.8), (S('D') + 2.2, .7), (S('F') + 3.6, -.6), (S('N') + 2.4, .8)]:     # далёкий стук — откуда?
+    for k in range(3): n = int(.2 * R); x_ = X(n); put((np.sin(2 * np.pi * 95 * x_) * np.exp(-x_ * 28) + band(n, 150, 900) * np.exp(-x_ * 40) * .5) * .16, tt + k * .38, 1, pan)
+for m in MICRO: n = int(.07 * R); put(band(n, 1500, 9000) * env(n, .001, .02) * .25, m, 1, rng.uniform(-.5, .5)); blip(m, 3400, .03)
+for sid, tt in GFL:
+    st = S(sid) + (SH[sid]['d'] + tt if tt < 0 else tt)
+    put(seg(WHISP_R, 0, .7, .3, .02) * .35, st - .65, 1, rng.uniform(-.6, .6))          # шёпот-всасывание перед вспышкой
+    put(seg(STING3, 0, .5, .001, .25) * .45, st); boom(st, .35, 46)
+for tt in [S('C') + 2.8, S('F') + 1.6, S('Kk') + .4]: put(seg(WHISP, 3, 4.6, .3, .6) * .12, tt, 1, rng.choice([-.8, .8]))
 
 # ===== ГОЛОС =====
 fx = {'holod_dan': 'highpass=f=80,equalizer=f=180:t=q:w=1:g=2,equalizer=f=3200:t=q:w=1.2:g=2.5,acompressor=threshold=-22dB:ratio=3:makeup=4',
