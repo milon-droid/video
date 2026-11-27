@@ -56,3 +56,7 @@
   N «Next time… without them» → тени переглядываются, щурятся → заставка: глаза в темноте, мел «Final Episode», «Without us? …How cute.», «NO SHADOWS ALLOWED» перечёркнуто тенью, «Can Sam do it ALONE?»;
   O бывший тени Mia («Hands off my girl, shorty.» — «Sam. Hold my hat.») → SHADOW FIGHT / «Team Shadow or Team Ex?»;
   P утро: тени сбежали (записка «Back by sunset. Probably.»), Mia: «our shadows eloped», рука Sam тает, таймер TILL SUNSET → «Will they find them in time?». Ждём выбор.
+- 2026-11-29 концовка SHADOW FIGHT (выбрана идея): `render/shadow-quit-ep2-ending-{QE,RE}.mp4` (21,7 с, с заходом S12) — свет гаснет → фары красной машины →
+  QE: дверь открыта, сиденье пустое, из машины выползает самовольная тень (бывший тени Mia) и вырастает на стене; RE: выходит здоровяк, его огромная тень;
+  «Oh. Um… this is my ex.» — «Hands off my girl, shorty.» — «Sam. Hold my hat.» → экран файтинга (полоски здоровья, VS, ROUND 1, FIGHT!), «Team Shadow or Team Ex?».
+  Полные серии: части `Q`/`R` (index-ep2-Q/R.html), `EP2_PART=Q bash audio/ep2/mix2.sh`.
