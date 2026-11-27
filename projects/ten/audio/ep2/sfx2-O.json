@@ -1,0 +1,50 @@
+[
+{
+"t": 0,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.26,
+"dur": 8.6,
+"align": "start"
+},
+{
+"t": 0.6,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 0.85,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 1.1,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 1.35,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 6.6,
+"type": "lib",
+"id": "pop-large-in",
+"gain": 0.5
+},
+{
+"t": 8.7,
+"type": "lib",
+"id": "impact-deep-hard",
+"gain": 0.8
+}
+]

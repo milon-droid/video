@@ -1,0 +1,37 @@
+[
+{
+"t": 0,
+"type": "lib",
+"id": "oc-AMBHome_RoomTone_LOOP_01",
+"gain": 0.3,
+"dur": 9,
+"align": "start"
+},
+{
+"t": 2.2,
+"type": "lib",
+"id": "props-doorbell",
+"gain": 0.0
+},
+{
+"t": 6.0,
+"type": "lib",
+"id": "shimmer-long-soft",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 6.0,
+"type": "lib",
+"id": "time-clock-fast",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 8.6,
+"type": "lib",
+"id": "whoosh-slow-soft",
+"gain": 0.6,
+"align": "start"
+}
+]

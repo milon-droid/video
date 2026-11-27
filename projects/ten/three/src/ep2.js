@@ -23,7 +23,8 @@ function drawLines(T, opt = {}) {
     if (role === 'shadow2_en') shadowSay(T, a, t1, o.lines || wrapS(text, o.n || 20), { y: o.y ?? 400, size: o.size ?? 84 });
     else if (role === 'mshadow_en') shadowSay(T, a, t1, o.lines || wrapS(text, o.n || 20), { y: o.y ?? 400, size: o.size ?? 90, glowC: 'rgba(255,190,225,.95)' });
     else if (role === 'narrator_en') { if (o.show) narr(T, a, t1 + .6, text, { y: o.y ?? 1450, size: 64, n: o.n ?? 20, accent: ['never', 'start.', 'hi'] }); }
-    else narr(T, a, t1, text, { y: o.y ?? 1460, size: o.size ?? 68, n: o.n ?? 18, who: o.who || { mia_en: 'MIA', dude_en: 'JOGGER', dad_en: 'MIA’S DAD' }[role] || 'SAM', accent: o.accent || [], color: role === 'mia_en' ? '#ffe4f0' : role === 'dad_en' || role === 'dude_en' ? '#d8f0ff' : '#fff' }); }
+    else if (role === 'ex_en') narr(T, a, t1, text, { y: o.y ?? 1460, size: o.size ?? 68, n: o.n ?? 18, who: 'HER EX', color: '#d8f0ff' });
+    else narr(T, a, t1, text, { y: o.y ?? 1460, size: o.size ?? 68, n: o.n ?? 18, who: o.who || { mia_en: 'MIA', dude_en: 'JOGGER', dad_en: 'MIA’S DAD', ex_en: 'HER EX' }[role] || 'SAM', accent: o.accent || [], color: role === 'mia_en' ? '#ffe4f0' : role === 'dad_en' || role === 'dude_en' || role === 'ex_en' ? '#d8f0ff' : '#fff' }); }
 }
 
 // ---- герои ----
@@ -64,7 +65,7 @@ function kissFX(t, x, y, k = 1) { heartsFloat(t, x, y - 20, .9 * k, 260, 14); ct
 { const rim = new THREE.DirectionalLight('#ffd6a0', 1.6); rim.position.set(1.5, 3.0, -3.5); rim.target.position.set(0, .6, -.5); cafe.g.add(rim, rim.target);
   const rim2 = new THREE.PointLight('#9ab8ff', 2.5, 6, 1.5); rim2.position.set(2.2, 2.0, -1.2); night.g.add(rim2); }
 const extraCups = [[-.12, .02], [.25, -.05], [-.25, -.12], [.05, -.25]].map(([x, z]) => { const c = cafe.cupM.clone(); c.position.set(x, .44, cafe.TZ + z); c.rotation.set(0, 0, 0); cafe.g.add(c); c.visible = false; return c; });
-const hideAll = () => { if (typeof neighbors !== 'undefined') neighbors.forEach(n => n.root.visible = false); extraCups.forEach(c => c.visible = false); if (typeof jogSh !== 'undefined') jogSh.holder.visible = false; cafe.barista.root.visible = true; cafe.barista.root.position.set(2.5, 0, -1.25); cafe.barista.root.rotation.set(0, 0, 0); applyPose(cafe.barista, POSE.stand, 0, {}, 11); cafe.tray.position.set(2.2, .67, -.85); cafe.tray.rotation.set(0, 0, 0); miaSh.tail.scale.setScalar(1); if (typeof dad !== 'undefined') { dad.root.visible = false; dadSh.holder.visible = false; babySh.holder.visible = false; phone2.visible = false; } if (typeof jogger !== 'undefined') jogger.root.visible = false; if (typeof catHat !== 'undefined') { catHat.visible = false; pix2.g.visible = false; } miaSh.aL.sh.scale.y = 1; cafe.cupS.visible = false; cafe.cupM.rotation.z = 0; cafe.cupM.position.set(.06, .44, cafe.TZ + .1); cafe.spill.visible = false;  shade.aR.sh.scale.y = 1; if (typeof sunDisc !== 'undefined') sunDisc.visible = false; [hero.root, mia.root].forEach(r => r.visible = false); shade.holder.visible = false; miaSh.holder.visible = false; hat.visible = false; tie.visible = false; flower.visible = false; };
+const hideAll = () => { if (typeof exSh !== 'undefined') exSh.holder.visible = false; if (typeof neighbors !== 'undefined') neighbors.forEach(n => n.root.visible = false); extraCups.forEach(c => c.visible = false); if (typeof jogSh !== 'undefined') jogSh.holder.visible = false; cafe.barista.root.visible = true; cafe.barista.root.position.set(2.5, 0, -1.25); cafe.barista.root.rotation.set(0, 0, 0); applyPose(cafe.barista, POSE.stand, 0, {}, 11); cafe.tray.position.set(2.2, .67, -.85); cafe.tray.rotation.set(0, 0, 0); miaSh.tail.scale.setScalar(1); if (typeof dad !== 'undefined') { dad.root.visible = false; dadSh.holder.visible = false; babySh.holder.visible = false; phone2.visible = false; } if (typeof jogger !== 'undefined') jogger.root.visible = false; if (typeof catHat !== 'undefined') { catHat.visible = false; pix2.g.visible = false; } miaSh.aL.sh.scale.y = 1; cafe.cupS.visible = false; cafe.cupM.rotation.z = 0; cafe.cupM.position.set(.06, .44, cafe.TZ + .1); cafe.spill.visible = false;  shade.aR.sh.scale.y = 1; if (typeof sunDisc !== 'undefined') sunDisc.visible = false; [hero.root, mia.root].forEach(r => r.visible = false); shade.holder.visible = false; miaSh.holder.visible = false; hat.visible = false; tie.visible = false; flower.visible = false; };
 setFade(hero, 1, 1, false); setFade(mia, 1, 1, false);
 let FX = {};
 // сидя: бёдра вперёд, колени вниз; SY — опускание корня до сиденья
@@ -708,6 +709,79 @@ S.XG = (t, T) => { hideAll(); doorBase(t, { lean: 1 - ease(t, .2, .6) }); const 
     drawLines(T, { dd1: { y: 400, size: 76, n: 16 }, dd2: { y: 1480, size: 90 } }); };
 };
 S.KG = S.KD;
+
+// ===== КЛИФФХЭНГЕРЫ v3: ставка + вопрос зрителю =====
+// N. «Next time… without them.» → тени переглядываются → заставка, которую «пишут» тени
+S.XN = (t, T) => { hideAll(); const m1 = lt('m1'), m2 = lt('m2'), GO = m2 + DURS.m2 + .2;
+  const back = ease(t, .2, .8, sm), glance = ease(t, m2 - .2, m2 + .2) * (1 - ease(t, GO, GO + .3)), goIn = ease(t, GO, GO + .9, sm);
+  nightDoor(1); put(hero, DX2 - .6, -1.3, Math.PI / 2 - .3, t > GO + 1.0 ? { ...POSE.stand, aL: [.3, .3, .5], aR: [0, -2.6, .3] } : { ...POSE.stand, lean: (1 - back) * .35 }, t, { expr: t > m2 + .5 ? 'happy' : 'surprised', smile: t > m2 + .5 ? 1 : .2, lookX: .7 });
+  if (goIn < .95) put(mia, lerp(DX2 + .1, DX2, goIn), lerp(-1.95, -2.08, goIn), lerp(-Math.PI / 2 + .4, Math.PI, ease(t, GO, GO + .3)), goIn > 0 ? walk(goIn * 2) : { ...POSE.stand, aL: [.4, .1, 1.6], aR: [.3, -.2, 1.2], headY: glance * 1.1 }, t, { expr: 'happy', smile: 1, lookX: glance > .5 ? .9 : -.7, mouth: talkG(T, 'm1', 'm2') }, .2, 8);
+  // тени: остаются на стене (тень Mia тоже — её хозяйка у двери), медленно переглядываются, глаза сужаются
+  const look = ease(t, GO + .9, GO + 1.4); const sly = t > GO + 1.6;
+  applyPose(shade, { ...POSE.stand, headY: look * .6 }, t, { mood: sly ? 'sly' : t > m2 + .3 ? 'wide' : 'happy', look: 1, open: sly ? .5 : 1 }, 3);
+  applyPose(miaSh, { ...POSE.stand, headY: -look * .6 }, t, { mood: sly ? 'sly' : t > m2 + .3 ? 'wide' : 'happy', look: -1, open: sly ? .5 : 1 }, 7);
+  placeShade(shade, { x: DX2 - .8, z: WN + .03, rise: 1, scale: 1.3, turn: Math.PI / 2 * (1 - look * .3), op: 1 }); shade.holder.position.y = .1;
+  placeShade(miaSh, { x: DX2 - .25, z: WN + .07, rise: 1, scale: 1.3, turn: -Math.PI / 2 * (1 - look * .3), op: 1 }); miaSh.holder.position.y = .1;
+  const push = ease(t, GO + .8, GO + 2.0, sm); const [jx, jy] = hh(t, .015);
+  cam(lerp(DX2 - .1, DX2 - .52, push) + jx, lerp(1.3, 1.85, push) + jy, lerp(3.8, 2.3, push), lerp(DX2 - .15, DX2 - .52, push), lerp(1.15, 1.75, push), -1.8, 34);
+  FX = { fy: lerp(.45, .35, push), fw: .3, blur: 6, bloom: .45, warm: -.02 };
+  return () => { drawLines(T, { m1: { y: 1480 }, m2: { y: 1480 } }); if (t > GO + 1.6) { ctx.fillStyle = `rgba(0,0,0,${ease(t, SHOTS[0][1] - .4, SHOTS[0][1])})`; ctx.fillRect(0, 0, 1080, 1920); } };
+};
+// заставка: темнота, глаза теней; тени «пишут» мелом FINAL EPISODE; «Without us? …Cute.»; NO SHADOWS ALLOWED → перечёркнуто тенью; вопрос зрителю
+S.KN = (t, T) => { useSet('night'); hideAll(); FX = { skip: true }; const cw = lt('cw2');
+  return () => { ctx.fillStyle = '#05040a'; ctx.fillRect(0, 0, 1080, 1920);
+    const eyes = (x, y, k, sly) => { const b = Math.abs(Math.sin(t * 1.2 + x)) > .06 ? 1 : .1; ctx.save(); ctx.globalAlpha = k; ctx.fillStyle = '#f4f8ff'; ctx.shadowColor = '#fff'; ctx.shadowBlur = 30; [-1, 1].forEach(s => { ctx.beginPath(); ctx.ellipse(x + s * 46, y, 32, (sly ? 7 : 14) * b, s * (sly ? .25 : -.15), 0, 7); ctx.fill(); }); ctx.restore(); };
+    const sly = t > cw + .9; eyes(380, 640, ease(t, .1, .5), sly); eyes(700, 640, ease(t, .3, .7), sly);
+    // мел: FINAL EPISODE проявляется слева направо
+    const wr = ease(t, .4, 1.4); ctx.save(); ctx.beginPath(); ctx.rect(0, 0, 160 + wr * 800, 1920); ctx.clip(); ctx.font = '700 120px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff6e8'; ctx.shadowColor = 'rgba(255,255,255,.4)'; ctx.shadowBlur = 12; ctx.fillText('Final Episode', 540, 900); ctx.restore();
+    const ns = ease(t, cw + 1.2, cw + 1.5, back); if (ns > 0) { ctx.save(); ctx.translate(540, 1080); ctx.rotate(-.05); ctx.scale(ns, ns); ctx.textAlign = 'center'; ctx.font = '900 76px Unb'; ctx.fillStyle = '#ff3d5a'; ctx.fillText('NO SHADOWS', 0, 0); ctx.fillText('ALLOWED', 0, 84); ctx.restore(); }
+    // тень-рука перечёркивает табличку
+    const sc = ease(t, cw + 2.0, cw + 2.4); if (sc > 0) { ctx.save(); ctx.strokeStyle = '#000'; ctx.lineWidth = 26; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(240, 1150); ctx.lineTo(240 + 600 * sc, 990); ctx.stroke(); ctx.restore(); }
+    drawLines(T, { cw2: { y: 470, size: 92 } });
+    narr(t, cw + 2.5, 99, 'Can Sam do it ALONE?', { y: 1380, size: 70, n: 16, accent: ['alone?'] });
+    narr(t, cw + 3.1, 99, 'Comment below', { y: 1560, size: 52, n: 20, accent: ['comment'] }); };
+};
+// O. «Бывший»: к тени Mia подкатывает накачанная тень; «Hands off my girl, shorty.» — «Sam. Hold my hat.»
+const exSh = makeShade(); scene.add(exSh.holder); exSh.holder.visible = false; { exSh.spine.scale.set(1.5, 1.1, 1.3); [exSh.aL, exSh.aR].forEach(a => a.sh.scale.set(1.5, 1, 1.5)); for (let k = 0; k < 5; k++) { const sp = mesh(new THREE.ConeGeometry(.05, .16, 8), ink, false, false); sp.position.set(-.16 + k * .08, .24, 0); sp.rotation.z = (k - 2) * .25; exSh.head.add(sp); } }
+S.XO = (t, T) => { hideAll(); doorBase(t, { lean: 1 - ease(t, .1, .6) }); const ms = lt('ms1'), ex = lt('ex1'), sh = lt('sh1');
+  const slide = ease(t, .6, 1.6, sm); exSh.holder.visible = true;
+  applyPose(exSh, t < 1.6 ? walk(slide * 4, .2) : { ...POSE.stand, aR: [.3, -1.4, .3], aL: [1.0, .6, 2.0], lean: -.05, headX: -.15 }, t, { mood: 'sly', look: -1 }, 51);
+  placeShade(exSh, { x: lerp(DX2 + 2.2, DX2 + .55, slide), z: WN + .08, rise: 1, scale: 1.55, turn: t < 1.6 ? -Math.PI / 2 : 0, op: 1 }); exSh.holder.position.y = .05;
+  applyPose(miaSh, { ...POSE.stand, aL: [.2, .3, .5], headZ: .15 }, t, { mood: t > ms ? 'sad' : 'wide', look: 1 }, 7); placeShade(miaSh, { x: DX2 + .2, z: WN + .07, rise: 1, scale: 1.3, turn: 0, op: 1 }); miaSh.holder.position.y = .3;
+  const hatOff = t > sh + .4; hat.visible = hatOff; hat.scale.setScalar(1); 
+  applyPose(shade, t > sh ? keys(t, [[sh, POSE.stand], [sh + .4, { ...POSE.stand, aR: [0, -2.8, 1.6] }], [sh + .9, { ...POSE.stand, aR: [1.4, -.3, .2], aL: [.9, .5, 2.2] }]]) : t > ex ? { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], lean: .1 } : { ...POSE.stand }, t, { mood: t > ex ? 'angry' : 'wide', look: 1 }, 3);
+  placeShade(shade, { x: DX2 - .8, z: WN + .03, rise: 1, scale: 1.3, turn: t > ex ? 0 : Math.PI / 2, op: 1 }); shade.holder.position.y = .1;
+  const [jx, jy] = hh(t, .02); const cl = ease(t, sh - .3, sh + .2, sm);
+  cam(lerp(DX2 - .05, DX2 - .7, cl) + jx, lerp(1.55, 1.7, cl) + jy, lerp(4.6, 2.9, cl), lerp(DX2 - .05, DX2 - .75, cl), lerp(1.5, 1.55, cl), -1.8, 36);
+  FX = { fy: .4, fw: .35, blur: 6, bloom: .45, warm: -.02 };
+  return () => { if (t > ex - .2 && t < sh) { const p = wpos(exSh.head); const [x, y] = toScreen(p.x, p.y, p.z); ctx.save(); ctx.globalAlpha = .9; ctx.font = '900 60px Unb'; ctx.fillStyle = '#ff3d5a'; ctx.textAlign = 'center'; ctx.fillText('💪', x + 130, y - 40); ctx.restore(); }
+    drawLines(T, { ms1: { y: 400, n: 18 }, ex1: { y: 1440, size: 76, n: 16 }, sh1: { y: 400, size: 100 } }); };
+};
+S.KO = (t, T) => { useSet('night'); hideAll(); FX = { skip: true };
+  return () => { ctx.fillStyle = '#05040a'; ctx.fillRect(0, 0, 1080, 1920); const k = ease(t, .1, .35, back);
+    ctx.save(); ctx.translate(540, 820); ctx.scale(k, k); ctx.rotate(-.06); ctx.textAlign = 'center'; ctx.font = '900 120px Unb'; ctx.fillStyle = '#ff3d5a'; ctx.shadowColor = '#ff3d5a'; ctx.shadowBlur = 40; ctx.fillText('SHADOW', 0, 0); ctx.fillText('FIGHT', 0, 130); ctx.restore();
+    ctx.save(); ctx.globalAlpha = ease(t, .4, .7); ctx.textAlign = 'center'; ctx.font = '600 42px Unb'; ctx.fillStyle = '#d8b6c8'; ctx.fillText('FINAL EPISODE · tomorrow', 540, 1080); ctx.restore();
+    narr(t, .8, 99, 'Team Shadow or Team Ex?', { y: 1330, size: 64, n: 14, accent: ['shadow', 'ex?'] }); narr(t, 1.6, 99, 'Comment below', { y: 1560, size: 52, n: 20, accent: ['comment'] }); };
+};
+// P. «Тени сбежали»: утро — на стене пусто, записка; Mia звонит: «our shadows eloped»; рука Sam просвечивает, таймер до заката
+S.XP = (t, T) => { useSet('hall'); hideAll(); const mp = lt('mp1'), sp = lt('sp1'); phone2.visible = t > mp - .6;
+  hall.paint(c => { c.save(); c.translate(400, 330); c.rotate(-.05); c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(-170, -100, 350, 230); c.fillStyle = '#fbf3e2'; c.fillRect(-180, -112, 350, 230); c.fillStyle = '#0b0a12'; c.textAlign = 'center'; c.font = '700 40px Cav'; c.fillText('Ran away with her.', -5, -50); c.fillText('Back by sunset.', -5, 0); c.fillStyle = '#e8333f'; c.font = '700 44px Cav'; c.fillText('Probably. ♥', -5, 56); c.restore(); });
+  const fade = ease(t, sp + .6, sp + 2.4); setFade(hero, 1 - fade * .5, 1 - fade * .45, false);
+  put(hero, -.55, .55, .35, keys(t, [[0, { ...POSE.stand, aR: [1.3, -.3, 2.3] }], [1.0, { ...POSE.stand, aR: [1.3, -.3, 2.3], headY: .3, headX: -.2 }], [mp - .5, { ...POSE.phone, aR: [1.3, -.3, 2.4], headX: .1 }], [sp, { ...POSE.scared, aR: [1.3, -.3, 2.4] }], [sp + .9, { ...POSE.stand, aL: [1.2, .2, 1.0], headX: .4 }]]), t, { expr: t > sp - .2 ? 'scared' : t > 1.0 ? 'surprised' : 'calm', wide: t > 1.0, mouth: talkG(T, 'sp1'), lookY: t > sp + .9 ? -.8 : .8, lookX: .4 });
+  const [jx, jy] = hh(t, .02); const cl = ease(t, sp + .8, sp + 1.5, sm);
+  cam(lerp(.1, -.75, cl) + jx, lerp(1.5, 1.05, cl) + jy, lerp(4.8, 1.9, cl), lerp(0, -.6, cl), lerp(1.35, .85, cl), lerp(-1.4, .4, cl), 34);
+  FX = { fy: .42, fw: .3, blur: 6, warm: .08, bloom: .15 };
+  return () => { if (t > 1.0 && t < 2.4) { ctx.save(); ctx.globalAlpha = ease(t, 1.0, 1.3) * (1 - ease(t, 2.1, 2.4)); ctx.font = '800 54px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd36a'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 10; ctx.strokeText('…wait. Where’s my shadow?', 540, 1500); ctx.fillText('…wait. Where’s my shadow?', 540, 1500); ctx.restore(); }
+    if (t > sp + .6) { const k = ease(t, sp + .6, sp + .9, back); const left = Math.max(0, 9 * 3600 + 12 * 60 - (t - sp - .6) * 37); const hh2 = String(Math.floor(left / 3600)).padStart(2, '0'), mm = String(Math.floor(left / 60) % 60).padStart(2, '0'), ss = String(Math.floor(left) % 60).padStart(2, '0');
+      ctx.save(); ctx.translate(540, 360); ctx.scale(k, k); ctx.fillStyle = 'rgba(20,10,30,.8)'; rr(-330, -70, 660, 140, 30); ctx.fill(); ctx.strokeStyle = '#ffb84a'; ctx.lineWidth = 6; rr(-330, -70, 660, 140, 30); ctx.stroke(); ctx.textAlign = 'center'; ctx.font = '600 28px Unb'; ctx.fillStyle = '#ffb84a'; ctx.fillText('TILL SUNSET', 0, -22); ctx.font = '900 64px Unb'; ctx.fillStyle = '#fff'; ctx.fillText(`${hh2}:${mm}:${ss}`, 0, 46); ctx.restore(); }
+    drawLines(T, { mp1: { y: 1480, n: 18 }, sp1: { y: 1480, size: 96 } }); };
+};
+S.KP = (t, T) => { useSet('night'); hideAll(); FX = { skip: true };
+  return () => { const g = ctx.createLinearGradient(0, 0, 0, 1920); g.addColorStop(0, '#2a0e18'); g.addColorStop(1, '#05040a'); ctx.fillStyle = g; ctx.fillRect(0, 0, 1080, 1920);
+    const sun = 560 + t * 40; ctx.save(); ctx.fillStyle = '#ff8a4a'; ctx.shadowColor = '#ffb070'; ctx.shadowBlur = 80; ctx.beginPath(); ctx.arc(540, sun, 130, Math.PI, 0); ctx.fill(); ctx.restore(); ctx.fillStyle = '#05040a'; ctx.fillRect(0, 560, 1080, 300);
+    ctx.save(); ctx.globalAlpha = ease(t, .2, .5); ctx.textAlign = 'center'; ctx.font = '900 92px Unb'; ctx.fillStyle = '#fff'; ctx.fillText('TILL SUNSET', 540, 960); ctx.font = '600 42px Unb'; ctx.fillStyle = '#d8b6c8'; ctx.fillText('FINAL EPISODE · tomorrow', 540, 1040); ctx.restore();
+    narr(t, .7, 99, 'Will they find them in time?', { y: 1330, size: 62, n: 16, accent: ['time?'] }); narr(t, 1.5, 99, 'Comment below', { y: 1560, size: 52, n: 20, accent: ['comment'] }); };
+};
 
 // ---- монтаж ----
 const PUNCH = ['b19', 'b18', 'ct2', 's6', 's10', 'p2', 'e5', 'g3', 'k7', 'l2', 'h1'];

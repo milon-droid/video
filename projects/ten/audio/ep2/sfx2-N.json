@@ -1,0 +1,50 @@
+[
+{
+"t": 0,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.26,
+"dur": 6.2,
+"align": "start"
+},
+{
+"t": 4.033,
+"type": "lib",
+"id": "oc-DOORGlas_GlassDoorOpen_OS_01",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 4.233,
+"type": "lib",
+"id": "click-latch-medium",
+"gain": 0.5
+},
+{
+"t": 4.733,
+"type": "lib",
+"id": "shimmer-medium-bright",
+"gain": 0.25,
+"align": "start"
+},
+{
+"t": 6.6,
+"type": "lib",
+"id": "writing-marker-write",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 9.0,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.7
+},
+{
+"t": 9.8,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.6,
+"align": "start"
+}
+]
