@@ -523,6 +523,48 @@
    "role": "shadow2_en",
    "text": "Ugh. It was a TACTICAL retreat.",
    "say": "Ugh. It was a TACTICAL retreat."
+  },
+  {
+   "id": "wf1",
+   "role": "shadow2_en",
+   "text": "What the f—",
+   "say": "What the f..."
+  },
+  {
+   "id": "wf2",
+   "role": "mshadow_en",
+   "text": "What the f—",
+   "say": "What the f..."
+  },
+  {
+   "id": "nn1",
+   "role": "senya_en",
+   "text": "Oh no. Not again.",
+   "say": "Oh no... Not again."
+  },
+  {
+   "id": "lp1",
+   "role": "senya_en",
+   "text": "Why is it not coming off?!",
+   "say": "Why... is it not coming off?!"
+  },
+  {
+   "id": "lp2",
+   "role": "shadow2_en",
+   "text": "Never washing this face again.",
+   "say": "Never... washing this face again."
+  },
+  {
+   "id": "dd1",
+   "role": "dad_en",
+   "text": "WHERE IS MY SHADOW?!",
+   "say": "WHERE... IS MY SHADOW?!"
+  },
+  {
+   "id": "dd2",
+   "role": "senya_en",
+   "text": "...Hi?",
+   "say": "...Hi?"
   }
  ]
 }

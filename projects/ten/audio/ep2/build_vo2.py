@@ -13,7 +13,8 @@ FX = {'senya_en': "highpass=f=90,equalizer=f=3200:t=q:w=1:g=2,acompressor=thresh
       'dad_en': "highpass=f=50,equalizer=f=120:t=q:w=1:g=5,acompressor=threshold=-22dB:ratio=4:makeup=4,aecho=0.6:0.4:40:0.12",
       'narrator_en': "highpass=f=60,equalizer=f=120:t=q:w=1:g=4,equalizer=f=3000:t=q:w=1:g=-2,acompressor=threshold=-22dB:ratio=4:makeup=4,aecho=0.6:0.5:60|110:0.18|0.1,atempo=1.32,volume=7dB,alimiter=limit=0.95"}
 ins, flt = [], []
-for lid, t in sorted(AT.items(), key=lambda x: x[1]):
+EXTRA = {'wf2': AT['wf1']} if 'wf1' in AT else {}
+for lid, t in sorted(list(AT.items()) + list(EXTRA.items()), key=lambda x: x[1]):
     f = os.path.join(VO, 'ep2en', lid + '.wav')
     if not os.path.exists(f): print('нет', lid); continue
     k = len(ins) // 2; ins += ['-i', f]; ms = int(t * 1000)

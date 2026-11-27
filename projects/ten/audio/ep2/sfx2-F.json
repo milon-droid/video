@@ -1,0 +1,98 @@
+[
+{
+"t": 0,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.26,
+"dur": 8,
+"align": "start"
+},
+{
+"t": 0.3,
+"type": "lib",
+"id": "oc-DOORGlas_GlassDoorOpen_OS_01",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 1.5,
+"type": "lib",
+"id": "shimmer-long-sparkle",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 4.584,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 4.754,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 4.924,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 5.094,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 5.264,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 5.434,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 5.604,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 5.774,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 5.944,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 6.114,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.35
+},
+{
+"t": 7.6,
+"type": "lib",
+"id": "whoosh-slow-soft",
+"gain": 0.7,
+"align": "start"
+},
+{
+"t": 8.2,
+"type": "lib",
+"id": "time-clock-fast",
+"gain": 0.2,
+"align": "start"
+}
+]

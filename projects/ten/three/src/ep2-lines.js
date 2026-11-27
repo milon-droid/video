@@ -3,7 +3,7 @@
 // часть: main (основная, без клиффхэнгера) или вариант концовки A/B/C (window.EP2_PART)
 const PARTS = {
   main: [['H', 4.4], ['FB', 4.0], ['S2', 7.4], ['S2B', 6.6], ['CAT', 4.3], ['SS', 5.6], ['S1', 5.6], ['S5', 4.4], ['S6', 4.8], ['S7', 5.4], ['S8', 4.2], ['S9', 5.5], ['S10', 6.0], ['S10B', 10.0], ['S11', 10.5], ['S12', 7.0]],
-  A: [['XA', 8.0], ['CA', 3.6]], B: [['XB', 8.0], ['CB', 3.6]], C: [['XC', 8.0], ['CC', 3.6]],
+  A: [['XA', 8.0], ['CA', 3.6]], D: [['XD', 5.0], ['KD', 2.4]], E: [['XE', 6.0], ['KE', 2.4]], F: [['XF', 8.0], ['KF', 2.4]], G: [['XG', 6.6], ['KG', 2.4]], B: [['XB', 8.0], ['CB', 3.6]], C: [['XC', 8.0], ['CC', 3.6]],
 };
 const PART = (typeof window !== 'undefined' && window.EP2_PART) || (typeof process !== 'undefined' && process.env.EP2_PART) || 'main';
 export const SHOTS = PARTS[PART];
@@ -24,13 +24,17 @@ export const CUES = [
   ['k7', 'S10B', 7.5],
   ['k6', 'S11', 2.2], ['k8', 'S11', 5.6],
   ['l4', 'S12', .6], ['l2', 'S12', 4.2],
+  ['m1', 'XD', .9], ['m2', 'XD', 2.4], ['wf1', 'XD', 4.1],
+  ['nn1', 'XE', 3.4],
+  ['lp2', 'XF', 2.3], ['lp1', 'XF', 5.6],
+  ['dd1', 'XG', 1.0], ['dd2', 'XG', 4.6],
   ['x1', 'XA', 1.2], ['x2', 'XA', 4.6], ['x3', 'XA', 6.4],
   ['y1', 'XB', .8], ['y2', 'XB', 4.0], ['y3', 'XB', 6.2],
   ['z1', 'XC', 1.0], ['z2', 'XC', 3.4], ['z3', 'XC', 6.2],
 ];
 // монтаж под реальные длительности: реплики не накладываются (зазор .12 с), план удлиняется,
 // если последняя реплика не успевает закончиться за TAIL с до склейки
-const TAIL = { S1: .2, H: .5, SS: .5, S9: 1.7, S10: .4, S10B: 2.0, S11: 1.2, S12: 1.0, S4: .5 };
+const TAIL = { XD: .02, XE: 1.0, XF: 1.0, XG: 1.0, S1: .2, H: .5, SS: .5, S9: 1.7, S10: .4, S10B: 2.0, S11: 1.2, S12: 1.0, S4: .5 };
 export function build(durs) { const AT = {}, starts = {}, shots = []; let acc = 0, end = 0;
   for (const [id, base] of SHOTS) { starts[id] = acc; let last = 0;
     for (const [cid, sh, t] of CUES) if (sh === id && SHOTS.some(x => x[0] === sh)) { const t0 = Math.max(acc + t, end + .06); AT[cid] = t0; end = t0 + (durs[cid] ?? 1.2); last = end; }

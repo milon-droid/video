@@ -87,7 +87,21 @@ def variants():
         lib(r0, "props-doorbell", .0); [lib(r0 + i * .5, "digital-radio", .0) for i in range(0)]
         for i in range(4): syn(r0 + i * .3, "tick", .4)
         lib(AT['z3'] + .3, "shimmer-medium-bright", .3, align="start"); lib(AT['z3'] + .5, "pop-large-bubble", .4)
-    lib(ST['C' + PART] - .4, "whoosh-slow-soft", .7, align="start"); lib(ST['C' + PART] + .2, "time-clock-fast", .2, align="start")
+    if PART in 'DEFG': amb('X' + PART, 'X' + PART, "oc-AMBForst_Night_LOOP_01", .26)
+    if PART == 'D': lib(AT['wf1'] - .3, "whoosh-fast-soft", .45, align="start")
+    if PART == 'E':
+        lib(ST['XE'] + .6, "celebration-applause-big", .6, align="start"); lib(ST['XE'] + 1.0, "celebration-applause-small", .5, align="start")
+        for k in range(4): lib(ST['XE'] + 1.4 + k * .25, "digital-denied", .0)
+        lib(ST['XE'] + 1.4, "shimmer-medium-bright", .35, align="start")
+    if PART == 'F':
+        lib(ST['XF'] + .3, "oc-DOORGlas_GlassDoorOpen_OS_01", .4, align="start"); lib(ST['XF'] + 1.5, "shimmer-long-sparkle", .4, align="start")
+        M = AT['lp2'] + D['lp2'] + .5
+        for k in range(10): lib(M + .2 + k * .17, "foley-fabric-slide", .35)
+    if PART == 'G':
+        lib(AT['dd1'] - .2, "mechanical-switch-light", .5); lib(AT['dd1'] + D['dd1'] + 1.0, "click-latch-firm", .5); lib(AT['dd1'] + D['dd1'] + 1.2, "click-latch-firm", .5)
+    c = ('K' if PART in 'DEFG' else 'C') + PART
+    if PART != 'D': lib(ST[c] - .4, "whoosh-slow-soft", .7, align="start")
+    lib(ST[c] + .2, "time-clock-fast", .2, align="start")
 
 if PART == 'main': main_sfx()
 else: variants()

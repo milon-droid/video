@@ -126,7 +126,19 @@ def variants():
     if PART == 'C':  # «Обмен»: игривый щипковый бас + звонок + кокетливая челеста
         t0 = sh('XC'); comic(t0, end('XC'), 116, .8)
         for k, n in enumerate(['A5', 'C6', 'E6', 'A6']): put(celesta(hz(n)), AT['z3'] + k * .1, .25, .3, .6)
-    c = 'C' + PART; t0 = sh(c)
+    if PART == 'D':  # мьюзик-бокс → две тени поворачиваются → обрыв в тишину
+        t0 = sh('XD'); [put(musicbox(hz(n)), t0 + .4 + k * .45, .3, .2, .6) for k, n in enumerate(['A5', 'F5', 'C5', 'F5', 'A5', 'G5'])]; chord(['F3', 'A3', 'C4', 'E4'], t0, end('XD') - t0, .2, 0, 1600)
+        put(riser(.5, .6), AT['wf1'] - .5, .3, 0, .2)
+    if PART == 'E':
+        t0 = sh('XE'); comic(t0 + .5, end('XE'), 120, .8); put(boom(.6, 1.0), AT['nn1'] - .1, .4, 0, .2)
+    if PART == 'F':
+        t0 = sh('XF'); chord(['F3', 'A3', 'C4', 'E4'], t0, 3.5, .22, 0, 1800); [put(celesta(hz(n)), t0 + .4 + k * .3, .2, .2, .6) for k, n in enumerate(['C6', 'A5', 'F5', 'A5', 'C6'])]
+        comic(t0 + AT['lp2'] - t0 + D['lp2'] + .5, end('XF'), 126, .8)
+    if PART == 'G':
+        t0 = sh('XG'); put(boom(.9, 2.0), AT['dd1'] - .05, .55, 0, .3); put(drone(hz('C2'), SH_('XG'), 1.), t0 + .8, .5, 0, .3); chord(['C3', 'Eb3', 'Gb3', 'A3'], AT['dd1'], end('XG') - AT['dd1'], .2, 0, 1300)
+        for k in range(6): put(heart(.9), AT['dd1'] + D['dd1'] + .3 + k * .45, .5, 0, .1)
+    c = ('K' if PART in 'DEFG' else 'C') + PART; t0 = sh(c)
+    if PART == 'D': t0 += .6
     for k, (o, n) in enumerate([(0, 'A4'), (.5, 'C5'), (1.0, 'E5'), (1.5, 'D5'), (2.0, 'C5'), (2.6, 'B4'), (3.1, 'A4')]): put(musicbox(hz(n)), t0 + .2 + o, .3, .2, .6)
     chord(['A2', 'C3', 'E3'], t0, DUR - t0 + 1, .16, 0, 1200)
 
