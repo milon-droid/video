@@ -90,7 +90,11 @@ listings, preview images — they are in the repository.
 Стиль/референсы: ...
 Имя файла: <проект>-NN-<кратко>.png
 ```
-Пока ассетов нет — плашки «ASSET #NN». Файлы приходят в чат или в `assets/incoming/` → переносить в `projects/<проект>/assets/`.
+Пока ассетов нет — плашки «ASSET #NN». Файлы приходят в чат, в `assets/incoming/` или в **Google Drive** (2026-11-27,
+папка «Видео (Claude)» `1RH35b0uq2hx2iPXCet0a_gyP5gSCWZTi`): «Скриншоты с пометками» `13kc5-tXwg8jHn1wTU5a36aCgwt9hKTHu`
+(кадры, где обведено, что не так, — смотреть перед правкой), «Ассеты» `1Px6qul8rVJMAMJn25hV20wcEQUVlnHmt`,
+«Готовые ролики» `1wNyv2ISdyaBgMibNH0vXN7V6vn-V9dM3` (сдача 720p-превью туда). Искать: Google Drive `search_files`
+с `parentId = '<id>'`, новые — `modifiedTime >`. Ассеты с Drive → переносить в `projects/<проект>/assets/`.
 
 ## Структура проекта
 `projects/<проект>/`: `brief.md` (ТЗ), `plan.md` (+ `epN.md` у сериалов), `MAP.md` (карта кода), `assets/`, `src/` или
