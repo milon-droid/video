@@ -48,7 +48,7 @@ const SHOTS = [
   { id: 'N', lines: ['l15'], lead: 1.1, tail: .7, min: 3.6 },
   { id: 'O', lines: ['l16'], lead: .55, tail: .5, min: 3.6 },
   { id: 'P', lines: ['l17'], lead: 1.4, tail: .5, min: 3.8 },
-  { id: 'Q', lines: [], min: 2.95 },
+  { id: 'Q', lines: [], min: 3.45 },
 ];
 let T0 = 0; const VO = [];
 for (const s of SHOTS) {
@@ -60,7 +60,7 @@ export const TOTAL = T0;
 window.VO_TIMELINE = VO; window.SHOTS = SHOTS.map(s => ({ id: s.id, t0: s.t0, d: s.d }));
 const SH = Object.fromEntries(SHOTS.map(s => [s.id, s]));
 // NUC: камера калибруется — кадр замирает, щелчок, серое поле
-const QS = 2.2; // финал: ложный конец «03:14», затем внезапный скример
+const QS = 2.7; // финал: ложный конец «03:14», затем внезапный скример
 // подсознательные вспышки силуэта (план, локальное время; отрицательное — от конца плана) и короткие сбои картинки
 const MICRO = [8.9, 17.3, 23.6, 29.0, 35.8, 41.2, 50.0, 62.3]; // короткие сбои картинки (с)
 const GFL = [['C', .95], ['E', -.65], ['F', .9], ['G', 2.2]];
@@ -280,9 +280,9 @@ const SHOT = {
     const p = V3(2.0, 1.6, -7.32);
     if (u < QS) {
       const k = ease(u, 0, .35, inoutE), yaw = lerp(0, Math.PI, k);
-      cam(p.clone().add(V3(0, 0, -ease(u, .35, 1.3) * .2)), p.clone().add(V3(Math.sin(yaw) * 2, -.2 * (1 - k), Math.cos(yaw) * 2)), u, { fov: 54, shake: 1 + (1 - k) * 3 });
-      const fo = ease(u, 1.1, 1.3);
-      return { lo: 3, hi: 28, iso: 9, isoK: 1, fade: 1 - fo, end: u > 1.3 ? u - 1.3 + 1.0 : -1, hudA: 1 - fo };
+      cam(p.clone().add(V3(0, 0, -ease(u, .35, 1.8) * .25)), p.clone().add(V3(Math.sin(yaw) * 2, -.2 * (1 - k), Math.cos(yaw) * 2)), u, { fov: 54, shake: 1 + (1 - k) * 3 });
+      const fo = ease(u, 1.5, 1.8);
+      return { lo: 3, hi: 28, iso: 9, isoK: 1, fade: 1 - fo, end: u > 1.8 ? u - 1.8 + 1.0 : -1, hudA: 1 - fo };
     }
     return screamer(u - QS, p, u);
   },

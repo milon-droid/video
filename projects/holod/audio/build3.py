@@ -63,7 +63,7 @@ def loop(x, n): return np.tile(x, n // len(x) + 1)[:n]
 t = np.arange(N) / R
 def curve(points): xs, ys = zip(*points); return np.interp(t, xs, ys)
 Mz = V('M') + D['l14']
-tens = curve([(0, .4), (S('H') + 2.9, .4), (S('A'), .3), (S('E'), .4), (S('F'), .6), (S('I'), .85), (S('L'), 1.0), (Mz + .1, 1.0), (Mz + .25, .05), (S('N') + .9, .15), (S('O'), .8), (S('Q'), .6), (S('Q') + 1.1, .5), (S('Q') + 1.3, 0), (TOTAL, 0)])
+tens = curve([(0, .4), (S('H') + 2.9, .4), (S('A'), .3), (S('E'), .4), (S('F'), .6), (S('I'), .85), (S('L'), 1.0), (Mz + .1, 1.0), (Mz + .25, .05), (S('N') + .9, .15), (S('O'), .8), (S('Q'), .6), (S('Q') + 1.5, .5), (S('Q') + 1.8, 0), (TOTAL, 0)])
 drone = loop(DRONE, N) * .14; amb = loop(AMB, N) * .05
 whine = tone(N, 11800) * .0012
 L += drone * tens + amb + whine; Rr += np.roll(drone, 2400) * tens + np.roll(amb, 4800) + whine
@@ -129,9 +129,9 @@ put(seg(FLOOR, 1, 3, .1, .4) * .35, S('N') + .2, 1, -.4)
 
 # ===== ФИНАЛ: пустое зеркало → затемнение, «03:14», почти тишина (зритель думает — конец) → ВНЕЗАПНЫЙ скример =====
 q = S('Q')
-put(seg(BREATH2, 0, 1.1, .2, .3) * .25, q + .2, 1, 0)
-blip(q + 1.25, 1200, .05)                                                           # REC выключился
-n = int((QS - 1.3) * R); put(tone(n, 6200) * .004 * env(n, .5, .1), q + 1.3)       # тонкий звон в тишине
+put(seg(BREATH2, 0, 1.6, .2, .4) * .25, q + .2, 1, 0)
+blip(q + 1.75, 1200, .05)                                                           # REC выключился
+n = int((QS - 1.8) * R); put(tone(n, 6200) * .004 * env(n, .5, .1), q + 1.8)       # тонкий звон в тишине
 qs = q + QS
 SCR = np.zeros(int(2.0 * R)); a_ = seg(SCREAM_D, .05, 2.0, .001, .3); b_ = seg(SCREAM_M, 0, 2.0, .001, .3)
 SCR[:len(a_)] += a_ * .9; SCR[:len(b_)] += b_ * .8
