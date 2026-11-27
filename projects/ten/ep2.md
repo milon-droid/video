@@ -43,3 +43,6 @@
 - 2026-11-28 v5 `render/shadow-quit-ep2-v5.mp4` (1:43): бегун — тень не достаёт → Sam врезается в бегуна → касание → тени целуются → «…Sup.» → «Nope.» → бегство;
   вжух-переходы (S1, S5, S10B, S11); дверь — видно зал; «Lean in.» «Closer…» → чашка; знакомство + монтаж «10 min… 2 hours later» → рукопожатие → поцелуй →
   взгляд → бариста → «…Wow.» → неловкая пауза; прогулка 10,5 с, 7 фаз теней, V.O. «Sometimes you just need a push. / Even if it comes from your own shadow.»
+- 2026-11-28 v6 `render/shadow-quit-ep2-v6.mp4` (1:49): «Morning, Speedy. Run far last night?» — «Tactical retreat.»; бегун как в v4 + рывок и щелчок резинки;
+  правило «A shadow is glued to its owner. Stretches 1 step. Max.» + «GET CLOSE.»; видимая резинка-«жвачка» от ног тени к хозяину (бегун, кафе, поцелуй, дверь);
+  монтаж «прошло время» — 6 склеек по 0,6 с (рассказ, тени-курицы, Mia прыскает, Sam-курица, часы, хохот); толчки камеры на панчлайнах.
