@@ -1,5 +1,5 @@
 // «SHADOW QUIT», серия 2 «The Date»: тень Sam влюбилась в тень Mia — свидание устраивают хозяева.
-import { out as OUTC, K as KS_, THREE, renderer, camera, composite, ctx, clamp, lerp, ease, sm, back, h1, noise, spring, G, clay, mesh, glow, skyTex, W, H, TEX_REDRAW } from './core.js';
+import { out as OUTC, K as KS_, THREE, renderer, camera, composite, ctx, clamp, lerp, ease, sm, back, h1, noise, spring, G, clay, mesh, glow, skyTex, W, H, TEX_REDRAW, canvasTex } from './core.js';
 import { makeToy, applyPose, walk, keys, POSE, makeShade, placeShade, setFade, LOOK, blendPose } from './toy.js';
 import { scene, useSet, night, hall, day, kitchen, makeCat, poseCat } from './sets.js';
 import { cafe, front } from './cafe.js';
@@ -47,7 +47,7 @@ const barista = cafe.barista; const tray = cafe.tray;
 const V = new THREE.Vector3();
 const toScreen = (x, y, z) => { V.set(x, y, z).project(camera); return [(V.x + 1) / 2 * 1080, (1 - V.y) / 2 * 1920]; };
 const wpos = o => { o.updateWorldMatrix(true, false); return o.getWorldPosition(new THREE.Vector3()); };
-function cam(px, py, pz, lx, ly, lz, fov = 34, roll = 0) { camera.fov = fov; camera.updateProjectionMatrix(); camera.position.set(px, py, pz); camera.up.set(0, 1, 0); camera.lookAt(lx, ly, lz); if (roll) camera.rotateZ(roll); }
+function cam(px, py, pz, lx, ly, lz, fov = 34, roll = 0) { camera.fov = fov; camera.updateProjectionMatrix(); camera.position.set(px, py, pz); camera.up.set(0, 1, 0); camera.lookAt(lx, ly, lz); if (roll) camera.rotateZ(roll); camera.updateMatrixWorld(); }
 const hh = (t, amp = .02, seed = 1) => [noise(seed, t * .8) * amp, noise(seed + 5, t * .7) * amp];
 function put(T, x, z, yaw, pose, t, face = {}, y = 0, seed = 1) { T.root.visible = true; T.root.position.set(x, y, z); T.root.rotation.set(0, yaw, 0); applyPose(T, pose, t, face, seed); }
 // поцелуй теней взасос: головы качаются в разные стороны, руки гуляют по спинам, нога-«поп», прижимаются
@@ -65,7 +65,7 @@ function kissFX(t, x, y, k = 1) { heartsFloat(t, x, y - 20, .9 * k, 260, 14); ct
 { const rim = new THREE.DirectionalLight('#ffd6a0', 1.6); rim.position.set(1.5, 3.0, -3.5); rim.target.position.set(0, .6, -.5); cafe.g.add(rim, rim.target);
   const rim2 = new THREE.PointLight('#9ab8ff', 2.5, 6, 1.5); rim2.position.set(2.2, 2.0, -1.2); night.g.add(rim2); }
 const extraCups = [[-.12, .02], [.25, -.05], [-.25, -.12], [.05, -.25]].map(([x, z]) => { const c = cafe.cupM.clone(); c.position.set(x, .44, cafe.TZ + z); c.rotation.set(0, 0, 0); cafe.g.add(c); c.visible = false; return c; });
-const hideAll = () => { if (typeof carFill !== 'undefined') carFill.intensity = 0; if (typeof exMan !== 'undefined') exMan.root.visible = false; if (typeof car !== 'undefined') { car.visible = false; headL.intensity = 0; } if (typeof exSh !== 'undefined') exSh.holder.visible = false; if (typeof neighbors !== 'undefined') neighbors.forEach(n => n.root.visible = false); extraCups.forEach(c => c.visible = false); if (typeof jogSh !== 'undefined') jogSh.holder.visible = false; cafe.barista.root.visible = true; cafe.barista.root.position.set(2.5, 0, -1.25); cafe.barista.root.rotation.set(0, 0, 0); applyPose(cafe.barista, POSE.stand, 0, {}, 11); cafe.tray.position.set(2.2, .67, -.85); cafe.tray.rotation.set(0, 0, 0); miaSh.tail.scale.setScalar(1); if (typeof dad !== 'undefined') { dad.root.visible = false; dadSh.holder.visible = false; babySh.holder.visible = false; phone2.visible = false; } if (typeof jogger !== 'undefined') jogger.root.visible = false; if (typeof catHat !== 'undefined') { catHat.visible = false; pix2.g.visible = false; } miaSh.aL.sh.scale.y = 1; cafe.cupS.visible = false; cafe.cupM.rotation.z = 0; cafe.cupM.position.set(.06, .44, cafe.TZ + .1); cafe.spill.visible = false;  shade.aR.sh.scale.y = 1; if (typeof sunDisc !== 'undefined') sunDisc.visible = false; [hero.root, mia.root].forEach(r => r.visible = false); shade.holder.visible = false; miaSh.holder.visible = false; hat.visible = false; tie.visible = false; flower.visible = false; };
+const hideAll = () => { if (typeof arena !== 'undefined') { arena.visible = false; hat2.visible = false; shade.root.rotation.z = 0; exMan.root.visible = false; } if (typeof carFill !== 'undefined') carFill.intensity = 0; if (typeof exMan !== 'undefined') exMan.root.visible = false; if (typeof car !== 'undefined') { car.visible = false; headL.intensity = 0; } if (typeof exSh !== 'undefined') exSh.holder.visible = false; if (typeof neighbors !== 'undefined') neighbors.forEach(n => n.root.visible = false); extraCups.forEach(c => c.visible = false); if (typeof jogSh !== 'undefined') jogSh.holder.visible = false; cafe.barista.root.visible = true; cafe.barista.root.position.set(2.5, 0, -1.25); cafe.barista.root.rotation.set(0, 0, 0); applyPose(cafe.barista, POSE.stand, 0, {}, 11); cafe.tray.position.set(2.2, .67, -.85); cafe.tray.rotation.set(0, 0, 0); miaSh.tail.scale.setScalar(1); if (typeof dad !== 'undefined') { dad.root.visible = false; dadSh.holder.visible = false; babySh.holder.visible = false; phone2.visible = false; } if (typeof jogger !== 'undefined') jogger.root.visible = false; if (typeof catHat !== 'undefined') { catHat.visible = false; pix2.g.visible = false; } miaSh.aL.sh.scale.y = 1; cafe.cupS.visible = false; cafe.cupM.rotation.z = 0; cafe.cupM.position.set(.06, .44, cafe.TZ + .1); cafe.spill.visible = false;  shade.aR.sh.scale.y = 1; if (typeof sunDisc !== 'undefined') sunDisc.visible = false; [hero.root, mia.root].forEach(r => r.visible = false); shade.holder.visible = false; miaSh.holder.visible = false; hat.visible = false; tie.visible = false; flower.visible = false; };
 setFade(hero, 1, 1, false); setFade(mia, 1, 1, false);
 let FX = {};
 // сидя: бёдра вперёд, колени вниз; SY — опускание корня до сиденья
@@ -783,75 +783,244 @@ S.KP = (t, T) => { useSet('night'); hideAll(); FX = { skip: true };
     narr(t, .7, 99, 'Will they find them in time?', { y: 1330, size: 62, n: 16, accent: ['time?'] }); narr(t, 1.5, 99, 'Comment below', { y: 1560, size: 52, n: 20, accent: ['comment'] }); };
 };
 
-// ===== Q. SHADOW FIGHT: темнота → фары → из пустой машины выползает самовольная тень (бывший тени Mia) =====
-const car = new THREE.Group(); { const bm = clay('#c8283a', { roughness: .3, metalness: .4 }); const at = (m, x, y, z, ry = 0) => { m.position.set(x, y, z); m.rotation.y = ry; return m; };
-  car.add(at(mesh(G.rbox(1.9, .45, .95, .12), bm), 0, .38, 0)); car.add(at(mesh(G.rbox(1.05, .38, .85, .12), bm), -.1, .76, 0));
-  [-1, 1].forEach(sd => car.add(at(mesh(G.plane(.9, .28), clay('#0a0c14', { roughness: .1 }), false, false), -.1, .78, sd * .43, sd > 0 ? 0 : Math.PI)));
-  [-.62, .62].forEach(x => [-.45, .45].forEach(z => { const w = mesh(G.cyl(.18, .18, .12, 18), clay('#111')); w.rotation.x = Math.PI / 2; w.position.set(x, .18, z); car.add(w); }));
-  car.userData.lights = [-.28, .28].map(z => { const b = mesh(G.sph(.07, 12), glow('#fff6dc', 3), false, false); b.position.set(-.96, .42, z); car.add(b); return b; });
-  const door = new THREE.Group(); door.position.set(.15, 0, .48); door.add(at(mesh(G.rbox(.55, .5, .04, .03), bm), -.27, .5, 0)); car.add(door); car.userData.door = door;
+// ===== SHADOW FIGHT (части R/RE): темнота → бас и фары лоурайдера → Брэд (бывший Mia) → его тень уводит тень Mia (Mia тает)
+// → тень Sam перестаёт удирать (как в 1-й серии) → «Hold my hat» → бой теней на закате (дань играм-файтингам с тенями) → стоп-кадр
+const at = (m, x, y, z, rx = 0, ry = 0, rz = 0) => { m.position.set(x, y, z); m.rotation.set(rx, ry, rz); return m; };
+const car = new THREE.Group(), carBody = new THREE.Group(); car.add(carBody); const wheels = [];
+{ const red = clay('#d0182e', { roughness: .2, metalness: .35 }), chrome = clay('#eef1f8', { roughness: .1, metalness: 1 }), tyre = clay('#141418', { roughness: .9 }),
+    glass = clay('#0b1322', { roughness: .04, metalness: .7 }), white = clay('#f4efe6', { roughness: .35 }), dark = clay('#0a0a0e', { roughness: .6 }), B = carBody;
+  B.add(at(mesh(G.rbox(2.3, .36, 1.02, .15), red), 0, .42, 0));                       // кузов
+  B.add(at(mesh(G.rbox(.8, .1, .9, .05), red), -.72, .62, 0));                         // капот
+  B.add(at(mesh(G.rbox(.5, .08, .92, .04), red), .86, .62, 0));                        // багажник
+  B.add(at(mesh(G.rbox(1.05, .38, .9, .17), red), .14, .8, 0));                        // кабина
+  B.add(at(mesh(G.rbox(.98, .07, .88, .035), white), .16, 1.0, 0));                    // белая крыша
+  B.add(at(mesh(G.rbox(.04, .36, .8, .02), glass), -.39, .81, 0, 0, 0, -.55));         // лобовое
+  B.add(at(mesh(G.rbox(.04, .3, .8, .02), glass), .68, .8, 0, 0, 0, .6));              // заднее
+  [-1, 1].forEach(s => { B.add(at(mesh(G.rbox(.3, .25, .02, .01), glass), .47, .83, s * .455));                // заднее боковое
+    B.add(at(mesh(G.rbox(2.05, .045, .02, .01), white), 0, .5, s * .515));                                  // полоса
+    B.add(at(mesh(G.rbox(1.1, .02, .02, .01), chrome), -.1, .58, s * .515));                                // молдинг
+    B.add(at(mesh(G.sph(.05, 12), chrome), -.36, .72, s * .5));                                             // зеркало
+    const ring = at(mesh(G.cyl(.095, .095, .05, 20), chrome), -1.15, .5, s * .34, 0, 0, Math.PI / 2); B.add(ring);
+    B.add(at(mesh(G.rbox(.03, .08, .2, .02), glow('#ff2238', 2.2), false, false), 1.16, .52, s * .34)); });  // стопы
+  B.add(at(mesh(G.rbox(.12, .13, 1.1, .05), chrome), -1.19, .32, 0)); B.add(at(mesh(G.rbox(.12, .13, 1.1, .05), chrome), 1.19, .32, 0)); // бамперы
+  B.add(at(mesh(G.rbox(.04, .17, .5, .02), dark), -1.165, .48, 0)); [.42, .48, .54].forEach(y => B.add(at(mesh(G.rbox(.05, .014, .5, .005), chrome), -1.17, y, 0)));
+  B.add(at(mesh(G.cyl(.035, .035, .2, 10), chrome), 1.25, .24, .3, 0, 0, Math.PI / 2));   // выхлоп
+  B.add(at(mesh(G.rbox(.4, .3, .7, .08), dark), .25, .62, 0));                            // сиденье (видно в открытую дверь)
+  // пушистые кубики на зеркале — видно сквозь боковое окно
+  [-.04, .05].forEach((dz, i) => { const d = at(mesh(G.rbox(.07, .07, .07, .02), clay('#ff7ac0')), -.22, .74 - i * .03, dz, .3 * i, .5, .2); B.add(d); });
+  car.userData.lights = [-1, 1].map(s => { const b = mesh(G.sph(.075, 14), glow('#fff6dc', 3), false, false); b.position.set(-1.17, .5, s * .34); B.add(b); return b; });
+  const door = new THREE.Group(); door.position.set(-.33, 0, .5); door.add(at(mesh(G.rbox(.64, .4, .045, .03), red), .32, .45, 0)); door.add(at(mesh(G.rbox(.56, .25, .02, .01), glass), .33, .83, 0));
+  door.add(at(mesh(G.rbox(.62, .045, .03, .01), white), .32, .5, .02)); door.add(at(mesh(G.rbox(.1, .025, .03, .01), chrome), .5, .58, .035)); B.add(door); car.userData.door = door;
+  [-.74, .74].forEach(x => [-.47, .47].forEach(z => { const w = new THREE.Group(); w.position.set(x, .22, z); w.add(at(mesh(G.cyl(.22, .22, .18, 26), tyre), 0, 0, 0, Math.PI / 2));
+    w.add(at(mesh(G.cyl(.14, .14, .19, 20), chrome), 0, 0, 0, Math.PI / 2)); [0, 1, 2].forEach(k => w.add(at(mesh(G.rbox(.24, .03, .2, .01), chrome), 0, 0, 0, 0, 0, k * Math.PI / 3)));
+    car.add(w); wheels.push(w); }));
   car.traverse(o => { if (o.isMesh) o.castShadow = true; }); car.visible = false; night.g.add(car); }
-const exMan = makeToy({ skin: '#e8b898', hair: '#1a1214', top: '#1a1a20', top2: '#2a2a30', pants: '#2a2e44', shoes: '#111', hood: false, eye: '#1a1210', blush: .1 }); exMan.root.scale.setScalar(1.35); exMan.spine.scale.set(1.3, 1.05, 1.2); [exMan.aL, exMan.aR].forEach(a => a.sh.scale.set(1.4, 1, 1.4)); { const gl = mesh(G.rbox(.3, .07, .04, .02), clay('#050505', { roughness: .1, metalness: .5 })); gl.position.set(0, .02, .22); exMan.head.add(gl); } exMan.root.traverse(o => { if (o.isMesh) o.castShadow = false; }); exMan.root.visible = false; night.g.add(exMan.root);
-const carFill = new THREE.PointLight('#8aa0ff', 3, 6, 1.5); night.g.add(carFill);
-const headL = new THREE.SpotLight('#fff2d8', 0, 16, .55, .5, 1.2); headL.castShadow = true; headL.shadow.mapSize.set(1024, 1024); night.g.add(headL, headL.target);
-S.XQ = (t, T) => { hideAll(); nightDoor(0); hemi.intensity = .08; car.visible = true;
-  const ms = lt('ms1'), ex = lt('ex1'), sh = lt('sh1');
-  // машина въезжает справа, разворачивается фарами к стене и встаёт
-  const drive = ease(t, .3, 2.0, k => 1 - Math.pow(1 - k, 2)); const cx = lerp(DX2 + 6.5, DX2 + 1.9, drive), cz = lerp(2.6, 1.6, drive);
-  car.position.set(cx, 0, cz); car.rotation.y = lerp(0, -.75, ease(t, .8, 2.0)); const lit = ease(t, .2, .5);
-  car.userData.lights.forEach(b => b.visible = lit > .5); headL.intensity = 70 * lit; carFill.position.set(cx + 1.2, 2.0, cz + 1.2); carFill.intensity = 3; headL.position.set(cx - .7, .45, cz - .4); headL.target.position.set(DX2 - .2, 1.0, -2.1);
-  car.userData.door.rotation.y = -ease(t, 2.6, 3.0) * 1.1;
-  // Sam и Mia — силуэты в свете фар, щурятся
-  put(hero, DX2 - .6, -1.3, Math.PI / 2 - .3 + ease(t, 1.2, 1.6) * .9, t > 1.4 ? { ...POSE.stand, aR: [1.3, -.2, 2.4], headX: -.1 } : { ...POSE.stand, lean: .3 }, t, { expr: t > 3 ? 'scared' : 'surprised', wide: true, lid: t > 1.4 && t < 3 ? .5 : 0, lookX: .8 });
-  put(mia, DX2 + .1, -1.8, -Math.PI / 2 + .4 + ease(t, 1.2, 1.6) * .5, t > 1.4 ? { ...POSE.stand, aL: [1.3, .2, 2.4] } : { ...POSE.stand, lean: .25 }, t, { expr: t > ms ? 'scared' : 'surprised', wide: true, lookX: .8 }, .2, 8);
-  // их тени проявляются в свете фар; тень Mia узнаёт бывшего
-  const shOp = lit;
-  applyPose(shade, t > sh ? keys(t, [[sh, POSE.stand], [sh + .4, { ...POSE.stand, aR: [0, -2.8, 1.6] }], [sh + .9, { ...POSE.stand, aR: [1.4, -.3, .2], aL: [.9, .5, 2.2] }]]) : t > ex ? { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], lean: .1 } : { ...POSE.scared }, t, { mood: t > ex ? 'angry' : 'wide', look: 1 }, 3);
-  placeShade(shade, { x: DX2 - 1.05, z: WN + .03, rise: 1, scale: 1.3, turn: t > ex ? 0 : Math.PI / 2, op: shOp }); shade.holder.position.y = .1;
-  hat.visible = t > sh + .4; hat.scale.setScalar(1);
-  applyPose(miaSh, t > ms ? { ...POSE.stand, aL: [1.0, .4, 2.4], aR: [.2, -.2, .4], headZ: .15 } : { ...POSE.scared }, t, { mood: t > ms ? 'sad' : 'wide', look: 1 }, 7);
-  placeShade(miaSh, { x: DX2 - .1, z: WN + .07, rise: 1, scale: 1.3, turn: t > ms ? 0 : -Math.PI / 2, op: shOp }); miaSh.holder.position.y = .3;
-  // самовольная тень: выползает из открытой двери по асфальту (лежит) → поднимается на стену → огромная, разминает шею
-  const OWN = window.EP2_PART === 'R' || window.EP2_PART === 'RE';
-  if (OWN) { const dp = wpos(car.userData.door); const w = ease(t, 3.0, 4.4, sm); exMan.root.visible = t > 2.9; const mx = lerp(dp.x - .3, DX2 + 1.4, w), mz = lerp(dp.z + .3, .2, w);
-    put(exMan, mx, mz, -Math.PI / 2 - .5, t < 4.4 ? walk(w * 3.5) : { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1 + Math.sin(t * 10) * .3 * (t > 5.2 ? 1 : 0)], headZ: Math.sin(Math.max(0, t - 4.4) * 5) * .25 * (t < 5.4 ? 1 : 0) }, t, { expr: 'angry', smile: .3, mouth: talkG(T, 'ex1') }, 0, 61); }
-  const crawl = OWN ? 0 : ease(t, 3.0, 3.9, sm), rise = OWN ? ease(t, 2.95, 3.2) : ease(t, 3.8, 4.4, back), slideX = OWN ? lerp(DX2 + 2.0, DX2 + .9, ease(t, 3.0, 4.4, sm)) : lerp(cx + .1, DX2 + .9, ease(t, 3.0, 4.4, sm));
-  exSh.holder.visible = t > 2.9; const big = OWN ? lerp(1.2, 1.9, ease(t, 3.0, 4.4)) : lerp(1.0, 1.9, rise);
-  applyPose(exSh, t < 4.4 ? walk(t * 5, .6) : { ...POSE.stand, aR: [.3, -1.4, .3], aL: [1.0, .6, 2.0], headZ: Math.sin(Math.max(0, t - 4.4) * 5) * .25 * (t < 5.6 ? 1 : 0), headX: -.12 }, t, { mood: 'sly', look: -1 }, 51);
-  placeShade(exSh, { x: slideX, z: rise > .02 ? WN + .1 : cz - .2 - crawl * 2.5, rise, len: 1.8, yaw: rise > .02 ? 0 : -1.0, scale: big, turn: t < 4.4 ? -Math.PI / 2 : 0, op: 1 }); exSh.holder.position.y = .05;
-  const [jx, jy] = hh(t, .02); const wide = 1 - ease(t, 4.6, 5.4, sm), cl = ease(t, sh - .3, sh + .2, sm);
-  if (t < 4.6) cam(lerp(DX2 + 5.2, DX2 + 3.6, ease(t, 0, 4.6, sm)) + jx, 1.7 + jy, lerp(5.6, 5.0, ease(t, 0, 4.6)), lerp(DX2 + 2.6, DX2 + .8, ease(t, 0, 4.6, sm)), .8, -.5, 46);
-  else cam(lerp(DX2 + .1, DX2 - .7, cl) + jx, lerp(1.9, 1.7, cl) + jy, lerp(5.0, 2.9, cl), lerp(DX2 + .05, DX2 - .95, cl), lerp(1.8, 1.55, cl), -1.8, 38);
-  FX = { fy: .42, fw: .38, blur: 5, bloom: .6, warm: -.05 };
-  return () => { if (t < .4) { ctx.fillStyle = `rgba(0,0,8,${.55 * (1 - t / .4)})`; ctx.fillRect(0, 0, 1080, 1920); }
-    if (lit > 0) { car.userData.lights.forEach(b => { const p = wpos(b); const [x, y] = toScreen(p.x, p.y, p.z); const g = ctx.createRadialGradient(x, y, 3, x, y, 110); g.addColorStop(0, `rgba(255,248,220,${.9 * lit})`); g.addColorStop(1, 'rgba(255,240,200,0)'); ctx.fillStyle = g; ctx.fillRect(x - 130, y - 130, 260, 260); }); }
-    if (!OWN && t > 2.6 && t < 3.4) { ctx.save(); ctx.font = '800 46px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd36a'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 10; ctx.strokeText('*empty seat*', 540, 1520); ctx.fillText('*empty seat*', 540, 1520); ctx.restore(); }
-    drawLines(T, { ms1: { y: 400, n: 18 }, ex1: { y: 1440, size: 76, n: 16 }, sh1: { y: 400, size: 100 } }); };
+// Брэд: широкий, кожанка нараспашку, белая майка, цепь, кок, очки ночью, квадратная челюсть, зубочистка
+const exMan = makeToy({ skin: '#e6ad8a', hair: '#141016', top: '#231c22', top2: '#f4f2ee', pants: '#2b3a5c', shoes: '#121212', hood: false, eye: '#1a1210', blush: .05 });
+{ const X = exMan, lth = clay('#231c22', { roughness: .35, metalness: .15 }), gold = clay('#ffc23a', { roughness: .2, metalness: 1 }), hairM = clay('#141016', { roughness: .25 }), blk = clay('#050505', { roughness: .05, metalness: .6 });
+  X.root.scale.setScalar(1.45); X.spine.scale.set(1.38, 1.05, 1.2); [X.aL, X.aR].forEach(a => a.sh.scale.set(1.45, 1.05, 1.45)); [X.lL, X.lR].forEach(l => l.hp.scale.set(1.2, 1, 1.2));
+  X.spine.add(at(mesh(G.rbox(.13, .22, .02, .01), clay('#f4f2ee')), 0, .24, .128));                                   // майка в вырезе
+  [-1, 1].forEach(s => { X.spine.add(at(mesh(G.rbox(.07, .26, .03, .015), lth), s * .085, .24, .13, 0, 0, s * .18));    // лацканы
+    X.spine.add(at(mesh(G.rbox(.1, .09, .03, .015), lth), s * .1, .41, .06, -.4, 0, s * .5)); });                     // поднятый воротник
+  X.spine.add(at(mesh(new THREE.TorusGeometry(.085, .012, 8, 28), gold), 0, .33, .1, 1.25));                           // цепь
+  X.head.add(at(mesh(G.sph(.15, 20), hairM), 0, .21, .1, 0, 0, 0)); X.head.children.at(-1).scale.set(1.15, .75, 1.35); // кок
+  X.head.add(at(mesh(G.sph(.12, 16), clay('#e6ad8a')), 0, -.13, .1)); X.head.children.at(-1).scale.set(1.35, .55, .8); // челюсть
+  [-1, 1].forEach(s => X.head.add(at(mesh(G.rbox(.12, .075, .03, .025), blk), s * .078, .025, .228)));                // очки
+  X.head.add(at(mesh(G.rbox(.05, .015, .02, .005), blk), 0, .04, .235));
+  X.head.add(at(mesh(G.cyl(.006, .006, .11, 6), clay('#e8d2a0')), .05, -.1, .24, 0, 0, 1.25));                         // зубочистка
+  X.root.traverse(o => { if (o.isMesh) o.castShadow = false; }); X.root.visible = false; night.g.add(X.root); }
+// его тень — с коком и красными глазами
+{ exSh.head.children.filter(o => o.geometry && o.geometry.type === 'ConeGeometry').forEach(o => o.visible = false);
+  const pomp = mesh(G.sph(.15, 16), ink, false, false); pomp.position.set(0, .21, .1); pomp.scale.set(1.15, .75, 1.35); exSh.head.add(pomp);
+  exSh.eyes.forEach(e => e.children.forEach(c => c.material = glow('#ff3030', 2.2))); }
+const carFill = new THREE.PointLight('#8aa0ff', 3, 6, 1.5); night.g.add(carFill); const carKey = new THREE.PointLight('#ffb0d0', 0, 9, 1.4), brKey = new THREE.PointLight('#a8b8ff', 0, 4, 1.5); night.g.add(carKey, brKey);
+const headL = new THREE.SpotLight('#fff2d8', 0, 18, .6, .45, 1.1); headL.castShadow = false; night.g.add(headL, headL.target);
+const hat2 = hat.clone(); hat2.visible = false; scene.add(hat2);
+const FIGHT_POSE = { aL: [1.25, .35, 2.3], aR: [1.0, -.3, 2.5], lL: [.45, .55], lR: [-.35, .35], crouch: .07, lean: .12 };
+S.XQ = (t, T) => { hideAll(); nightDoor(0); setFade(mia, 1, 1, false); car.visible = true;
+  const mb = lt('mb1'), sb1 = lt('sb1'), ms = lt('ms2'), sb2 = lt('sb2'), ex1 = lt('ex1'), ex2 = lt('ex2'), sh = lt('sh1'), sb3 = lt('sb3'), sh2 = lt('sh2');
+  const DO = ms + DURS.ms2 + .25, BS = DO + .45, BR = BS + 1.1, FZ0 = BR, FZ1 = FZ0 + 1.7, G0 = FZ1, G1 = G0 + 1.3;
+  const tf = t > FZ0 && t < FZ1 ? FZ0 : t;                                    // стоп-кадр: всё замирает
+  // ── машина: въезжает слева направо по улице, разворачивается фарами на пару, прыгает на гидравлике
+  const STOP = 2.3, drive = ease(t, .7, STOP, k => 1 - Math.pow(1 - k, 2.2));
+  const cx = lerp(DX2 + 7.5, DX2 + 2.5, drive), cz = lerp(2.2, .9, drive); car.position.set(cx, 0, cz); car.rotation.y = lerp(0, -.62, ease(t, 1.2, STOP));
+  wheels.forEach(w => w.children.forEach(c => { if (c.geometry.type !== 'CylinderGeometry') c.rotation.z = drive * 30; }));
+  const hop = t > STOP ? .2 * Math.abs(Math.sin((tf - STOP) * 7.5)) * Math.exp(-(tf - STOP) * 1.1) : 0, thump = .015 * Math.abs(Math.sin(tf * 8.4));
+  carBody.position.y = hop + thump; carBody.rotation.z = Math.sin((tf - STOP) * 7.5) * hop * .5;
+  car.userData.door.rotation.y = -ease(t, DO, DO + .35, back) * 1.15;
+  const lit = ease(t, .8, 1.3); car.userData.lights.forEach(b => b.visible = lit > .3);
+  const hl = wpos(car.userData.lights[0]); headL.position.copy(hl); headL.intensity = 85 * lit;
+  headL.target.position.set(lerp(DX2 + 4, DX2 - .6, ease(t, .8, STOP + .2, sm)), 1.0, -2.1);
+  carFill.position.set(cx + 1.0, 2.2, cz + 1.4); carFill.intensity = 2.5; night.sp.intensity = 0; carKey.position.set(cx + 1.6, 2.0, cz + 2.6); carKey.intensity = 9; hemi.intensity = .06 + .1 * lit;
+  // ── Sam и Mia: щурятся в свете фар, поворачиваются к машине
+  const turn = ease(t, 1.1, 1.6, sm), fadeM = ease(t, ex2 + .4, ex2 + 1.6) * (1 - ease(t, sh + 1.0, sh + 2.2) * .3);
+  const samHat = t > sh + 1.15;
+  put(hero, DX2 - .6, -1.3, lerp(Math.PI / 2 - .3, .9, turn), keys(tf, [[0, { ...POSE.stand }], [1.3, { ...POSE.stand, aR: [1.3, -.25, 2.4], lean: -.08 }], [sb1 - .1, { ...POSE.shrug, aR: [1.2, -.4, 1.6] }], [sb1 + 1.0, POSE.stand], [sb2 - .2, { ...POSE.stand, aR: [1.5, -.2, .1], lean: .15 }], [sb2 + 1.1, POSE.stand],
+    [sh + 1.0, { ...POSE.stand, aR: [1.2, -.1, .8], aL: [1.2, .1, .8] }], [sb3 - .1, { ...POSE.scared, aR: [1.2, -.1, .9] }], [sh2 + .4, { ...POSE.scared, aR: [1.2, -.1, .9] }]]), tf,
+    { expr: t > sb3 - .2 ? 'scared' : t > sb2 - .2 && t < sb2 + 1.2 ? 'angry' : t > 1.3 ? 'surprised' : 'calm', wide: t > 1.3, lid: t > 1.3 && t < 2.6 ? .55 : 0, lookX: t > sb2 - .3 && t < sb2 + 1.2 ? -.9 : .8, mouth: talkG(T, 'sb1', 'sb2', 'sb3') });
+  put(mia, DX2 + .1, -1.8, lerp(-Math.PI / 2 + .4, .7, turn), keys(tf, [[0, POSE.stand], [1.3, { ...POSE.stand, aL: [1.3, .25, 2.4] }], [mb - .2, { ...POSE.stand, aL: [1.1, .2, 2.5], aR: [1.1, -.2, 2.5] }], [mb + 1.2, POSE.scared], [ex2 + .6, { ...POSE.stand, aR: [1.0, -.3, 1.6], headX: .4 }], [sh + .6, POSE.scared]]), tf,
+    { expr: t > mb - .2 ? 'scared' : 'surprised', wide: true, lookX: t > ex2 + .5 && t < sh ? .3 : .8, lookY: t > ex2 + .5 && t < sh ? -.7 : 0, mouth: talkG(T, 'mb1') }, .2, 8);
+  if (fadeM > .01) setFade(mia, 1 - fadeM * .6, 1 - fadeM * .55, false);
+  // ── тени на стене: фары справа → тени крупные и левее хозяев
+  const sOp = .05 + .95 * lit;
+  const sneak = ease(t, G1 - .3, sb2, sm) * (1 - ease(t, sh - .2, sh + .6, sm) * .0), brave = ease(t, sh - .3, sh + .5, sm);
+  const sX = lerp(lerp(DX2 - 1.25, DX2 - 1.95, sneak), DX2 - 1.0, ease(t, sh2, sh2 + .6, sm)), sS = lerp(lerp(1.55, 1.3, ease(t, G0, G1)), 1.85, ease(t, sh2, sh2 + .6));
+  const sPose = t > sh2 ? keys(tf, [[sh2, FIGHT_POSE], [sh2 + .5, { ...FIGHT_POSE, aR: [1.1, -.3, 2.6], headZ: .25 }], [sh2 + .9, { ...FIGHT_POSE, headZ: -.25 }]])
+    : t > sh - .2 ? keys(tf, [[sh - .2, POSE.stand], [sh + .4, { ...POSE.stand, aR: [0, -2.8, 1.6] }], [sh + .9, { ...POSE.stand, aR: [1.3, -.4, .3] }], [sh + 1.3, { ...POSE.stand, aL: [.9, .5, 2.2], aR: [.9, -.5, 2.2] }]])
+    : t > G1 - .3 && t < sb2 + .3 ? walk(sneak * 2.4, 0, { crouch: .1, lean: .25, aL: [.6, .4, 1.5], aR: [.6, -.4, 1.5] })
+    : t > sb2 + .3 ? { ...POSE.scared, headY: .6 } : t > 1.3 ? { ...POSE.scared } : POSE.stand;
+  applyPose(shade, sPose, tf, { mood: t > sh - .2 ? 'angry' : t > 1.0 ? 'wide' : 'calm', look: t > G1 - .3 && t < sb2 + .5 ? -1 : 1 }, 3);
+  placeShade(shade, { x: sX, z: WN + .03, rise: 1, scale: sS, turn: t > sh - .2 ? Math.PI / 2 * (1 - brave) + 0 : t > G1 - .3 && t < sb2 + .3 ? -Math.PI / 2 : Math.PI / 2, op: sOp }); shade.holder.position.y = .05;
+  hat.visible = t < sh + .55; hat.scale.setScalar(1);
+  // шляпа: тень снимает и бросает — Sam ловит настоящую
+  hat2.visible = t > sh + .55; if (hat2.visible) { const a = wpos(shade.head), b = wpos(hero.aR.hand), k = ease(t, sh + .55, sh + 1.15, sm);
+    hat2.position.set(lerp(a.x, b.x + .02, k), lerp(a.y + .5, b.y + .12, k) + Math.sin(k * Math.PI) * .5, lerp(WN + .2, b.z, k)); hat2.rotation.set(0, k * 6, lerp(-.3, .25, k)); hat2.scale.setScalar(lerp(sS * .9, .55, k)); }
+  const drag = ease(t, ex2 + .2, ex2 + 1.4, sm), hide = ease(t, ms - .2, ms + .6, sm) * (1 - drag);
+  const mX = lerp(lerp(DX2 - .45, DX2 - 1.0, hide), DX2 + .15, drag);
+  applyPose(miaSh, t > ex2 + .2 ? { ...POSE.reach, aR: [1.5, -.3, .1], aL: [1.2, .4, .5], lean: -.25, lL: [-.3, .2], lR: [.4, .3] } : t > ms - .2 ? { ...POSE.scared, headY: -.5 } : t > 1.3 ? POSE.scared : POSE.stand, tf,
+    { mood: t > ex2 ? 'sad' : t > 1.0 ? 'wide' : 'calm', look: t > ex2 ? -1 : 1 }, 7);
+  placeShade(miaSh, { x: mX, z: WN + .07, rise: 1, scale: 1.5, turn: t > ex2 + .2 ? -Math.PI / 2 : t > ms - .2 ? Math.PI / 2 : -Math.PI / 2, op: sOp }); miaSh.holder.position.y = .22;
+  // ── Брэд: нога из двери → встаёт (стоп-кадр с титром) → к стене, хрустит шеей
+  car.updateMatrixWorld(true); const CL = (x, y, z) => car.localToWorld(new THREE.Vector3(x, y, z)); const dp = CL(-.05, 0, 1.0), out = ease(t, BS, BR, sm), walkK = ease(t, G0, G1 - .2, sm);
+  exMan.root.visible = t > BS - .1;
+  if (exMan.root.visible) { const bx = lerp(dp.x, DX2 + 1.55, walkK), bz = lerp(dp.z, -.35, walkK);
+    put(exMan, bx, bz, lerp(car.rotation.y, -2.0, ease(t, G0, G0 + .5, sm)), t < BR ? { ...POSE.stand, crouch: lerp(.3, 0, out), lean: lerp(.6, 0, out), lR: [lerp(1.2, 0, out), lerp(1.0, 0, out)], aL: [.3, .5, .4], aR: [.3, -.5, .4] }
+      : t < G1 - .2 ? walk(walkK * 3.2, .1, { aL: [.2, .25, .5], aR: [.2, -.25, .5] })
+      : t > ex2 - .1 ? { ...POSE.stand, aR: [1.4, -.2, .2 + Math.sin(t * 9) * .4 * (t < ex2 + 1.2 ? 1 : 0)], aL: [.9, .5, 2.1] }
+      : { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headZ: Math.sin(Math.max(0, t - G1) * 6) * .3 * (t < G1 + .9 ? 1 : 0), headX: -.1 }, tf,
+      { expr: 'angry', smile: .35, mouth: talkG(T, 'ex1', 'ex2'), lid: .2 }, 0, 61); exMan.root.position.y = 0; const kp = t < FZ1 ? CL(-1.2, 1.6, 2.3) : new THREE.Vector3(bx + .6, 1.9, bz + 1.4); brKey.position.copy(kp); brKey.intensity = t < FZ1 ? 7 : 4; }
+  const grow = ease(t, G0, G1, back); exSh.holder.visible = grow > .01;
+  applyPose(exSh, t > ex2 - .1 ? { ...POSE.stand, aR: [1.55, -.15, .1], aL: [.9, .5, 2.1], lean: -.1 } : t > G1 ? { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headZ: Math.sin(Math.max(0, t - G1) * 6) * .3 * (t < G1 + .9 ? 1 : 0), headX: -.12 } : walk(walkK * 3.2, .1), tf, { mood: 'angry', look: -1 }, 51);
+  placeShade(exSh, { x: lerp(DX2 + .9, DX2 + 1.05, drag), z: WN + .1, rise: 1, scale: lerp(.6, 2.35, grow), turn: -Math.PI / 2, op: 1 }); exSh.holder.position.y = .02;
+  // ── камера: общий → двое → низко у двери (нога, подъём) → стоп-кадр → стена-гигант → Sam → стена → тень Sam → Sam → глаза
+  const [jx, jy] = hh(tf, .02);
+  if (t < mb - .25) cam(lerp(DX2 + 4.1, DX2 + 3.7, ease(t, 0, mb, sm)) + jx, 1.0 + jy, lerp(4.9, 4.5, ease(t, 0, mb)), DX2 + 1.0, .95, -1.2, 50);
+  else if (t < DO - .1) cam(DX2 - .25 + jx, 1.45 + jy, lerp(4.4, 3.9, ease(t, mb, DO)), DX2 - .6, 1.55, -2.1, 48);
+  else if (t < FZ1) { const up = ease(tf, BS + .2, BR, sm); const c = CL(-1.0, lerp(.3, .55, up), 3.1), l = CL(-.05, lerp(.25, 1.5, up), 1.0); cam(c.x, c.y, c.z, l.x, l.y, l.z, 40, -.08 * up); }
+  else if (t < sb2 - .15) cam(DX2 + .3 + jx, 1.7 + jy, lerp(6.6, 6.1, ease(t, G0, sb2)), DX2 + .3, 1.9, -2.1, 52);
+  else if (t < ex1 - .15) cam(DX2 + .45 + jx, 1.22 + jy, .55, DX2 - .75, 1.15, -1.4, 36);
+  else if (t < sh - .15) cam(DX2 + .45 + jx, 1.7 + jy, lerp(6.6, 5.8, ease(t, ex1, sh)), DX2 + .35, 1.9, -2.1, 52);
+  else if (t < sb3 - .15) { const hp = wpos(shade.head); cam(hp.x + .5 + jx, hp.y - .1 + jy, lerp(3.4, 2.9, ease(t, sh, sb3)), hp.x + .1, hp.y - .35, WN, 42); }
+  else if (t < sh2 - .1) cam(DX2 + .3 + jx, 1.2 + jy, .7, DX2 - .7, 1.15, -1.4, 34);
+  else { const z = ease(t, sh2, sh2 + 1.2, sm); cam(sX + .3 + jx * .5, 1.3 + jy * .5, lerp(3.8, 2.4, z), sX, 1.25, WN, 40); }
+  FX = { fy: t > DO - .1 && t < FZ1 ? .5 : .42, fw: .36, blur: 5, bloom: .55, warm: -.04 };
+  return () => { if (t < .8) { ctx.fillStyle = `rgba(0,0,8,${.6 - .2 * ease(t, .5, .8)})`; ctx.fillRect(0, 0, 1080, 1920); }
+    if (lit > 0) car.userData.lights.forEach(b => { const p = wpos(b); const [x, y] = toScreen(p.x, p.y, p.z); if (y < -200 || y > 2100) return; const g = ctx.createRadialGradient(x, y, 3, x, y, 150); g.addColorStop(0, `rgba(255,248,220,${.95 * lit})`); g.addColorStop(1, 'rgba(255,240,200,0)'); ctx.fillStyle = g; ctx.fillRect(x - 160, y - 160, 320, 320); });
+    // басы: кольца-волны от машины, пока стоит
+    if (t > .7 && t < DO) { const p = car.position; const [x, y] = toScreen(p.x, .6, p.z); ctx.save(); for (let i = 0; i < 2; i++) { const k = ((tf * 1.4 + i * .5) % 1); ctx.globalAlpha = (1 - k) * .35; ctx.strokeStyle = '#ff7ab0'; ctx.lineWidth = 6; ctx.beginPath(); ctx.ellipse(x, y, 80 + k * 260, 30 + k * 90, 0, 0, 7); ctx.stroke(); } ctx.restore(); }
+    // стоп-кадр: представление бойца
+    if (t > FZ0 && t < FZ1) { const k = (t - FZ0) / (FZ1 - FZ0), inn = ease(t, FZ0, FZ0 + .18, back);
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = 'grayscale(.75) contrast(1.35) brightness(.9)'; ctx.drawImage(OUTC, 0, 0); ctx.restore();
+      if (k < .06) { ctx.fillStyle = `rgba(255,255,255,${1 - k / .06})`; ctx.fillRect(0, 0, 1080, 1920); }
+      ctx.save(); ctx.translate(lerp(-1200, 0, inn), 0); ctx.fillStyle = '#ff4a1c'; ctx.beginPath(); ctx.moveTo(0, 1190); ctx.lineTo(1080, 1060); ctx.lineTo(1080, 1330); ctx.lineTo(0, 1460); ctx.fill();
+      ctx.fillStyle = '#07060c'; ctx.beginPath(); ctx.moveTo(0, 1460); ctx.lineTo(1080, 1330); ctx.lineTo(1080, 1352); ctx.lineTo(0, 1482); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.translate(lerp(1400, 560, ease(t, FZ0 + .08, FZ0 + .3, back)), 1290); ctx.rotate(-.12); ctx.textAlign = 'center'; ctx.font = '900 210px Unb'; ctx.lineWidth = 20; ctx.strokeStyle = '#07060c'; ctx.strokeText('BRAD', 0, 0); ctx.fillStyle = '#fff'; ctx.fillText('BRAD', 0, 0); ctx.restore();
+      ctx.save(); ctx.globalAlpha = ease(t, FZ0 + .35, FZ0 + .5); ctx.translate(560, 1392); ctx.rotate(-.12); ctx.textAlign = 'center'; ctx.font = '800 40px Unb'; ctx.fillStyle = '#07060c'; ctx.fillText('HER EX  ·  6′4″  ·  2 BRAIN CELLS', 0, 0); ctx.restore();
+      ctx.save(); ctx.globalAlpha = ease(t, FZ0 + .55, FZ0 + .7); ctx.translate(560, 1000); ctx.rotate(-.12); ctx.textAlign = 'center'; ctx.font = '900 64px Unb'; ctx.lineWidth = 12; ctx.strokeStyle = '#07060c'; ctx.strokeText('DANGER: ★★★★★', 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText('DANGER: ★★★★★', 0, 0); ctx.restore(); }
+    // тень Mia тает вместе с хозяйкой: искры по контуру Mia
+    if (fadeM > .05) { const p = wpos(mia.head); const [x, y] = toScreen(p.x, p.y, p.z); ctx.save(); for (let i = 0; i < 14; i++) { const k = (t * .8 + h1(i)) % 1; ctx.globalAlpha = (1 - k) * .7 * fadeM; ctx.fillStyle = '#c8b8ff'; ctx.beginPath(); ctx.arc(x + (h1(i + 3) - .5) * 160, y + 300 - k * 380, 5, 0, 7); ctx.fill(); } ctx.restore(); }
+    // глаза тени Sam загораются
+    if (t > sh2 + .3) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); const g = ctx.createRadialGradient(x, y, 10, x, y, 260); g.addColorStop(0, `rgba(255,190,60,${.55 * ease(t, sh2 + .3, sh2 + .8)})`); g.addColorStop(1, 'rgba(255,90,30,0)'); ctx.fillStyle = g; ctx.fillRect(x - 280, y - 280, 560, 560); }
+    drawLines(T, { mb1: { y: 1500, n: 16 }, sb1: { y: 1500, n: 16 }, ms2: { y: 420, n: 16 }, sb2: { y: 1500, n: 16, size: 78 }, ex1: { y: 1500, size: 78, n: 16 }, ex2: { y: 1500, size: 78, n: 16 }, sh1: { y: 420, size: 100 }, sb3: { y: 1500, n: 16 }, sh2: { y: 420, size: 92, n: 14 } }); };
 };
-// заставка: экран боя файтинга — две тени, полоски здоровья, VS, ROUND 1… FIGHT!
-S.KQ = (t, T) => { useSet('night'); hideAll(); FX = { skip: true };
-  return () => { const g = ctx.createLinearGradient(0, 0, 1080, 1920); g.addColorStop(0, '#ffb23a'); g.addColorStop(.5, '#ff5a2a'); g.addColorStop(1, '#5a0a3a'); ctx.fillStyle = g; ctx.fillRect(0, 0, 1080, 1920);
-    ctx.save(); ctx.globalAlpha = .25; for (let i = 0; i < 16; i++) { ctx.fillStyle = i % 2 ? '#fff' : '#000'; ctx.beginPath(); ctx.moveTo(540, 960); const a = i / 16 * Math.PI * 2 + t * .2; ctx.lineTo(540 + Math.cos(a) * 1600, 960 + Math.sin(a) * 1600); ctx.lineTo(540 + Math.cos(a + .2) * 1600, 960 + Math.sin(a + .2) * 1600); ctx.fill(); } ctx.restore();
-    const shake = t > 2.2 && t < 2.6 ? (Math.random() - .5) * 30 : 0; ctx.save(); ctx.translate(shake, 0);
-    // силуэты бойцов
-    const fighter = (x, y, s, flip, big, hatOn, spikes) => { ctx.save(); ctx.translate(x, y); ctx.scale(flip * s * (big ? 1.25 : 1), s * (big ? 1.25 : 1)); ctx.fillStyle = '#07060c';
-      ctx.beginPath(); ctx.arc(0, -330, 70, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(-90 * (big ? 1.3 : 1), -250); ctx.lineTo(90 * (big ? 1.3 : 1), -250); ctx.lineTo(60, 40); ctx.lineTo(-60, 40); ctx.fill();
-      ctx.lineCap = 'round'; ctx.strokeStyle = '#07060c'; ctx.lineWidth = 46; const bob = Math.sin(t * 6) * 10; ctx.beginPath(); ctx.moveTo(-70, -220); ctx.lineTo(60, -150 + bob); ctx.lineTo(120, -230 + bob); ctx.moveTo(70, -220); ctx.lineTo(150, -120 - bob); ctx.lineTo(180, -200 - bob); ctx.stroke();
-      ctx.lineWidth = 52; ctx.beginPath(); ctx.moveTo(-30, 30); ctx.lineTo(-110, 200); ctx.lineTo(-90, 330); ctx.moveTo(30, 30); ctx.lineTo(120, 190); ctx.lineTo(160, 330); ctx.stroke();
-      if (hatOn) { ctx.fillRect(-80, -400, 160, 18); ctx.fillRect(-48, -510, 96, 112); }
-      if (spikes) for (let k = 0; k < 5; k++) { ctx.beginPath(); ctx.moveTo(-60 + k * 30, -385); ctx.lineTo(-48 + k * 30, -450); ctx.lineTo(-36 + k * 30, -385); ctx.fill(); }
-      ctx.fillStyle = '#fff'; [-1, 1].forEach(sd => { ctx.beginPath(); ctx.ellipse(sd * 26 + 18, -335, 16, 6, sd * .2, 0, 7); ctx.fill(); }); ctx.restore(); };
-    const inL = ease(t, .1, .5, back), inR = ease(t, .25, .65, back);
-    fighter(lerp(-300, 290, inL), 1330, .85, 1, false, true, false); fighter(lerp(1380, 800, inR), 1330, .85, -1, true, false, true);
-    // полоски здоровья
-    const bar = (x, w, name, col, k) => { ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x - 6, 214, w + 12, 52); ctx.fillStyle = col; ctx.fillRect(x, 220, w * k, 40); ctx.font = '800 30px Unb'; ctx.fillStyle = '#fff'; ctx.textAlign = x < 540 ? 'left' : 'right'; ctx.fillText(name, x < 540 ? x : x + w, 200); };
-    const hb = ease(t, .4, .9); bar(60, 420, 'SAM’S SHADOW', '#ffd36a', hb); bar(600, 420, 'THE EX', '#ff3d5a', hb);
-    const vs = ease(t, .6, .85, back); if (vs > 0) { ctx.save(); ctx.translate(540, 560); ctx.scale(vs, vs); ctx.rotate(-.08); ctx.textAlign = 'center'; ctx.font = '900 200px Unb'; ctx.lineWidth = 18; ctx.strokeStyle = '#07060c'; ctx.strokeText('VS', 0, 70); ctx.fillStyle = '#fff'; ctx.fillText('VS', 0, 70); ctx.restore(); }
-    if (t > 1.2 && t < 2.2) { const k = ease(t, 1.2, 1.4, back); ctx.save(); ctx.translate(540, 790); ctx.scale(k, k); ctx.textAlign = 'center'; ctx.font = '900 110px Unb'; ctx.lineWidth = 14; ctx.strokeStyle = '#07060c'; ctx.strokeText('ROUND 1', 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText('ROUND 1', 0, 0); ctx.restore(); }
-    if (t > 2.2) { const k = ease(t, 2.2, 2.4, back); ctx.save(); ctx.translate(540, 800); ctx.scale(k * 1.1, k * 1.1); ctx.rotate(-.06); ctx.textAlign = 'center'; ctx.font = '900 150px Unb'; ctx.lineWidth = 18; ctx.strokeStyle = '#07060c'; ctx.strokeText('FIGHT!', 0, 0); ctx.fillStyle = '#ff2a3a'; ctx.fillText('FIGHT!', 0, 0); ctx.restore(); }
+
+// ===== арена: та же улица силуэтами на закате (слои с дымкой → глубина), бойцы — объёмные тени =====
+const arena = new THREE.Group(); arena.position.set(60, 0, 0); arena.visible = false; scene.add(arena);
+{ const basic = (tex, o = {}) => new THREE.MeshBasicMaterial({ map: tex, transparent: true, toneMapped: false, depthWrite: false, ...o });
+  const sky = canvasTex(512, 1024, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); [[0, '#3a0c34'], [.3, '#a01c3c'], [.5, '#ff5a2a'], [.64, '#ffa040'], [.7, '#ffe2a4'], [.76, '#ffb050'], [1, '#c8402a']].forEach(([o, c]) => gr.addColorStop(o, c)); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    const sx = 256, sy = 600; const sg = g.createRadialGradient(sx, sy, 10, sx, sy, 300); sg.addColorStop(0, 'rgba(255,252,230,1)'); sg.addColorStop(.3, 'rgba(255,236,170,1)'); sg.addColorStop(.33, 'rgba(255,170,80,.6)'); sg.addColorStop(1, 'rgba(255,120,40,0)'); g.fillStyle = sg; g.fillRect(0, 280, w, 640);
+    g.fillStyle = 'rgba(120,20,50,.35)'; for (let i = 0; i < 5; i++) g.fillRect(0, 560 + i * 26, w, 3 + i * 2); });
+  const skyM = mesh(G.plane(50, 70), basic(sky, { transparent: false }), false, false); skyM.position.set(0, 14, -24); arena.add(skyM);
+  // слой: рисуем в метрах (y вверх), 64 px на метр
+  const PX = 64; const layer = (z, w, h, col, draw, y = 0) => { const tx = canvasTex(Math.round(w * PX), Math.round(h * PX), (g, W2, H2) => { g.fillStyle = col; g.strokeStyle = col; g.translate(W2 / 2, H2); g.scale(PX, -PX); draw(g, w / 2, h); }); const m = mesh(G.plane(w, h), basic(tx), false, false); m.position.set(0, y + h / 2, z); arena.add(m); return m; };
+  const R = (g, x, y, w, h) => g.fillRect(x, y, w, h), C = (g, x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); };
+  layer(-18, 50, 7, '#b0384a', (g, X, H2) => { g.beginPath(); g.moveTo(-X, 0); for (let x = -X; x <= X; x += .25) g.lineTo(x, 2.2 + Math.sin(x * .7) * .8 + Math.sin(x * 2.3) * .3); g.lineTo(X, 0); g.fill(); }, -.2);
+  layer(-11, 36, 7, '#5a1430', (g, X) => { let x = -X, i = 0; while (x < X) { const bw = .9 + h1(i) * 1.6, bh = 1.2 + h1(i + 9) * 2.6; R(g, x, 0, bw, bh); if (h1(i + 4) > .6) R(g, x + bw * .4, bh, .06, .8); x += bw; i++; }
+    R(g, 3.2, 3.2, 1.0, .8); R(g, 3.3, 2.2, .08, 1.0); R(g, 4.0, 2.2, .08, 1.0); g.beginPath(); g.moveTo(3.1, 4.0); g.lineTo(3.7, 4.5); g.lineTo(4.3, 4.0); g.fill();
+    const cx = -2.6, cy = 3.6; R(g, -4, 0, 3, 3.3); g.beginPath(); g.ellipse(cx, cy, .28, .38, 0, 0, 7); g.fill(); C(g, cx, cy + .48, .2); g.beginPath(); g.moveTo(cx - .17, cy + .55); g.lineTo(cx - .12, cy + .8); g.lineTo(cx - .02, cy + .62); g.moveTo(cx + .17, cy + .55); g.lineTo(cx + .12, cy + .8); g.lineTo(cx + .02, cy + .62); g.fill();
+    g.lineWidth = .09; g.beginPath(); g.moveTo(cx + .2, cy - .3); g.quadraticCurveTo(cx + .7, cy - .4, cx + .6, cy + .1); g.stroke(); }, -.1);
+  layer(-5.5, 26, 5, '#1e0a16', (g, X) => { R(g, -7.5, 0, 5.2, 3.6); R(g, -2.3, 0, 3.2, 2.6); R(g, 5.5, 0, 4.5, 3.9); g.beginPath(); g.moveTo(-7.7, 3.6); g.lineTo(-4.9, 4.4); g.lineTo(-2.1, 3.6); g.fill();
+    g.save(); g.fillStyle = 'rgba(255,170,90,.6)'; [[-7, 2.2], [-5.6, 2.2], [-3.6, 2.2], [-7, .9], [6.1, 2.4], [7.9, 2.4]].forEach(([x, y]) => R(g, x, y, .8, .9)); g.fillStyle = 'rgba(255,210,130,.45)'; R(g, -5.3, 0, .9, 1.7); g.restore();
+    R(g, 3.6, 0, .12, 3.6); g.beginPath(); g.ellipse(3.66, 3.6, .3, .14, 0, 0, 7); g.fill();
+    g.lineWidth = .04; g.beginPath(); for (let x = -2.3; x <= .9; x += .1) g.lineTo(x, 2.5 - Math.sin((x + 2.3) / 3.2 * Math.PI) * .35); g.stroke(); g.save(); g.fillStyle = 'rgba(255,224,150,.95)'; for (let x = -2.2; x < .9; x += .32) C(g, x, 2.42 - Math.sin((x + 2.2) / 3.2 * Math.PI) * .35, .06); g.restore();
+    // лоурайдер
+    const cxr = 1.4; g.beginPath(); g.moveTo(cxr, .25); g.lineTo(cxr + 3.6, .25); g.lineTo(cxr + 3.6, .85); g.lineTo(cxr + 2.7, .9); g.lineTo(cxr + 2.3, 1.45); g.lineTo(cxr + 1.0, 1.45); g.lineTo(cxr + .7, .9); g.lineTo(cxr, .85); g.fill(); [cxr + .7, cxr + 2.9].forEach(x => C(g, x, .32, .32));
+    // зрители: Sam со шляпой в руке, Mia, Брэд (руки в боки)
+    const person = (x, s, f) => { g.save(); g.translate(x, 0); g.scale(s, s); C(g, 0, 1.38, .24); R(g, -.25, .6, .5, .62); R(g, -.2, 0, .16, .62); R(g, .04, 0, .16, .62); f && f(); g.restore(); };
+    person(-1.2, 1, () => { R(g, .26, .9, .1, .35); R(g, .22, 1.22, .44, .05); R(g, .3, 1.27, .28, .34); });
+    person(-.4, .95, () => { g.beginPath(); g.ellipse(.2, 1.55, .12, .24, .6, 0, 7); g.fill(); g.beginPath(); g.moveTo(-.3, .65); g.lineTo(.3, .65); g.lineTo(.42, .25); g.lineTo(-.42, .25); g.fill(); });
+    person(5.0, 1.3, () => { R(g, -.4, .7, .8, .55); g.beginPath(); g.ellipse(.06, 1.6, .26, .13, 0, 0, 7); g.fill(); g.lineWidth = .12; g.beginPath(); g.moveTo(-.25, 1.1); g.lineTo(-.55, .85); g.lineTo(-.25, .7); g.moveTo(.25, 1.1); g.lineTo(.55, .85); g.lineTo(.25, .7); g.stroke(); }); }, -.02);
+  const ground = mesh(G.plane(80, 30), new THREE.MeshBasicMaterial({ color: '#12060e', toneMapped: false }), false, false); ground.rotation.x = -Math.PI / 2; ground.position.set(0, 0, 0); arena.add(ground);
+  layer(3.0, 12, .9, '#050205', (g, X, H2) => { for (let i = 0; i < 46; i++) { const x = (h1(i) - .5) * 2 * X, s = .2 + h1(i + 5) * .5; g.beginPath(); g.moveTo(x - s * .3, 0); g.lineTo(x + (h1(i + 8) - .5) * .2, s * (1 + h1(i + 2))); g.lineTo(x + s * .3, 0); g.fill(); } R(g, -X, 0, 2 * X, .1); }, 0); }
+function col0(g) { return g.fillStyle; }
+S.KQ = (t, T) => { useSet('night'); hideAll(); night.g.visible = false; arena.visible = true; scene.background = new THREE.Color('#2a0b30'); scene.fog = null;
+  const A2 = lt('an2'), E3 = lt('ex3'); const F0 = E3 - 2.2, F1 = E3 - 1.25, F2 = E3 + DURS.ex3 + .1, F3 = F2 + 1.15, F4 = F3 + 1.25, F5 = F4 + .95;
+  const tf = Math.min(t, F5);                                                   // финальный стоп-кадр
+  const ax = arena.position.x;
+  // ── тень Sam
+  let sx = -1.35, sy = 0, srot = 0, sp = { ...FIGHT_POSE, bob: Math.abs(Math.sin(tf * 6)) * .02 };
+  let ex = 1.35, ey = 0, ep = { ...FIGHT_POSE, aL: [1.2, .3, 2.0], aR: [.9, -.3, 2.4], bob: Math.abs(Math.sin(tf * 5 + 1)) * .02 };
+  if (tf > F0) { const c = ease(tf, F0, F0 + .45, sm); ex = lerp(1.35, .55, c); ep = { ...ep, lean: .3, aR: [lerp(.9, 1.7, ease(tf, F0 + .25, F0 + .45)), lerp(-.3, -1.4, ease(tf, F0 + .25, F0 + .45)), .1] };
+    const d = ease(tf, F0 + .25, F0 + .4) * (1 - ease(tf, F0 + .7, F0 + .95)); sp = { ...sp, lean: -.95 * d, crouch: .07 + .18 * d, aL: [lerp(1.25, -.4, d), .9 * d + .35, lerp(2.3, .3, d)], aR: [lerp(1.0, -.4, d), -.9 * d - .3, lerp(2.5, .3, d)], lL: [lerp(.45, .9, d), lerp(.55, 1.4, d)] }; }
+  if (tf > F1 && tf < F2) { sx = lerp(-1.35, ex - .7, ease(tf, F1 - .15, F1)); const ph = (tf - F1) * 14; sp = { ...FIGHT_POSE, lean: .3, aR: [1.5 + Math.max(0, Math.sin(ph)) * .2, -.1, 2.4 - Math.max(0, Math.sin(ph)) * 2.3], aL: [1.5 + Math.max(0, -Math.sin(ph)) * .2, .1, 2.4 - Math.max(0, -Math.sin(ph)) * 2.3] };
+    if (tf > E3 - .1) sp = { ...FIGHT_POSE, lean: .1, aR: [1.4, -.1, .3], aL: [1.2, .2, 1.8], headX: -.3 };
+    ep = { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headX: tf > E3 - .3 ? .45 : .1, lean: -.05 }; }
+  if (tf > F2) { const w = ease(tf, F2, F2 + .3), hit = F2 + .3; ep = { ...POSE.stand, lean: lerp(-.2, .3, w), twist: lerp(.6, -.7, ease(tf, F2 + .15, hit)), aR: [lerp(.6, 1.6, ease(tf, F2 + .15, hit)), lerp(.8, -1.3, ease(tf, F2 + .15, hit)), .1], aL: [.9, .5, 2.1] };
+    if (tf > F3) ep = { ...FIGHT_POSE, aL: [1.2, .3, 2.0], aR: [.9, -.3, 2.4] };
+    const fl = ease(tf, hit, hit + .6, k => 1 - Math.pow(1 - k, 2)); sx = lerp(ex - .7, -3.1, fl); sy = Math.sin(fl * Math.PI) * .9 * (1 - ease(tf, hit + .5, hit + .6)); srot = fl * 1.2 * (1 - ease(tf, F3, F3 + .5, sm));
+    sp = tf < hit ? sp : tf < F3 + .1 ? { ...POSE.stand, aL: [-.5, 1.5, .3], aR: [-.5, -1.5, .3], lL: [.6, .3], lR: [-.2, .2] } : keys(tf, [[F3 + .1, { ...POSE.tired, crouch: .2 }], [F3 + .55, { ...FIGHT_POSE, aR: [1.4, -.1, 2.6], headX: .2 }], [F3 + .9, FIGHT_POSE]]); }
+  if (tf > F4) { const k = ease(tf, F4, F5, k2 => k2 * k2 * (3 - 2 * k2)); sx = lerp(-3.1, -.42, k); ex = lerp(1.35, .45, k); sy = ey = Math.sin(k * Math.PI * .85) * .9; srot = 0;
+    sp = { ...POSE.stand, lean: .45, aR: [1.7, -.1, .0], aL: [.4, .6, 1.8], lL: [1.2, 1.6], lR: [-.4, .5] }; ep = { ...POSE.stand, lean: .4, aR: [1.7, -.1, .0], aL: [.5, .6, 1.8], lL: [1.1, 1.4], lR: [-.4, .6] }; }
+  applyPose(shade, sp, tf, { mood: tf > F3 + .5 ? 'angry' : 'angry', look: 1, open: tf > F2 + .3 && tf < F3 + .2 ? .15 : 1 }, 3);
+  placeShade(shade, { x: ax + sx, z: 0, rise: 1, scale: 1.05, turn: Math.PI / 2, op: 1 }); shade.flat.scale.z = 1; shade.holder.position.y = sy; shade.root.rotation.z = srot;
+  hat.visible = false; tie.visible = true;
+  applyPose(exSh, ep, tf, { mood: 'angry', look: -1 }, 51); placeShade(exSh, { x: ax + ex, z: 0, rise: 1, scale: 1.45, turn: -Math.PI / 2, op: 1 }); exSh.flat.scale.z = 1.4; exSh.holder.position.y = ey;
+  // ── камера
+  const [jx, jy] = hh(tf, .03, 4); let shake = 0; const hitT = F2 + .3; if (tf > hitT && tf < hitT + .35) shake = (1 - (tf - hitT) / .35) * .12 * Math.sin(tf * 90); if (tf > F2 + .9 && tf < F2 + 1.15) shake += .06 * Math.sin(tf * 80);
+  if (tf < F0) cam(ax + lerp(-1.5, 0, ease(tf, 0, F0, sm)) + jx, 1.4 + jy, lerp(7.5, 6.4, ease(tf, 0, F0)), ax, 1.5, 0, 44);
+  else if (tf < F1) cam(ax + .3 + jx, .9 + jy, 4.6, ax + .2, 1.3, 0, 42, .04);
+  else if (tf < F2) cam(ax + (sx + ex) / 2 + .6 + jx, 1.1 + jy, lerp(3.6, 3.2, ease(tf, F1, F2)), ax + (sx + ex) / 2, 1.4, 0, 40, -.05);
+  else if (tf < F4) cam(ax + lerp(.2, -1.6, ease(tf, F2 + .3, F3, sm)) + jx + shake, 1.3 + jy + shake, 7.4, ax + lerp(.2, -1.5, ease(tf, F2 + .3, F3, sm)), 1.2, 0, 50);
+  else { const k = ease(tf, F4, F5, sm); const a = lerp(-.5, .45, k); cam(ax + Math.sin(a) * 6 + jx, lerp(.5, 1.2, k) + jy, Math.cos(a) * 6, ax, lerp(1.4, 1.7, k), 0, lerp(48, 42, k), lerp(.06, -.06, k)); }
+  FX = { fy: .5, fw: .4, blur: 4, bloom: .7, warm: .12 };
+  return () => { const inK = ease(t, 0, .35, sm);
+    // пыль, искры, листья — парят слоями
+    ctx.save(); for (let i = 0; i < 26; i++) { const d = .4 + h1(i) * .9, x = ((h1(i + 1) * 1400 + tf * 60 * d) % 1400) - 160, y = ((h1(i + 2) * 2000 - tf * 40 * d + 4000) % 2000) - 40; ctx.globalAlpha = .55 * d; ctx.fillStyle = i % 3 ? '#ffcf7a' : '#1a0812'; ctx.beginPath(); ctx.ellipse(x, y, 5 * d, 2.5 * d, tf + i, 0, 7); ctx.fill(); } ctx.restore();
+    // искры попаданий серии
+    if (tf > F1 && tf < E3) { const n = Math.floor((tf - F1) * 7); const p = wpos(exSh.spine); const [x, y] = toScreen(p.x - .15, p.y + .15, p.z + .3); const ph = ((tf - F1) * 7) % 1; ctx.save(); ctx.globalAlpha = 1 - ph; ctx.strokeStyle = '#fff3c0'; ctx.lineWidth = 8; for (let r = 0; r < 6; r++) { const a = r / 6 * 7 + n; ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * 20, y + Math.sin(a) * 20); ctx.lineTo(x + Math.cos(a) * (50 + ph * 60), y + Math.sin(a) * (50 + ph * 60)); ctx.stroke(); } ctx.restore();
+      ctx.save(); ctx.translate(260, 640); ctx.rotate(-.1); ctx.font = '900 96px Unb'; ctx.textAlign = 'center'; ctx.lineWidth = 14; ctx.strokeStyle = '#07060c'; ctx.strokeText(`${Math.min(n + 1, 9)} HITS`, 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText(`${Math.min(n + 1, 9)} HITS`, 0, 0); ctx.font = '800 40px Unb'; ctx.fillStyle = '#fff'; ctx.fillText('DAMAGE: 0', 0, 60); ctx.restore(); }
+    if (tf > F0 + .3 && tf < F0 + 1.0) { const k = ease(tf, F0 + .3, F0 + .45, back); ctx.save(); ctx.translate(300, 820); ctx.scale(k, k); ctx.rotate(-.15); ctx.font = '900 110px Unb'; ctx.textAlign = 'center'; ctx.lineWidth = 16; ctx.strokeStyle = '#07060c'; ctx.strokeText('DODGE!', 0, 0); ctx.fillStyle = '#7af0ff'; ctx.fillText('DODGE!', 0, 0); ctx.restore(); }
+    // удар Брэда: вспышка
+    if (tf > hitT && tf < hitT + .12) { ctx.fillStyle = `rgba(255,255,255,${.85 * (1 - (tf - hitT) / .12)})`; ctx.fillRect(0, 0, 1080, 1920); }
+    if (tf > hitT && tf < hitT + .9) { const k = ease(tf, hitT, hitT + .15, back); ctx.save(); ctx.translate(560, 760); ctx.scale(k, k); ctx.rotate(.1); ctx.font = '900 150px Unb'; ctx.textAlign = 'center'; ctx.lineWidth = 20; ctx.strokeStyle = '#07060c'; ctx.strokeText('OOF!', 0, 0); ctx.fillStyle = '#ff2a3a'; ctx.fillText('OOF!', 0, 0); ctx.restore(); }
+    // HUD: портреты, полоски здоровья (белый «след» отстаёт), таймер, шкала ТЕНИ
+    ctx.save(); ctx.translate(0, lerp(-300, 0, inK));
+    const sHP = tf > hitT ? lerp(1, .22, ease(tf, hitT, hitT + .2)) : 1, sGhost = tf > hitT ? lerp(1, .22, ease(tf, hitT + .5, hitT + 1.1)) : 1;
+    const eHP = tf > F1 ? 1 - .02 * ease(tf, F1, E3) : 1, eGhost = eHP;
+    const bar = (x, dir, hp, ghost, name, col) => { const w = 400, y = 150; ctx.save(); ctx.fillStyle = 'rgba(7,6,12,.85)'; ctx.beginPath(); ctx.moveTo(x - dir * 10, y - 10); ctx.lineTo(x + dir * (w + 30), y - 10); ctx.lineTo(x + dir * (w + 10), y + 52); ctx.lineTo(x - dir * 10, y + 52); ctx.fill();
+      const fill = (k, c) => { ctx.fillStyle = c; ctx.fillRect(dir > 0 ? x : x - w * k, y, w * k, 42); }; fill(ghost, '#fff'); const gr = ctx.createLinearGradient(0, y, 0, y + 42); gr.addColorStop(0, col); gr.addColorStop(1, '#b8402a'); fill(hp, hp < .3 && Math.sin(tf * 20) > 0 ? '#ff2a3a' : gr);
+      ctx.fillStyle = 'rgba(7,6,12,.85)'; ctx.fillRect(dir > 0 ? x : x - w, y + 64, w, 22); const sh = name.startsWith('SAM') ? ease(tf, F3 + .5, F3 + 1.1) : .55; const sg = ctx.createLinearGradient(0, 0, 1080, 0); sg.addColorStop(0, '#8a4aff'); sg.addColorStop(1, '#e070ff'); ctx.fillStyle = sg; ctx.fillRect(dir > 0 ? x : x - w * sh, y + 67, w * sh, 16);
+      if (name.startsWith('SAM') && sh > .99) { ctx.font = '800 26px Unb'; ctx.fillStyle = Math.sin(tf * 16) > 0 ? '#fff' : '#e070ff'; ctx.textAlign = 'left'; ctx.fillText('SHADOW POWER READY', x, y + 122); }
+      ctx.font = '800 30px Unb'; ctx.fillStyle = '#fff'; ctx.textAlign = dir > 0 ? 'left' : 'right'; ctx.fillText(name, x, y - 22); ctx.restore(); };
+    bar(150, 1, sHP, sGhost, "SAM'S SHADOW", '#ffd36a'); bar(930, -1, eHP, eGhost, "BRAD'S SHADOW", '#ffd36a');
+    // портреты: цилиндр / кок
+    ctx.fillStyle = '#07060c'; ctx.beginPath(); ctx.arc(80, 176, 62, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(1000, 176, 62, 0, 7); ctx.fill(); ctx.strokeStyle = '#ffd36a'; ctx.lineWidth = 5; [80, 1000].forEach(x => { ctx.beginPath(); ctx.arc(x, 176, 62, 0, 7); ctx.stroke(); });
+    ctx.fillStyle = '#ff8a3a'; ctx.beginPath(); ctx.arc(80, 196, 26, 0, 7); ctx.fill(); ctx.fillRect(54, 160, 52, 6); ctx.fillRect(64, 124, 32, 38); ctx.beginPath(); ctx.arc(1000, 196, 28, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(1006, 166, 28, 14, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#ff3030'; [990, 1012].forEach(x => { ctx.fillRect(x - 7, 192, 14, 5); }); ctx.fillStyle = '#fff'; [70, 92].forEach(x => { ctx.fillRect(x - 6, 192, 12, 5); });
+    ctx.fillStyle = 'rgba(7,6,12,.9)'; ctx.beginPath(); ctx.arc(540, 172, 52, 0, 7); ctx.fill(); ctx.font = '900 54px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.fillText(String(Math.max(0, 99 - Math.floor(Math.max(0, tf - A2) * 1.5))), 540, 192);
     ctx.restore();
-    if (t > 2.8) { ctx.save(); ctx.globalAlpha = ease(t, 2.8, 3.1); ctx.fillStyle = 'rgba(0,0,0,.65)'; ctx.fillRect(0, 1560, 1080, 360); ctx.restore();
-      narr(t, 2.8, 99, 'FINAL EPISODE · tomorrow', { y: 1640, size: 46, n: 30 }); narr(t, 3.2, 99, 'Team Shadow or Team Ex?', { y: 1760, size: 54, n: 26, accent: ['shadow', 'ex?'] }); } };
+    // ROUND 1 / FIGHT!
+    const a1 = lt('an1'); if (t > a1 - .1 && t < A2) { const k = ease(t, a1 - .1, a1 + .1, back); ctx.save(); ctx.translate(540, 900); ctx.scale(k, k); ctx.textAlign = 'center'; ctx.font = '900 130px Unb'; ctx.lineWidth = 18; ctx.strokeStyle = '#07060c'; ctx.strokeText('ROUND 1', 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText('ROUND 1', 0, 0); ctx.restore(); }
+    if (t > A2 - .05 && t < A2 + .9) { const k = ease(t, A2 - .05, A2 + .12, back), sx2 = (h1(Math.floor(t * 30)) - .5) * 30 * (1 - ease(t, A2, A2 + .4)); ctx.save(); ctx.translate(540 + sx2, 900); ctx.scale(k * 1.15, k * 1.15); ctx.rotate(-.06); ctx.textAlign = 'center'; ctx.font = '900 170px Unb'; ctx.lineWidth = 22; ctx.strokeStyle = '#07060c'; ctx.strokeText('FIGHT!', 0, 0); ctx.fillStyle = '#ff2a3a'; ctx.fillText('FIGHT!', 0, 0); ctx.restore(); }
+    // финал: столкновение → стоп-кадр
+    if (t > F5) { const k = t - F5;
+      if (k > .1) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = `sepia(.8) saturate(1.6) hue-rotate(-20deg) contrast(1.25)`; ctx.globalAlpha = ease(t, F5 + .1, F5 + .4); ctx.drawImage(OUTC, 0, 0); ctx.restore(); }
+      if (k < .14) { ctx.fillStyle = `rgba(255,255,255,${1 - k / .14})`; ctx.fillRect(0, 0, 1080, 1920); }
+      const p = wpos(shade.aR.hand); const [x, y] = toScreen(p.x + .25, p.y, p.z); ctx.save(); ctx.globalAlpha = ease(t, F5, F5 + .1); ctx.strokeStyle = '#fff'; ctx.lineWidth = 10; for (let r = 0; r < 12; r++) { const a = r / 12 * 6.28; ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * 40, y + Math.sin(a) * 40); ctx.lineTo(x + Math.cos(a) * 170, y + Math.sin(a) * 170); ctx.stroke(); } ctx.restore();
+      const tb = ease(t, F5 + .45, F5 + .75, back); ctx.save(); ctx.translate(lerp(1300, 600, tb), 1240); ctx.fillStyle = '#07060c'; ctx.beginPath(); ctx.moveTo(-430, -60); ctx.lineTo(330, -60); ctx.lineTo(430, 0); ctx.lineTo(330, 60); ctx.lineTo(-430, 60); ctx.fill(); ctx.font = '900 52px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd36a'; ctx.fillText('TO BE CONTINUED', -40, 18); ctx.restore();
+      if (t > F5 + .9) { ctx.save(); ctx.globalAlpha = ease(t, F5 + .9, F5 + 1.2); ctx.fillStyle = 'rgba(7,6,12,.72)'; ctx.fillRect(0, 1380, 1080, 540); ctx.restore();
+        narr(t, F5 + .9, 99, 'FINAL EPISODE · tomorrow', { y: 1470, size: 50, n: 30 }); narr(t, F5 + 1.3, 99, 'Team Shadow or Team Brad?', { y: 1600, size: 52, n: 26, accent: ['shadow', 'brad?'] }); narr(t, F5 + 1.9, 99, 'Comment below', { y: 1730, size: 48, n: 20, accent: ['comment'] }); } }
+    drawLines(T, { an1: { hide: true }, an2: { hide: true }, ex3: { y: 1500, size: 76, n: 16 } }); };
 };
 
 // ---- монтаж ----

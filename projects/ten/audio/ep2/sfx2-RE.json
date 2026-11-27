@@ -44,104 +44,524 @@
 "gain": 0.25
 },
 {
-"t": 7.2,
+"t": 7,
+"type": "lib",
+"id": "oc-AMBForst_Night_LOOP_01",
+"gain": 0.22,
+"dur": 23.26,
+"align": "start"
+},
+{
+"t": 7.5,
+"type": "lib",
+"id": "oc-VEHCar_CarEngineSlow_LOOP_01",
+"gain": 0.55,
+"dur": 7.24,
+"align": "start"
+},
+{
+"t": 8.6,
+"type": "lib",
+"id": "bsb-tires-screech",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 9.3,
+"type": "lib",
+"id": "oc-MACHInd_Hydraulic_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 9.42,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.45
+},
+{
+"t": 9.57,
+"type": "lib",
+"id": "oc-MACHInd_Hydraulic_OS_01",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 9.69,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.35
+},
+{
+"t": 9.8,
+"type": "lib",
+"id": "oc-MACHInd_Hydraulic_OS_01",
+"gain": 0.25,
+"align": "start"
+},
+{
+"t": 9.92,
+"type": "lib",
+"id": "impact-light-soft",
+"gain": 0.25
+},
+{
+"t": 7.85,
+"type": "lib",
+"id": "mechanical-switch-heavy",
+"gain": 0.5
+},
+{
+"t": 7.9,
+"type": "lib",
+"id": "shimmer-long-soft",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 14.436,
+"type": "lib",
+"id": "oc-VEHDoor_CarDoorOpen_OS_01",
+"gain": 0.8,
+"align": "start"
+},
+{
+"t": 14.936,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.9,
+"align": "start"
+},
+{
+"t": 14.956,
+"type": "lib",
+"id": "impact-deep-soft",
+"gain": 0.5
+},
+{
+"t": 15.586,
+"type": "lib",
+"id": "foley-fabric-slide",
+"gain": 0.5
+},
+{
+"t": 15.986,
+"type": "lib",
+"id": "cinematic-slam-big",
+"gain": 0.85,
+"align": "start"
+},
+{
+"t": 16.086,
+"type": "lib",
+"id": "whoosh-fast-hard",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 16.336,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.5
+},
+{
+"t": 16.586,
+"type": "lib",
+"id": "click-clap-firm",
+"gain": 0.45
+},
+{
+"t": 17.636,
+"type": "lib",
+"id": "oc-VEHDoor_CarDoorClose_OS_01",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 17.686,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 17.986,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 18.286,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 18.586,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 17.786,
+"type": "lib",
+"id": "transform-stretch",
+"gain": 0.6,
+"align": "start",
+"rate": 0.7
+},
+{
+"t": 17.886,
+"type": "lib",
+"id": "reverse-whoosh-long-strong",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 19.086,
+"type": "lib",
+"id": "oc-GOREBone_SkullCracking_OS_01",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 19.436,
+"type": "lib",
+"id": "oc-GOREBone_SkullCracking_OS_02",
+"gain": 0.35,
+"align": "start"
+},
+{
+"t": 19.186,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 19.436,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 19.686,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 19.936,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 20.186,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.12,
+"align": "start",
+"rate": 1.4
+},
+{
+"t": 18.9,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 22.4,
+"type": "lib",
+"id": "transform-stretch",
+"gain": 0.5,
+"align": "start",
+"rate": 1.3
+},
+{
+"t": 22.6,
+"type": "lib",
+"id": "shimmer-long-sparkle",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 22.7,
+"type": "lib",
+"id": "digital-interference",
+"gain": 0.2
+},
+{
+"t": 24.9,
+"type": "lib",
+"id": "whoosh-fast-medium",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 25.55,
+"type": "lib",
+"id": "foley-fabric-touch",
+"gain": 0.6
+},
+{
+"t": 28.077,
+"type": "lib",
+"id": "oc-GOREBone_SkullCracking_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 28.477,
+"type": "lib",
+"id": "oc-GOREBone_SkullCracking_OS_02",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 27.927,
+"type": "lib",
+"id": "digital-power-up",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 30.057,
+"type": "lib",
+"id": "whoosh-slow-soft",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 30.307,
+"type": "lib",
+"id": "impact-deep-hard",
+"gain": 0.6
+},
+{
+"t": 31.857,
+"type": "lib",
+"id": "cinematic-slam-big",
+"gain": 0.7,
+"align": "start"
+},
+{
+"t": 33.057,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 33.357,
+"type": "lib",
+"id": "whoosh-medium-hard",
+"gain": 0.7,
+"align": "start"
+},
+{
+"t": 33.377,
+"type": "lib",
+"id": "reverse-whoosh-medium-strong",
+"gain": 0.3,
+"align": "start"
+},
+{
+"t": 34.007,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_01",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 34.15,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_02",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 34.293,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_03",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 34.436,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_04",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 34.578,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_05",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 34.721,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_01",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 34.864,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_02",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 35.007,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_03",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 35.15,
+"type": "lib",
+"id": "oc-FGHTImpt_Kick_OS_04",
+"gain": 0.38,
+"align": "start",
+"rate": 1.25
+},
+{
+"t": 36.788,
+"type": "lib",
+"id": "whoosh-medium-hard",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 37.088,
+"type": "lib",
+"id": "oc-FGHTImpt_PunchHardest_OS_01",
+"gain": 0.95,
+"align": "start"
+},
+{
+"t": 37.088,
+"type": "lib",
+"id": "impact-deep-hard",
+"gain": 0.7
+},
+{
+"t": 37.138,
+"type": "lib",
+"id": "faller-1s-strong",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 37.688,
+"type": "lib",
+"id": "impact-heavy-firm",
+"gain": 0.7
+},
+{
+"t": 37.708,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
+"gain": 0.6,
+"align": "start"
+},
+{
+"t": 38.538,
+"type": "lib",
+"id": "digital-power-up",
+"gain": 0.55,
+"align": "start"
+},
+{
+"t": 38.938,
+"type": "lib",
+"id": "oc-UIMisc_Powerup_OS_01",
+"gain": 0.45,
+"align": "start"
+},
+{
+"t": 39.188,
+"type": "lib",
+"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 39.288,
+"type": "lib",
+"id": "reverse-whoosh-long-strong",
+"gain": 0.5,
+"align": "start"
+},
+{
+"t": 39.388,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 7.5,
+"t": 40.138,
 "type": "lib",
-"id": "oc-AMBUrbn_CityEuroDaytime_LOOP_01",
-"gain": 0.0,
-"dur": 0.1
+"id": "oc-FGHTImpt_PunchHarder_OS_01",
+"gain": 0.9,
+"align": "start"
 },
 {
-"t": 7.3,
+"t": 40.138,
 "type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
+"id": "cinematic-slam-big",
+"gain": 0.9,
+"align": "start"
 },
 {
-"t": 7.58,
+"t": 40.188,
 "type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
+"id": "bsb-ice-crack-1",
+"gain": 0.45,
+"align": "start"
 },
 {
-"t": 7.86,
+"t": 40.588,
 "type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
-},
-{
-"t": 8.14,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
-},
-{
-"t": 8.42,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
-},
-{
-"t": 8.7,
-"type": "lib",
-"id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
-"gain": 0.0
-},
-{
-"t": 9.0,
-"type": "lib",
-"id": "impact-heavy-soft",
-"gain": 0.5
-},
-{
-"t": 9.6,
-"type": "lib",
-"id": "oc-DOORGlas_GlassDoorOpen_OS_01",
+"id": "whoosh-fast-hard",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 10.0,
-"type": "lib",
-"id": "transform-stretch",
-"gain": 0.6,
-"align": "start"
-},
-{
-"t": 11.3,
-"type": "lib",
-"id": "impact-deep-hard",
-"gain": 0.7
-},
-{
-"t": 15.2,
+"t": 41.038,
 "type": "lib",
 "id": "pop-large-in",
-"gain": 0.5
+"gain": 0.4
 },
 {
-"t": 16.785,
+"t": 41.438,
 "type": "lib",
-"id": "impact-deep-hard",
-"gain": 0.8
-},
-{
-"t": 17.885,
-"type": "lib",
-"id": "impact-heavy-firm",
-"gain": 0.7
-},
-{
-"t": 18.885,
-"type": "lib",
-"id": "cinematic-slam-big",
-"gain": 0.8,
-"align": "start"
+"id": "pop-large-in",
+"gain": 0.35
 }
 ]

@@ -103,11 +103,35 @@ def variants():
         amb('XP', 'XP', "oc-AMBHome_RoomTone_LOOP_01", .3); lib(AT['mp1'] - .8, "props-doorbell", .0); lib(AT['sp1'] + .6, "shimmer-long-soft", .3, align="start"); lib(AT['sp1'] + .6, "time-clock-fast", .3, align="start")
         lib(ST['KP'] - .4, "whoosh-slow-soft", .6, align="start")
     if PART in ('Q', 'R', 'QE', 'RE'):
-        t0 = ST['XQ']; lib(t0 + .2, "whoosh-slow-soft", .5, align="start"); lib(t0 + .5, "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .0, dur=.1)
-        for k in range(6): lib(t0 + .3 + k * .28, "oc-FEETHmn_ShoeConcreteLand_OS_01", .0)
-        lib(t0 + 2.0, "impact-heavy-soft", .5); lib(t0 + 2.6, "oc-DOORGlas_GlassDoorOpen_OS_01", .5, align="start"); lib(t0 + 3.0, "transform-stretch", .6, align="start")
-        lib(t0 + 4.3, "impact-deep-hard", .7); lib(AT['sh1'] + .4, "pop-large-in", .5)
-        k0 = ST['KQ']; lib(k0 + .1, "impact-deep-hard", .8); lib(k0 + 1.2, "impact-heavy-firm", .7); lib(k0 + 2.2, "cinematic-slam-big", .8, align="start")
+        t0 = ST['XQ']; DO = AT['ms2'] + D['ms2'] + .25; BS = DO + .45; FZ0 = BS + 1.1; FZ1 = FZ0 + 1.7; G1 = FZ1 + 1.3; SH = AT['sh1']; S2 = AT['sh2']
+        amb('XQ', 'XQ', "oc-AMBForst_Night_LOOP_01", .22)
+        lib(t0 + .5, "oc-VEHCar_CarEngineSlow_LOOP_01", .55, dur=round(DO - t0 - .2, 2), align="start"); lib(t0 + 1.6, "bsb-tires-screech", .45, align="start")
+        for i, dt in enumerate([0, .27, .5]): lib(t0 + 2.3 + dt, "oc-MACHInd_Hydraulic_OS_01", .45 - i * .1, align="start"); lib(t0 + 2.42 + dt, "impact-light-soft", .45 - i * .1)
+        lib(t0 + .85, "mechanical-switch-heavy", .5); lib(t0 + .9, "shimmer-long-soft", .3, align="start")
+        lib(DO, "oc-VEHDoor_CarDoorOpen_OS_01", .8, align="start")
+        lib(BS + .05, "oc-FEETHmn_ShoeConcreteLand_OS_01", .9, align="start"); lib(BS + .07, "impact-deep-soft", .5); lib(BS + .7, "foley-fabric-slide", .5)
+        lib(FZ0, "cinematic-slam-big", .85, align="start"); lib(FZ0 + .1, "whoosh-fast-hard", .6, align="start"); lib(FZ0 + .35, "impact-heavy-firm", .5); lib(FZ0 + .6, "click-clap-firm", .45)
+        lib(FZ1 - .05, "oc-VEHDoor_CarDoorClose_OS_01", .6, align="start")
+        for i in range(4): lib(FZ1 + i * .3, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .45, align="start")
+        lib(FZ1 + .1, "transform-stretch", .6, align="start", rate=.7); lib(FZ1 + .2, "reverse-whoosh-long-strong", .4, align="start")
+        lib(G1 + .1, "oc-GOREBone_SkullCracking_OS_01", .35, align="start"); lib(G1 + .45, "oc-GOREBone_SkullCracking_OS_02", .35, align="start")
+        for i in range(5): lib(G1 + .2 + i * .25, "oc-FEETHmn_ShoeConcreteLand_OS_02", .12, align="start", rate=1.4)
+        lib(AT['sb2'] - .1, "whoosh-fast-soft", .4, align="start")
+        lib(AT['ex2'] + .2, "transform-stretch", .5, align="start", rate=1.3); lib(AT['ex2'] + .4, "shimmer-long-sparkle", .45, align="start"); lib(AT['ex2'] + .5, "digital-interference", .2)
+        lib(SH + .5, "whoosh-fast-medium", .55, align="start"); lib(SH + 1.15, "foley-fabric-touch", .6)
+        lib(S2 + .45, "oc-GOREBone_SkullCracking_OS_01", .45, align="start"); lib(S2 + .85, "oc-GOREBone_SkullCracking_OS_02", .45, align="start"); lib(S2 + .3, "digital-power-up", .4, align="start")
+        k0 = ST['KQ']; A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F0 = E3 - 2.2; F1 = E3 - 1.25; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; F4 = F3 + 1.25; F5 = F4 + .95
+        lib(k0 - .2, "whoosh-slow-soft", .6, align="start"); lib(k0 + .05, "impact-deep-hard", .6)
+        lib(A2, "cinematic-slam-big", .7, align="start")
+        lib(F0, "oc-FEETHmn_ShoeConcreteLand_OS_01", .5, align="start"); lib(F0 + .3, "whoosh-medium-hard", .7, align="start"); lib(F0 + .32, "reverse-whoosh-medium-strong", .3, align="start")
+        n = 0; t = F1
+        while t < E3 - .1: lib(t, "oc-FGHTImpt_Kick_OS_0%d" % (1 + n % 5), .38, align="start", rate=1.25); n += 1; t += 1 / 7
+        lib(F2, "whoosh-medium-hard", .6, align="start"); lib(HIT, "oc-FGHTImpt_PunchHardest_OS_01", .95, align="start"); lib(HIT, "impact-deep-hard", .7)
+        lib(HIT + .05, "faller-1s-strong", .4, align="start"); lib(HIT + .6, "impact-heavy-firm", .7); lib(HIT + .62, "oc-FEETHmn_ShoeConcreteLand_OS_02", .6, align="start")
+        lib(F3 + .6, "digital-power-up", .55, align="start"); lib(F3 + 1.0, "oc-UIMisc_Powerup_OS_01", .45, align="start")
+        lib(F4, "oc-FEETHmn_ShoeConcreteLand_OS_01", .5, align="start"); lib(F4 + .1, "reverse-whoosh-long-strong", .5, align="start"); lib(F4 + .2, "whoosh-slow-soft", .5, align="start")
+        lib(F5, "oc-FGHTImpt_PunchHarder_OS_01", .9, align="start"); lib(F5, "cinematic-slam-big", .9, align="start"); lib(F5 + .05, "bsb-ice-crack-1", .45, align="start")
+        lib(F5 + .45, "whoosh-fast-hard", .5, align="start"); lib(F5 + .9, "pop-large-in", .4); lib(F5 + 1.3, "pop-large-in", .35)
     if PART in ('N', 'O', 'P', 'Q', 'R', 'QE', 'RE'):
         json.dump(C, open(os.path.join(R0, 'sfx2-%s.json' % PART), 'w'), indent=0); return
     if PART == 'D': lib(AT['wf1'] - .3, "whoosh-fast-soft", .45, align="start")

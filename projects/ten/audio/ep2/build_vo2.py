@@ -11,6 +11,7 @@ FX = {'senya_en': "highpass=f=90,equalizer=f=3200:t=q:w=1:g=2,acompressor=thresh
       'mshadow_en': "highpass=f=120,equalizer=f=3000:t=q:w=1:g=3,acompressor=threshold=-22dB:ratio=4:makeup=5,volume=5dB,alimiter=limit=0.95",
       'dude_en': "highpass=f=60,equalizer=f=150:t=q:w=1:g=3,acompressor=threshold=-20dB:ratio=3:makeup=3",
       'ex_en': "highpass=f=55,equalizer=f=140:t=q:w=1:g=4,acompressor=threshold=-22dB:ratio=4:makeup=4",
+      'ann_en': "highpass=f=60,equalizer=f=110:t=q:w=1:g=5,equalizer=f=2500:t=q:w=1:g=3,acompressor=threshold=-24dB:ratio=5:makeup=6,aecho=0.7:0.6:80|160:0.3|0.18,volume=4dB,alimiter=limit=0.95",
       'dad_en': "highpass=f=50,equalizer=f=120:t=q:w=1:g=5,acompressor=threshold=-22dB:ratio=4:makeup=4,aecho=0.6:0.4:40:0.12",
       'narrator_en': "highpass=f=60,equalizer=f=120:t=q:w=1:g=4,equalizer=f=3000:t=q:w=1:g=-2,acompressor=threshold=-22dB:ratio=4:makeup=4,aecho=0.6:0.5:60|110:0.18|0.1,atempo=1.32,volume=7dB,alimiter=limit=0.95"}
 ins, flt = [], []

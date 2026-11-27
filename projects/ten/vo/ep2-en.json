@@ -31,6 +31,10 @@
   "ex_en": {
    "instruct": "Big, cocky, deep male voice, gym bro, smug and slow, low pitch, macho swagger.",
    "ref": "Yeah, that's right. I bench three hundred. What do you bench, little guy?"
+  },
+  "ann_en": {
+   "instruct": "Hyped arcade fighting-game announcer, deep booming adult male voice, huge energy, shouting, stretched dramatic vowels, gravelly, larger than life.",
+   "ref": "Get ready for the next battle! Round two... Fight!"
   }
  },
  "lines": [
@@ -611,6 +615,66 @@
    "role": "shadow2_en",
    "text": "Without us? …How cute.",
    "say": "Without us? ...How cute."
+  },
+  {
+   "id": "mb1",
+   "role": "mia_en",
+   "text": "Oh shit. Brad.",
+   "say": "Oh shit... Brad."
+  },
+  {
+   "id": "sb1",
+   "role": "senya_en",
+   "text": "Who the fuck is Brad?",
+   "say": "Who the fuck is Brad?"
+  },
+  {
+   "id": "ms2",
+   "role": "mshadow_en",
+   "text": "My ex. His shadow's worse.",
+   "say": "My ex... His shadow's worse."
+  },
+  {
+   "id": "sb2",
+   "role": "senya_en",
+   "text": "Don't you dare run again.",
+   "say": "Don't you dare run again."
+  },
+  {
+   "id": "ex2",
+   "role": "ex_en",
+   "text": "She's coming with me.",
+   "say": "She's coming with me."
+  },
+  {
+   "id": "sb3",
+   "role": "senya_en",
+   "text": "Dude, he's twice your size!",
+   "say": "Dude, he's twice your size!"
+  },
+  {
+   "id": "sh2",
+   "role": "shadow2_en",
+   "text": "Good. More to hit.",
+   "say": "Good. ...More to hit."
+  },
+  {
+   "id": "an1",
+   "role": "ann_en",
+   "text": "Round one!",
+   "say": "Rooound one!"
+  },
+  {
+   "id": "an2",
+   "role": "ann_en",
+   "text": "FIGHT!",
+   "say": "FIGHT!"
+  },
+  {
+   "id": "ex3",
+   "role": "ex_en",
+   "text": "That tickles.",
+   "say": "Heh. ...That tickles."
   }
  ]
 }

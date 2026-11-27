@@ -155,13 +155,39 @@ def variants():
     if PART == 'P':
         t0 = sh('XP'); comic(t0, AT['mp1'] - .2, 104, .6); put(boom(.8, 1.6), AT['sp1'] - .05, .5, 0, .2); put(drone(hz('D2'), end('XP') - AT['sp1'] + 3, 1.), AT['sp1'], .5, 0, .3)
         for k in range(int((DUR - AT['sp1']) / .5)): put(tick(.6, 1700), AT['sp1'] + .6 + k * .5, .25, 0, .1)
-    if PART in ('Q', 'R', 'QE', 'RE'):  # фары → тяжёлый бит → удар на «Hands off» → гонг ROUND 1 → FIGHT!
-        t0 = sh('XQ'); put(riser(2.0, .6), t0, .3, 0, .3); put(bass(hz('E1'), 1.5), t0 + 2.0, .6, 0, .1)
-        for k in range(int((end('XQ') - t0 - 2.0) / .5)): put(kick(.9), t0 + 2.0 + k * .5, .35, 0, 0); put(hat(.7), t0 + 2.25 + k * .5, .2, .3, 0)
-        put(boom(.8, 1.6), t0 + 3.8, .5, 0, .3); put(boom(.7, 1.2), AT['ex1'] - .05, .5, 0, .2); put(riser(1.0, .6), AT['sh1'] - .2, .3, 0, .3)
-        k0 = sh('KQ'); put(boom(1.0, 1.8), k0 + .1, .6, 0, .3); put(boom(.9, 1.4), k0 + 1.2, .5, 0, .2); put(boom(1.2, 2.0), k0 + 2.2, .7, 0, .3)
-        for k in range(int((DUR - k0 - 2.2) / .25)): put(kick(.8), k0 + 2.2 + k * .25, .28, 0, 0)
-        for k, n in enumerate(['E3', 'G3', 'A3', 'B3', 'E4']): put(pluck(hz(n), .3, .9), k0 + 2.2 + k * .12, .35, 0, .1)
+    if PART in ('Q', 'R', 'QE', 'RE'):  # бас машины → тишина на двери → удар стоп-кадра → тяжёлый бит → тишина «Hold my hat» → бой (тайко-бит) → удар-стоп
+        t0 = sh('XQ'); DO = AT['ms2'] + D['ms2'] + .25; BS = DO + .45; FZ0 = BS + 1.1; FZ1 = FZ0 + 1.7; SH = AT['sh1']; S2 = AT['sh2']
+        put(drone(hz('D2'), DO - t0, 1.), t0, .35, 0, .3)
+        k = 0
+        while t0 + .6 + k * .48 < DO - .1:
+            tt = t0 + .6 + k * .48; g = min(1, .35 + k * .12); put(kick(1.0), tt, .5 * g, 0, 0); put(bass(hz('E1'), .4), tt, .45 * g, 0, .05); put(hat(.6), tt + .24, .14 * g, .3, 0); k += 1
+        put(boom(.6, 1.0), AT['mb1'] - .05, .35, 0, .2)
+        put(boom(.9, 1.6), BS, .45, 0, .3); put(riser(1.0, .6), BS + .1, .3, 0, .2)
+        put(boom(1.3, 2.4), FZ0, .75, 0, .4); put(swell(1.2, .8), FZ0 + .1, .3, 0, .4)
+        put(drone(hz('C2'), SH - FZ1, 1.), FZ1, .45, 0, .3); chord(['C3', 'Eb3', 'Gb3'], FZ1, SH - FZ1, .18, 0, 1100)
+        k = 0
+        while FZ1 + k * .6 < SH - .3:
+            tt = FZ1 + k * .6; put(kick(1.0), tt, .45, 0, 0); put(hat(.7), tt + .3, .16, .3, 0)
+            if k % 2: put(snare(.9), tt, .25, 0, .15)
+            k += 1
+        put(boom(.7, 1.2), AT['ex1'] - .05, .45, 0, .2); put(boom(.8, 1.4), AT['ex2'] - .05, .5, 0, .2); put(riser(1.4, .5), AT['ex2'] + .6, .25, 0, .2)
+        put(riser(S2 - SH - .4, .7), SH + .6, .3, 0, .3); put(boom(1.0, 2.0), S2 + .3, .6, 0, .3)
+        k0 = sh('KQ'); A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; F4 = F3 + 1.25; F5 = F4 + .95
+        put(boom(1.0, 1.8), k0 + .05, .55, 0, .3); put(boom(1.4, 2.6), A1 - .05, .55, 0, .4); put(boom(1.2, 2.0), A2, .75, 0, .3)
+        def beat(a, b_, v=1.):
+            k = 0
+            while a + k * .25 < b_:
+                tt = a + k * .25
+                if k % 4 in (0, 3): put(kick(.9), tt, .45 * v, 0, 0)
+                if k % 4 == 2: put(snare(.9), tt, .3 * v, 0, .12)
+                put(hat(.5), tt, .1 * v, .3, 0)
+                if k % 8 == 0:
+                    for j, n in enumerate(['E3', 'F3', 'E3', 'B2']): put(pluck(hz(n), .25, .9), tt + j * .25, .3 * v, -.1, .1)
+                k += 1
+        beat(A2 + .3, HIT - .05); put(drone(hz('E2'), HIT - A2, 1.), A2 + .3, .3, 0, .3)
+        put(boom(1.2, 2.2), HIT, .7, 0, .3)
+        beat(F3 + .2, F4, .8); put(riser(F5 - F3 - .3, .8), F3 + .3, .35, 0, .3)
+        put(boom(1.6, 3.0), F5, .9, 0, .5); chord(['E2', 'B2', 'E3', 'G3'], F5 + .6, DUR - F5, .2, 0, 1200)
         return
     if PART in 'NOP': return
     c = ('K' if PART in 'DEFG' else 'C') + PART; t0 = sh(c)
