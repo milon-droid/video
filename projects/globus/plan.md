@@ -25,3 +25,7 @@
 ## Подпись к посту
 It only snows when someone picks it up. ❄️ Who's waiting on your shelf?
 #snowglobe #christmas #animation #shortfilm #winter
+
+## Статус (2026-11-27)
+- Движок, сюжет (9 планов, 44,2 с), звук готовы. Черновик 720p — рендер `node render.cjs render/globus_v.mp4`, звук `python3 audio/score.py`, сведение + `tools/master.py`.
+- Ждёт фидбека пользователя.

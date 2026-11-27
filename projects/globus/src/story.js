@@ -66,7 +66,7 @@
     A.room(E.ox, 'night', t);
     A.face(E.ox, { age: 'g6', x: 540, y: 250, s: 1.15, smile: 1, mouth: k > 0 && k < 1.5 ? .6 : .25, blink: blink(t, 2), look: [-.6, .8], tilt: -.1 });
     const b = A.base(E.vx, 'LILY · 2009'); A.hands(E.vx, { kind: 'mit' });
-    A.cap(E.vx, 'Every Christmas Eve, Lily shakes it.', 930, { size: 44, a: fadeIn(u - .3) });
+    A.cap(E.vx, 'Every Christmas Eve,\nLily shakes it.', 930, { size: 44, a: fadeIn(u - .3) });
     tagYear(t);
   });
   // ============ 3. Годы (7.4–13.0): изнутри, лицо за куполом взрослеет, снеговик растёт
@@ -246,7 +246,7 @@
   // ============ 8. Снег снова (37.0–41.8)
   shot(37.0, 41.8, (t, u) => {
     const j = jolt(u, 1, 19, 1.3);
-    insideCam([-.05 + j * .03, -.3 + j * .02, .78], [-.1, -.18 + j * .05, -1], 58, j * .14);
+    insideCam([-.05 + j * .03, -.3 + j * .02, .9], [-.1, -.2 + j * .05, -1], 58, j * .14);
     E.OUTOFF = [j * 120, -30];
     E.P.room = [.75, .62, .5]; E.P.expo = 1.05;
     const cp = E.prepare();
@@ -256,7 +256,7 @@
     A.room(E.ox, 'kitchen', t);
     A.face(E.ox, { age: 'w', x: 200, y: key(u, [[0, 300], [1, 230]]), s: 1.25, smile: .9, mouth: .3, blink: blink(t, 6), look: [.4, 1] });
     A.face(E.ox, { age: 'b6', x: 530, y: key(u, [[0, 340], [1, 260]]), s: 1.35, smile: 1, mouth: .6 + .2 * Math.sin(u * 8), blink: blink(t, 5), look: [-.3, 1] });
-    A.cap(E.vx, 'It never snows in a world\nnobody picks up.', 900, { size: 48, maxW: 700, a: fadeIn(u - 1.3, .4), maxW: 620 });
+    A.cap(E.vx, 'It never snows\nin a world\nnobody picks up.', 880, { size: 50, maxW: 700, a: fadeIn(u - 1.3, .4), maxW: 620 });
   });
   // ============ 9. glean. + призыв (41.8–44.2)
   shot(41.8, DUR + .1, (t, u) => {
@@ -269,7 +269,7 @@
     const v = E.vx; A.base(v, 'LILY · 2009');
     const P = E.projG([-.48, -.3, .82]); v.save(); v.translate(P.x, P.y); v.rotate(-.5); v.fillStyle = 'rgba(245,235,200,.85)'; v.fillRect(-90, -26, 180, 52); v.restore();
     v.save(); v.globalAlpha = fadeIn(u, .3); drawBoxText(v, 'glean.', 110, 40, 500, 150, { font: z => `900 ${z}px IB`, size: 110, min: 40, color: '#fff', lines: 1 }); v.restore();
-    A.cap(v, "Who's waiting on your shelf?", 1030, { size: 46, a: fadeIn(u - .2) });
+    A.cap(v, "Who's waiting\non your shelf?", 1030, { size: 46, a: fadeIn(u - .2) });
   });
 
   window.renderFrame = function (t) {
