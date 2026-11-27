@@ -377,6 +377,60 @@
    "role": "mshadow_en",
    "text": "Morning, handsome.",
    "say": "Morning, handsome."
+  },
+  {
+   "id": "b16",
+   "role": "senya_en",
+   "text": "ANOTHER term?! Manipulation again?",
+   "say": "ANOTHER term?! ...Wow. Manipulation again?"
+  },
+  {
+   "id": "d5",
+   "role": "narrator_en",
+   "text": "Rule two: shadows touch only when their owners do.",
+   "say": "Rule two. Shadows touch... only when their owners do."
+  },
+  {
+   "id": "s8",
+   "role": "shadow2_en",
+   "text": "Nope.",
+   "say": "Nope!"
+  },
+  {
+   "id": "p3",
+   "role": "senya_en",
+   "text": "I can't. I can't do this.",
+   "say": "I can't... I can't do this!"
+  },
+  {
+   "id": "e5",
+   "role": "shadow2_en",
+   "text": "Go. GO!",
+   "say": "Go. ...GO!"
+  },
+  {
+   "id": "g6",
+   "role": "shadow2_en",
+   "text": "Touch her hand, coward!",
+   "say": "Touch her hand, you coward!"
+  },
+  {
+   "id": "k7",
+   "role": "senya_en",
+   "text": "...Wow.",
+   "say": "...Wow."
+  },
+  {
+   "id": "k6",
+   "role": "senya_en",
+   "text": "Sometimes you just need a push.",
+   "say": "Sometimes... you just need a push."
+  },
+  {
+   "id": "l3",
+   "role": "shadow2_en",
+   "text": "Sam. Kiss her. KISS HER!",
+   "say": "Sam! Kiss her! KISS HER!"
   }
  ]
 }

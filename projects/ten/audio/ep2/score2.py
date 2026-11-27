@@ -66,20 +66,20 @@ def main_music():
     # S4 правило
     put(drone(hz('D2'), SH_('S4') + .5, .8), sh('S4'), .5, 0, .3)
     for k in range(int(SH_('S4') / .5)): put(tick(.5, 1500 if k % 2 else 1900), sh('S4') + .25 + k * .5, .25, .3 if k % 2 else -.3, .1)
-    put(boom(.6, 1.6), AT['d4'], .4, 0, .3)
+    put(boom(.6, 1.6), AT['d5'] + D['d5'] + .1, .4, 0, .3)
     # SS поиск: крадущийся шаг; «THERE» — блёстки
     sneak(sh('SS'), AT['s4'], 1.0)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7']): put(celesta(hz(n)), AT['s4'] + k * .08, .25, .3, .6)
     # S1 дверь: рывок, толчок, тёплый аккорд за дверью
-    s1 = sh('S1'); PUSH = max(s1 + 2.4, AT['p2'] + .1)
-    put(swell(.5, .7), s1 + .75, .5, 0, .2); put(pluck(hz('C#3'), .3, .2), s1 + 1.2, .7, 0, .1)
+    s1 = sh('S1'); PUSH = AT['p2'] + .3
+    put(swell(.5, .7), AT['p3'] + .55, .5, 0, .2); put(pluck(hz('C#3'), .3, .2), AT['p3'] + 1.0, .7, 0, .1)
     put(riser(.8, .6), PUSH - .8, .35, 0, .3); put(boom(.5, 1.0), PUSH, .5, 0, .2)
     chord(['F3', 'A3', 'C4', 'E4'], PUSH + .3, end('S1') - PUSH + .5, .22)
     for k, n in enumerate(['C5', 'F5', 'A5', 'C6']): put(celesta(hz(n)), PUSH + .45 + k * .12, .25, .3, .5)
     # S5–S10 кафе
     KNOCK = AT['g3'] - .3
     lounge(sh('S5') + .2, KNOCK, .9)
-    put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - AT['g4'], 1.5, .1, 2200), AT['g4'], .18, 0, .4); put(riser(KNOCK - AT['g5'], .5), AT['g5'], .2, 0, .3)
+    put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - AT['g6'], 1.5, .1, 2200), AT['g6'], .18, 0, .4); put(riser(KNOCK - AT['g6'] - .3, .5), AT['g6'] + .3, .2, 0, .3)
     TOUCH = sh('S8') + 2.9
     for k in range(8): put(pluck(hz(['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'][k]), .3, .6), sh('S8') + .9 + k * .25, .25, 0, .2)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7', 'E7']): put(celesta(hz(n)), TOUCH + k * .07, .22, .4 - k * .15, .6)
@@ -90,7 +90,7 @@ def main_music():
         return s * env(len(t), .03, .06) * .5
     LOOK2 = AT['i3'] + D['i3'] + .2; WH = [('G6', .25), ('E6', .25), ('G6', .25), ('C7', .45), ('B6', .2), ('G6', .5)]
     for k, (n, d) in enumerate(WH): put(whistle(hz(n), d), LOOK2 + .45 + sum(x[1] for x in WH[:k]) * 1.05, .22, .2, .3)
-    HUG = AT['j4'] + .5
+    HUG = AT['j4'] + .6
     lounge(sh('S10') + .3, HUG, 1.0, 1)
     chord(['F3', 'C4', 'F4', 'A4', 'C5'], HUG, end('S10') - HUG + .8, .32, 0, 3000)
     for k, n in enumerate(['A5', 'C6', 'F6', 'A6']): put(celesta(hz(n)), HUG + .1 + k * .1, .22, .3, .6)
@@ -108,12 +108,9 @@ def main_music():
     chord(['D3', 'F3', 'A3', 'C4'], t0, OFF - t0 + .1, .2, 0, 1400)
     for k in range(int((OFF - (t0 + 1.2)) / .6)): put(heart(.8), t0 + 1.2 + k * max(.42, .65 - k * .04), .45, 0, .1)
     put(boom(.7, 1.4), OFF, .45, 0, .2)
-    # S13: конец основной части — мьюзик-бокс, тёплый аккорд, вопросительный щипок на «Without who?»
-    t0 = sh('S13')
-    for k, n in enumerate(['A5', 'F5', 'C5', 'F5', 'A5', 'G5', 'F5']): put(musicbox(hz(n)), t0 + .5 + k * .42, .3, .2, .6)
-    chord(['F3', 'A3', 'C4', 'E4'], t0 + .4, DUR - t0, .18, 0, 1600)
-    [put(pluck(hz(n), .4, .8), AT['m4'] + D['m4'] + .05 + k * .15, .3, 0, .2) for k, n in enumerate(['E4', 'G4', 'B4'])]
-
+    # финал: свет снова зажёгся — короткий «упс»-аккорд и щипки
+    ON = AT['l2'] + D['l2'] + .2
+    put(pluck(hz('E4'), .4, .8), ON, .35, 0, .2); put(pluck(hz('C4'), .5, .8), ON + .25, .3, 0, .2); chord(['F3', 'Ab3', 'C4'], ON, DUR - ON + .5, .2, 0, 1500)
 
 def variants():
     if PART == 'A':  # «Папа»: удар, низкие струны, бег-щипки

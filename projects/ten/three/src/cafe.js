@@ -62,9 +62,9 @@ export const cafe = (() => {
   const patch = mesh(G.plane(3.4, 2.2), new THREE.MeshBasicMaterial({ map: canvasTex(340, 220, (c) => { c.filter = 'blur(10px)'; c.fillStyle = 'rgba(255,214,150,.75)'; [[30, 20], [180, 20], [30, 115], [180, 115]].forEach(([x, y]) => c.fillRect(x, y, 135, 88)); }), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }), false, false);
   add(g, patch, .45, 1.45, WZ + .05);
   // гирлянда под потолком, неоновая вывеска, часы, большой фикус, второй столик с посетителем, витрина с тортами
-  for (let i = 0; i < 18; i++) { const x = -2.3 + i * .32, y = 3.05 - Math.sin(i / 17 * Math.PI) * .25; add(g, mesh(G.sph(.035, 8), glow(['#ffd36a', '#ff8ab8', '#9ad8ff'][i % 3], 1.6), false, false), x, y, WZ + .12); }
+  for (let i = 0; i < 18; i++) { const x = -1.2 + i * .19, y = 2.22 - Math.sin(i / 17 * Math.PI) * .12; add(g, mesh(G.sph(.035, 8), glow(['#ffd36a', '#ff8ab8', '#9ad8ff'][i % 3], 1.6), false, false), x, y, WZ + .12); }
   const neonC = canvasTex(512, 160, (c) => { c.font = '700 110px Cav'; c.textAlign = 'center'; c.shadowColor = '#ff6ab0'; c.shadowBlur = 24; c.fillStyle = '#ffd0e8'; c.fillText('Luna ☾', 256, 120); });
-  add(g, mesh(G.plane(1.3, .4), new THREE.MeshBasicMaterial({ map: neonC, transparent: true, toneMapped: false }), false, false), -.9, 2.85, WZ + .06);
+  add(g, mesh(G.plane(.9, .28), new THREE.MeshBasicMaterial({ map: neonC, transparent: true, toneMapped: false }), false, false), -.62, 1.84, WZ + .06);
   const clock = new THREE.Group(); add(clock, mesh(G.cyl(.16, .16, .03, 24), clay('#f6efe0')), 0, 0, 0); clock.children[0].rotation.x = Math.PI / 2; add(clock, mesh(G.box(.01, .1, .01), clay('#222')), 0, .04, .02); add(clock, mesh(G.box(.07, .01, .01), clay('#222')), .03, 0, .02); add(g, clock, 2.05, 2.75, WZ + .03);
   const fic = new THREE.Group(); add(fic, mesh(G.cyl(.16, .12, .3, 16), clay('#c86a4a')), 0, .15, 0); [[0, .6, 0, .22], [.12, .8, .05, .18], [-.12, .78, -.04, .18], [0, 1.0, 0, .16], [.1, .45, .1, .14]].forEach(([x, y, z, r]) => add(fic, mesh(G.sph(r, 12), clay('#3a8a5a')), x, y, z)); add(g, fic, -2.2, 0, -1.2);
   const t2 = new THREE.Group(); add(t2, mesh(G.cyl(.28, .28, .03, 24), clay('#f2ece0')), 0, .42, 0); add(t2, mesh(G.cyl(.025, .035, .4, 10), clay('#2a2a30')), 0, .2, 0); add(g, t2, -1.6, 0, .55);
