@@ -461,6 +461,12 @@
    "role": "shadow2_en",
    "text": "Closer...",
    "say": "Closer..."
+  },
+  {
+   "id": "b17",
+   "role": "senya_en",
+   "text": "Morning, Speedy. Run far last night?",
+   "say": "Morning, Speedy! ...Run far last night?"
   }
  ]
 }

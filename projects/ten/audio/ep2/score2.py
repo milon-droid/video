@@ -66,7 +66,7 @@ def main_music():
     # S4 правило
     put(drone(hz('D2'), SH_('S4') + .5, .8), sh('S4'), .5, 0, .3)
     for k in range(int(SH_('S4') / .5)): put(tick(.5, 1500 if k % 2 else 1900), sh('S4') + .25 + k * .5, .25, .3 if k % 2 else -.3, .1)
-    put(boom(.6, 1.6), AT['d5'] + D['d5'] + .1, .4, 0, .3)
+    put(boom(.6, 1.6), AT['d4'], .4, 0, .3)
     # SS поиск: крадущийся шаг; «THERE» — блёстки
     sneak(sh('SS'), AT['s4'], 1.0)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7']): put(celesta(hz(n)), AT['s4'] + k * .08, .25, .3, .6)
@@ -90,9 +90,9 @@ def main_music():
         return s * env(len(t), .03, .06) * .5
     LOOK2 = AT['i3'] + D['i3'] + .2; WH = [('G6', .25), ('E6', .25), ('G6', .25), ('C7', .45), ('B6', .2), ('G6', .5)]
     for k, (n, d) in enumerate(WH): put(whistle(hz(n), d), LOOK2 + .45 + sum(x[1] for x in WH[:k]) * 1.05, .22, .2, .3)
-    HUG = sh('S10B') + 3.7
+    HUG = sh('S10B') + 4.3
     lounge(sh('S10') + .3, HUG, 1.0, 1)
-    for k in range(4): put(swell(.25, .5), sh('S10B') + k * .75 - .1, .2, 0, .1)
+    for k in range(6): put(swell(.2, .5), sh('S10B') + k * .6 - .1, .2, 0, .1); put(kick(.8), sh('S10B') + k * .6, .3, 0, 0); put(clap(.7), sh('S10B') + k * .6 + .3, .25, .2, .1)
     chord(['F3', 'C4', 'F4', 'A4', 'C5'], HUG, end('S10B') - HUG + .8, .32, 0, 3000)
     for k, n in enumerate(['A5', 'C6', 'F6', 'A6']): put(celesta(hz(n)), HUG + .1 + k * .1, .22, .3, .6)
     # S11 тема любви, ритм на танце

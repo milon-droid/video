@@ -7,35 +7,35 @@
 "align": "start"
 },
 {
-"t": 28.182,
+"t": 30.782,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.75,
 "align": "start"
 },
 {
-"t": 32.782,
+"t": 37.766,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.75,
 "align": "start"
 },
 {
-"t": 43.982,
+"t": 48.966,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.75,
 "align": "start"
 },
 {
-"t": 85.186,
+"t": 90.77,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.75,
 "align": "start"
 },
 {
-"t": 95.686,
+"t": 101.27,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.75,
@@ -132,42 +132,42 @@
 "type": "lib",
 "id": "oc-AMBHome_RoomTone_LOOP_01",
 "gain": 0.3,
-"dur": 15.88,
+"dur": 18.48,
 "align": "start"
 },
 {
-"t": 9.5,
+"t": 12.1,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.25,
 "align": "start"
 },
 {
-"t": 15.25,
+"t": 17.85,
 "type": "lib",
 "id": "foley-paper-touch",
 "gain": 0.7
 },
 {
-"t": 15.27,
+"t": 17.87,
 "type": "lib",
 "id": "click-clap-medium",
 "gain": 0.4
 },
 {
-"t": 15.95,
+"t": 18.55,
 "type": "lib",
 "id": "impact-heavy-firm",
 "gain": 0.7
 },
 {
-"t": 15.95,
+"t": 18.55,
 "type": "lib",
 "id": "click-clap-firm",
 "gain": 0.4
 },
 {
-"t": 24.282,
+"t": 26.882,
 "type": "lib",
 "id": "oc-AMBHome_RoomTone_LOOP_01",
 "gain": 0.3,
@@ -175,32 +175,32 @@
 "align": "start"
 },
 {
-"t": 24.432,
+"t": 27.032,
 "type": "lib",
 "id": "pop-large-in",
 "gain": 0.6
 },
 {
-"t": 25.732,
+"t": 28.332,
 "type": "lib",
 "id": "whoosh-fast-medium",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 26.032,
+"t": 28.632,
 "type": "lib",
 "id": "foley-fabric-touch",
 "gain": 0.7
 },
 {
-"t": 26.042,
+"t": 28.642,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.6
 },
 {
-"t": 26.082,
+"t": 28.682,
 "type": "hiss",
 "gain": 0.45,
 "dur": 0.6,
@@ -209,32 +209,38 @@
 "pulse": 0
 },
 {
-"t": 26.432,
+"t": 29.032,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.5
 },
 {
-"t": 26.582,
+"t": 29.182,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.5
 },
 {
-"t": 28.682,
+"t": 31.282,
 "type": "lib",
 "id": "appear-flip-slow",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 32.285,
+"t": 35.549,
 "type": "lib",
 "id": "impact-heavy-firm",
-"gain": 0.5
+"gain": 0.7
 },
 {
-"t": 33.182,
+"t": 35.549,
+"type": "lib",
+"id": "click-clap-firm",
+"gain": 0.35
+},
+{
+"t": 38.166,
 "type": "lib",
 "id": "oc-AMBUrbn_CityEuroDaytime_LOOP_01",
 "gain": 0.2,
@@ -242,351 +248,382 @@
 "align": "start"
 },
 {
-"t": 33.282,
+"t": 38.266,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 33.602,
+"t": 38.586,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 33.922,
+"t": 38.906,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 34.242,
+"t": 39.226,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 34.562,
+"t": 39.546,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 34.882,
+"t": 39.866,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 35.202,
+"t": 40.186,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 35.522,
+"t": 40.506,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 35.842,
+"t": 40.826,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 36.162,
+"t": 41.146,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 36.482,
+"t": 41.466,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 36.802,
+"t": 41.786,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 37.122,
+"t": 42.106,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 37.442,
+"t": 42.426,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 37.762,
+"t": 42.746,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 38.082,
+"t": 43.066,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 38.402,
+"t": 43.386,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.18,
 "align": "start"
 },
 {
-"t": 33.982,
+"t": 39.166,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 36.682,
+"t": 41.066,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.4
 },
 {
-"t": 37.782,
+"t": 42.466,
 "type": "wah",
 "gain": 0.3
 },
 {
-"t": 39.182,
+"t": 44.166,
 "type": "lib",
 "id": "shimmer-long-sparkle",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 41.782,
+"t": 46.766,
 "type": "lib",
 "id": "foley-fabric-slide",
 "gain": 0.8
 },
 {
-"t": 41.782,
+"t": 46.766,
 "type": "lib",
 "id": "move-spring",
 "gain": 0.35,
 "rate": 1.3
 },
 {
-"t": 42.867,
+"t": 47.851,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 42.917,
+"t": 47.901,
 "type": "lib",
 "id": "impact-light-soft",
 "gain": 0.6
 },
 {
-"t": 42.967,
+"t": 47.951,
 "type": "lib",
 "id": "oc-DOORGlas_GlassDoorOpen_OS_01",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 43.017,
+"t": 48.001,
 "type": "lib",
 "id": "props-shop-bell",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 44.017,
+"t": 49.001,
 "type": "lib",
 "id": "shimmer-medium-bright",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 44.382,
+"t": 49.366,
 "type": "lib",
 "id": "oc-CRWDConv_Restaurant_LOOP_01",
 "gain": 0.15,
-"dur": 41.2,
+"dur": 41.8,
 "align": "start"
 },
 {
-"t": 38.562,
+"t": 43.546,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 44.162,
+"t": 49.146,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 75.863,
+"t": 80.847,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 85.366,
+"t": 90.95,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 76.083,
+"t": 81.067,
 "type": "lib",
-"id": "click-clap-soft",
-"gain": 0.25
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
 },
 {
-"t": 76.833,
+"t": 81.667,
 "type": "lib",
-"id": "click-clap-soft",
-"gain": 0.25
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
 },
 {
-"t": 77.583,
+"t": 82.267,
 "type": "lib",
-"id": "click-clap-soft",
-"gain": 0.25
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
 },
 {
-"t": 78.333,
+"t": 82.867,
 "type": "lib",
-"id": "click-clap-soft",
-"gain": 0.25
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
 },
 {
-"t": 44.682,
+"t": 83.467,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 84.067,
+"type": "lib",
+"id": "whoosh-fast-soft",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 82.417,
+"type": "lib",
+"id": "pop-large-bubble",
+"gain": 0.5
+},
+{
+"t": 82.467,
+"type": "lib",
+"id": "props-drip",
+"gain": 0.4,
+"align": "start"
+},
+{
+"t": 49.666,
 "type": "lib",
 "id": "oc-PAPRHndl_BookPageTurns_OS_01",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 45.082,
+"t": 50.066,
 "type": "lib",
 "id": "shimmer-long-soft",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 46.984,
+"t": 51.968,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 48.932,
+"t": 53.916,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 49.352,
+"t": 54.336,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 49.772,
+"t": 54.756,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 50.192,
+"t": 55.176,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 50.612,
+"t": 55.596,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.22,
 "align": "start"
 },
 {
-"t": 53.58,
+"t": 58.564,
 "type": "lib",
 "id": "foley-fabric-slide",
 "gain": 0.45
 },
 {
-"t": 56.582,
+"t": 61.566,
 "type": "lib",
 "id": "foley-glass-touch",
 "gain": 0.8
 },
 {
-"t": 56.882,
+"t": 61.866,
 "type": "lib",
 "id": "oc-PLASImpt_PlasticCupDrop_OS_01",
 "gain": 0.55
 },
 {
-"t": 56.902,
+"t": 61.886,
 "type": "puff",
 "gain": 0.4
 },
 {
-"t": 61.882,
+"t": 66.866,
 "type": "lib",
 "id": "shimmer-long-sparkle",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 62.232,
+"t": 67.216,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 62.282,
+"t": 67.266,
 "type": "lib",
 "id": "transform-stretch",
 "gain": 0.45,
@@ -594,93 +631,93 @@
 "rate": 1.4
 },
 {
-"t": 68.146,
+"t": 73.13,
 "type": "lib",
 "id": "whoosh-fast-soft",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 79.333,
+"t": 84.917,
 "type": "lib",
 "id": "click-clap-soft",
 "gain": 0.5
 },
 {
-"t": 79.783,
+"t": 85.367,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.6
 },
 {
-"t": 79.833,
+"t": 85.417,
 "type": "lib",
 "id": "shimmer-long-bright",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 80.083,
+"t": 85.667,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 0.8
 },
 {
-"t": 80.533,
+"t": 86.117,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 0.9500000000000001
 },
 {
-"t": 80.983,
+"t": 86.567,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 1.1
 },
 {
-"t": 81.433,
+"t": 87.017,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 0.8
 },
 {
-"t": 81.883,
+"t": 87.467,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 0.9500000000000001
 },
 {
-"t": 82.333,
+"t": 87.917,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.35,
 "rate": 1.1
 },
 {
-"t": 82.683,
+"t": 88.267,
 "type": "lib",
 "id": "oc-METLImpt_MetalObjDrop_OS_01",
 "gain": 0.75
 },
 {
-"t": 82.733,
+"t": 88.317,
 "type": "lib",
 "id": "foley-glass-touch",
 "gain": 0.6
 },
 {
-"t": 82.833,
+"t": 88.417,
 "type": "lib",
 "id": "oc-PLASImpt_PlasticCupDrop_OS_01",
 "gain": 0.5
 },
 {
-"t": 85.586,
+"t": 91.17,
 "type": "lib",
 "id": "oc-AMBForst_ForestBirds_OS_02",
 "gain": 0.22,
@@ -688,160 +725,160 @@
 "align": "start"
 },
 {
-"t": 85.786,
+"t": 91.37,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 86.336,
+"t": 91.92,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 86.886,
+"t": 92.47,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 87.436,
+"t": 93.02,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 87.986,
+"t": 93.57,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 88.536,
+"t": 94.12,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 89.086,
+"t": 94.67,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 89.636,
+"t": 95.22,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 90.186,
+"t": 95.77,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 90.736,
+"t": 96.32,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 91.286,
+"t": 96.87,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 91.836,
+"t": 97.42,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 92.386,
+"t": 97.97,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 92.936,
+"t": 98.52,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 93.486,
+"t": 99.07,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 94.036,
+"t": 99.62,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 94.586,
+"t": 100.17,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 95.136,
+"t": 100.72,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 95.686,
+"t": 101.27,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.12,
 "align": "start"
 },
 {
-"t": 87.186,
+"t": 92.77,
 "type": "lib",
 "id": "whoosh-medium-soft",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 90.786,
+"t": 96.37,
 "type": "lib",
 "id": "pop-large-bubble",
 "gain": 0.5
 },
 {
-"t": 90.836,
+"t": 96.42,
 "type": "lib",
 "id": "shimmer-long-soft",
 "gain": 0.35,
 "align": "start"
 },
 {
-"t": 96.086,
+"t": 101.67,
 "type": "lib",
 "id": "oc-AMBForst_Night_LOOP_01",
 "gain": 0.28,
@@ -849,55 +886,55 @@
 "align": "start"
 },
 {
-"t": 99.336,
+"t": 104.92,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.4
 },
 {
-"t": 99.456,
+"t": 105.04,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.4
 },
 {
-"t": 99.576,
+"t": 105.16,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.4
 },
 {
-"t": 99.696,
+"t": 105.28,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.4
 },
 {
-"t": 99.836,
+"t": 105.42,
 "type": "lib",
 "id": "mechanical-switch-heavy",
 "gain": 0.7
 },
 {
-"t": 99.856,
+"t": 105.44,
 "type": "lib",
 "id": "digital-interference",
 "gain": 0.25
 },
 {
-"t": 102.096,
+"t": 107.68,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.45
 },
 {
-"t": 102.196,
+"t": 107.78,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.45
 },
 {
-"t": 102.296,
+"t": 107.88,
 "type": "lib",
 "id": "mechanical-switch-light",
 "gain": 0.45

@@ -28,7 +28,7 @@ def main_sfx():
     lib(c + .15, "pop-large-in", .6); lib(c + 1.45, "whoosh-fast-medium", .6, align="start"); lib(c + 1.75, "foley-fabric-touch", .7); lib(c + 1.76, "impact-light-soft", .6)
     syn(c + 1.8, "hiss", .45, dur=.6, lo=2500, hi=8000, pulse=0); lib(c + 2.15, "impact-light-soft", .5); lib(c + 2.3, "pop-large-bubble", .5)
     # S4 правило
-    lib(ST['S4'] + .1, "appear-flip-slow", .5, align="start"); lib(AT['d5'] + D['d5'], "impact-heavy-firm", .5)
+    lib(ST['S4'] + .1, "appear-flip-slow", .5, align="start"); lib(AT['d4'], "impact-heavy-firm", .7); lib(AT['d4'], "click-clap-firm", .35)
     # SS поиск: улица, быстрые шаги, кот, «нашёл»
     amb('SS', 'S1', "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .2)
     for i in range(int(SH['SS'] / .32)): lib(ST['SS'] + .1 + i * .32, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .18, align="start")
@@ -41,7 +41,8 @@ def main_sfx():
     # кафе
     amb('S5', 'S10B', "oc-CRWDConv_Restaurant_LOOP_01", .15)
     for k in ('S1', 'S5', 'S10B', 'S11'): lib(ST[k] - .22, "whoosh-fast-hard", .55, align="start")
-    for k in range(4): lib(ST['S10B'] + k * .75, "click-clap-soft", .25)
+    for k in range(6): lib(ST['S10B'] + k * .6, "whoosh-fast-soft", .4, align="start")
+    lib(ST['S10B'] + 1.35, "pop-large-bubble", .5); lib(ST['S10B'] + 1.4, "props-drip", .4, align="start")
     lib(ST['S5'] + .3, "oc-PAPRHndl_BookPageTurns_OS_01", .3, align="start"); lib(ST['S5'] + .7, "shimmer-long-soft", .3, align="start")
     lib(AT['e5'], "whoosh-fast-soft", .45, align="start")
     for i in range(5): lib(ST['S6'] + .15 + i * .42, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .22, align="start")
@@ -49,7 +50,7 @@ def main_sfx():
     K = AT['g3'] - .3; lib(K, "foley-glass-touch", .8); lib(K + .3, "oc-PLASImpt_PlasticCupDrop_OS_01", .55); syn(K + .32, "puff", .4)
     TOUCH = ST['S8'] + 2.9; lib(TOUCH, "shimmer-long-sparkle", .55, align="start"); lib(TOUCH + .35, "whoosh-fast-soft", .5, align="start"); lib(TOUCH + .4, "transform-stretch", .45, align="start", rate=1.4)
     LOOK2 = AT['i3'] + D['i3'] + .2; lib(LOOK2, "whoosh-fast-soft", .45, align="start")
-    SHAKE = ST['S10B'] + 3.25; KISS = SHAKE + .45; DROP = KISS + .6 + 1.6 + .4
+    SHAKE = ST['S10B'] + 3.85; KISS = SHAKE + .45; DROP = KISS + .6 + 1.6 + .4
     lib(SHAKE, "click-clap-soft", .5); lib(KISS, "pop-large-bubble", .6); lib(KISS + .05, "shimmer-long-bright", .45, align="start")
     for i in range(6): lib(KISS + .3 + i * .45, "pop-large-bubble", .35, rate=.8 + (i % 3) * .15)
     lib(DROP + .3, "oc-METLImpt_MetalObjDrop_OS_01", .75); lib(DROP + .35, "foley-glass-touch", .6); lib(DROP + .45, "oc-PLASImpt_PlasticCupDrop_OS_01", .5)
