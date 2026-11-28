@@ -35,6 +35,10 @@
   "ann_en": {
    "instruct": "Hyped arcade fighting-game announcer, deep booming adult male voice, huge energy, shouting, stretched dramatic vowels, gravelly, larger than life.",
    "ref": "Get ready for the next battle! Round two... Fight!"
+  },
+  "shmacho_en": {
+   "instruct": "Extremely deep, low, gravelly macho male voice, slow and smooth, exaggerated cheesy seductive tone like a romance-novel hunk, heavy bass, breathy, confident.",
+   "ref": "Well, hello there. Didn't see you come in. ...I'm all yours tonight."
   }
  },
  "lines": [
@@ -492,9 +496,9 @@
   },
   {
    "id": "s9",
-   "role": "shadow2_en",
+   "role": "shmacho_en",
    "text": "Hey, gorgeous…",
-   "say": "Heyyy... gorgeous!"
+   "say": "Heyyy... gorgeous."
   },
   {
    "id": "s10",
@@ -681,6 +685,30 @@
    "role": "shadow2_en",
    "text": "Oops.",
    "say": "Oops."
+  },
+  {
+   "id": "s11",
+   "role": "shadow2_en",
+   "text": "…Oh fuck.",
+   "say": "... Oh. Fuck."
+  },
+  {
+   "id": "lg1",
+   "role": "shadow2_en",
+   "text": "Let her go.",
+   "say": "Let. Her. Go."
+  },
+  {
+   "id": "ex4",
+   "role": "ex_en",
+   "text": "Or what, little guy?",
+   "say": "Heh. Or what... little guy?"
+  },
+  {
+   "id": "sh3",
+   "role": "shadow2_en",
+   "text": "Or this.",
+   "say": "Or... this."
   }
  ]
 }

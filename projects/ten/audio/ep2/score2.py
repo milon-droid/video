@@ -77,7 +77,7 @@ def main_music():
     pass  # правило убрано: for k in range(int(SH_('S4') / .5)): put
     pass  # правило убрано: put(boom(.6, 1.6), AT['d4'], .4, 0, .3)
     # SS поиск: крадущийся шаг; «THERE» — блёстки
-    sneak(sh('SS'), AT['s4'], 1.0)
+    sneak(AT['s10'] - .1, AT['s4'], 1.0)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7']): put(celesta(hz(n)), AT['s4'] + k * .08, .25, .3, .6)
     # S1 дверь: рывок, толчок, тёплый аккорд за дверью
     s1 = sh('S1'); PUSH = AT['p2'] + .3
@@ -85,7 +85,12 @@ def main_music():
     put(riser(.8, .6), PUSH - .8, .35, 0, .3); put(boom(.5, 1.0), PUSH, .5, 0, .2)
     chord(['F3', 'A3', 'C4', 'E4'], PUSH + .3, end('S1') - PUSH + .5, .22)
     for k, n in enumerate(['C5', 'F5', 'A5', 'C6']): put(celesta(hz(n)), PUSH + .45 + k * .12, .25, .3, .5)
-    AWK = AT['s6'] + D['s6'] + .1
+    AWK = AT['s6'] + D['s6'] + .1; R0 = sh('SS'); SCR = AT['s6'] - .4
+    chord(['F3', 'A3', 'C4', 'E4'], R0, SCR - R0, .26, 0, 2600)
+    for k, n in enumerate(['A5', 'C6', 'E6', 'F6', 'E6', 'C6', 'A5', 'C6']):
+        if R0 + .3 + k * .4 < SCR - .1: put(celesta(hz(n)), R0 + .3 + k * .4, .26, .2, .6)
+    sw = int(SR * .5); tt = np.arange(sw) / SR; fr = 900 * np.exp(-tt * 5) + 120; ph = 2 * np.pi * np.cumsum(fr) / SR
+    scr = (np.sign(np.sin(ph)) * .5 + rng.standard_normal(sw) * .5) * np.exp(-tt * 3) * (1 - np.exp(-tt * 80)); put(scr, SCR, .35, 0, .05)
     put(cricket(1.9), AWK, .35, .4, .3); put(whist([hz("G5"), hz("E5"), hz("G5"), hz("C6")]), AWK + .65, .3, -.2, .3)
     # S5–S10 кафе
     KNOCK = AT['g9'] - .15
@@ -168,7 +173,7 @@ def variants():
         t0 = sh('XP'); comic(t0, AT['mp1'] - .2, 104, .6); put(boom(.8, 1.6), AT['sp1'] - .05, .5, 0, .2); put(drone(hz('D2'), end('XP') - AT['sp1'] + 3, 1.), AT['sp1'], .5, 0, .3)
         for k in range(int((DUR - AT['sp1']) / .5)): put(tick(.6, 1700), AT['sp1'] + .6 + k * .5, .25, 0, .1)
     if PART in ('Q', 'R', 'QE', 'RE'):  # бас машины → тишина на двери → удар стоп-кадра → тяжёлый бит → тишина «Hold my hat» → бой (тайко-бит) → удар-стоп
-        t0 = sh('XQ'); DO = AT['ms2'] + D['ms2'] + .25; BS = DO + .45; FZ0 = BS + 1.1; FZ1 = FZ0 + 1.3; SH = AT['sh1']; S2 = AT['sh2']
+        t0 = sh('XQ'); DO = AT['ms2'] + D['ms2'] + .25; BS = DO + .45; FZ0 = BS + 1.1; FZ1 = FZ0 + 1.3; SH = AT['lg1']; S2 = AT['sh3']
         put(drone(hz('D2'), DO - t0, 1.), t0, .35, 0, .3)
         k = 0
         while t0 + .4 + k * .48 < DO - .1:
@@ -183,26 +188,19 @@ def variants():
             if k % 2: put(snare(.9), tt, .25, 0, .15)
             k += 1
         put(boom(.7, 1.2), AT['ex1'] - .05, .45, 0, .2); put(boom(.8, 1.4), AT['ex2'] - .05, .5, 0, .2); put(riser(1.4, .5), AT['ex2'] + .6, .25, 0, .2)
-        put(riser(max(.6, S2 - SH - D['sh1'] - .1), .7), SH + D['sh1'], .3, 0, .3); put(boom(1.0, 2.0), S2 + .3, .6, 0, .3)
-        k0 = sh('KQ'); A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; SPL = F3 + 1.15; F4 = F3 + 1.9; F5 = F4 + 1.1
-        put(boom(1.0, 1.8), k0 + .05, .55, 0, .3); put(boom(1.4, 2.6), A1 - .25, .4, 0, .4); put(boom(1.2, 2.0), A2 + .35, .6, 0, .3)
-        def beat(a, b_, v=1.):
-            k = 0
-            while a + k * .25 < b_:
-                tt = a + k * .25
-                if k % 4 in (0, 3): put(kick(.9), tt, .45 * v, 0, 0)
-                if k % 4 == 2: put(snare(.9), tt, .3 * v, 0, .12)
-                put(hat(.5), tt, .1 * v, .3, 0)
-                if k % 8 == 0:
-                    for j, n in enumerate(['E3', 'F3', 'E3', 'B2']): put(pluck(hz(n), .25, .9), tt + j * .25, .3 * v, -.1, .1)
-                k += 1
-        beat(A2 + .3, E3 - .1, .7); beat(E3 + D['ex3'], HIT - .05, .7); put(drone(hz('E2'), HIT - A2, 1.), A2 + .3, .3, 0, .3)
-        put(boom(1.2, 2.2), HIT, .7, 0, .3)
-        beat(F3 + .2, SPL, .8); put(boom(1.2, 2.2), SPL, .7, 0, .4); put(swell(.8, .9), SPL, .35, 0, .4)
+        put(riser(max(.6, S2 - SH - .3), .7), SH + .2, .3, 0, .3); put(boom(.8, 1.4), AT['ex4'] - .05, .45, 0, .2); put(boom(1.0, 2.0), S2 + .3, .6, 0, .3)
+        k0 = sh('KQ'); A1 = AT['an1']; A2 = AT['an2']; TPL = k0 + 1.3; TPR = TPL + 2.3; TP1 = TPR + 2.4; LUN = A2 + .1; FZ = LUN + .5
+        put(boom(1.0, 1.8), k0 + .05, .55, 0, .3); put(drone(hz('D2'), FZ - k0, 1.), k0, .35, 0, .3); chord(['D3', 'F3', 'A3'], k0, FZ - k0, .14, 0, 1200)
         k = 0
-        while SPL + .3 + k * .07 < F4: put(kick(.6 + .4 * k / 12), SPL + .3 + k * .07, .25 + .02 * k, 0, 0); k += 1
-        put(riser(F5 - SPL - .2, .9), SPL + .2, .4, 0, .3)
-        put(boom(1.6, 3.0), F5, .9, 0, .5); chord(['E2', 'B2', 'E3', 'G3'], F5 + .6, DUR - F5, .2, 0, 1200)
+        while k0 + .4 + k * .5 < A1 - .2:   # тайко-шаг: удар на каждую строку таблицы
+            tt = k0 + .4 + k * .5; put(kick(1.0), tt, .45, 0, .1); put(boom(.35, .5), tt, .18, 0, .2)
+            if k % 2: put(snare(.7), tt + .25, .18, 0, .15)
+            k += 1
+        put(boom(1.4, 2.6), A1 - .2, .45, 0, .4)
+        k = 0
+        while A1 + .5 + k * .07 < A2: put(kick(.6 + .4 * k / 12), A1 + .5 + k * .07, .22 + .02 * k, 0, 0); k += 1
+        put(boom(1.2, 2.0), A2 + .3, .55, 0, .3); put(riser(FZ - A2, .9), A2, .4, 0, .3)
+        put(boom(1.6, 3.0), FZ, .9, 0, .5); chord(['D2', 'A2', 'D3', 'F3'], FZ + .6, DUR - FZ, .2, 0, 1200)
         return
     if PART in 'NOP': return
     c = ('K' if PART in 'DEFG' else 'C') + PART; t0 = sh(c)

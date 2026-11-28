@@ -21,6 +21,7 @@ function drawLines(T, opt = {}) {
   for (const id in AT) { const [a, b] = line(id); const [role, text] = TEXT[id]; const o = opt[id] || {}; if (o.hide) continue; const t1 = Math.min(b + (o.hold ?? .35), NEXT[id] - .06);
     if (T < a - .05 || T > t1) continue;
     if (role === 'shadow2_en') shadowSay(T, a, t1, o.lines || wrapS(text, o.n || 20), { y: o.y ?? 400, size: o.size ?? 84 });
+    else if (role === 'shmacho_en') shadowSay(T, a, t1, o.lines || wrapS(text, o.n || 20), { y: o.y ?? 400, size: o.size ?? 96, glowC: 'rgba(255,170,90,.95)' });
     else if (role === 'mshadow_en') shadowSay(T, a, t1, o.lines || wrapS(text, o.n || 20), { y: o.y ?? 400, size: o.size ?? 90, glowC: 'rgba(255,190,225,.95)' });
     else if (role === 'narrator_en') { if (o.show) narr(T, a, t1 + .6, text, { y: o.y ?? 1450, size: 64, n: o.n ?? 20, accent: ['never', 'start.', 'hi'] }); }
     else if (role === 'ex_en') shadowSay(T, a, t1, o.lines || wrapS(text, o.n || 18), { y: o.y ?? 400, size: o.size ?? 90, glowC: 'rgba(255,70,70,.95)' });
@@ -172,7 +173,7 @@ jogger.root.traverse(o => { if (o.isMesh) o.castShadow = false; });
 const jogSh = makeShade(); scene.add(jogSh.holder); jogSh.holder.visible = false; { const tl = new THREE.Group(); jogSh.head.add(tl); tl.position.set(0, .14, -.15); [[0, 0, 0, .09], [0, -.1, -.08, .08], [0, -.2, -.11, .07], [0, -.3, -.12, .055]].forEach(([x, y, z, r]) => { const m = mesh(G.sph(r, 12), ink, false, false); m.position.set(x, y, z); tl.add(m); }); jogSh.tail = tl; }
 pixel.g.visible = false; broom.visible = false;
 S.SS = (t, T) => { useSet('front'); hideAll(); pixel.g.visible = false; broom.visible = false; jogger.root.visible = true;
-  const s5 = lt('s9'), s6 = lt('s6'), s8 = lt('s10'), AWK0 = s6 + DURS.s6 + .1, jg = AWK0 + .3, RUNJ = AWK0 + .5, COOL = AWK0 + .6, GUNS = AWK0 + 1.4;
+  const s5 = lt('s9'), s6 = lt('s6'), s8 = lt('s10'), AWK0 = s6 + DURS.s6 + .1, s11 = lt('s11'), COOL = s11 + DURS.s11 + .1, RUNJ = s11 + .3, jg = RUNJ - .2, GUNS = COOL + .8;
   // крупно стена: тень Sam видит тень с хвостиком (бегун тянется у стены), подкатывает → отъезд камеры: там бородач
   const yank = ease(t, s5 + .3, s5 + .6, back); const X = -6.25 + yank * .3; put(hero, X, -.55, Math.PI / 2 - .4, yank > 0 && t < s5 + 1.0 ? { ...POSE.stand, lean: .3, aR: [1.2, -.3, .2], lL: [.4, .2] } : { ...POSE.stand, aR: [.6, -.4, .3], headY: .3 }, t, { expr: t > s6 ? 'surprised' : 'calm', lookX: .7, smile: t > s6 ? 0 : .2, wide: t > s6 && t < s8, mouth: 0, noBlink: t > AWK0 && t < s8 });
   const jx = -4.75; const turnJ = ease(t, s6 - .35, s6 - .05);
@@ -190,9 +191,9 @@ S.SS = (t, T) => { useSet('front'); hideAll(); pixel.g.visible = false; broom.vi
   FX = { fy: lerp(.4, .5, zo), fw: .32, blur: 6, bloom: .2, warm: .06 };
   return () => { if (t > s5 - .3 && t < s6) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); heartsFloat(t, x, y, .6, 200, 8); }
     band(shade, hero, t);
-    drawLines(T, { s9: { y: 380, size: 100 }, s6: { y: 1480, size: 90 }, s10: { y: 380, size: 130 } });
+    drawLines(T, { s11: { y: 380, size: 120 }, s9: { y: 380, size: 100 }, s6: { y: 1480, size: 90 }, s10: { y: 380, size: 130 } });
     if (t > COOL && t < s8) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); sweat(x + 70, y - 50 + ((t - COOL) % .8) * 40, 1); if (t < GUNS) { ctx.save(); ctx.font = '700 52px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.translate(x - 120, y - 140 - Math.sin(t * 6) * 8); ctx.rotate(-.1); ctx.strokeText('*whistles*', 0, 0); ctx.fillText('*whistles*', 0, 0); ctx.restore(); } }
-    if (t > AWK0 + .1 && t < COOL) { ctx.save(); ctx.globalAlpha = ease(t, AWK0 + .2, AWK0 + .5) * .9; ctx.font = '700 46px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.strokeText('*cricket noises*', 540, 1600); ctx.fillText('*cricket noises*', 540, 1600); ctx.restore(); } };
+    if (t > COOL - .1 && t < GUNS + .3) { ctx.save(); ctx.globalAlpha = ease(t, AWK0 + .2, AWK0 + .5) * .9; ctx.font = '700 46px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.strokeText('*cricket noises*', 540, 1600); ctx.fillText('*cricket noises*', 540, 1600); ctx.restore(); } };
 };
 // 2. Утро, кухня: Sam троллит тень за вчерашний побег — тень ломается и стесняется (смена ракурсов на каждую реплику)
 S.S2 = (t, T) => { useSet('kitchen'); hideAll();
@@ -755,6 +756,7 @@ S.KN = (t, T) => { useSet('night'); hideAll(); FX = { skip: true }; const cw = l
     narr(t, cw + 3.1, 99, 'Comment below', { y: 1560, size: 52, n: 20, accent: ['comment'] }); };
 };
 // O. «Бывший»: к тени Mia подкатывает накачанная тень; «Hands off my girl, shorty.» — «Sam. Hold my hat.»
+const EXINK = new THREE.MeshBasicMaterial({ color: '#3a0710', transparent: true, opacity: .95 });
 const exSh = makeShade(); scene.add(exSh.holder); exSh.holder.visible = false; { exSh.spine.scale.set(1.5, 1.1, 1.3); [exSh.aL, exSh.aR].forEach(a => a.sh.scale.set(1.5, 1, 1.5)); for (let k = 0; k < 5; k++) { const sp = mesh(new THREE.ConeGeometry(.05, .16, 8), ink, false, false); sp.position.set(-.16 + k * .08, .24, 0); sp.rotation.z = (k - 2) * .25; exSh.head.add(sp); } }
 S.XO = (t, T) => { hideAll(); doorBase(t, { lean: 1 - ease(t, .1, .6) }); const ms = lt('ms1'), ex = lt('ex1'), sh = lt('sh1');
   const slide = ease(t, .6, 1.6, sm); exSh.holder.visible = true;
@@ -846,14 +848,14 @@ const exMan = makeToy({ skin: '#e6ad8a', hair: '#141016', top: '#231c22', top2: 
 { exSh.head.children.filter(o => o.geometry && o.geometry.type === 'ConeGeometry').forEach(o => o.visible = false);
   const pomp = mesh(G.sph(.15, 16), ink, false, false); pomp.position.set(0, .21, .1); pomp.scale.set(1.15, .75, 1.35); exSh.head.add(pomp);
   exSh.eyes.forEach(e => e.children.forEach(c => c.material = glow('#ff3030', 2.2)));
-  const exInk = new THREE.MeshBasicMaterial({ color: '#3a0710', transparent: true, opacity: .95 }); exSh.root.traverse(o => { if (o.isMesh && o.material.color && o.material.color.r < .1 && o.material.color.g < .1) o.material = exInk; }); }
+  const exInk = EXINK; exSh.root.traverse(o => { if (o.isMesh && o.material.color && o.material.color.r < .1 && o.material.color.g < .1) o.material = exInk; }); }
 const carFill = new THREE.PointLight('#8aa0ff', 3, 6, 1.5); night.g.add(carFill); const carKey = new THREE.PointLight('#ffb0d0', 0, 9, 1.4), brKey = new THREE.PointLight('#a8b8ff', 0, 4, 1.5); night.g.add(carKey, brKey);
 const headL = new THREE.SpotLight('#fff2d8', 0, 18, .6, .45, 1.1); headL.castShadow = false; night.g.add(headL, headL.target);
 const hat2 = hat.clone(); hat2.visible = false; scene.add(hat2);
 const cloneA = makeShade(), cloneB = makeShade(); [cloneA, cloneB].forEach(C => { scene.add(C.holder); C.holder.visible = false; const m = new THREE.MeshBasicMaterial({ color: '#2a1050', transparent: true, opacity: .85 }); C.root.traverse(o => { if (o.isMesh && o.material.color && o.material.color.r < .1 && o.material.color.b < .1) o.material = m; }); C.eyes.forEach(e => e.children.forEach(c => c.material = glow('#d58aff', 2.4))); });
 const FIGHT_POSE = { aL: [1.25, .35, 2.3], aR: [1.0, -.3, 2.5], lL: [.45, .55], lR: [-.35, .35], crouch: .07, lean: .12 };
-S.XQ = (t, T) => { hideAll(); nightDoor(0, true, false); mia.tail.rotation.x = .05; miaSh.tail.rotation.x = -.2; setFade(mia, 1, 1, false); car.visible = true;
-  const mb = lt('mb1'), sb1 = lt('sb1'), ms = lt('ms2'), sb2 = lt('sb2'), ex1 = lt('ex1'), ex2 = lt('ex2'), sh = lt('sh1'), sb3 = lt('sb3'), sh2 = lt('sh2');
+S.XQ = (t, T) => { hideAll(); EXINK.color.set('#3a0710'); nightDoor(0, true, false); mia.tail.rotation.x = .05; miaSh.tail.rotation.x = -.2; setFade(mia, 1, 1, false); car.visible = true;
+  const mb = lt('mb1'), sb1 = lt('sb1'), ms = lt('ms2'), sb2 = lt('sb2'), ex1 = lt('ex1'), ex2 = lt('ex2'), sh = lt('lg1'), sb3 = lt('ex4'), sh2 = lt('sh3');
   const DO = ms + DURS.ms2 + .25, BS = DO + .45, BR = BS + 1.1, FZ0 = BR, FZ1 = FZ0 + 1.3, G0 = FZ1, G1 = G0 + 1.3;
   const tf = t > FZ0 && t < FZ1 ? FZ0 : t;                                    // стоп-кадр: всё замирает
   // ── машина: въезжает слева направо по улице, разворачивается фарами на пару, прыгает на гидравлике
@@ -871,7 +873,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0, true, false); mia.tail.rotation.x = .
   const turn = ease(t, .8, 1.3, sm), fadeM = ease(t, ex2 + .3, ex2 + 1.2) * (1 - ease(t, sh + 1.0, sh + 2.2) * .2);
   const samHat = t > sh + 1.15;
   put(hero, DX2 - .6, -1.3, lerp(Math.PI / 2 - .3, .9, turn), keys(tf, [[0, { ...POSE.stand }], [1.3, { ...POSE.stand, aR: [1.3, -.25, 2.4], lean: -.08 }], [sb1 - .1, { ...POSE.shrug, aR: [1.2, -.4, 1.6] }], [sb1 + 1.0, POSE.stand], [sb2 - .2, { ...POSE.stand, aR: [1.5, -.2, .1], lean: .15 }], [sb2 + 1.1, POSE.stand],
-    [sh + 1.0, { ...POSE.facepalm }], [sb3 - .1, { ...POSE.scared }], [sh2 + .4, POSE.scared]]), tf,
+    [sh + .2, { ...POSE.scared }], [sh2 + .4, POSE.scared]]), tf,
     { expr: t > sb3 - .2 ? 'scared' : t > sb2 - .2 && t < sb2 + 1.2 ? 'angry' : t > 1.3 ? 'surprised' : 'calm', wide: t > 1.3, lid: t > 1.3 && t < 2.6 ? .55 : 0, lookX: t > sb2 - .3 && t < sb2 + 1.2 ? -.9 : .8, mouth: talkG(T, 'sb1', 'sb2', 'sb3') });
   put(mia, DX2 + .1, -1.8, lerp(-Math.PI / 2 + .4, .7, turn), keys(tf, [[0, POSE.stand], [1.3, { ...POSE.stand, aL: [1.3, .25, 2.4] }], [mb - .2, { ...POSE.stand, aL: [1.1, .2, 2.5], aR: [1.1, -.2, 2.5] }], [mb + 1.2, POSE.scared], [ex2 + .6, { ...POSE.stand, aR: [1.0, -.3, 1.6], headX: .4 }], [sh + .6, POSE.scared]]), tf,
     { expr: t > mb - .2 ? 'scared' : 'surprised', wide: true, lookX: t > ex2 + .5 && t < sh ? .3 : .8, lookY: t > ex2 + .5 && t < sh ? -.7 : 0, mouth: talkG(T, 'mb1') }, .2, 8);
@@ -881,7 +883,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0, true, false); mia.tail.rotation.x = .
   const sneak = ease(t, G1 - .3, sb2, sm) * (1 - ease(t, sh - .2, sh + .6, sm) * .0), brave = ease(t, sh - .3, sh + .5, sm);
   const sX = lerp(lerp(DX2 - 1.25, DX2 - 1.95, sneak), DX2 - 1.0, ease(t, sh2, sh2 + .6, sm)), sS = lerp(lerp(1.55, 1.3, ease(t, G0, G1)), 1.85, ease(t, sh2, sh2 + .6));
   const sPose = t > sh2 ? keys(tf, [[sh2, FIGHT_POSE], [sh2 + .5, { ...FIGHT_POSE, aR: [1.1, -.3, 2.6], headZ: .25 }], [sh2 + .9, { ...FIGHT_POSE, headZ: -.25 }]])
-    : t > sh - .2 ? keys(tf, [[sh - .2, POSE.stand], [sh + .35, { ...POSE.stand, aR: [0, -2.8, 1.7] }], [sh + .8, { ...POSE.stand, aR: [.1, -2.9, 1.9], headX: -.2 }], [sh + DURS.sh1 - .7, { ...POSE.stand, aR: [.1, -2.9, 1.9], headX: .1, headZ: .2 }], [sh + DURS.sh1, { ...POSE.stand, aL: [.9, .5, 2.2], aR: [.9, -.5, 2.2], headZ: .2 }]])
+    : t > sh - .2 ? keys(tf, [[sh - .2, POSE.stand], [sh + .3, { ...POSE.stand, aR: [1.55, -.05, .05], lean: .15 }], [sb3 - .1, { ...POSE.stand, aR: [1.55, -.05, .05], lean: .15 }], [sb3 + .3, { ...POSE.stand, aL: [.3, .3, .3], aR: [.3, -.3, .3], headX: -.1 }]])
     : t > G1 - .3 && t < sb2 + .3 ? walk(sneak * 2.4, 0, { crouch: .1, lean: .25, aL: [.6, .4, 1.5], aR: [.6, -.4, 1.5] })
     : t > sb2 + .3 ? { ...POSE.scared, headY: .6 } : t > 1.3 ? { ...POSE.scared } : POSE.stand;
   applyPose(shade, sPose, tf, { mood: t > sh - .2 ? 'angry' : t > 1.0 ? 'wide' : 'calm', look: t > G1 - .3 && t < sb2 + .5 ? -1 : 1 }, 3);
@@ -905,7 +907,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0, true, false); mia.tail.rotation.x = .
       : { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headZ: Math.sin(Math.max(0, t - G1) * 6) * .3 * (t < G1 + .9 ? 1 : 0), headX: -.1 }, tf,
       { expr: 'angry', smile: .55, mouth: 0, lid: .2 }, 0, 61); exMan.root.position.y = 0; const kp = t < FZ1 ? CL(-1.2, 1.6, 2.3) : new THREE.Vector3(bx + .6, 1.9, bz + 1.4); brKey.position.copy(kp); brKey.intensity = t < FZ1 ? 14 : 6; }
   const grow = ease(t, G0, G1, back); exSh.holder.visible = grow > .01;
-  applyPose(exSh, t > ex2 - .1 ? { ...POSE.stand, aR: [1.55, -.15, .1], aL: [.9, .5, 2.1], lean: -.1 } : t > G1 ? { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headZ: Math.sin(Math.max(0, t - G1) * 6) * .3 * (t < G1 + .9 ? 1 : 0), headX: -.12 } : walk(walkK * 3.2, .1), tf, { mood: 'angry', look: -1 }, 51);
+  applyPose(exSh, t > sb3 - .1 && t < sb3 + DURS.ex4 + .2 ? { ...POSE.stand, aL: [.6, .6, 2.2], aR: [.6, -.6, 2.2], headX: -.35 + Math.sin(t * 16) * .08, lean: -.15 + Math.sin(t * 16) * .04 } : t > ex2 - .1 ? { ...POSE.stand, aR: [1.55, -.15, .1], aL: [.9, .5, 2.1], lean: -.1 } : t > G1 ? { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headZ: Math.sin(Math.max(0, t - G1) * 6) * .3 * (t < G1 + .9 ? 1 : 0), headX: -.12 } : walk(walkK * 3.2, .1), tf, { mood: 'angry', look: -1 }, 51);
   placeShade(exSh, { x: lerp(DX2 + .9, DX2 + 1.05, drag), z: WN + .1, rise: 1, scale: lerp(.6, 2.35, grow), turn: -Math.PI / 2, op: 1 }); exSh.holder.position.y = .02;
   // ── камера: общий → двое → низко у двери (нога, подъём) → стоп-кадр → стена-гигант → Sam → стена → тень Sam → Sam → глаза
   const [jx, jy] = hh(tf, .02);
@@ -916,7 +918,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0, true, false); mia.tail.rotation.x = .
   else if (t < ex1 - .15) cam(DX2 + .45 + jx, 1.22 + jy, .55, DX2 - .75, 1.15, -1.4, 36);
   else if (t < sh - .15) cam(DX2 + .45 + jx, 1.7 + jy, lerp(6.6, 5.8, ease(t, ex1, sh)), DX2 + .35, 1.9, -2.1, 52);
   else if (t < sb3 - .15) { const hp = wpos(shade.head); cam(hp.x + .5 + jx, hp.y - .1 + jy, lerp(3.4, 2.9, ease(t, sh, sb3)), hp.x + .1, hp.y - .35, WN, 42); }
-  else if (t < sh2 - .1) cam(DX2 + .3 + jx, 1.2 + jy, .7, DX2 - .7, 1.15, -1.4, 34);
+  else if (t < sh2 - .1) cam(DX2 + .2 + jx, 1.75 + jy, lerp(6.2, 5.6, ease(t, sb3, sh2)), DX2 + .1, 1.95, -2.1, 52);
   else { const z = ease(t, sh2, sh2 + 1.2, sm); cam(sX + .3 + jx * .5, 1.3 + jy * .5, lerp(3.8, 2.4, z), sX, 1.25, WN, 40); }
   FX = { fy: t > DO - .1 && t < FZ1 ? .5 : .42, fw: .36, blur: 5, bloom: .55, warm: -.04 };
   return () => { if (t < .5) { ctx.fillStyle = `rgba(0,0,8,${.6 - .2 * ease(t, .3, .5)})`; ctx.fillRect(0, 0, 1080, 1920); }
@@ -936,26 +938,26 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0, true, false); mia.tail.rotation.x = .
     if (fadeM > .05) { const p = wpos(mia.aR.hand); const [x, y] = toScreen(p.x, p.y, p.z); ctx.save(); for (let i = 0; i < 14; i++) { const k = (t * .8 + h1(i)) % 1; ctx.globalAlpha = (1 - k) * .9 * fadeM; ctx.fillStyle = '#d8ccff'; ctx.beginPath(); ctx.arc(x + (h1(i + 3) - .5) * 70, y + 20 - k * 160, 6, 0, 7); ctx.fill(); } ctx.restore(); }
     // глаза тени Sam загораются
     if (t > sh2 + .3) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); const g = ctx.createRadialGradient(x, y, 10, x, y, 260); g.addColorStop(0, `rgba(255,190,60,${.55 * ease(t, sh2 + .3, sh2 + .8)})`); g.addColorStop(1, 'rgba(255,90,30,0)'); ctx.fillStyle = g; ctx.fillRect(x - 280, y - 280, 560, 560); }
-    drawLines(T, { mb1: { y: 1500, n: 16 }, sb1: { y: 1500, n: 16 }, ms2: { y: 420, n: 16 }, sb2: { y: 1500, n: 16, size: 78 }, ex1: { y: 420, size: 92, n: 16 }, ex2: { y: 420, size: 92, n: 16 }, sh1: { y: 420, size: 86, n: 16 }, sb3: { y: 1500, n: 16 }, sh2: { y: 420, size: 92, n: 14 } }); };
+    drawLines(T, { mb1: { y: 1500, n: 16 }, sb1: { y: 1500, n: 16 }, ms2: { y: 420, n: 16 }, sb2: { y: 1500, n: 16, size: 78 }, ex1: { y: 420, size: 92, n: 16 }, ex2: { y: 420, size: 92, n: 16 }, lg1: { y: 420, size: 100 }, ex4: { y: 420, size: 92, n: 16 }, sh3: { y: 420, size: 120 } }); };
 };
 
 // ===== арена: та же улица силуэтами на закате (слои с дымкой → глубина), бойцы — объёмные тени =====
 const arena = new THREE.Group(); arena.position.set(60, 0, 0); arena.visible = false; scene.add(arena);
 { const basic = (tex, o = {}) => new THREE.MeshBasicMaterial({ map: tex, transparent: true, toneMapped: false, depthWrite: false, ...o });
-  const sky = canvasTex(512, 1024, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); [[0, '#3a0c34'], [.3, '#a01c3c'], [.5, '#ff5a2a'], [.64, '#ffa040'], [.7, '#ffe2a4'], [.76, '#ffb050'], [1, '#c8402a']].forEach(([o, c]) => gr.addColorStop(o, c)); g.fillStyle = gr; g.fillRect(0, 0, w, h);
-    const sx = 256, sy = 600; const sg = g.createRadialGradient(sx, sy, 10, sx, sy, 300); sg.addColorStop(0, 'rgba(255,252,230,1)'); sg.addColorStop(.3, 'rgba(255,236,170,1)'); sg.addColorStop(.33, 'rgba(255,170,80,.6)'); sg.addColorStop(1, 'rgba(255,120,40,0)'); g.fillStyle = sg; g.fillRect(0, 280, w, 640);
-    g.fillStyle = 'rgba(120,20,50,.35)'; for (let i = 0; i < 5; i++) g.fillRect(0, 560 + i * 26, w, 3 + i * 2); });
+  const sky = canvasTex(512, 1024, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); [[0, '#0a1e24'], [.3, '#1e4a52'], [.5, '#5a8e90'], [.64, '#a8cfc8'], [.7, '#d8eee4'], [.76, '#8ab8b0'], [1, '#3a6a6a']].forEach(([o, c]) => gr.addColorStop(o, c)); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    const sx = 256, sy = 600; const sg = g.createRadialGradient(sx, sy, 10, sx, sy, 300); sg.addColorStop(0, 'rgba(250,255,245,1)'); sg.addColorStop(.3, 'rgba(235,248,235,1)'); sg.addColorStop(.33, 'rgba(200,235,225,.55)'); sg.addColorStop(1, 'rgba(160,210,200,0)'); g.fillStyle = sg; g.fillRect(0, 280, w, 640);
+    g.fillStyle = 'rgba(40,80,84,.35)'; for (let i = 0; i < 5; i++) g.fillRect(0, 560 + i * 26, w, 3 + i * 2); });
   const skyM = mesh(G.plane(50, 70), basic(sky, { transparent: false }), false, false); skyM.position.set(0, 14, -24); arena.add(skyM);
   // слой: рисуем в метрах (y вверх), 64 px на метр
   const PX = 64; const layer = (z, w, h, col, draw, y = 0) => { const tx = canvasTex(Math.round(w * PX), Math.round(h * PX), (g, W2, H2) => { g.fillStyle = col; g.strokeStyle = col; g.translate(W2 / 2, H2); g.scale(PX, -PX); draw(g, w / 2, h); }); const m = mesh(G.plane(w, h), basic(tx), false, false); m.position.set(0, y + h / 2, z); arena.add(m); return m; };
   const R = (g, x, y, w, h) => g.fillRect(x, y, w, h), C = (g, x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); };
-  layer(-18, 50, 7, '#d0604e', (g, X, H2) => { g.beginPath(); g.moveTo(-X, 0); for (let x = -X; x <= X; x += .25) g.lineTo(x, 2.2 + Math.sin(x * .7) * .8 + Math.sin(x * 2.3) * .3); g.lineTo(X, 0); g.fill(); }, -.2);
-  layer(-11, 36, 7, '#8a2a44', (g, X) => { let x = -X, i = 0; while (x < X) { const bw = .9 + h1(i) * 1.6, bh = 1.2 + h1(i + 9) * 2.6; R(g, x, 0, bw, bh); if (h1(i + 4) > .6) R(g, x + bw * .4, bh, .06, .8); x += bw; i++; }
+  layer(-18, 50, 7, '#7aa8a6', (g, X, H2) => { g.beginPath(); g.moveTo(-X, 0); for (let x = -X; x <= X; x += .25) g.lineTo(x, 2.2 + Math.sin(x * .7) * .8 + Math.sin(x * 2.3) * .3); g.lineTo(X, 0); g.fill(); }, -.2);
+  layer(-11, 36, 7, '#3e6e72', (g, X) => { let x = -X, i = 0; while (x < X) { const bw = .9 + h1(i) * 1.6, bh = 1.2 + h1(i + 9) * 2.6; R(g, x, 0, bw, bh); if (h1(i + 4) > .6) R(g, x + bw * .4, bh, .06, .8); x += bw; i++; }
     R(g, 3.2, 3.2, 1.0, .8); R(g, 3.3, 2.2, .08, 1.0); R(g, 4.0, 2.2, .08, 1.0); g.beginPath(); g.moveTo(3.1, 4.0); g.lineTo(3.7, 4.5); g.lineTo(4.3, 4.0); g.fill();
     const cx = -2.6, cy = 3.6; R(g, -4, 0, 3, 3.3); g.beginPath(); g.ellipse(cx, cy, .28, .38, 0, 0, 7); g.fill(); C(g, cx, cy + .48, .2); g.beginPath(); g.moveTo(cx - .17, cy + .55); g.lineTo(cx - .12, cy + .8); g.lineTo(cx - .02, cy + .62); g.moveTo(cx + .17, cy + .55); g.lineTo(cx + .12, cy + .8); g.lineTo(cx + .02, cy + .62); g.fill();
     g.lineWidth = .09; g.beginPath(); g.moveTo(cx + .2, cy - .3); g.quadraticCurveTo(cx + .7, cy - .4, cx + .6, cy + .1); g.stroke(); }, -.1);
-  layer(-5.5, 26, 5, '#4a1426', (g, X) => { R(g, -7.5, 0, 5.2, 3.6); R(g, -2.3, 0, 3.2, 2.6); R(g, 5.5, 0, 4.5, 3.9); g.beginPath(); g.moveTo(-7.7, 3.6); g.lineTo(-4.9, 4.4); g.lineTo(-2.1, 3.6); g.fill();
-    g.save(); g.fillStyle = 'rgba(255,170,90,.6)'; [[-7, 2.2], [-5.6, 2.2], [-3.6, 2.2], [-7, .9], [6.1, 2.4], [7.9, 2.4]].forEach(([x, y]) => R(g, x, y, .8, .9)); g.fillStyle = 'rgba(255,210,130,.45)'; R(g, -5.3, 0, .9, 1.7); g.restore();
+  layer(-5.5, 26, 5, '#1c3a40', (g, X) => { R(g, -7.5, 0, 5.2, 3.6); R(g, -2.3, 0, 3.2, 2.6); R(g, 5.5, 0, 4.5, 3.9); g.beginPath(); g.moveTo(-7.7, 3.6); g.lineTo(-4.9, 4.4); g.lineTo(-2.1, 3.6); g.fill();
+    g.save(); g.fillStyle = 'rgba(255,200,120,.55)'; [[-7, 2.2], [-5.6, 2.2], [-3.6, 2.2], [-7, .9], [6.1, 2.4], [7.9, 2.4]].forEach(([x, y]) => R(g, x, y, .8, .9)); g.fillStyle = 'rgba(255,210,130,.45)'; R(g, -5.3, 0, .9, 1.7); g.restore();
     R(g, 3.6, 0, .12, 3.6); g.beginPath(); g.ellipse(3.66, 3.6, .3, .14, 0, 0, 7); g.fill();
     g.lineWidth = .04; g.beginPath(); for (let x = -2.3; x <= .9; x += .1) g.lineTo(x, 2.5 - Math.sin((x + 2.3) / 3.2 * Math.PI) * .35); g.stroke(); g.save(); g.fillStyle = 'rgba(255,224,150,.95)'; for (let x = -2.2; x < .9; x += .32) C(g, x, 2.42 - Math.sin((x + 2.2) / 3.2 * Math.PI) * .35, .06); g.restore();
     // лоурайдер
@@ -965,90 +967,58 @@ const arena = new THREE.Group(); arena.position.set(60, 0, 0); arena.visible = f
     person(-1.2, 1);
     person(-.4, .95, () => { g.beginPath(); g.ellipse(.2, 1.55, .12, .24, .6, 0, 7); g.fill(); g.beginPath(); g.moveTo(-.3, .65); g.lineTo(.3, .65); g.lineTo(.42, .25); g.lineTo(-.42, .25); g.fill(); });
     person(5.0, 1.3, () => { R(g, -.4, .7, .8, .55); g.beginPath(); g.ellipse(.06, 1.6, .26, .13, 0, 0, 7); g.fill(); g.lineWidth = .12; g.beginPath(); g.moveTo(-.25, 1.1); g.lineTo(-.55, .85); g.lineTo(-.25, .7); g.moveTo(.25, 1.1); g.lineTo(.55, .85); g.lineTo(.25, .7); g.stroke(); }); }, -.02);
-  const ground = mesh(G.plane(80, 30), new THREE.MeshBasicMaterial({ color: '#2e0e1c', toneMapped: false }), false, false); ground.rotation.x = -Math.PI / 2; ground.position.set(0, 0, 0); arena.add(ground);
+  [[-8, 2.2, .35], [-4.2, 1.2, .28]].forEach(([z, hgt, a]) => { const tx = canvasTex(16, 128, (g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, 'rgba(220,240,235,0)'); gr.addColorStop(.6, `rgba(220,240,235,${a})`); gr.addColorStop(1, 'rgba(220,240,235,0)'); g.fillStyle = gr; g.fillRect(0, 0, w, h); }); const m = mesh(G.plane(60, hgt * 2), basic(tx), false, false); m.position.set(0, hgt * .6, z); arena.add(m); });
+  const ground = mesh(G.plane(80, 30), new THREE.MeshBasicMaterial({ color: '#060a0b', toneMapped: false }), false, false); ground.rotation.x = -Math.PI / 2; ground.position.set(0, 0, 0); arena.add(ground);
   layer(3.0, 12, .9, '#050205', (g, X, H2) => { for (let i = 0; i < 46; i++) { const x = (h1(i) - .5) * 2 * X, s = .2 + h1(i + 5) * .5; g.beginPath(); g.moveTo(x - s * .3, 0); g.lineTo(x + (h1(i + 8) - .5) * .2, s * (1 + h1(i + 2))); g.lineTo(x + s * .3, 0); g.fill(); } R(g, -X, 0, 2 * X, .1); }, 0); }
 function col0(g) { return g.fillStyle; }
-S.KQ = (t, T) => { useSet('night'); hideAll(); night.g.visible = false; arena.visible = true; scene.background = new THREE.Color('#2a0b30'); scene.fog = null;
-  const A2 = lt('an2'), E3 = lt('ex3'); const F0 = E3 - 2.2, F1 = E3 - 1.25, F2 = E3 + DURS.ex3 + .1, F3 = F2 + 1.15, SPL = F3 + 1.15, F4 = F3 + 1.9, F5 = F4 + 1.1;
-  const tf = Math.min(t, F5);                                                   // финальный стоп-кадр
-  const ax = arena.position.x;
-  // ── тень Sam
-  let sx = -1.35, sy = 0, srot = 0, sp = { ...FIGHT_POSE, bob: Math.abs(Math.sin(tf * 6)) * .02 };
-  let ex = 1.35, ey = 0, ep = { ...FIGHT_POSE, aL: [1.2, .3, 2.0], aR: [.9, -.3, 2.4], bob: Math.abs(Math.sin(tf * 5 + 1)) * .02 };
-  if (tf > F0) { const c = ease(tf, F0, F0 + .45, sm); ex = lerp(1.35, .55, c); ep = { ...ep, lean: .3, aR: [lerp(.9, 1.7, ease(tf, F0 + .25, F0 + .45)), lerp(-.3, -1.4, ease(tf, F0 + .25, F0 + .45)), .1] };
-    const d = ease(tf, F0 + .25, F0 + .4) * (1 - ease(tf, F0 + .7, F0 + .95)); sp = { ...sp, lean: -.95 * d, crouch: .07 + .18 * d, aL: [lerp(1.25, -.4, d), .9 * d + .35, lerp(2.3, .3, d)], aR: [lerp(1.0, -.4, d), -.9 * d - .3, lerp(2.5, .3, d)], lL: [lerp(.45, .9, d), lerp(.55, 1.4, d)] }; }
-  if (tf > F1 && tf < F2) { sx = lerp(-1.35, ex - .7, ease(tf, F1 - .15, F1)); const ph = (tf - F1) * 14; sp = { ...FIGHT_POSE, lean: .3, aR: [1.5 + Math.max(0, Math.sin(ph)) * .2, -.1, 2.4 - Math.max(0, Math.sin(ph)) * 2.3], aL: [1.5 + Math.max(0, -Math.sin(ph)) * .2, .1, 2.4 - Math.max(0, -Math.sin(ph)) * 2.3] };
-    if (tf > E3 - .1) sp = { ...FIGHT_POSE, lean: .1, aR: [1.4, -.1, .3], aL: [1.2, .2, 1.8], headX: -.3 };
-    ep = { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headX: tf > E3 - .3 ? .45 : .1, lean: -.05 }; }
-  if (tf > F2) { const w = ease(tf, F2, F2 + .3), hit = F2 + .3; ep = { ...POSE.stand, lean: lerp(-.2, .3, w), twist: lerp(.6, -.7, ease(tf, F2 + .15, hit)), aR: [lerp(.6, 1.6, ease(tf, F2 + .15, hit)), lerp(.8, -1.3, ease(tf, F2 + .15, hit)), .1], aL: [.9, .5, 2.1] };
-    if (tf > F3) ep = { ...FIGHT_POSE, aL: [1.2, .3, 2.0], aR: [.9, -.3, 2.4] };
-    const fl = ease(tf, hit, hit + .6, k => 1 - Math.pow(1 - k, 2)); sx = lerp(ex - .7, -3.1, fl); sy = Math.sin(fl * Math.PI) * .9 * (1 - ease(tf, hit + .5, hit + .6)); srot = fl * 1.2 * (1 - ease(tf, F3, F3 + .5, sm));
-    sp = tf < hit ? sp : tf < F3 + .1 ? { ...POSE.stand, aL: [-.5, 1.5, .3], aR: [-.5, -1.5, .3], lL: [.6, .3], lR: [-.2, .2] } : keys(tf, [[F3 + .1, { ...POSE.tired, crouch: .2 }], [F3 + .55, { ...FIGHT_POSE, aR: [1.4, -.1, 2.6], headX: .2 }], [F3 + .9, FIGHT_POSE]]); }
-  if (tf > F4) { const k = ease(tf, F4, F5, k2 => k2 * k2 * (3 - 2 * k2)); sx = lerp(-3.1, -.42, k); ex = lerp(1.35, .45, k); sy = ey = Math.sin(k * Math.PI * .85) * .9; srot = 0;
-    sp = { ...POSE.stand, lean: .45, aR: [1.7, -.1, .0], aL: [.4, .6, 1.8], lL: [1.2, 1.6], lR: [-.4, .5] }; ep = { ...POSE.stand, lean: .4, aR: [1.7, -.1, .0], aL: [.5, .6, 1.8], lL: [1.1, 1.4], lR: [-.4, .6] }; }
-  applyPose(shade, sp, tf, { mood: tf > F3 + .5 ? 'angry' : 'angry', look: 1, open: tf > F2 + .3 && tf < F3 + .2 ? .15 : 1 }, 3);
-  placeShade(shade, { x: ax + sx, z: 0, rise: 1, scale: 1.05, turn: Math.PI / 2, op: 1 }); shade.flat.scale.z = 1; shade.holder.position.y = sy; shade.root.rotation.z = srot;
-  hat.visible = false; tie.visible = false;
-  // сила тени: тень Sam делится на три (клоны фиолетовые), все трое прыгают
-  const spl = ease(tf, SPL, SPL + .45, back); [cloneA, cloneB].forEach((C, i) => { const sd = i ? 1 : -1; C.holder.visible = tf > SPL;
-    if (!C.holder.visible) return; const cxk = tf > F4 ? lerp(sx + sd * .75, sx + sd * .15, ease(tf, F4, F5, sm)) : sx + sd * .75 * spl;
-    applyPose(C, tf > F4 ? sp : { ...FIGHT_POSE, bob: Math.abs(Math.sin(tf * 6 + i * 2)) * .02 }, tf + i * .3, { mood: 'angry', look: 1 }, 30 + i);
-    placeShade(C, { x: ax + cxk, z: sd * .45 * spl, rise: 1, scale: 1.0, turn: Math.PI / 2, op: 1 }); C.flat.scale.z = 1; C.holder.position.y = sy * (tf > F4 ? 1 : 0); });
-  applyPose(exSh, ep, tf, { mood: 'angry', look: -1 }, 51); placeShade(exSh, { x: ax + ex, z: 0, rise: 1, scale: 1.45, turn: -Math.PI / 2, op: 1 }); exSh.flat.scale.z = 1.4; exSh.holder.position.y = ey;
-  // ── камера
-  const [jx, jy] = hh(tf, .03, 4); let shake = 0; const hitT = F2 + .3; if (tf > hitT && tf < hitT + .35) shake = (1 - (tf - hitT) / .35) * .12 * Math.sin(tf * 90); if (tf > F2 + .9 && tf < F2 + 1.15) shake += .06 * Math.sin(tf * 80);
-  if (tf < F0) cam(ax + lerp(-1.5, 0, ease(tf, 0, F0, sm)) + jx, 1.4 + jy, lerp(7.5, 6.4, ease(tf, 0, F0)), ax, 1.5, 0, 44);
-  else if (tf < F1) { const a = lerp(-.7, .7, ease(tf, F0, F1, sm)), mx = (sx + ex) / 2; cam(ax + mx + Math.sin(a) * 4.0 + jx, .8 + jy, Math.cos(a) * 4.0, ax + mx, 1.15, 0, 44, .05); }
-  else if (tf < F2) cam(ax + (sx + ex) / 2 + .6 + jx, 1.1 + jy, lerp(3.6, 3.2, ease(tf, F1, F2)), ax + (sx + ex) / 2, 1.4, 0, 40, -.05);
-  else if (tf < SPL) cam(ax + lerp(.2, -1.6, ease(tf, F2 + .3, F3, sm)) + jx + shake, 1.3 + jy + shake, 7.4, ax + lerp(.2, -1.5, ease(tf, F2 + .3, F3, sm)), 1.2, 0, 50);
-  else if (tf < F4) { const k = ease(tf, SPL, F4, sm); cam(ax - 3.1 + lerp(.4, 1.2, k) + jx, lerp(.6, .45, k) + jy, lerp(3.8, 3.0, k), ax - 3.1, lerp(1.0, 1.25, k), 0, lerp(46, 52, k), -.08); }
-  else { const k = ease(tf, F4, F5, sm); const a = lerp(-.5, .45, k); cam(ax + Math.sin(a) * 6 + jx, lerp(.5, 1.2, k) + jy, Math.cos(a) * 6, ax, lerp(1.4, 1.7, k), 0, lerp(48, 42, k), lerp(.06, -.06, k)); }
-  FX = { fy: .5, fw: .4, blur: 4, bloom: .7, warm: .12 };
-  return () => { const inK = ease(t, 0, .35, sm);
-    // импакт-кадры (как в аниме): 2 кадра негатива на сильных ударах
-    for (const h of [E3 - .15, F2 + .3]) if (t > h && t < h + .07) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = 'invert(1) grayscale(1) contrast(3)'; ctx.drawImage(OUTC, 0, 0); ctx.restore(); }
-    // линии скорости на прыжке
-    if (t > F4 && t < F5) { const k = ease(t, F4, F5); ctx.save(); ctx.globalAlpha = .35 + .4 * k; ctx.strokeStyle = '#fff'; for (let i = 0; i < 40; i++) { const a = h1(i) * 6.28, r0 = 260 + h1(i + 9) * 200 * (1 - k); ctx.lineWidth = 2 + h1(i + 3) * 6; ctx.beginPath(); ctx.moveTo(540 + Math.cos(a) * r0, 900 + Math.sin(a) * r0); ctx.lineTo(540 + Math.cos(a) * 1400, 900 + Math.sin(a) * 1400); ctx.stroke(); } ctx.restore(); }
-    // сила тени: фиолетовая вспышка и надпись
-    if (t > SPL - .05 && t < SPL + 1.0) { const k = ease(t, SPL - .05, SPL + .15, back); if (t < SPL + .12) { ctx.fillStyle = `rgba(190,120,255,${.8 * (1 - (t - SPL + .05) / .17)})`; ctx.fillRect(0, 0, 1080, 1920); }
-      ctx.save(); ctx.translate(540, 760); ctx.scale(k, k); ctx.rotate(-.08); ctx.textAlign = 'center'; ctx.font = '900 120px Unb'; ctx.lineWidth = 18; ctx.strokeStyle = '#07060c'; ctx.strokeText('SHADOW', 0, 0); ctx.strokeText('POWER!', 0, 130); ctx.fillStyle = '#d58aff'; ctx.fillText('SHADOW', 0, 0); ctx.fillText('POWER!', 0, 130); ctx.restore(); }
-    // пыль, искры, листья — парят слоями
-    ctx.save(); for (let i = 0; i < 26; i++) { const d = .4 + h1(i) * .9, x = ((h1(i + 1) * 1400 + tf * 60 * d) % 1400) - 160, y = ((h1(i + 2) * 2000 - tf * 40 * d + 4000) % 2000) - 40; ctx.globalAlpha = .55 * d; ctx.fillStyle = i % 3 ? '#ffcf7a' : '#1a0812'; ctx.beginPath(); ctx.ellipse(x, y, 5 * d, 2.5 * d, tf + i, 0, 7); ctx.fill(); } ctx.restore();
-    // искры попаданий серии
-    if (tf > F1 && tf < E3) { const n = Math.floor((tf - F1) * 7); const p = wpos(exSh.spine); const [x, y] = toScreen(p.x - .15, p.y + .15, p.z + .3); const ph = ((tf - F1) * 7) % 1; ctx.save(); ctx.globalAlpha = 1 - ph; ctx.strokeStyle = '#fff3c0'; ctx.lineWidth = 8; for (let r = 0; r < 6; r++) { const a = r / 6 * 7 + n; ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * 20, y + Math.sin(a) * 20); ctx.lineTo(x + Math.cos(a) * (50 + ph * 60), y + Math.sin(a) * (50 + ph * 60)); ctx.stroke(); } ctx.restore();
-      ctx.save(); ctx.translate(260, 640); ctx.rotate(-.1); ctx.font = '900 96px Unb'; ctx.textAlign = 'center'; ctx.lineWidth = 14; ctx.strokeStyle = '#07060c'; ctx.strokeText(`${Math.min(n + 1, 9)} HITS`, 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText(`${Math.min(n + 1, 9)} HITS`, 0, 0); ctx.font = '800 40px Unb'; ctx.fillStyle = '#fff'; ctx.fillText('DAMAGE: 0', 0, 60); ctx.restore(); }
-    if (tf > F0 + .3 && tf < F0 + 1.0) { const k = ease(tf, F0 + .3, F0 + .45, back); ctx.save(); ctx.translate(300, 820); ctx.scale(k, k); ctx.rotate(-.15); ctx.font = '900 110px Unb'; ctx.textAlign = 'center'; ctx.lineWidth = 16; ctx.strokeStyle = '#07060c'; ctx.strokeText('DODGE!', 0, 0); ctx.fillStyle = '#7af0ff'; ctx.fillText('DODGE!', 0, 0); ctx.restore(); }
-    // удар Брэда: вспышка
-    if (tf > hitT && tf < hitT + .12) { ctx.fillStyle = `rgba(255,255,255,${.85 * (1 - (tf - hitT) / .12)})`; ctx.fillRect(0, 0, 1080, 1920); }
-    if (tf > hitT && tf < hitT + .9) { const k = ease(tf, hitT, hitT + .15, back); ctx.save(); ctx.translate(560, 760); ctx.scale(k, k); ctx.rotate(.1); ctx.font = '900 150px Unb'; ctx.textAlign = 'center'; ctx.lineWidth = 20; ctx.strokeStyle = '#07060c'; ctx.strokeText('OOF!', 0, 0); ctx.fillStyle = '#ff2a3a'; ctx.fillText('OOF!', 0, 0); ctx.restore(); }
-    // HUD: портреты, полоски здоровья (белый «след» отстаёт), таймер, шкала ТЕНИ
-    ctx.save(); ctx.translate(0, lerp(-300, 0, inK));
-    const sHP = tf > hitT ? lerp(1, .22, ease(tf, hitT, hitT + .2)) : 1, sGhost = tf > hitT ? lerp(1, .22, ease(tf, hitT + .5, hitT + 1.1)) : 1;
-    const eHP = tf > F1 ? 1 - .02 * ease(tf, F1, E3) : 1, eGhost = eHP;
-    const bar = (x, dir, hp, ghost, name, col) => { const w = 400, y = 150; ctx.save(); ctx.fillStyle = 'rgba(7,6,12,.85)'; ctx.beginPath(); ctx.moveTo(x - dir * 10, y - 10); ctx.lineTo(x + dir * (w + 30), y - 10); ctx.lineTo(x + dir * (w + 10), y + 52); ctx.lineTo(x - dir * 10, y + 52); ctx.fill();
-      const fill = (k, c) => { ctx.fillStyle = c; ctx.fillRect(dir > 0 ? x : x - w * k, y, w * k, 42); }; fill(ghost, '#fff'); const gr = ctx.createLinearGradient(0, y, 0, y + 42); gr.addColorStop(0, col); gr.addColorStop(1, '#b8402a'); fill(hp, hp < .3 && Math.sin(tf * 20) > 0 ? '#ff2a3a' : gr);
-      ctx.fillStyle = 'rgba(7,6,12,.85)'; ctx.fillRect(dir > 0 ? x : x - w, y + 64, w, 22); const sh = name.startsWith('SAM') ? ease(tf, F3 + .5, F3 + 1.1) * (1 - ease(tf, SPL, SPL + .4)) : .55; const sg = ctx.createLinearGradient(0, 0, 1080, 0); sg.addColorStop(0, '#8a4aff'); sg.addColorStop(1, '#e070ff'); ctx.fillStyle = sg; ctx.fillRect(dir > 0 ? x : x - w * sh, y + 67, w * sh, 16);
-      if (name.startsWith('SAM') && sh > .99 && tf < SPL) { ctx.font = '800 26px Unb'; ctx.fillStyle = Math.sin(tf * 16) > 0 ? '#fff' : '#e070ff'; ctx.textAlign = 'left'; ctx.fillText('SHADOW POWER READY', x, y + 122); }
-      ctx.font = '800 30px Unb'; ctx.fillStyle = '#fff'; ctx.textAlign = dir > 0 ? 'left' : 'right'; ctx.fillText(name, x, y - 22); ctx.restore(); };
-    bar(150, 1, sHP, sGhost, "SAM'S SHADOW", '#ffd36a'); bar(930, -1, eHP, eGhost, "BRAD'S SHADOW", '#ffd36a');
-    // портреты: цилиндр / кок
-    ctx.fillStyle = '#07060c'; ctx.beginPath(); ctx.arc(80, 176, 62, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(1000, 176, 62, 0, 7); ctx.fill(); ctx.strokeStyle = '#ffd36a'; ctx.lineWidth = 5; [80, 1000].forEach(x => { ctx.beginPath(); ctx.arc(x, 176, 62, 0, 7); ctx.stroke(); });
-    ctx.fillStyle = '#ff8a3a'; ctx.beginPath(); ctx.arc(80, 186, 30, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(1000, 196, 28, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(1006, 166, 28, 14, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = '#ff3030'; [990, 1012].forEach(x => { ctx.fillRect(x - 7, 192, 14, 5); }); ctx.fillStyle = '#fff'; [70, 92].forEach(x => { ctx.fillRect(x - 6, 192, 12, 5); });
-    ctx.fillStyle = 'rgba(7,6,12,.9)'; ctx.beginPath(); ctx.arc(540, 172, 52, 0, 7); ctx.fill(); ctx.font = '900 54px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.fillText(String(Math.max(0, 99 - Math.floor(Math.max(0, tf - A2) * 1.5))), 540, 192);
-    ctx.restore();
+// финал: НЕ бой — представление бойцов (как перед боем в UFC) на арене в духе файтингов-теней: лунная ночь, силуэты слоями в дымке, круглые портреты
+S.KQ = (t, T) => { useSet('night'); hideAll(); EXINK.color.set('#05050a'); night.g.visible = false; arena.visible = true; scene.background = new THREE.Color('#0e2a30'); scene.fog = null;
+  const A1 = lt('an1'), A2 = lt('an2'), TPL = 1.3, TPR = TPL + 2.3, TP1 = TPR + 2.4, LUN = A2 + .1, FZ = LUN + .5; const tf = Math.min(t, FZ); const ax = arena.position.x;
+  const lk = ease(tf, LUN, FZ, k => k * k); const sx = lerp(-1.3, -.5, lk), ex = lerp(1.3, .55, lk);
+  const sp = tf > LUN ? { ...POSE.stand, lean: .45, aR: [1.7, -.1, 0], aL: [.4, .6, 1.8], lL: [1.0, .6], lR: [-.5, .3] } : { ...FIGHT_POSE, bob: Math.abs(Math.sin(tf * 5)) * .025 };
+  const ep = tf > LUN ? { ...POSE.stand, lean: .4, aR: [1.7, -.1, 0], aL: [.5, .6, 1.8], lL: [.9, .6], lR: [-.5, .3] } : { ...FIGHT_POSE, aL: [1.2, .3, 2.0], aR: [.9, -.3, 2.4], bob: Math.abs(Math.sin(tf * 4.3 + 1)) * .025, headZ: tf > TPR && tf < TP1 ? Math.sin(tf * 5) * .2 * (tf < TPR + 1 ? 1 : 0) : 0 };
+  applyPose(shade, sp, tf, { mood: 'angry', look: 1 }, 3); placeShade(shade, { x: ax + sx, z: 0, rise: 1, scale: 1.05, turn: Math.PI / 2, op: 1 }); shade.flat.scale.z = 1; shade.holder.position.y = 0; hat.visible = false; tie.visible = false;
+  applyPose(exSh, ep, tf, { mood: 'angry', look: -1 }, 51); placeShade(exSh, { x: ax + ex, z: 0, rise: 1, scale: 1.45, turn: -Math.PI / 2, op: 1 }); exSh.flat.scale.z = 1.4; exSh.holder.position.y = 0;
+  const [jx, jy] = hh(tf, .02, 4);
+  if (tf < TPL) cam(ax + lerp(-2.2, 0, ease(tf, 0, TPL, sm)) + jx, 1.3 + jy, lerp(8.0, 6.8, ease(tf, 0, TPL)), ax, 1.4, 0, 44);
+  else if (tf < TPR) { const k = ease(tf, TPL, TPR, sm); cam(ax - 1.3 + lerp(1.0, .7, k) + jx, lerp(.9, 1.1, k) + jy, lerp(3.8, 3.1, k), ax - 1.05, 1.1, 0, 40, .03); }
+  else if (tf < TP1) { const k = ease(tf, TPR, TP1, sm); cam(ax + 1.3 - lerp(1.1, .8, k) + jx, lerp(.8, 1.0, k) + jy, lerp(4.4, 3.6, k), ax + 1.0, 1.45, 0, 42, -.03); }
+  else if (tf < LUN) cam(ax + jx, 1.25 + jy, lerp(7.2, 6.4, ease(tf, TP1, LUN)), ax, 1.35, 0, 46);
+  else { const k = ease(tf, LUN, FZ, sm); cam(ax + lerp(0, .2, k) + jx, lerp(1.25, 1.0, k) + jy, lerp(6.4, 3.4, k), ax, lerp(1.35, 1.3, k), 0, lerp(46, 40, k), lerp(0, -.06, k)); }
+  FX = { fy: .5, fw: .42, blur: 4, bloom: .6, warm: -.08 };
+  return () => { const inK = ease(t, 0, .4, sm), BEI = '#f2e2c0';
+    ctx.save(); for (let i = 0; i < 30; i++) { const d = .4 + h1(i) * .9, x = ((h1(i + 1) * 1300 + tf * 40 * d) % 1300) - 110, y = ((h1(i + 2) * 2000 - tf * 30 * d + 4000) % 2000) - 40; ctx.globalAlpha = (.3 + .5 * Math.sin(tf * 3 + i)) * d; ctx.fillStyle = i % 3 ? '#d8ffe8' : '#ffd88a'; ctx.beginPath(); ctx.arc(x, y, 3.5 * d, 0, 7); ctx.fill(); } ctx.restore();
+    // HUD: круглые портреты с подсветкой, имена, тонкие полоски, таймер
+    ctx.save(); ctx.translate(0, lerp(-320, 0, inK));
+    const port = (x, big) => { ctx.save(); const g = ctx.createRadialGradient(x, 200, 30, x, 200, 96); g.addColorStop(0, '#d8f0e8'); g.addColorStop(1, '#5a8a88'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, 200, 92, 0, 7); ctx.fill(); ctx.lineWidth = 8; ctx.strokeStyle = '#1a2a2c'; ctx.stroke();
+      ctx.fillStyle = '#07090a'; ctx.beginPath(); ctx.arc(x, 196, big ? 40 : 36, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(x, 290, big ? 78 : 62, 60, 0, Math.PI, 0); ctx.fill(); if (big) { ctx.beginPath(); ctx.ellipse(x + 6, 160, 40, 18, 0, 0, 7); ctx.fill(); }
+      ctx.fillStyle = big ? '#ff3030' : '#ffffff'; ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 12; [-1, 1].forEach(sd => { ctx.beginPath(); ctx.ellipse(x + sd * 14, 196, 9, 4, sd * (big ? .3 : 0), 0, 7); ctx.fill(); }); ctx.restore(); };
+    port(130, false); port(950, true);
+    const bar = (x0, dir, name) => { ctx.save(); ctx.fillStyle = '#e8642a'; ctx.fillRect(dir > 0 ? x0 : x0 - 230, 168, 230, 16); ctx.fillStyle = '#2a1a14'; for (let i = 0; i < 3; i++) ctx.fillRect(dir > 0 ? x0 + 60 + i * 58 : x0 - 110 - i * 58, 196, 46, 10); ctx.fillStyle = '#e8642a'; ctx.fillRect(dir > 0 ? x0 : x0 - 50, 196, 50, 10);
+      ctx.font = '900 34px Unb'; ctx.fillStyle = BEI; ctx.strokeStyle = '#1a1208'; ctx.lineWidth = 6; ctx.textAlign = dir > 0 ? 'left' : 'right'; ctx.strokeText(name, x0, 150); ctx.fillText(name, x0, 152); ctx.restore(); };
+    bar(240, 1, 'SHADOW'); bar(840, -1, 'BRAD');
+    ctx.font = '900 92px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = BEI; ctx.strokeStyle = '#1a1208'; ctx.lineWidth = 8; ctx.strokeText('99', 540, 210); ctx.fillText('99', 540, 210);
+    ctx.fillStyle = 'rgba(120,150,150,.75)'; ctx.beginPath(); ctx.arc(540, 285, 36, 0, 7); ctx.fill(); ctx.fillStyle = '#2a3a3a'; ctx.fillRect(526, 268, 9, 34); ctx.fillRect(545, 268, 9, 34); ctx.restore();
+    // «таблица бойцов»: строки появляются по одной
+    const card = (x0, dir, t0, title, rows, col) => { if (t < t0 || t > LUN - .1) return; const k = ease(t, t0, t0 + .3, back); ctx.save(); ctx.translate(lerp(dir * -600, 0, k), 0);
+      ctx.fillStyle = 'rgba(6,14,16,.82)'; ctx.fillRect(x0, 1180, 470, 470); ctx.fillStyle = col; ctx.fillRect(x0, 1180, 470, 10);
+      ctx.textAlign = 'left'; ctx.font = '900 36px Unb'; ctx.fillStyle = col; ctx.fillText(title, x0 + 28, 1250);
+      rows.forEach(([lab, val], i) => { const ka = ease(t, t0 + .45 + i * .38, t0 + .65 + i * .38); if (ka <= 0) return; ctx.globalAlpha = ka; ctx.font = '700 26px Unb'; ctx.fillStyle = '#8fb0ae'; ctx.fillText(lab, x0 + 28, 1312 + i * 84); ctx.font = '800 36px Unb'; ctx.fillStyle = '#fff'; ctx.fillText(val, x0 + 28, 1352 + i * 84); ctx.globalAlpha = 1; }); ctx.restore(); };
+    card(40, 1, TPL, "SAM'S SHADOW", [['RECORD', '0 – 1'], ['LAST FIGHT', 'ran from a ponytail'], ['HEIGHT', 'depends on the lamp'], ['SPECIAL', 'tactical retreat']], '#7af0e0');
+    card(570, -1, TPR, "BRAD'S SHADOW", [['RECORD', '27 – 0'], ['LAST FIGHT', 'a mailbox. won.'], ['HEIGHT', '6′4″ of pure rage'], ['SPECIAL', 'steals girls']], '#ff5a4a');
+    if (t > TP1 - .4 && t < LUN - .1) { const k = ease(t, TP1 - .4, TP1 - .1, back); ctx.save(); ctx.translate(540, 1750); ctx.scale(k, k); ctx.textAlign = 'center'; ctx.font = '900 64px Unb'; ctx.lineWidth = 10; ctx.strokeStyle = '#07090a'; ctx.strokeText('ODDS  1 : 1000', 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText('ODDS  1 : 1000', 0, 0); ctx.restore(); }
     // ROUND 1 / FIGHT!
-    const a1 = lt('an1'); if (t > a1 - .1 && t < A2) { const k = ease(t, a1 - .1, a1 + .1, back); ctx.save(); ctx.translate(540, 900); ctx.scale(k, k); ctx.textAlign = 'center'; ctx.font = '900 130px Unb'; ctx.lineWidth = 18; ctx.strokeStyle = '#07060c'; ctx.strokeText('ROUND 1', 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText('ROUND 1', 0, 0); ctx.restore(); }
-    if (t > A2 - .05 && t < A2 + .9) { const k = ease(t, A2 - .05, A2 + .12, back), sx2 = (h1(Math.floor(t * 30)) - .5) * 30 * (1 - ease(t, A2, A2 + .4)); ctx.save(); ctx.translate(540 + sx2, 900); ctx.scale(k * 1.15, k * 1.15); ctx.rotate(-.06); ctx.textAlign = 'center'; ctx.font = '900 170px Unb'; ctx.lineWidth = 22; ctx.strokeStyle = '#07060c'; ctx.strokeText('FIGHT!', 0, 0); ctx.fillStyle = '#ff2a3a'; ctx.fillText('FIGHT!', 0, 0); ctx.restore(); }
-    // финал: столкновение → стоп-кадр
-    if (t > F5) { const k = t - F5;
-      if (k > .1) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = `sepia(.8) saturate(1.6) hue-rotate(-20deg) contrast(1.25)`; ctx.globalAlpha = ease(t, F5 + .1, F5 + .4); ctx.drawImage(OUTC, 0, 0); ctx.restore(); }
+    if (t > A1 - .1 && t < A2) { const k = ease(t, A1 - .1, A1 + .1, back); ctx.save(); ctx.translate(540, 900); ctx.scale(k, k); ctx.textAlign = 'center'; ctx.font = '900 140px Unb'; ctx.lineWidth = 16; ctx.strokeStyle = '#1a1208'; ctx.strokeText('ROUND 1', 0, 0); ctx.fillStyle = BEI; ctx.fillText('ROUND 1', 0, 0); ctx.restore(); }
+    if (t > A2 - .05 && t < FZ + .1) { const k = ease(t, A2 - .05, A2 + .12, back); ctx.save(); ctx.translate(540, 900); ctx.scale(k * 1.15, k * 1.15); ctx.rotate(-.05); ctx.textAlign = 'center'; ctx.font = '900 180px Unb'; ctx.lineWidth = 22; ctx.strokeStyle = '#1a1208'; ctx.strokeText('FIGHT!', 0, 0); ctx.fillStyle = '#e8642a'; ctx.fillText('FIGHT!', 0, 0); ctx.restore(); }
+    // рывок → стоп-кадр за миг до удара
+    if (t > LUN && t < FZ) { const k = ease(t, LUN, FZ); ctx.save(); ctx.globalAlpha = .3 + .4 * k; ctx.strokeStyle = '#fff'; for (let i = 0; i < 36; i++) { const a = h1(i) * 6.28, r0 = 300 + h1(i + 9) * 200 * (1 - k); ctx.lineWidth = 2 + h1(i + 3) * 5; ctx.beginPath(); ctx.moveTo(540 + Math.cos(a) * r0, 980 + Math.sin(a) * r0); ctx.lineTo(540 + Math.cos(a) * 1400, 980 + Math.sin(a) * 1400); ctx.stroke(); } ctx.restore(); }
+    if (t > FZ) { const k = t - FZ;
+      if (k > .1) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = 'grayscale(.6) contrast(1.3) brightness(.9)'; ctx.globalAlpha = ease(t, FZ + .1, FZ + .35); ctx.drawImage(OUTC, 0, 0); ctx.restore(); }
       if (k < .14) { ctx.fillStyle = `rgba(255,255,255,${1 - k / .14})`; ctx.fillRect(0, 0, 1080, 1920); }
-      const p = wpos(shade.aR.hand); const [x, y] = toScreen(p.x + .25, p.y, p.z); ctx.save(); ctx.globalAlpha = ease(t, F5, F5 + .1); ctx.strokeStyle = '#fff'; ctx.lineWidth = 10; for (let r = 0; r < 12; r++) { const a = r / 12 * 6.28; ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * 40, y + Math.sin(a) * 40); ctx.lineTo(x + Math.cos(a) * 170, y + Math.sin(a) * 170); ctx.stroke(); } ctx.restore();
-      const tb = ease(t, F5 + .45, F5 + .75, back); ctx.save(); ctx.translate(lerp(1300, 600, tb), 1240); ctx.fillStyle = '#07060c'; ctx.beginPath(); ctx.moveTo(-430, -60); ctx.lineTo(330, -60); ctx.lineTo(430, 0); ctx.lineTo(330, 60); ctx.lineTo(-430, 60); ctx.fill(); ctx.font = '900 52px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd36a'; ctx.fillText('TO BE CONTINUED', -40, 18); ctx.restore();
-      if (t > F5 + .9) { ctx.save(); ctx.globalAlpha = ease(t, F5 + .9, F5 + 1.2); ctx.fillStyle = 'rgba(7,6,12,.72)'; ctx.fillRect(0, 1380, 1080, 540); ctx.restore();
-        narr(t, F5 + .9, 99, 'FINAL EPISODE · tomorrow', { y: 1470, size: 50, n: 30 }); narr(t, F5 + 1.3, 99, 'Team Shadow or Team Brad?', { y: 1600, size: 52, n: 26, accent: ['shadow', 'brad?'] }); narr(t, F5 + 1.9, 99, 'Comment below', { y: 1730, size: 48, n: 20, accent: ['comment'] }); } }
-    drawLines(T, { an1: { hide: true }, an2: { hide: true }, ex3: { y: 640, size: 92, n: 16 } }); };
+      const tb = ease(t, FZ + .4, FZ + .7, back); ctx.save(); ctx.translate(lerp(1300, 600, tb), 1240); ctx.fillStyle = '#07060c'; ctx.beginPath(); ctx.moveTo(-430, -60); ctx.lineTo(330, -60); ctx.lineTo(430, 0); ctx.lineTo(330, 60); ctx.lineTo(-430, 60); ctx.fill(); ctx.font = '900 52px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = BEI; ctx.fillText('TO BE CONTINUED', -40, 18); ctx.restore();
+      if (t > FZ + .8) { ctx.save(); ctx.globalAlpha = ease(t, FZ + .8, FZ + 1.1); ctx.fillStyle = 'rgba(7,6,12,.72)'; ctx.fillRect(0, 1380, 1080, 540); ctx.restore();
+        narr(t, FZ + .8, 99, 'FINAL EPISODE · tomorrow', { y: 1470, size: 50, n: 30 }); narr(t, FZ + 1.2, 99, 'Team Shadow or Team Brad?', { y: 1600, size: 52, n: 26, accent: ['shadow', 'brad?'] }); narr(t, FZ + 1.8, 99, 'Comment below', { y: 1730, size: 48, n: 20, accent: ['comment'] }); } }
+    drawLines(T, { an1: { hide: true }, an2: { hide: true } }); };
 };
 
 // ===== дерзкий монтаж начала (как в концовке): стоп-кадры с титрами, шкала «достоинства», повтор-разбор, красные флаги, счёт =====
