@@ -46,6 +46,15 @@ def comic(t0, t1, bpm=112, v=1.):
 def sneak(t0, t1, v=1.):
     b = 60 / 120; seq = ['D3', 'F3', 'A3', 'F3', 'D3', 'F3', 'Bb3', 'A3']; i = 0; t = t0
     while t < t1 - .1: put(pluck(hz(seq[i % 8]), .35, .3), t, .45 * v, -.2 + (i % 2) * .4, .1); i += 1; t += b * .5
+def cricket(d):
+    n = int(SR * d); tt = np.arange(n) / SR; car = np.sin(2 * np.pi * 4300 * tt); gate = ((tt * 18) % 1 < .45) * ((tt * 1.6) % 1 < .55)
+    return car * gate * .3
+def whist(notes, dur=.32):
+    out = []
+    for f in notes:
+        n = int(SR * dur); tt = np.arange(n) / SR; fr = f * (1 + .03 * np.sin(2 * np.pi * 5.5 * tt)); ph = 2 * np.pi * np.cumsum(fr) / SR
+        out.append(np.sin(ph) * np.minimum(1, tt / .03) * np.minimum(1, (dur - tt) / .06))
+    return np.concatenate(out) * .4
 def main_music():
     MOT = ['A5', 'G5', 'F5', 'G5', 'A5', 'C6', 'A5']
     # H: холодное начало — томный пэд и лаунж, хлоп-«перемотка»
@@ -76,10 +85,13 @@ def main_music():
     put(riser(.8, .6), PUSH - .8, .35, 0, .3); put(boom(.5, 1.0), PUSH, .5, 0, .2)
     chord(['F3', 'A3', 'C4', 'E4'], PUSH + .3, end('S1') - PUSH + .5, .22)
     for k, n in enumerate(['C5', 'F5', 'A5', 'C6']): put(celesta(hz(n)), PUSH + .45 + k * .12, .25, .3, .5)
+    AWK = AT['s6'] + D['s6'] + .1
+    put(cricket(1.9), AWK, .35, .4, .3); put(whist([hz("G5"), hz("E5"), hz("G5"), hz("C6")]), AWK + .65, .3, -.2, .3)
     # S5–S10 кафе
-    KNOCK = AT['g3'] - .3
+    KNOCK = AT['g9'] - .15
     lounge(sh('S5') + .2, KNOCK, .9)
-    put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - AT['g7'], 1.5, .1, 2200), AT['g7'], .18, 0, .4); put(riser(KNOCK - AT['g7'] - .3, .5), AT['g7'] + .3, .2, 0, .3)
+    S7 = sh('S7'); put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - S7, 1.5, .1, 2200), S7, .18, 0, .4)
+    for k, n in enumerate(['E3', 'D3', 'E3', 'G3']): put(pluck(hz(n), .25, .5), KNOCK - 1.1 + k * .25, .3, -.2, .1)  # крадущиеся щипки
     TOUCH = sh('S8') + 2.9
     for k in range(8): put(pluck(hz(['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'][k]), .3, .6), sh('S8') + .9 + k * .25, .25, 0, .2)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7', 'E7']): put(celesta(hz(n)), TOUCH + k * .07, .22, .4 - k * .15, .6)
@@ -172,7 +184,7 @@ def variants():
             k += 1
         put(boom(.7, 1.2), AT['ex1'] - .05, .45, 0, .2); put(boom(.8, 1.4), AT['ex2'] - .05, .5, 0, .2); put(riser(1.4, .5), AT['ex2'] + .6, .25, 0, .2)
         put(riser(max(.6, S2 - SH - D['sh1'] - .1), .7), SH + D['sh1'], .3, 0, .3); put(boom(1.0, 2.0), S2 + .3, .6, 0, .3)
-        k0 = sh('KQ'); A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; F4 = F3 + 1.25; F5 = F4 + .95
+        k0 = sh('KQ'); A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; SPL = F3 + 1.15; F4 = F3 + 1.9; F5 = F4 + 1.1
         put(boom(1.0, 1.8), k0 + .05, .55, 0, .3); put(boom(1.4, 2.6), A1 - .25, .4, 0, .4); put(boom(1.2, 2.0), A2 + .35, .6, 0, .3)
         def beat(a, b_, v=1.):
             k = 0
@@ -186,7 +198,10 @@ def variants():
                 k += 1
         beat(A2 + .3, E3 - .1, .7); beat(E3 + D['ex3'], HIT - .05, .7); put(drone(hz('E2'), HIT - A2, 1.), A2 + .3, .3, 0, .3)
         put(boom(1.2, 2.2), HIT, .7, 0, .3)
-        beat(F3 + .2, F4, .8); put(riser(F5 - F3 - .3, .8), F3 + .3, .35, 0, .3)
+        beat(F3 + .2, SPL, .8); put(boom(1.2, 2.2), SPL, .7, 0, .4); put(swell(.8, .9), SPL, .35, 0, .4)
+        k = 0
+        while SPL + .3 + k * .07 < F4: put(kick(.6 + .4 * k / 12), SPL + .3 + k * .07, .25 + .02 * k, 0, 0); k += 1
+        put(riser(F5 - SPL - .2, .9), SPL + .2, .4, 0, .3)
         put(boom(1.6, 3.0), F5, .9, 0, .5); chord(['E2', 'B2', 'E3', 'G3'], F5 + .6, DUR - F5, .2, 0, 1200)
         return
     if PART in 'NOP': return

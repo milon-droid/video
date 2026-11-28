@@ -675,6 +675,12 @@
    "role": "ex_en",
    "text": "That tickles.",
    "say": "Heh. ...That tickles."
+  },
+  {
+   "id": "g9",
+   "role": "shadow2_en",
+   "text": "Oops.",
+   "say": "Oops."
   }
  ]
 }

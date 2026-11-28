@@ -11,8 +11,10 @@ def syn(t, ty, g=.6, **k): C.append({"t": round(t, 3), "type": ty, "gain": g, **
 def amb(k0, k1, id, g): lib(ST[k0], id, g, dur=round(end(k1) - ST[k0], 2), align="start")
 def main_sfx():
     # дерзкие вставки начала: стоп-кадр, шкала достоинства + K.O., повтор, титр-удар, красные флажки, счёт
-    FZ = AT['h1'] + D['h1'] + .05; lib(FZ, "cinematic-slam-big", .6, align="start"); lib(FZ + .05, "whoosh-fast-hard", .5, align="start")
-    for i in range(3): lib(FZ + .05 + i * .25, "pop-large-in", .4)
+    AWK = AT['s6'] + D['s6'] + .1
+    for i in range(3): lib(AWK + 1.4 + i * .12, "click-snap-firm", .4)
+    lib(AWK + .3, "click-latch-soft", .4)
+    for i in range(6): lib(AWK + .5 + i * .2, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .25 - i * .03, align="start")
     RUN = AT['fb2'] - .2; lib(RUN + 1.0, "oc-FGHTImpt_PunchHardest_OS_01", .7, align="start"); lib(RUN + 1.0, "impact-deep-hard", .5)
     W0 = AT['b19'] + .3; lib(W0 - .1, "reverse-whoosh-medium-strong", .5, align="start"); lib(W0, "click-latch-firm", .3); lib(W0 + 1.6, "whoosh-fast-soft", .45, align="start")
     lib(ST['CAT'] + 1.8, "digital-power-up", .35, align="start"); lib(ST['CAT'] + 2.2, "shimmer-medium-bright", .3, align="start")
@@ -52,7 +54,7 @@ def main_sfx():
     lib(ST['S5'] + .3, "oc-PAPRHndl_BookPageTurns_OS_01", .3, align="start"); lib(ST['S5'] + .7, "shimmer-long-soft", .3, align="start")
     for i in range(5): lib(ST['S6'] + .15 + i * .42, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .22, align="start")
     lib(AT['f2'] + D['f2'] + .9, "foley-fabric-slide", .45)
-    K = AT['g3'] - .3; lib(K, "foley-glass-touch", .8); lib(K + .3, "oc-PLASImpt_PlasticCupDrop_OS_01", .55); syn(K + .32, "puff", .4)
+    K = AT['g9'] - .15; lib(K - 1.0, "move-spring", .3, rate=.8); lib(K, "foley-glass-touch", .8); lib(K + .3, "oc-PLASImpt_PlasticCupDrop_OS_01", .55); syn(K + .32, "puff", .4)
     TOUCH = ST['S8'] + 2.9; lib(TOUCH, "shimmer-long-sparkle", .55, align="start"); lib(TOUCH + .35, "whoosh-fast-soft", .5, align="start"); lib(TOUCH + .4, "transform-stretch", .45, align="start", rate=1.4)
     LOOK2 = AT['i3'] + D['i3'] + .2; lib(LOOK2, "whoosh-fast-soft", .45, align="start")
     SHAKE = ST['S10B'] + 3.85; KISS = SHAKE + .45; DROP = KISS + .6 + 1.6 + .4
@@ -125,7 +127,7 @@ def variants():
         lib(AT['ex2'] + .2, "transform-stretch", .5, align="start", rate=1.3); lib(AT['ex2'] + .4, "shimmer-long-sparkle", .45, align="start"); 
         lib(SH + .85, "foley-fabric-touch", .5); lib(SH + 1.05, "foley-fabric-touch", .4); lib(SH + D['sh1'] - .2, "pop-large-out", .3)
         lib(S2 + .45, "oc-GOREBone_SkullCracking_OS_01", .45, align="start"); lib(S2 + .85, "oc-GOREBone_SkullCracking_OS_02", .45, align="start"); lib(S2 + .3, "digital-power-up", .4, align="start")
-        k0 = ST['KQ']; A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F0 = E3 - 2.2; F1 = E3 - 1.25; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; F4 = F3 + 1.25; F5 = F4 + .95
+        k0 = ST['KQ']; A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F0 = E3 - 2.2; F1 = E3 - 1.25; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; SPL = F3 + 1.15; F4 = F3 + 1.9; F5 = F4 + 1.1
         lib(k0 - .2, "whoosh-slow-soft", .6, align="start"); lib(k0 + .05, "impact-deep-hard", .6)
         lib(A2 + .4, "cinematic-slam-big", .4, align="start")
         lib(F0, "oc-FEETHmn_ShoeConcreteLand_OS_01", .5, align="start"); lib(F0 + .3, "whoosh-medium-hard", .7, align="start"); lib(F0 + .32, "reverse-whoosh-medium-strong", .3, align="start")
@@ -133,7 +135,7 @@ def variants():
         while t < E3 - .1: lib(t, "oc-FGHTImpt_Kick_OS_0%d" % (1 + n % 5), .24, align="start", rate=1.25); n += 1; t += 1 / 7
         lib(F2, "whoosh-medium-hard", .6, align="start"); lib(HIT, "oc-FGHTImpt_PunchHardest_OS_01", .95, align="start"); lib(HIT, "impact-deep-hard", .7)
         lib(HIT + .05, "faller-1s-strong", .4, align="start"); lib(HIT + .6, "impact-heavy-firm", .7); lib(HIT + .62, "oc-FEETHmn_ShoeConcreteLand_OS_02", .6, align="start")
-        lib(F3 + .6, "digital-power-up", .55, align="start"); lib(F3 + 1.0, "oc-UIMisc_Powerup_OS_01", .45, align="start")
+        lib(F3 + .6, "digital-power-up", .55, align="start"); lib(SPL - .05, "oc-UIMisc_Powerup_OS_02", .6, align="start"); lib(SPL, "whoosh-fast-hard", .6, align="start"); lib(SPL + .1, "whoosh-fast-medium", .5, align="start"); lib(SPL + .1, "shimmer-long-sparkle", .45, align="start")
         lib(F4, "oc-FEETHmn_ShoeConcreteLand_OS_01", .5, align="start"); lib(F4 + .1, "reverse-whoosh-long-strong", .5, align="start"); lib(F4 + .2, "whoosh-slow-soft", .5, align="start")
         lib(F5, "oc-FGHTImpt_PunchHarder_OS_01", .9, align="start"); lib(F5, "cinematic-slam-big", .9, align="start"); lib(F5 + .05, "bsb-ice-crack-1", .45, align="start")
         lib(F5 + .45, "whoosh-fast-hard", .5, align="start"); lib(F5 + .9, "pop-large-in", .4); lib(F5 + 1.3, "pop-large-in", .35)

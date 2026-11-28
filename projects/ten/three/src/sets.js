@@ -41,12 +41,12 @@ export const night = (() => {
   [3.05, 5.25, 7.35].forEach(y => add(g, mesh(G.box(24, .08, .12), clay('#2e2646'), false, true), 0, y, -2.12));
   // окна в стене
   [[1.6, 2.4], [3.6, 2.4], [-3.4, 2.6], [5.8, 2.6]].forEach(([x, y], i) => { const fr = mesh(G.rbox(1.0, 1.25, .12, .03), clay('#1e1830'), false, true); add(g, fr, x, y, -2.12);
-    const gl = mesh(G.plane(.84, 1.08), glow(i % 2 ? '#ffd27a' : '#ffbf6a', i === 2 ? .25 : 1.05), false, false); add(g, gl, x, y, -2.05);
+    const gl = mesh(G.plane(.84, 1.08), glow(i % 2 ? '#ffd27a' : '#ffbf6a', i === 2 ? .25 : 1.05), false, false); add(g, gl, x, y, -2.05); (g.userData.wins = g.userData.wins || []).push(gl);
     const cr = mesh(G.box(.06, 1.08, .04), clay('#1e1830')); add(g, cr, x, y, -2.03); const cr2 = mesh(G.box(.84, .06, .04), clay('#1e1830')); add(g, cr2, x, y, -2.03); });
   // верхние этажи: окна (часть горит, у некоторых шторы), балконы
   [[-3.4, 4.3], [-1.4, 4.3], [1.6, 4.3], [3.6, 4.3], [5.8, 4.3], [-3.4, 6.4], [-1.4, 6.4], [1.6, 6.4], [3.6, 6.4], [5.8, 6.4], [-5.4, 4.3], [-5.4, 6.4]].forEach(([x, y], i) => {
     const on = h1(i + 40) < .55; const fr = mesh(G.rbox(1.0, 1.25, .12, .03), clay('#1e1830'), false, true); add(g, fr, x, y, -2.12);
-    const gl = mesh(G.plane(.84, 1.08), on ? glow(i % 3 ? '#ffd27a' : '#9ad0ff', .9) : clay('#141026'), false, false); add(g, gl, x, y, -2.05);
+    const gl = mesh(G.plane(.84, 1.08), on ? glow(i % 3 ? '#ffd27a' : '#9ad0ff', .9) : clay('#141026'), false, false); add(g, gl, x, y, -2.05); if (on) (g.userData.wins = g.userData.wins || []).push(gl);
     if (on && i % 2) { const cu = mesh(G.plane(.3, 1.08), clay('#c86a7a'), false, false); add(g, cu, x - .27, y, -2.04); }
     add(g, mesh(G.box(.06, 1.08, .04), clay('#1e1830')), x, y, -2.03);
     if (i % 4 === 1) { const bal = new THREE.Group(); add(bal, mesh(G.box(1.5, .1, .6), clay('#3a3058')), 0, 0, .3); for (let k = 0; k < 8; k++) add(bal, mesh(G.box(.03, .45, .03), clay('#5a5078')), -.7 + k * .2, .25, .58); add(bal, mesh(G.box(1.5, .04, .04), clay('#5a5078')), 0, .48, .58); add(g, bal, x, y - .75, -2.15); }
@@ -90,7 +90,7 @@ export const night = (() => {
     pm.rotation.z = i ? .05 : -.06; add(neon, pm, i ? 1.35 : -1.0, 1.55, -2.13); });
   const arrow = mesh(G.plane(.5, .3), new THREE.MeshBasicMaterial({ map: canvasTex(128, 76, (c) => { c.strokeStyle = '#ffd36a'; c.lineWidth = 8; c.shadowColor = '#ffd36a'; c.shadowBlur = 12; c.beginPath(); c.moveTo(10, 38); c.lineTo(100, 38); c.moveTo(78, 14); c.lineTo(110, 38); c.lineTo(78, 62); c.stroke(); }), transparent: true, toneMapped: false }), false, false); add(neon, arrow, -.85, 2.0, -2.12);
   g.add(neon);
-  g.userData = {}; reg('night', g, skyTex([[0, '#070a22'], [.6, '#1b1d4a'], [1, '#3a2a5a']]), new THREE.Fog('#1d1a40', 9, 34));
+  g.userData = { wins: g.userData.wins }; reg('night', g, skyTex([[0, '#070a22'], [.6, '#1b1d4a'], [1, '#3a2a5a']]), new THREE.Fog('#1d1a40', 9, 34));
   return { g, sp, lampX: lampX + .5, lampZ, neon, sign, sign2, nl, wallZ: -2.14 };
 })();
 
