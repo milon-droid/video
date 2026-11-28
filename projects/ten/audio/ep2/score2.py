@@ -46,6 +46,31 @@ def comic(t0, t1, bpm=112, v=1.):
 def sneak(t0, t1, v=1.):
     b = 60 / 120; seq = ['D3', 'F3', 'A3', 'F3', 'D3', 'F3', 'Bb3', 'A3']; i = 0; t = t0
     while t < t1 - .1: put(pluck(hz(seq[i % 8]), .35, .3), t, .45 * v, -.2 + (i % 2) * .4, .1); i += 1; t += b * .5
+def sax(f, d, v=1.):
+    n = int(SR * d); tt = np.arange(n) / SR; vib = 1 + .007 * np.sin(2 * np.pi * 5.3 * tt) * np.minimum(1, tt / .35)
+    ph = 2 * np.pi * np.cumsum(f * vib) / SR; saw = 2 * ((ph / (2 * np.pi)) % 1) - 1; tone = saw * .7 + np.sign(np.sin(ph)) * .25 + rng.standard_normal(n) * .07
+    tone = sosfilt(butter(2, [350, 2800], 'band', fs=SR, output='sos'), tone) * (1 + .08 * np.sin(2 * np.pi * 31 * tt))
+    env = np.minimum(1, tt / .09) ** 1.5 * np.minimum(1, (d - tt) / .12).clip(0) * (1 + .15 * np.minimum(1, tt / .5))
+    return tone * env * v * 1.6
+def rhodes(fs, d):
+    n = int(SR * d); tt = np.arange(n) / SR; out = np.zeros(n)
+    for f in fs: out += (np.sin(2 * np.pi * f * tt + .6 * np.sin(2 * np.pi * f * 2 * tt) * np.exp(-tt * 3))) * np.exp(-tt * 1.4)
+    return out / len(fs) * .8
+def ballad(t0, t1):   # медленная сакс-баллада 80-х (своя мелодия): Dm9 – Bbmaj7 – Gm7 – A7, гулкий малый, сакс
+    b = 60 / 66; ch = [['D3', 'F3', 'A3', 'C4', 'E4'], ['Bb2', 'D3', 'F3', 'A3'], ['G2', 'Bb2', 'D3', 'F3'], ['A2', 'C#3', 'E3', 'G3']]
+    k = 0
+    while t0 + k * 2 * b < t1:
+        tt = t0 + k * 2 * b; c = ch[k % 4]; d = min(2 * b, t1 - tt); put(rhodes([hz(x) for x in c[1:]], d + .3), tt, .35, -.15, .5); put(pad([hz(x) for x in c], d + .2, .3, .8, 1800), tt, .14, .1, .6)
+        put(bass(hz(c[0].replace('3', '1').replace('2', '1')), .8), tt, .35, 0, .1); k += 1
+    k = 0
+    while t0 + k * b < t1:
+        tt = t0 + k * b; put(kick(.8), tt, .3, 0, .2) if k % 2 == 0 else put(snare(1.0), tt, .32, 0, .9)
+        put(hat(.4), tt + b / 2, .06, .3, .2); k += 1
+    mel = [('A4', .55), ('G4', .18), ('F4', .18), ('E4', .18), ('F4', .5), ('D4', .9), ('C5', .45), ('A4', .5), ('Bb4', .25), ('A4', 1.0)]
+    tt = t0 + .25
+    for n_, d in mel:
+        if tt + .1 > t1: break
+        put(sax(hz(n_), min(d, t1 - tt) + .05), tt, .42, .15, .55); tt += d
 def cricket(d):
     n = int(SR * d); tt = np.arange(n) / SR; car = np.sin(2 * np.pi * 4300 * tt); gate = ((tt * 18) % 1 < .45) * ((tt * 1.6) % 1 < .55)
     return car * gate * .3
@@ -77,7 +102,7 @@ def main_music():
     pass  # правило убрано: for k in range(int(SH_('S4') / .5)): put
     pass  # правило убрано: put(boom(.6, 1.6), AT['d4'], .4, 0, .3)
     # SS поиск: крадущийся шаг; «THERE» — блёстки
-    sneak(AT['s10'] - .1, AT['s4'], 1.0)
+    sneak(sh('S1'), AT['s4'], 1.0)
     for k, n in enumerate(['C6', 'E6', 'G6', 'C7']): put(celesta(hz(n)), AT['s4'] + k * .08, .25, .3, .6)
     # S1 дверь: рывок, толчок, тёплый аккорд за дверью
     s1 = sh('S1'); PUSH = AT['p2'] + .3
@@ -86,15 +111,15 @@ def main_music():
     chord(['F3', 'A3', 'C4', 'E4'], PUSH + .3, end('S1') - PUSH + .5, .22)
     for k, n in enumerate(['C5', 'F5', 'A5', 'C6']): put(celesta(hz(n)), PUSH + .45 + k * .12, .25, .3, .5)
     AWK = AT['s6'] + D['s6'] + .1; R0 = sh('SS'); SCR = AT['s6'] - .4
-    chord(['F3', 'A3', 'C4', 'E4'], R0, SCR - R0, .26, 0, 2600)
-    for k, n in enumerate(['A5', 'C6', 'E6', 'F6', 'E6', 'C6', 'A5', 'C6']):
-        if R0 + .3 + k * .4 < SCR - .1: put(celesta(hz(n)), R0 + .3 + k * .4, .26, .2, .6)
+    ballad(R0 + .1, SCR)
     sw = int(SR * .5); tt = np.arange(sw) / SR; fr = 900 * np.exp(-tt * 5) + 120; ph = 2 * np.pi * np.cumsum(fr) / SR
     scr = (np.sign(np.sin(ph)) * .5 + rng.standard_normal(sw) * .5) * np.exp(-tt * 3) * (1 - np.exp(-tt * 80)); put(scr, SCR, .35, 0, .05)
     put(cricket(1.9), AWK, .35, .4, .3); put(whist([hz("G5"), hz("E5"), hz("G5"), hz("C6")]), AWK + .65, .3, -.2, .3)
     # S5–S10 кафе
     KNOCK = AT['g9'] - .15
-    lounge(sh('S5') + .2, KNOCK, .9)
+    AWKC = AT['g8'] + D['g8'] + .2
+    lounge(sh('S5') + .2, AWKC, .9)
+    for k in range(int((KNOCK - AWKC) / .5)): put(tick(.5, 1500), AWKC + .2 + k * .5, .14, .2, .1)  # неловкая тишина: только часы
     S7 = sh('S7'); put(pad([hz('C4'), hz('E4'), hz('G4')], KNOCK - S7, 1.5, .1, 2200), S7, .18, 0, .4)
     for k, n in enumerate(['E3', 'D3', 'E3', 'G3']): put(pluck(hz(n), .25, .5), KNOCK - 1.1 + k * .25, .3, -.2, .1)  # крадущиеся щипки
     TOUCH = sh('S8') + 2.9

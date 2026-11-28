@@ -108,12 +108,12 @@ S.S1 = (t, T) => { useSet('front'); hideAll(); flower.visible = true;
   let sx, sPose, turn, mood = 'calm', stretch = 0;
   if (t < A) { sx = x + .85; sPose = { ...pose, aR: t > lt('s4') ? [1.5, -.3, .05] : pose.aR }; turn = Math.PI / 2; mood = 'happy'; }
   else if (t < TURN) { sx = x + .85; sPose = pose; turn = Math.PI * .9 - Math.PI / 2; mood = 'calm'; }
-  else if (t < GRAB) { sx = DX + .8; const k = ease(t, TURN + .2, GRAB, sm); sPose = { ...POSE.stand, aR: [lerp(.1, 1.55, k), -.05, .05], lean: k * .15, headY: -.3 }; turn = -Math.PI / 2; mood = 'angry'; stretch = k * (DX + .8 - .2 - x1) / .43; }
-  else if (t < PUSH) { sx = DX + .8; const k = ease(t, GRAB + .15, PUSH - .2, sm); sPose = { ...POSE.stand, aR: [1.55, -.05, .05], lean: -.3, lL: [.35, .1], lR: [-.3, .1] }; turn = -Math.PI / 2; mood = 'angry'; stretch = (DX + .8 - .2 - lerp(x1, DX - .35, k)) / .43; }
-  else { sx = lerp(DX + .8, DX + .1, ease(t, PUSH - .1, PUSH + .15)); sPose = { ...POSE.stand, aL: [1.5, .1, .1], aR: [1.5, -.1, .1], lean: .35, lL: [.5, .2], lR: [-.4, .2] }; turn = -Math.PI / 2; mood = 'angry'; }
+  else if (t < GRAB) { const k = ease(t, TURN + .2, GRAB, sm); sx = lerp(DX + .8, x + .55, ease(t, TURN, TURN + .5, sm)); sPose = { ...POSE.stand, aR: [lerp(.1, 1.5, k), -.05, .1], lean: k * .1, headY: -.3 }; turn = -Math.PI / 2; mood = 'angry'; }
+  else if (t < PUSH) { sx = x + .55; sPose = { ...POSE.stand, aR: [1.5, -.05, .1], lean: -.3, lL: [.35, .1], lR: [-.3, .1] }; turn = -Math.PI / 2; mood = 'angry'; }
+  else { sx = x - .35; sPose = { ...POSE.stand, aL: [1.5, .1, .1], aR: [1.5, -.1, .1], lean: .35, lL: [.5, .2], lR: [-.4, .2] }; turn = Math.PI / 2; mood = 'angry'; }
   applyPose(shade, sPose, t, { mood: t > IN ? 'happy' : mood, look: -1 }, 3);
-  shade.aR.sh.scale.y = Math.max(1, stretch * 1.4);
-  placeShade(shade, { x: inside ? DX + .1 : sx, z: WZ, rise: 1, scale: 1.15, turn: t > IN + .3 ? 0 : turn, op: 1 });
+  shade.aR.sh.scale.y = 1;
+  placeShade(shade, { x: inside ? DX + .1 : sx, z: WZ, rise: 1, scale: 1.15, turn: t > IN + .3 ? 0 : turn, op: 1 - ease(t, IN + .1, IN + .45) });
   shade.holder.position.y = -.02;
   const [jx, jy] = hh(t, .03); const pk = spring(t, PUSH, 2.5, 6) * .12;
   const est = 1 - ease(t, .3, A, sm); cam(lerp(DX + .2, DX - .7, est) + jx, lerp(1.15, 1.9, est) + jy, lerp(4.9, 7.4, est) - pk, lerp(DX + .25, DX - .7, est), lerp(.9, 1.55, est), -1.2, 36, -.03 * (1 - est) + pk * .2);
@@ -140,7 +140,7 @@ S.H = (t, T) => { useSet('cafe'); hideAll(); cafe.spill.visible = true; cafe.spi
     if (0) { const h = wpos(barista.head); const [bx, by] = toScreen(h.x, h.y, h.z); ctx.save(); ctx.font = '900 70px Unb'; ctx.fillStyle = '#ffd36a'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 12; ctx.textAlign = 'center'; ctx.strokeText('!!', bx, by - 90); ctx.fillText('!!', bx, by - 90); ctx.restore(); }
     band(shade, hero, t, .8); band(miaSh, mia, t, .8);
     drawLines(T, { h1: { y: 1500, accent: ['making'] } });
-    if (rw > 0) { ctx.save(); ctx.globalAlpha = rw * .5; for (let i = 0; i < 14; i++) { ctx.fillStyle = i % 2 ? '#fff' : '#000'; ctx.fillRect(0, ((i * 160 + t * 2400) % 1920), 1080, 14 + h1(i) * 30); } ctx.restore(); stamp(t, RW + .1, '◀◀ REWIND', { y: 900, size: 92, color: '#ffffff', rot: -.05 }); } };
+    if (rw > 0) { ctx.save(); ctx.globalAlpha = rw * .5; for (let i = 0; i < 14; i++) { ctx.fillStyle = i % 2 ? '#fff' : '#000'; ctx.fillRect(0, ((i * 160 + t * 2400) % 1920), 1080, 14 + h1(i) * 30); } ctx.restore();  } };
 };
 // FB. ФЛЭШБЕК «LAST NIGHT»: тень увидела тень Mia — и трусливо удрала
 S.FB = (t, T) => { nightDoor(1, false); hideAll();
@@ -173,27 +173,27 @@ jogger.root.traverse(o => { if (o.isMesh) o.castShadow = false; });
 const jogSh = makeShade(); scene.add(jogSh.holder); jogSh.holder.visible = false; { const tl = new THREE.Group(); jogSh.head.add(tl); tl.position.set(0, .14, -.15); [[0, 0, 0, .09], [0, -.1, -.08, .08], [0, -.2, -.11, .07], [0, -.3, -.12, .055]].forEach(([x, y, z, r]) => { const m = mesh(G.sph(r, 12), ink, false, false); m.position.set(x, y, z); tl.add(m); }); jogSh.tail = tl; }
 pixel.g.visible = false; broom.visible = false;
 S.SS = (t, T) => { useSet('front'); hideAll(); pixel.g.visible = false; broom.visible = false; jogger.root.visible = true;
-  const s5 = lt('s9'), s6 = lt('s6'), s8 = lt('s10'), AWK0 = s6 + DURS.s6 + .1, s11 = lt('s11'), COOL = s11 + DURS.s11 + .1, RUNJ = s11 + .3, jg = RUNJ - .2, GUNS = COOL + .8;
+  const s5 = lt('s9') + DURS.s9 - .15, s6 = lt('s6'), s8 = 1e4, AWK0 = s6 + DURS.s6 + .1, s11 = lt('s11'), COOL = s11 + DURS.s11 + .1, RUNJ = s11 + .3, jg = RUNJ - .2, GUNS = COOL + .8;
   // крупно стена: тень Sam видит тень с хвостиком (бегун тянется у стены), подкатывает → отъезд камеры: там бородач
-  const yank = ease(t, s5 + .3, s5 + .6, back); const X = -6.25 + yank * .3; put(hero, X, -.55, Math.PI / 2 - .4, yank > 0 && t < s5 + 1.0 ? { ...POSE.stand, lean: .3, aR: [1.2, -.3, .2], lL: [.4, .2] } : { ...POSE.stand, aR: [.6, -.4, .3], headY: .3 }, t, { expr: t > s6 ? 'surprised' : 'calm', lookX: .7, smile: t > s6 ? 0 : .2, wide: t > s6 && t < s8, mouth: 0, noBlink: t > AWK0 && t < s8 });
+  const yank = ease(t, s5 + .3, s5 + .6, back); const X = -6.25 + yank * .3; put(hero, X, -.55, Math.PI / 2 - .4, yank > 0 && t < s5 + 1.0 ? { ...POSE.stand, lean: .3, aR: [1.2, -.3, .2], lL: [.4, .2] } : { ...POSE.stand, aR: [.6, -.4, .3], headY: .3 }, t, { expr: t > s6 ? 'surprised' : 'calm', lookX: t > AWK0 ? -.6 : .7, lookY: t > AWK0 ? .3 : 0, smile: t > s6 ? 0 : .2, wide: t > s6 && t < s8, mouth: 0, noBlink: t > AWK0 && t < s8 });
   const jx = -4.75; const turnJ = ease(t, s6 - .35, s6 - .05);
-  const run = ease(t, RUNJ, RUNJ + 1.6, k => k * k); const jxx = jx + run * 4.5;
-  put(jogger, jxx, -.45, t > RUNJ ? -Math.PI / 2 + Math.PI : -Math.PI / 2 + turnJ * (Math.PI / 2 + .25), t > RUNJ ? walk(run * 9, 1) : t > jg - .4 ? { ...POSE.stand, aL: [1.3, .3, 2.6], aR: [1.3, -.3, 2.6], headX: -.05 } : t > AWK0 + .5 ? { ...POSE.shrug } : t > AWK0 ? { ...POSE.stand, aL: [.2, .5, .3], aR: [.2, -.5, .3] } : { ...POSE.stand, aL: [0, 2.7, .3], aR: [0, -2.7, .3], hipsZ: Math.sin(t * 2) * .12 * (1 - turnJ), lean: -.05 }, t, { expr: 'calm', smile: t > AWK0 ? .3 : .6, lid: .45, mouth: talkG(T, 's6') }, 0, 21);
+  const run = 0; const jxx = jx; const scr = t > COOL + .2;
+  put(jogger, jxx, -.45, -Math.PI / 2 + turnJ * (Math.PI / 2 + .25), scr ? { ...POSE.stand, aR: [.5, -.9, 2.7 + Math.sin(t * 14) * .15], aL: [.1, .2, .3], headY: -.5, headZ: .12 } : t > AWK0 ? { ...POSE.stand, aL: [.2, .5, .3], aR: [.2, -.5, .3], headY: -.4 } : { ...POSE.stand, aL: [0, 2.7, .3], aR: [0, -2.7, .3], hipsZ: Math.sin(t * 2) * .12 * (1 - turnJ), lean: -.05 }, t, { expr: t > AWK0 ? 'surprised' : 'calm', smile: t > AWK0 ? .1 : .6, lid: t > AWK0 ? .2 : .45, lookX: t > AWK0 ? -.9 : 0, mouth: talkG(T, 's6') }, 0, 21);
   jogger.tail.rotation.x = Math.sin(t * 2) * .2;
-  applyPose(jogSh, t > RUNJ ? walk(run * 9, 1) : t > jg - .4 ? { ...POSE.stand, aL: [1.3, .3, 2.6], aR: [1.3, -.3, 2.6] } : t > AWK0 + .5 ? { ...POSE.shrug } : t > AWK0 ? { ...POSE.stand } : { ...POSE.stand, aL: [0, 2.7, .3], aR: [0, -2.7, .3], hipsZ: Math.sin(t * 2) * .12 * (1 - turnJ) }, t, { mood: 'calm', look: -1 }, 23); placeShade(jogSh, { x: jxx - .45, z: front.wallZ + .02, rise: 1, scale: 1.15, turn: t > RUNJ ? Math.PI / 2 : -Math.PI / 2 + turnJ * Math.PI / 2, op: 1 }); jogSh.holder.position.y = -.02; jogSh.tail.rotation.x = -.3 + Math.sin(t * 2) * .2;
+  applyPose(jogSh, scr ? { ...POSE.stand, aR: [.5, -.9, 2.7 + Math.sin(t * 14) * .15], aL: [.1, .2, .3], headZ: .12 } : t > AWK0 ? { ...POSE.stand } : { ...POSE.stand, aL: [0, 2.7, .3], aR: [0, -2.7, .3], hipsZ: Math.sin(t * 2) * .12 * (1 - turnJ) }, t, { mood: 'calm', look: -1 }, 23); placeShade(jogSh, { x: jxx - .45, z: front.wallZ + .02, rise: 1, scale: 1.15, turn: t > AWK0 ? Math.PI / 2 : -Math.PI / 2 + turnJ * Math.PI / 2, op: 1 }); jogSh.holder.position.y = -.02; jogSh.tail.rotation.x = -.3 + Math.sin(t * 2) * .2;
   const sl = ease(t, .2, s5 - .1, sm), bk2 = ease(t, s8, s8 + .5);
-  applyPose(shade, t < s5 + .9 ? { ...walk(sl * 2.5), ...(t > s5 - .2 ? { aL: [.3, .9, 2.2], aR: [.9, -.4, .4], hipsZ: .25, headZ: .15, lean: .15 } : {}) } : t < s8 ? { ...POSE.stand, aL: [.3, .9, 2.2], aR: [.9, -.4, .4], hipsZ: .2 } : t > s8 ? { ...POSE.scared, lean: -.3 } : t > GUNS ? { ...POSE.stand, aR: [1.5, -.1, .15 + Math.max(0, Math.sin((t - GUNS) * 12)) * .3], aL: [1.5, .1, .15 + Math.max(0, Math.sin((t - GUNS) * 12 + 1)) * .3], lean: -.05, headZ: .15 } : t > COOL ? { ...POSE.stand, aL: [.3, .6, 2.2], aR: [.3, -.6, 2.2], headY: -.6, headX: -.2, hipsZ: Math.sin(t * 4) * .06 } : { ...POSE.stand, aL: [.3, .9, 2.2], aR: [.9, -.4, .4], hipsZ: .2, lean: -.12 * ease(t, AWK0, COOL) }, t, { mood: t > s8 ? 'wide' : t > COOL ? 'sly' : t > s6 ? 'wide' : 'happy', look: t > COOL && t < GUNS ? -1 : 1 }, 3);
-  const snap = t > s8 ? 1 - Math.exp(-(t - s8) * 6) * Math.cos((t - s8) * 14) : 0; placeShade(shade, { x: lerp(lerp(X + .1, jx - .9, sl) + .12 * ease(t, RUNJ, COOL + .3, sm), X + .25, snap), z: front.wallZ + .03, rise: 1, scale: 1.15, turn: t > COOL && t < GUNS ? 0 : Math.PI / 2, op: 1 }); shade.holder.position.y = -.02;
+  applyPose(shade, t < s5 + .9 ? { ...walk(sl * 2.5), ...(t > s5 - .2 ? { aL: [.3, .9, 2.2], aR: [.9, -.4, .4], hipsZ: .25, headZ: .15, lean: .15 } : {}) } : t < s8 ? { ...POSE.stand, aL: [.3, .9, 2.2], aR: [.9, -.4, .4], hipsZ: .2 } : t > s8 ? { ...POSE.scared, lean: -.3 } : t > 1e4 ? { ...POSE.stand, aR: [1.5, -.1, .15 + Math.max(0, Math.sin((t - GUNS) * 12)) * .3], aL: [1.5, .1, .15 + Math.max(0, Math.sin((t - GUNS) * 12 + 1)) * .3], lean: -.05, headZ: .15 } : t > COOL ? { ...POSE.stand, aL: [.3, .6, 2.2], aR: [.3, -.6, 2.2], headY: -.6, headX: -.2, hipsZ: Math.sin(t * 4) * .06 } : { ...POSE.stand, aL: [.3, .9, 2.2], aR: [.9, -.4, .4], hipsZ: .2, lean: -.12 * ease(t, AWK0, COOL) }, t, { mood: t > s8 ? 'wide' : t > COOL ? 'sly' : t > s6 ? 'wide' : 'happy', look: t > COOL && t < GUNS ? -1 : 1 }, 3);
+  const snap = t > s8 ? 1 - Math.exp(-(t - s8) * 6) * Math.cos((t - s8) * 14) : 0; placeShade(shade, { x: lerp(lerp(X + .1, jx - .9, sl) + .12 * ease(t, RUNJ, COOL + .3, sm), X + .25, snap), z: front.wallZ + .03, rise: 1, scale: 1.15, turn: t > COOL ? 0 : Math.PI / 2, op: 1 }); shade.holder.position.y = -.02;
   const zo = ease(t, s5 + .5, s6 - .2, sm); const [cx, cy] = hh(t, .015);
   const cx0 = jx - .78;
-  const aw = ease(t, AWK0, s8 - .1, sm) * (1 - ease(t, s8, s8 + .3, sm));
-  cam(lerp(lerp(cx0, jx - .8, zo), jx - .1, aw) + cx, lerp(lerp(1.2, 1.1, zo), 1.45, aw) + cy, lerp(lerp(1.6, 5.0, zo), 2.6, aw), lerp(lerp(cx0, jx - .8, zo), jx - 1.0, aw), lerp(lerp(1.05, .85, zo), 1.35, aw), -1.28, 36);
+  const aw = ease(t, AWK0, AWK0 + 3.5, sm);
+  cam(lerp(lerp(cx0, jx - .8, zo), jx - .55, aw) + cx, lerp(lerp(1.2, 1.1, zo), 1.2, aw) + cy, lerp(lerp(1.6, 5.0, zo), 3.9, aw), lerp(lerp(cx0, jx - .8, zo), jx - .75, aw), lerp(lerp(1.05, .85, zo), 1.35, aw), -1.28, 36);
   FX = { fy: lerp(.4, .5, zo), fw: .32, blur: 6, bloom: .2, warm: .06 };
   return () => { if (t > s5 - .3 && t < s6) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); heartsFloat(t, x, y, .6, 200, 8); }
     band(shade, hero, t);
     drawLines(T, { s11: { y: 380, size: 120 }, s9: { y: 380, size: 100 }, s6: { y: 1480, size: 90 }, s10: { y: 380, size: 130 } });
-    if (t > COOL && t < s8) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); sweat(x + 70, y - 50 + ((t - COOL) % .8) * 40, 1); if (t < GUNS) { ctx.save(); ctx.font = '700 52px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.translate(x - 120, y - 140 - Math.sin(t * 6) * 8); ctx.rotate(-.1); ctx.strokeText('*whistles*', 0, 0); ctx.fillText('*whistles*', 0, 0); ctx.restore(); } }
-    if (t > COOL - .1 && t < GUNS + .3) { ctx.save(); ctx.globalAlpha = ease(t, AWK0 + .2, AWK0 + .5) * .9; ctx.font = '700 46px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.strokeText('*cricket noises*', 540, 1600); ctx.fillText('*cricket noises*', 540, 1600); ctx.restore(); } };
+    if (t > COOL) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); sweat(x + 70, y - 50 + ((t - COOL) % .8) * 40, 1); if (true) { ctx.save(); ctx.font = '700 52px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.translate(x - 120, y - 140 - Math.sin(t * 6) * 8); ctx.rotate(-.1); ctx.strokeText('*whistles*', 0, 0); ctx.fillText('*whistles*', 0, 0); ctx.restore(); } }
+    if (t > COOL - .1) { ctx.save(); ctx.globalAlpha = ease(t, AWK0 + .2, AWK0 + .5) * .9; ctx.font = '700 46px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.strokeText('*cricket noises*', 540, 1600); ctx.fillText('*cricket noises*', 540, 1600); ctx.restore(); } };
 };
 // 2. Утро, кухня: Sam троллит тень за вчерашний побег — тень ломается и стесняется (смена ракурсов на каждую реплику)
 S.S2 = (t, T) => { useSet('kitchen'); hideAll();
@@ -349,7 +349,7 @@ S.S5 = (t, T) => { useSet('cafe'); hideAll();
   const sx = 1.7; const e4 = lt('e4'); const melt = ease(t, .6, 1.1);
   const reach = ease(t, lt('e3') + .3, e4 + .1, sm) * (1 - ease(t, e4 + .5, e4 + .75)); const snap = t > e4 + .5 ? spring(t, e4 + .5, 3, 6) : 0;
   applyPose(shade, reach > 0 ? { ...POSE.stand, aR: [1.55, -.05, .05], lean: .3 * reach, lL: [.3, .1], lR: [-.3, .1] } : keys(t, [[0, POSE.stand], [.7, { ...POSE.stand, aL: [.9, .3, 2.2], aR: [.9, -.3, 2.2], lean: -.1, headZ: .2 }], [e4 + .6, { ...POSE.stand, aL: [.6, .9, 1.9], aR: [.6, -.9, 1.9] }]]), t, { mood: t > e4 ? 'angry' : 'happy', look: -1 }, 3);
-  shade.aR.sh.scale.y = 1 + reach * 2.4 + Math.sin(t * 40) * .05 * reach; placeShade(shade, { x: sx + snap * .03, z: WZc + .004, rise: 1, scale: 1.15, turn: reach > 0 ? -Math.PI / 2 : -.4, op: 1 }); shade.holder.position.y = .02;
+  shade.aR.sh.scale.y = 1; placeShade(shade, { x: sx + snap * .03, z: WZc + .004, rise: 1, scale: 1.15, turn: reach > 0 ? -Math.PI / 2 : -.4, op: 1 }); shade.holder.position.y = .02;
   const [jx, jy] = hh(t, .015);
   cam(lerp(1.6, 1.1, ease(t, 0, 6)) + jx, 1.35 + jy, lerp(4.8, 4.3, ease(t, 0, 6)), lerp(.7, .55, ease(t, 0, 6)), .95, -1.0, 36);
   FX = { fy: .45, fw: .3, blur: 6, warm: .1, bloom: .25 };
@@ -379,16 +379,17 @@ S.S6 = (t, T) => { useSet('cafe'); hideAll(); const f1 = lt('f1'), f2 = lt('f2')
     drawLines(T, { f1: { y: 1480 }, f2: { y: 1480 } }); };
 };
 // 7. «Lean in. Closer…» — локоть сбивает чашку
-S.S7 = (t, T) => { useSet('cafe'); hideAll(); const g1 = 1e4, g2 = 1e4, KNOCK = lt('g9') - .15;
-  const lean = ease(t, g1 + .5, g1 + 1.3) * .25 + ease(t, g2 + .4, g2 + 1.2) * .3 - ease(t, KNOCK + .2, KNOCK + .6) * .5;
+S.S7 = (t, T) => { useSet('cafe'); hideAll(); const g1 = lt('g7'), g2 = lt('g8'), KNOCK = lt('g9') - .15, AWKC = g2 + DURS.g8 + .2;
+  const lean = ease(t, g1 + .4, g1 + 1.2, sm) * .2 + ease(t, g2 + .3, g2 + 1.0, sm) * .22 - ease(t, KNOCK + .2, KNOCK + .6) * .42;
   const samP = sit({ lean, aR: t > KNOCK - .35 && t < KNOCK + .3 ? [1.1, .25, .5] : [.7, -.1, 1.3], aL: [.75, .1, 1.3] });
   seatSam(t, t > KNOCK + .2 ? keys(t, [[KNOCK + .2, samP], [KNOCK + .5, sit({ aL: [1.2, .3, 1.8], aR: [1.2, -.3, 1.8], lean: -.1 })]]) : samP, { expr: t > KNOCK ? 'scared' : lean > .3 ? 'determined' : 'calm', smile: .3, mouth: talkG(T, 'g3'), lookX: .8, wide: t > KNOCK });
   const laugh = ease(t, KNOCK + .5, KNOCK + .8);
-  seatMia(t, sit({ lean: laugh * .1 + Math.sin(t * 14) * .03 * laugh, aL: [.8 + laugh * .5, .3, 1.8], aR: [.7, -.1, 1.3], headX: -laugh * .15 }), { expr: laugh > 0 ? 'happy' : 'calm', smile: 1, mouth: laugh * (.5 + .4 * Math.sin(t * 18)), lookX: -.8 });
+  const odd = ease(t, g2 + .5, AWKC, sm) * (1 - ease(t, KNOCK, KNOCK + .3));
+  seatMia(t, sit({ lean: laugh * .1 + Math.sin(t * 14) * .03 * laugh - odd * .12, aL: [.8 + laugh * .5, .3, 1.8], aR: [.7, -.1, 1.3], headX: -laugh * .15 - odd * .05, headZ: odd * .15 }), { expr: laugh > 0 ? 'happy' : odd > .3 ? 'surprised' : 'calm', smile: laugh > 0 ? 1 : .3 - odd * .3, mouth: laugh * (.5 + .4 * Math.sin(t * 18)), lookX: -.8, lid: odd * .35 });
   // тень Sam тайком тянет руку по стене к тени чашки и толкает её — «Oops.»; тень Mia видит и показывает «класс»
-  const sneak = ease(t, KNOCK - 1.1, KNOCK - .1, sm) * (1 - ease(t, KNOCK + .3, KNOCK + .7, sm));
-  wallShade(shade, -.52, t > KNOCK + .5 ? sit({ aL: [.3, .2, 2.4], aR: [.9, -.6, .6], headX: .2 }) : sit({ aR: [1.45, -.15, .1], lean: .15 * sneak, headY: -.3 * sneak }), t, { mood: t > KNOCK + .4 ? 'happy' : 'sly', look: t > KNOCK + .4 && t < KNOCK + 1.6 ? 0 : 1 }, 3, { turn: Math.PI / 2 });
-  shade.aR.sh.scale.y = 1 + sneak * 1.9;
+  const reachM = ease(t, g1 + .3, g1 + 1.0, sm) * (1 - ease(t, AWKC + .4, KNOCK - .3, sm)); const flick = ease(t, KNOCK - .35, KNOCK, sm) * (1 - ease(t, KNOCK + .3, KNOCK + .7, sm));
+  wallShade(shade, -.52, t > KNOCK + .5 ? sit({ aL: [.3, .2, 2.4], aR: [.9, -.6, .6], headX: .2 }) : flick > 0 ? sit({ aR: [1.0 + flick * .5, -.1, .4 - flick * .3], lean: .1 }) : sit({ aR: [1.5, -.05, .05 + Math.sin(t * 9) * .08 * reachM], aL: [.7, .1, 1.3], lean: lean + reachM * .35, headX: -.1 * reachM }), t, { mood: t > KNOCK + .4 ? 'happy' : t > AWKC ? 'angry' : 'sly', look: t > KNOCK + .4 && t < KNOCK + 1.6 ? 0 : 1 }, 3, { turn: Math.PI / 2, dx: .3 + reachM * .1 });
+  shade.aR.sh.scale.y = 1;
   wallShade(miaSh, .52, t > KNOCK + .9 ? sit({ aR: [1.3, -.3, 1.9], headZ: .2 }) : sit({}), t, { mood: t > KNOCK + .3 ? 'happy' : 'calm', look: -1 }, 7, { turn: -Math.PI / 2 });
   // чашка Sam падает со стола, пятно
   const ck = ease(t, KNOCK, KNOCK + .35); const cup = cafe.cupM; cup.rotation.z = -ck * 1.6; cup.position.set(.06 + ck * .06, .44, cafe.TZ + .1); cafe.spill.visible = t > KNOCK + .2; cafe.spill.scale.setScalar(ease(t, KNOCK + .2, KNOCK + .6));
@@ -398,7 +399,8 @@ S.S7 = (t, T) => { useSet('cafe'); hideAll(); const g1 = 1e4, g2 = 1e4, KNOCK = 
   return () => { if (t > KNOCK && t < KNOCK + .6) { const [bx, by] = toScreen(.1, .5, cafe.TZ + .1); burst(t - KNOCK, bx, by, '#7a4a2a', 16, 360); }
     if (t > KNOCK) { const p = wpos(hero.head); const [x, y] = toScreen(p.x, p.y, p.z); sweat(x - 70, y - 60 + (t - KNOCK) * 30, 1 - ease(t, KNOCK + 1.4, KNOCK + 1.8)); }
     band(shade, hero, t); band(miaSh, mia, t, .7);
-    drawLines(T, { g9: { y: 380, size: 110 }, g3: { y: 1480 } });
+    drawLines(T, { g7: { y: 380, size: 100 }, g8: { y: 380, size: 100 }, g9: { y: 380, size: 110 }, g3: { y: 1480 } });
+    if (t > AWKC + .1 && t < KNOCK - .3) { ctx.save(); ctx.globalAlpha = ease(t, AWKC + .1, AWKC + .4) * .9; ctx.font = '700 46px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.strokeText('*awkward silence*', 540, 1560); ctx.fillText('*awkward silence*', 540, 1560); ctx.restore(); }
     if (t > KNOCK + .9 && t < KNOCK + 2.4) { const q = wpos(miaSh.aR.hand); const [x, y] = toScreen(q.x, q.y, q.z); ctx.save(); ctx.globalAlpha = ease(t, KNOCK + .9, KNOCK + 1.1) * (1 - ease(t, KNOCK + 2.0, KNOCK + 2.4)); ctx.strokeStyle = '#ffd36a'; ctx.lineWidth = 6; for (let r = 0; r < 8; r++) { const a2 = r / 8 * 6.28; ctx.beginPath(); ctx.moveTo(x + Math.cos(a2) * 26, y - 30 + Math.sin(a2) * 26); ctx.lineTo(x + Math.cos(a2) * 46, y - 30 + Math.sin(a2) * 46); ctx.stroke(); } ctx.restore(); } };
 };
 // 8. «Now. Her hand.» — руки ползут; на стене ладони теней касаются — искры; у людей — оба отдёрнули
@@ -972,8 +974,8 @@ const arena = new THREE.Group(); arena.position.set(60, 0, 0); arena.visible = f
   layer(3.0, 12, .9, '#050205', (g, X, H2) => { for (let i = 0; i < 46; i++) { const x = (h1(i) - .5) * 2 * X, s = .2 + h1(i + 5) * .5; g.beginPath(); g.moveTo(x - s * .3, 0); g.lineTo(x + (h1(i + 8) - .5) * .2, s * (1 + h1(i + 2))); g.lineTo(x + s * .3, 0); g.fill(); } R(g, -X, 0, 2 * X, .1); }, 0); }
 function col0(g) { return g.fillStyle; }
 // финал: НЕ бой — представление бойцов (как перед боем в UFC) на арене в духе файтингов-теней: лунная ночь, силуэты слоями в дымке, круглые портреты
-S.KQ = (t, T) => { useSet('night'); hideAll(); EXINK.color.set('#05050a'); night.g.visible = false; arena.visible = true; scene.background = new THREE.Color('#0e2a30'); scene.fog = null;
-  const A1 = lt('an1'), A2 = lt('an2'), TPL = 1.3, TPR = TPL + 2.3, TP1 = TPR + 2.4, LUN = A2 + .1, FZ = LUN + .5; const tf = Math.min(t, FZ); const ax = arena.position.x;
+S.KQ = (t, T) => { useSet('night'); hideAll(); EXINK.color.set('#3a0710'); night.g.visible = false; arena.visible = true; scene.background = new THREE.Color('#0e2a30'); scene.fog = null;
+  const A1 = lt('an1'), A2 = lt('an2'), TPL = .8, TPR = TPL + .6, TP1 = TPR + .6, LUN = A2 + .1, FZ = LUN + .5; const tf = Math.min(t, FZ); const ax = arena.position.x;
   const lk = ease(tf, LUN, FZ, k => k * k); const sx = lerp(-1.3, -.5, lk), ex = lerp(1.3, .55, lk);
   const sp = tf > LUN ? { ...POSE.stand, lean: .45, aR: [1.7, -.1, 0], aL: [.4, .6, 1.8], lL: [1.0, .6], lR: [-.5, .3] } : { ...FIGHT_POSE, bob: Math.abs(Math.sin(tf * 5)) * .025 };
   const ep = tf > LUN ? { ...POSE.stand, lean: .4, aR: [1.7, -.1, 0], aL: [.5, .6, 1.8], lL: [.9, .6], lR: [-.5, .3] } : { ...FIGHT_POSE, aL: [1.2, .3, 2.0], aR: [.9, -.3, 2.4], bob: Math.abs(Math.sin(tf * 4.3 + 1)) * .025, headZ: tf > TPR && tf < TP1 ? Math.sin(tf * 5) * .2 * (tf < TPR + 1 ? 1 : 0) : 0 };
@@ -990,9 +992,12 @@ S.KQ = (t, T) => { useSet('night'); hideAll(); EXINK.color.set('#05050a'); night
     ctx.save(); for (let i = 0; i < 30; i++) { const d = .4 + h1(i) * .9, x = ((h1(i + 1) * 1300 + tf * 40 * d) % 1300) - 110, y = ((h1(i + 2) * 2000 - tf * 30 * d + 4000) % 2000) - 40; ctx.globalAlpha = (.3 + .5 * Math.sin(tf * 3 + i)) * d; ctx.fillStyle = i % 3 ? '#d8ffe8' : '#ffd88a'; ctx.beginPath(); ctx.arc(x, y, 3.5 * d, 0, 7); ctx.fill(); } ctx.restore();
     // HUD: круглые портреты с подсветкой, имена, тонкие полоски, таймер
     ctx.save(); ctx.translate(0, lerp(-320, 0, inK));
-    const port = (x, big) => { ctx.save(); const g = ctx.createRadialGradient(x, 200, 30, x, 200, 96); g.addColorStop(0, '#d8f0e8'); g.addColorStop(1, '#5a8a88'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, 200, 92, 0, 7); ctx.fill(); ctx.lineWidth = 8; ctx.strokeStyle = '#1a2a2c'; ctx.stroke();
-      ctx.fillStyle = '#07090a'; ctx.beginPath(); ctx.arc(x, 196, big ? 40 : 36, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(x, 290, big ? 78 : 62, 60, 0, Math.PI, 0); ctx.fill(); if (big) { ctx.beginPath(); ctx.ellipse(x + 6, 160, 40, 18, 0, 0, 7); ctx.fill(); }
-      ctx.fillStyle = big ? '#ff3030' : '#ffffff'; ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 12; [-1, 1].forEach(sd => { ctx.beginPath(); ctx.ellipse(x + sd * 14, 196, 9, 4, sd * (big ? .3 : 0), 0, 7); ctx.fill(); }); ctx.restore(); };
+    const port = (x, big) => { ctx.save(); const g = ctx.createRadialGradient(x, 200, 30, x, 200, 96); g.addColorStop(0, big ? '#ffd0c0' : '#d8f0e8'); g.addColorStop(1, big ? '#8a2a2a' : '#5a8a88'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, 200, 90, 0, 7); ctx.fill();
+      ctx.save(); ctx.beginPath(); ctx.arc(x, 200, 86, 0, 7); ctx.clip(); ctx.fillStyle = big ? '#120406' : '#07090a';
+      if (big) { ctx.beginPath(); ctx.moveTo(x - 95, 300); ctx.lineTo(x - 70, 236); ctx.lineTo(x + 70, 236); ctx.lineTo(x + 95, 300); ctx.fill(); ctx.beginPath(); ctx.arc(x, 196, 44, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(x + 10, 154, 46, 20, -.15, 0, 7); ctx.fill();
+        ctx.fillStyle = '#ff2a2a'; ctx.shadowColor = '#ff2a2a'; ctx.shadowBlur = 16; [-1, 1].forEach(sd => { ctx.beginPath(); ctx.moveTo(x + sd * 6, 192); ctx.lineTo(x + sd * 30, 182); ctx.lineTo(x + sd * 28, 196); ctx.fill(); }); }
+      else { ctx.beginPath(); ctx.ellipse(x, 300, 66, 62, 0, Math.PI, 0); ctx.fill(); ctx.beginPath(); ctx.arc(x, 198, 38, 0, 7); ctx.fill(); ctx.fillStyle = '#fff'; ctx.shadowColor = '#fff'; ctx.shadowBlur = 12; [-1, 1].forEach(sd => { ctx.beginPath(); ctx.ellipse(x + sd * 14, 196, 9, 4, 0, 0, 7); ctx.fill(); }); }
+      ctx.restore(); ctx.lineWidth = 8; ctx.strokeStyle = '#1a2a2c'; ctx.beginPath(); ctx.arc(x, 200, 90, 0, 7); ctx.stroke(); ctx.restore(); };
     port(130, false); port(950, true);
     const bar = (x0, dir, name) => { ctx.save(); ctx.fillStyle = '#e8642a'; ctx.fillRect(dir > 0 ? x0 : x0 - 230, 168, 230, 16); ctx.fillStyle = '#2a1a14'; for (let i = 0; i < 3; i++) ctx.fillRect(dir > 0 ? x0 + 60 + i * 58 : x0 - 110 - i * 58, 196, 46, 10); ctx.fillStyle = '#e8642a'; ctx.fillRect(dir > 0 ? x0 : x0 - 50, 196, 50, 10);
       ctx.font = '900 34px Unb'; ctx.fillStyle = BEI; ctx.strokeStyle = '#1a1208'; ctx.lineWidth = 6; ctx.textAlign = dir > 0 ? 'left' : 'right'; ctx.strokeText(name, x0, 150); ctx.fillText(name, x0, 152); ctx.restore(); };
@@ -1000,13 +1005,11 @@ S.KQ = (t, T) => { useSet('night'); hideAll(); EXINK.color.set('#05050a'); night
     ctx.font = '900 92px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = BEI; ctx.strokeStyle = '#1a1208'; ctx.lineWidth = 8; ctx.strokeText('99', 540, 210); ctx.fillText('99', 540, 210);
     ctx.fillStyle = 'rgba(120,150,150,.75)'; ctx.beginPath(); ctx.arc(540, 285, 36, 0, 7); ctx.fill(); ctx.fillStyle = '#2a3a3a'; ctx.fillRect(526, 268, 9, 34); ctx.fillRect(545, 268, 9, 34); ctx.restore();
     // «таблица бойцов»: строки появляются по одной
-    const card = (x0, dir, t0, title, rows, col) => { if (t < t0 || t > LUN - .1) return; const k = ease(t, t0, t0 + .3, back); ctx.save(); ctx.translate(lerp(dir * -600, 0, k), 0);
-      ctx.fillStyle = 'rgba(6,14,16,.82)'; ctx.fillRect(x0, 1180, 470, 470); ctx.fillStyle = col; ctx.fillRect(x0, 1180, 470, 10);
-      ctx.textAlign = 'left'; ctx.font = '900 36px Unb'; ctx.fillStyle = col; ctx.fillText(title, x0 + 28, 1250);
-      rows.forEach(([lab, val], i) => { const ka = ease(t, t0 + .45 + i * .38, t0 + .65 + i * .38); if (ka <= 0) return; ctx.globalAlpha = ka; ctx.font = '700 26px Unb'; ctx.fillStyle = '#8fb0ae'; ctx.fillText(lab, x0 + 28, 1312 + i * 84); ctx.font = '800 36px Unb'; ctx.fillStyle = '#fff'; ctx.fillText(val, x0 + 28, 1352 + i * 84); ctx.globalAlpha = 1; }); ctx.restore(); };
-    card(40, 1, TPL, "SAM'S SHADOW", [['RECORD', '0 – 1'], ['LAST FIGHT', 'ran from a ponytail'], ['HEIGHT', 'depends on the lamp'], ['SPECIAL', 'tactical retreat']], '#7af0e0');
-    card(570, -1, TPR, "BRAD'S SHADOW", [['RECORD', '27 – 0'], ['LAST FIGHT', 'a mailbox. won.'], ['HEIGHT', '6′4″ of pure rage'], ['SPECIAL', 'steals girls']], '#ff5a4a');
-    if (t > TP1 - .4 && t < LUN - .1) { const k = ease(t, TP1 - .4, TP1 - .1, back); ctx.save(); ctx.translate(540, 1750); ctx.scale(k, k); ctx.textAlign = 'center'; ctx.font = '900 64px Unb'; ctx.lineWidth = 10; ctx.strokeStyle = '#07090a'; ctx.strokeText('ODDS  1 : 1000', 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText('ODDS  1 : 1000', 0, 0); ctx.restore(); }
+    const fit = (txt, font, size, maxW) => { ctx.font = `${font} ${size}px Unb`; const w = ctx.measureText(txt).width; if (w > maxW) ctx.font = `${font} ${Math.floor(size * maxW / w)}px Unb`; };
+    const rec = (x, align, t0, big, small, col) => { if (t < t0 || t > FZ) return; const k = ease(t, t0, t0 + .25, back); ctx.save(); ctx.globalAlpha = clamp(k); ctx.textAlign = align; ctx.lineWidth = 10; ctx.strokeStyle = '#07090a';
+      fit('RECORD', '800', 30, 380); ctx.fillStyle = '#9fc0bd'; ctx.strokeText('RECORD', x, 1660); ctx.fillText('RECORD', x, 1660); fit(big, '900', 84, 380); ctx.fillStyle = col; ctx.strokeText(big, x, 1750); ctx.fillText(big, x, 1750);
+      if (small) { fit(small, '700', 30, 380); ctx.fillStyle = '#fff'; ctx.strokeText(small, x, 1800); ctx.fillText(small, x, 1800); } ctx.restore(); };
+    rec(70, 'left', TPL, '0 – 1', 'lost to Pixel (cat)', '#7af0e0'); rec(1010, 'right', TPR, '27 – 0', '', '#ff5a4a');
     // ROUND 1 / FIGHT!
     if (t > A1 - .1 && t < A2) { const k = ease(t, A1 - .1, A1 + .1, back); ctx.save(); ctx.translate(540, 900); ctx.scale(k, k); ctx.textAlign = 'center'; ctx.font = '900 140px Unb'; ctx.lineWidth = 16; ctx.strokeStyle = '#1a1208'; ctx.strokeText('ROUND 1', 0, 0); ctx.fillStyle = BEI; ctx.fillText('ROUND 1', 0, 0); ctx.restore(); }
     if (t > A2 - .05 && t < FZ + .1) { const k = ease(t, A2 - .05, A2 + .12, back); ctx.save(); ctx.translate(540, 900); ctx.scale(k * 1.15, k * 1.15); ctx.rotate(-.05); ctx.textAlign = 'center'; ctx.font = '900 180px Unb'; ctx.lineWidth = 22; ctx.strokeStyle = '#1a1208'; ctx.strokeText('FIGHT!', 0, 0); ctx.fillStyle = '#e8642a'; ctx.fillText('FIGHT!', 0, 0); ctx.restore(); }
@@ -1015,9 +1018,10 @@ S.KQ = (t, T) => { useSet('night'); hideAll(); EXINK.color.set('#05050a'); night
     if (t > FZ) { const k = t - FZ;
       if (k > .1) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = 'grayscale(.6) contrast(1.3) brightness(.9)'; ctx.globalAlpha = ease(t, FZ + .1, FZ + .35); ctx.drawImage(OUTC, 0, 0); ctx.restore(); }
       if (k < .14) { ctx.fillStyle = `rgba(255,255,255,${1 - k / .14})`; ctx.fillRect(0, 0, 1080, 1920); }
-      const tb = ease(t, FZ + .4, FZ + .7, back); ctx.save(); ctx.translate(lerp(1300, 600, tb), 1240); ctx.fillStyle = '#07060c'; ctx.beginPath(); ctx.moveTo(-430, -60); ctx.lineTo(330, -60); ctx.lineTo(430, 0); ctx.lineTo(330, 60); ctx.lineTo(-430, 60); ctx.fill(); ctx.font = '900 52px Unb'; ctx.textAlign = 'center'; ctx.fillStyle = BEI; ctx.fillText('TO BE CONTINUED', -40, 18); ctx.restore();
-      if (t > FZ + .8) { ctx.save(); ctx.globalAlpha = ease(t, FZ + .8, FZ + 1.1); ctx.fillStyle = 'rgba(7,6,12,.72)'; ctx.fillRect(0, 1380, 1080, 540); ctx.restore();
-        narr(t, FZ + .8, 99, 'FINAL EPISODE · tomorrow', { y: 1470, size: 50, n: 30 }); narr(t, FZ + 1.2, 99, 'Team Shadow or Team Brad?', { y: 1600, size: 52, n: 26, accent: ['shadow', 'brad?'] }); narr(t, FZ + 1.8, 99, 'Comment below', { y: 1730, size: 48, n: 20, accent: ['comment'] }); } }
+      const tk = ease(t, FZ + .25, FZ + .55, back); ctx.save(); ctx.translate(540, 1020); ctx.scale(tk, tk); ctx.rotate(-.05); ctx.textAlign = 'center'; ctx.font = '150px Brush'; ctx.lineJoin = 'round';
+      ctx.lineWidth = 26; ctx.strokeStyle = '#07090a'; ctx.strokeText('SHADOW', 0, -40); ctx.strokeText('FIGHT', 30, 120); ctx.fillStyle = '#f2e2c0'; ctx.fillText('SHADOW', 0, -40); ctx.fillText('FIGHT', 30, 120); ctx.restore();
+      if (t > FZ + .9) { ctx.save(); ctx.globalAlpha = ease(t, FZ + .9, FZ + 1.2); ctx.fillStyle = 'rgba(7,6,12,.7)'; ctx.fillRect(0, 1460, 1080, 460); ctx.restore();
+        narr(t, FZ + .9, 99, 'Who wins this?', { y: 1580, size: 70, n: 20, accent: ['wins'] }); narr(t, FZ + 1.4, 99, 'Place your bets below', { y: 1720, size: 50, n: 24, accent: ['bets'] }); } }
     drawLines(T, { an1: { hide: true }, an2: { hide: true } }); };
 };
 
@@ -1046,11 +1050,11 @@ const hudBar = (t, x, y, label, k, ghost) => { const w = 560; ctx.save(); ctx.fi
       drawLines(T, { b19: { y: 1500 } }); }; }; }
 { // CAT: счёт как в файтинге
   const _CAT = S.CAT; S.CAT = (t, T) => { const f = _CAT(t, T); return () => { f && f(); if (t < 1.75) return; const k = ease(t, 1.8, 2.0, back);
-    ctx.save(); ctx.translate(540, 560); ctx.scale(k, k); ctx.fillStyle = 'rgba(7,6,12,.85)'; rr(-380, -70, 760, 130, 24); ctx.fill(); ctx.textAlign = 'center'; ctx.font = '900 60px Unb'; ctx.fillStyle = '#ffd36a'; ctx.fillText('PIXEL 1 : 0 SHADOW', 0, 22); ctx.restore();
-    if (t > 2.2 && t < 3.4) stamp(t, 2.2, '+1 HAT', { x: 760, y: 760, size: 80, color: '#7af0ff', rot: .12 }); }; }; }
+    ctx.save(); ctx.translate(830, 170); ctx.scale(k, k); ctx.fillStyle = 'rgba(7,6,12,.85)'; rr(-245, -55, 490, 100, 22); ctx.fill(); ctx.textAlign = 'center'; ctx.font = '900 40px Unb'; ctx.fillStyle = '#ffd36a'; ctx.fillText('PIXEL 1 : 0 SHADOW', 0, 14); ctx.restore();
+    }; }; }
 
 { // монтаж «восьмёркой» с плавным переводом камеры: к говорящему (или к теням) и обратно — проезд 0,45 с, внутри — лёгкий наезд
-  const ANG = { S6: { f1: 'sam', f2: 'mia' }, S7: { g9: 'wall' }, S9: { i1: 'wall', i2: 'sam', i3: 'mia' }, S10: { j3: 'mia', j4: 'sam' }, S2B: { b18: 'sam', b15: 'shade' } };
+  const ANG = { S6: { f1: 'sam', f2: 'mia' }, S9: { i1: 'wall', i2: 'sam', i3: 'mia' }, S10: { j3: 'mia', j4: 'sam' }, S2B: { b18: 'sam', b15: 'shade' } };
   const target = (cur, t, a) => { const push = ease(t, a, a + 2.5, sm) * .25;
     if (cur === 'sam' || cur === 'mia') { const c = cur === 'sam' ? hero : mia, sd = cur === 'sam' ? 1 : -1; const p = wpos(c.head); return [p.x + sd * .75, p.y + .05, p.z + 2.3 - push, p.x + sd * .12, p.y - .22, p.z, 34, 0]; }
     if (cur === 'wall') { const p = wpos(shade.head), q = wpos(miaSh.head); const mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2; return [mx, my - .25, p.z + 3.4 - push, mx, my - .45, p.z, 40, 0]; }
@@ -1068,7 +1072,7 @@ window.SCENE = { duration: TOTAL, fps: 30, width: W, height: H };
 window.SHOT_STARTS = SHOTS.map(([id]) => [id, starts[id]]);
 let fontsOk = false;
 window.renderFrame = async T => {
-  if (!fontsOk) { await Promise.all(['800 40px Unb', '900 40px Unb', '600 40px Unb', '700 40px Cav'].map(f => document.fonts.load(f))); fontsOk = true; TEX_REDRAW.forEach(f => f()); }
+  if (!fontsOk) { await Promise.all(['800 40px Unb', '900 40px Unb', '600 40px Unb', '700 40px Cav', '40px Brush'].map(f => document.fonts.load(f))); fontsOk = true; TEX_REDRAW.forEach(f => f()); }
   let i = SHOTS.length - 1; for (let j = 0; j < SHOTS.length; j++) if (T < starts[SHOTS[j][0]] + SHOTS[j][1]) { i = j; break; }
   const id = SHOTS[i][0]; SHOT0 = starts[id]; const t = T - SHOT0; FX = {};
   scene.fog = null; const over = S[id](t, T);

@@ -40,7 +40,7 @@ def main_sfx():
     # SS поиск: улица, быстрые шаги, кот, «нашёл»
     amb('SS', 'S1', "oc-AMBUrbn_CityEuroDaytime_LOOP_01", .2)
     for i in range(int(SH['SS'] / .32)): lib(ST['SS'] + .1 + i * .32, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .18, align="start")
-    lib(AT['s9'], "shimmer-medium-bright", .3, align="start"); lib(AT['s6'] - .1, "impact-light-soft", .4); syn(AT['s10'] + .1, "wah", .3); lib(AT['s4'], "shimmer-long-sparkle", .5, align="start")
+    lib(AT['s9'], "shimmer-medium-bright", .3, align="start"); lib(AT['s6'] - .1, "impact-light-soft", .4); lib(AT['s4'], "shimmer-long-sparkle", .5, align="start")
     # S1 дверь
     s1 = ST['S1']; G_ = AT['p4'] + 1.0; lib(G_, "foley-fabric-slide", .8); lib(G_, "move-spring", .35, rate=1.3)
     PUSH = AT['p2'] + .3; IN = PUSH + .75
@@ -79,7 +79,6 @@ def main_sfx():
     lib(ST['S10B'] + .6, "oc-BIRDFowl_Chicken_OS_01", .5, align="start"); lib(ST['S10B'] + 1.8, "oc-BIRDFowl_Chicken_OS_01", .4, align="start", rate=1.2)
     for k in range(3): lib(ST['S10B'] + 2.4 + k * .18, "foley-glass-touch", .45)
     for k in range(7): lib(ST['H'] + .3 + k * .55, "pop-large-bubble", .35, rate=.75 + (k % 3) * .12)
-    lib(AT['s10'], "move-spring", .5, rate=1.4)
 
 def variants():
     if PART in ('QE', 'RE'):

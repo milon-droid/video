@@ -37,8 +37,8 @@
    "ref": "Get ready for the next battle! Round two... Fight!"
   },
   "shmacho_en": {
-   "instruct": "Extremely deep, low, gravelly macho male voice, slow and smooth, exaggerated cheesy seductive tone like a romance-novel hunk, heavy bass, breathy, confident.",
-   "ref": "Well, hello there. Didn't see you come in. ...I'm all yours tonight."
+   "instruct": "Smooth, deep, velvety, warm baritone male voice, charming and confident, playful flirty smirk in the voice, natural conversational speed, like a suave late-night R&B radio host, attractive and human.",
+   "ref": "Well, hey there. Didn't expect to run into someone this beautiful tonight."
   }
  },
  "lines": [
@@ -497,8 +497,9 @@
   {
    "id": "s9",
    "role": "shmacho_en",
-   "text": "Hey, gorgeous…",
-   "say": "Heyyy... gorgeous."
+   "text": "Hey there, gorgeous…",
+   "say": "Hey there, gorgeous.",
+   "emo": "smooth, flirty, quick and confident"
   },
   {
    "id": "s10",
@@ -695,8 +696,9 @@
   {
    "id": "lg1",
    "role": "shadow2_en",
-   "text": "Let her go.",
-   "say": "Let. Her. Go."
+   "text": "Let her go… you walking blackout.",
+   "say": "Let her go... you walking blackout.",
+   "emo": "menacing, low, angry, threatening through clenched teeth"
   },
   {
    "id": "ex4",
