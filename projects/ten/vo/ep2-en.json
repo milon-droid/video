@@ -595,8 +595,8 @@
   {
    "id": "sh1",
    "role": "shadow2_en",
-   "text": "Sam. Hold my hat.",
-   "say": "Sam. ...Hold my hat."
+   "text": "Sam. Hold my hat. …Oh. Right. The cat.",
+   "say": "Sam. Hold my hat. ... Oh. Right. ... The cat."
   },
   {
    "id": "mp1",

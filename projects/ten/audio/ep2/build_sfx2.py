@@ -123,7 +123,7 @@ def variants():
         for i in range(5): lib(G1 + .2 + i * .25, "oc-FEETHmn_ShoeConcreteLand_OS_02", .12, align="start", rate=1.4)
         lib(AT['sb2'] - .1, "whoosh-fast-soft", .4, align="start")
         lib(AT['ex2'] + .2, "transform-stretch", .5, align="start", rate=1.3); lib(AT['ex2'] + .4, "shimmer-long-sparkle", .45, align="start"); 
-        lib(SH + .5, "whoosh-fast-medium", .55, align="start"); lib(SH + 1.15, "foley-fabric-touch", .6)
+        lib(SH + .85, "foley-fabric-touch", .5); lib(SH + 1.05, "foley-fabric-touch", .4); lib(SH + D['sh1'] - .2, "pop-large-out", .3)
         lib(S2 + .45, "oc-GOREBone_SkullCracking_OS_01", .45, align="start"); lib(S2 + .85, "oc-GOREBone_SkullCracking_OS_02", .45, align="start"); lib(S2 + .3, "digital-power-up", .4, align="start")
         k0 = ST['KQ']; A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F0 = E3 - 2.2; F1 = E3 - 1.25; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; F4 = F3 + 1.25; F5 = F4 + .95
         lib(k0 - .2, "whoosh-slow-soft", .6, align="start"); lib(k0 + .05, "impact-deep-hard", .6)

@@ -171,7 +171,7 @@ def variants():
             if k % 2: put(snare(.9), tt, .25, 0, .15)
             k += 1
         put(boom(.7, 1.2), AT['ex1'] - .05, .45, 0, .2); put(boom(.8, 1.4), AT['ex2'] - .05, .5, 0, .2); put(riser(1.4, .5), AT['ex2'] + .6, .25, 0, .2)
-        put(riser(S2 - SH - .4, .7), SH + .6, .3, 0, .3); put(boom(1.0, 2.0), S2 + .3, .6, 0, .3)
+        put(riser(max(.6, S2 - SH - D['sh1'] - .1), .7), SH + D['sh1'], .3, 0, .3); put(boom(1.0, 2.0), S2 + .3, .6, 0, .3)
         k0 = sh('KQ'); A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; F4 = F3 + 1.25; F5 = F4 + .95
         put(boom(1.0, 1.8), k0 + .05, .55, 0, .3); put(boom(1.4, 2.6), A1 - .25, .4, 0, .4); put(boom(1.2, 2.0), A2 + .35, .6, 0, .3)
         def beat(a, b_, v=1.):

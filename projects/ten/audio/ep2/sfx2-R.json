@@ -1012,7 +1012,7 @@
 "type": "lib",
 "id": "oc-AMBForst_Night_LOOP_01",
 "gain": 0.22,
-"dur": 21.16,
+"dur": 22.97,
 "align": "start"
 },
 {
@@ -1261,82 +1261,87 @@
 "align": "start"
 },
 {
-"t": 103.02,
-"type": "lib",
-"id": "whoosh-fast-medium",
-"gain": 0.55,
-"align": "start"
-},
-{
-"t": 103.67,
+"t": 103.37,
 "type": "lib",
 "id": "foley-fabric-touch",
-"gain": 0.6
+"gain": 0.5
 },
 {
-"t": 105.997,
+"t": 103.57,
+"type": "lib",
+"id": "foley-fabric-touch",
+"gain": 0.4
+},
+{
+"t": 105.476,
+"type": "lib",
+"id": "pop-large-out",
+"gain": 0.3
+},
+{
+"t": 107.813,
 "type": "lib",
 "id": "oc-GOREBone_SkullCracking_OS_01",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 106.397,
+"t": 108.213,
 "type": "lib",
 "id": "oc-GOREBone_SkullCracking_OS_02",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 105.847,
+"t": 107.663,
 "type": "lib",
 "id": "digital-power-up",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 107.877,
+"t": 109.693,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 108.127,
+"t": 109.943,
 "type": "lib",
 "id": "impact-deep-hard",
 "gain": 0.6
 },
 {
-"t": 109.977,
+"t": 111.793,
 "type": "lib",
 "id": "cinematic-slam-big",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 110.377,
+"t": 112.193,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 110.677,
+"t": 112.493,
 "type": "lib",
 "id": "whoosh-medium-hard",
 "gain": 0.7,
 "align": "start"
 },
 {
-"t": 110.697,
+"t": 112.513,
 "type": "lib",
 "id": "reverse-whoosh-medium-strong",
 "gain": 0.3,
 "align": "start"
 },
 {
-"t": 111.327,
+"t": 113.143,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_01",
 "gain": 0.24,
@@ -1344,7 +1349,7 @@
 "rate": 1.25
 },
 {
-"t": 111.47,
+"t": 113.286,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_02",
 "gain": 0.24,
@@ -1352,7 +1357,7 @@
 "rate": 1.25
 },
 {
-"t": 111.613,
+"t": 113.429,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_03",
 "gain": 0.24,
@@ -1360,7 +1365,7 @@
 "rate": 1.25
 },
 {
-"t": 111.756,
+"t": 113.572,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_04",
 "gain": 0.24,
@@ -1368,7 +1373,7 @@
 "rate": 1.25
 },
 {
-"t": 111.898,
+"t": 113.714,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_05",
 "gain": 0.24,
@@ -1376,7 +1381,7 @@
 "rate": 1.25
 },
 {
-"t": 112.041,
+"t": 113.857,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_01",
 "gain": 0.24,
@@ -1384,7 +1389,7 @@
 "rate": 1.25
 },
 {
-"t": 112.184,
+"t": 114.0,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_02",
 "gain": 0.24,
@@ -1392,7 +1397,7 @@
 "rate": 1.25
 },
 {
-"t": 112.327,
+"t": 114.143,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_03",
 "gain": 0.24,
@@ -1400,7 +1405,7 @@
 "rate": 1.25
 },
 {
-"t": 112.47,
+"t": 114.286,
 "type": "lib",
 "id": "oc-FGHTImpt_Kick_OS_04",
 "gain": 0.24,
@@ -1408,116 +1413,116 @@
 "rate": 1.25
 },
 {
-"t": 114.108,
+"t": 115.924,
 "type": "lib",
 "id": "whoosh-medium-hard",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 114.408,
+"t": 116.224,
 "type": "lib",
 "id": "oc-FGHTImpt_PunchHardest_OS_01",
 "gain": 0.95,
 "align": "start"
 },
 {
-"t": 114.408,
+"t": 116.224,
 "type": "lib",
 "id": "impact-deep-hard",
 "gain": 0.7
 },
 {
-"t": 114.458,
+"t": 116.274,
 "type": "lib",
 "id": "faller-1s-strong",
 "gain": 0.4,
 "align": "start"
 },
 {
-"t": 115.008,
+"t": 116.824,
 "type": "lib",
 "id": "impact-heavy-firm",
 "gain": 0.7
 },
 {
-"t": 115.028,
+"t": 116.844,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_02",
 "gain": 0.6,
 "align": "start"
 },
 {
-"t": 115.858,
+"t": 117.674,
 "type": "lib",
 "id": "digital-power-up",
 "gain": 0.55,
 "align": "start"
 },
 {
-"t": 116.258,
+"t": 118.074,
 "type": "lib",
 "id": "oc-UIMisc_Powerup_OS_01",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 116.508,
+"t": 118.324,
 "type": "lib",
 "id": "oc-FEETHmn_ShoeConcreteLand_OS_01",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 116.608,
+"t": 118.424,
 "type": "lib",
 "id": "reverse-whoosh-long-strong",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 116.708,
+"t": 118.524,
 "type": "lib",
 "id": "whoosh-slow-soft",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 117.458,
+"t": 119.274,
 "type": "lib",
 "id": "oc-FGHTImpt_PunchHarder_OS_01",
 "gain": 0.9,
 "align": "start"
 },
 {
-"t": 117.458,
+"t": 119.274,
 "type": "lib",
 "id": "cinematic-slam-big",
 "gain": 0.9,
 "align": "start"
 },
 {
-"t": 117.508,
+"t": 119.324,
 "type": "lib",
 "id": "bsb-ice-crack-1",
 "gain": 0.45,
 "align": "start"
 },
 {
-"t": 117.908,
+"t": 119.724,
 "type": "lib",
 "id": "whoosh-fast-hard",
 "gain": 0.5,
 "align": "start"
 },
 {
-"t": 118.358,
+"t": 120.174,
 "type": "lib",
 "id": "pop-large-in",
 "gain": 0.4
 },
 {
-"t": 118.758,
+"t": 120.574,
 "type": "lib",
 "id": "pop-large-in",
 "gain": 0.35
