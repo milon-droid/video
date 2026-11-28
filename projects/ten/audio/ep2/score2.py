@@ -156,11 +156,11 @@ def variants():
         t0 = sh('XP'); comic(t0, AT['mp1'] - .2, 104, .6); put(boom(.8, 1.6), AT['sp1'] - .05, .5, 0, .2); put(drone(hz('D2'), end('XP') - AT['sp1'] + 3, 1.), AT['sp1'], .5, 0, .3)
         for k in range(int((DUR - AT['sp1']) / .5)): put(tick(.6, 1700), AT['sp1'] + .6 + k * .5, .25, 0, .1)
     if PART in ('Q', 'R', 'QE', 'RE'):  # бас машины → тишина на двери → удар стоп-кадра → тяжёлый бит → тишина «Hold my hat» → бой (тайко-бит) → удар-стоп
-        t0 = sh('XQ'); DO = AT['ms2'] + D['ms2'] + .25; BS = DO + .45; FZ0 = BS + 1.1; FZ1 = FZ0 + 1.7; SH = AT['sh1']; S2 = AT['sh2']
+        t0 = sh('XQ'); DO = AT['ms2'] + D['ms2'] + .25; BS = DO + .45; FZ0 = BS + 1.1; FZ1 = FZ0 + 1.3; SH = AT['sh1']; S2 = AT['sh2']
         put(drone(hz('D2'), DO - t0, 1.), t0, .35, 0, .3)
         k = 0
-        while t0 + .6 + k * .48 < DO - .1:
-            tt = t0 + .6 + k * .48; g = min(1, .35 + k * .12); put(kick(1.0), tt, .5 * g, 0, 0); put(bass(hz('E1'), .4), tt, .45 * g, 0, .05); put(hat(.6), tt + .24, .14 * g, .3, 0); k += 1
+        while t0 + .4 + k * .48 < DO - .1:
+            tt = t0 + .4 + k * .48; g = min(1, .35 + k * .12) * (.45 if any(AT[x] - .1 < tt < AT[x] + D[x] for x in ('mb1', 'sb1', 'ms2')) else 1); put(kick(1.0), tt, .5 * g, 0, 0); put(bass(hz('E1'), .4), tt, .45 * g, 0, .05); put(hat(.6), tt + .24, .14 * g, .3, 0); k += 1
         put(boom(.6, 1.0), AT['mb1'] - .05, .35, 0, .2)
         put(boom(.9, 1.6), BS, .45, 0, .3); put(riser(1.0, .6), BS + .1, .3, 0, .2)
         put(boom(1.3, 2.4), FZ0, .75, 0, .4); put(swell(1.2, .8), FZ0 + .1, .3, 0, .4)
@@ -173,7 +173,7 @@ def variants():
         put(boom(.7, 1.2), AT['ex1'] - .05, .45, 0, .2); put(boom(.8, 1.4), AT['ex2'] - .05, .5, 0, .2); put(riser(1.4, .5), AT['ex2'] + .6, .25, 0, .2)
         put(riser(S2 - SH - .4, .7), SH + .6, .3, 0, .3); put(boom(1.0, 2.0), S2 + .3, .6, 0, .3)
         k0 = sh('KQ'); A1 = AT['an1']; A2 = AT['an2']; E3 = AT['ex3']; F2 = E3 + D['ex3'] + .1; HIT = F2 + .3; F3 = F2 + 1.15; F4 = F3 + 1.25; F5 = F4 + .95
-        put(boom(1.0, 1.8), k0 + .05, .55, 0, .3); put(boom(1.4, 2.6), A1 - .05, .55, 0, .4); put(boom(1.2, 2.0), A2, .75, 0, .3)
+        put(boom(1.0, 1.8), k0 + .05, .55, 0, .3); put(boom(1.4, 2.6), A1 - .25, .4, 0, .4); put(boom(1.2, 2.0), A2 + .35, .6, 0, .3)
         def beat(a, b_, v=1.):
             k = 0
             while a + k * .25 < b_:
@@ -184,7 +184,7 @@ def variants():
                 if k % 8 == 0:
                     for j, n in enumerate(['E3', 'F3', 'E3', 'B2']): put(pluck(hz(n), .25, .9), tt + j * .25, .3 * v, -.1, .1)
                 k += 1
-        beat(A2 + .3, HIT - .05); put(drone(hz('E2'), HIT - A2, 1.), A2 + .3, .3, 0, .3)
+        beat(A2 + .3, E3 - .1, .7); beat(E3 + D['ex3'], HIT - .05, .7); put(drone(hz('E2'), HIT - A2, 1.), A2 + .3, .3, 0, .3)
         put(boom(1.2, 2.2), HIT, .7, 0, .3)
         beat(F3 + .2, F4, .8); put(riser(F5 - F3 - .3, .8), F3 + .3, .35, 0, .3)
         put(boom(1.6, 3.0), F5, .9, 0, .5); chord(['E2', 'B2', 'E3', 'G3'], F5 + .6, DUR - F5, .2, 0, 1200)

@@ -182,7 +182,8 @@ S.SS = (t, T) => { useSet('front'); hideAll(); pixel.g.visible = false; broom.vi
   applyPose(shade, t < s5 + .9 ? { ...walk(sl * 2.5), ...(t > s5 - .2 ? { aL: [.3, .9, 2.2], aR: [.9, -.4, .4], hipsZ: .25, headZ: .15, lean: .15 } : {}) } : t < s8 ? { ...POSE.stand, aL: [.3, .9, 2.2], aR: [.9, -.4, .4], hipsZ: .2 } : { ...POSE.scared, lean: -.3 }, t, { mood: t > s6 ? 'wide' : 'happy', look: 1 }, 3);
   const snap = t > s8 ? 1 - Math.exp(-(t - s8) * 6) * Math.cos((t - s8) * 14) : 0; placeShade(shade, { x: lerp(lerp(X + .1, jx - .9, sl), X + .25, snap), z: front.wallZ + .03, rise: 1, scale: 1.15, turn: Math.PI / 2, op: 1 }); shade.holder.position.y = -.02;
   const zo = ease(t, s5 + .5, s6 - .2, sm); const [cx, cy] = hh(t, .015);
-  cam(lerp(jx - .75, jx - .8, zo) + cx, lerp(1.4, 1.1, zo) + cy, lerp(1.6, 5.0, zo), lerp(jx - .75, jx - .8, zo), lerp(1.4, .85, zo), -1.28, 36);
+  const shX0 = lerp(X + .1, jx - .9, sl), cx0 = lerp(shX0 + .3, jx - .75, ease(t, .2, s5 - .1, sm));
+  cam(lerp(cx0, jx - .8, zo) + cx, lerp(1.4, 1.1, zo) + cy, lerp(1.6, 5.0, zo), lerp(cx0, jx - .8, zo), lerp(1.4, .85, zo), -1.28, 36);
   FX = { fy: lerp(.4, .5, zo), fw: .32, blur: 6, bloom: .2, warm: .06 };
   return () => { if (t > s5 - .3 && t < s6) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); heartsFloat(t, x, y, .6, 200, 8); }
     band(shade, hero, t);
@@ -190,7 +191,7 @@ S.SS = (t, T) => { useSet('front'); hideAll(); pixel.g.visible = false; broom.vi
 };
 // 2. Утро, кухня: Sam троллит тень за вчерашний побег — тень ломается и стесняется (смена ракурсов на каждую реплику)
 S.S2 = (t, T) => { useSet('kitchen'); hideAll();
-  const b17 = lt('b17'), b9 = lt('b19'), b12 = lt('b12'), b11 = lt('b11'); const KZ = -1.68;
+  const b17 = lt('b17'), b9 = lt('b19'), b12 = lt('b12'), b11 = lt('b12') + DURS.b12 + .1; const KZ = -1.68;
   kitchen.steam.forEach((m, i) => { const ph = (t * .45 + i / kitchen.steam.length) % 1; m.position.set(1.27 + Math.sin(ph * 6 + i) * .06 + ph * .12, 1.24 + ph * .9, -1.35); m.scale.setScalar(.6 + ph * 2.2); m.material.opacity = .5 * (1 - ph); });
   kitchen.steamSh.forEach(m => m.visible = false); poseCat(kitchen.cat, t, 0);
   put(hero, -.75, .1, .45, keys(t, [[0, { ...POSE.stand, aR: [1.3, -.3, 2.3] }], [b17 + .2, { ...POSE.stand, aR: [1.3, -.3, 2.3], aL: [.9, .3, .3], headZ: .1 }], [b12, { ...POSE.stand, aR: [.6, -1.1, .2], aL: [.5, .3, 2.0], lean: .1, headZ: .1, headY: .3 }], [b12 + 1.4, { ...POSE.stand, aL: [.9, .3, 2.0], aR: [.9, -.3, 2.0], lean: -.15 }]]), t,
@@ -832,35 +833,36 @@ const exMan = makeToy({ skin: '#e6ad8a', hair: '#141016', top: '#231c22', top2: 
 // его тень — с коком и красными глазами
 { exSh.head.children.filter(o => o.geometry && o.geometry.type === 'ConeGeometry').forEach(o => o.visible = false);
   const pomp = mesh(G.sph(.15, 16), ink, false, false); pomp.position.set(0, .21, .1); pomp.scale.set(1.15, .75, 1.35); exSh.head.add(pomp);
-  exSh.eyes.forEach(e => e.children.forEach(c => c.material = glow('#ff3030', 2.2))); }
+  exSh.eyes.forEach(e => e.children.forEach(c => c.material = glow('#ff3030', 2.2)));
+  const exInk = new THREE.MeshBasicMaterial({ color: '#3a0710', transparent: true, opacity: .95 }); exSh.root.traverse(o => { if (o.isMesh && o.material.color && o.material.color.r < .1 && o.material.color.g < .1) o.material = exInk; }); }
 const carFill = new THREE.PointLight('#8aa0ff', 3, 6, 1.5); night.g.add(carFill); const carKey = new THREE.PointLight('#ffb0d0', 0, 9, 1.4), brKey = new THREE.PointLight('#a8b8ff', 0, 4, 1.5); night.g.add(carKey, brKey);
 const headL = new THREE.SpotLight('#fff2d8', 0, 18, .6, .45, 1.1); headL.castShadow = false; night.g.add(headL, headL.target);
 const hat2 = hat.clone(); hat2.visible = false; scene.add(hat2);
 const FIGHT_POSE = { aL: [1.25, .35, 2.3], aR: [1.0, -.3, 2.5], lL: [.45, .55], lR: [-.35, .35], crouch: .07, lean: .12 };
 S.XQ = (t, T) => { hideAll(); nightDoor(0); setFade(mia, 1, 1, false); car.visible = true;
   const mb = lt('mb1'), sb1 = lt('sb1'), ms = lt('ms2'), sb2 = lt('sb2'), ex1 = lt('ex1'), ex2 = lt('ex2'), sh = lt('sh1'), sb3 = lt('sb3'), sh2 = lt('sh2');
-  const DO = ms + DURS.ms2 + .25, BS = DO + .45, BR = BS + 1.1, FZ0 = BR, FZ1 = FZ0 + 1.7, G0 = FZ1, G1 = G0 + 1.3;
+  const DO = ms + DURS.ms2 + .25, BS = DO + .45, BR = BS + 1.1, FZ0 = BR, FZ1 = FZ0 + 1.3, G0 = FZ1, G1 = G0 + 1.3;
   const tf = t > FZ0 && t < FZ1 ? FZ0 : t;                                    // стоп-кадр: всё замирает
   // ── машина: въезжает слева направо по улице, разворачивается фарами на пару, прыгает на гидравлике
-  const STOP = 2.3, drive = ease(t, .7, STOP, k => 1 - Math.pow(1 - k, 2.2));
+  const STOP = 1.9, drive = ease(t, .4, STOP, k => 1 - Math.pow(1 - k, 2.2));
   const cx = lerp(DX2 + 7.5, DX2 + 2.5, drive), cz = lerp(2.2, .9, drive); car.position.set(cx, 0, cz); car.rotation.y = lerp(0, -.62, ease(t, 1.2, STOP));
   wheels.forEach(w => w.children.forEach(c => { if (c.geometry.type !== 'CylinderGeometry') c.rotation.z = drive * 30; }));
   const hop = t > STOP ? .2 * Math.abs(Math.sin((tf - STOP) * 7.5)) * Math.exp(-(tf - STOP) * 1.1) : 0, thump = .015 * Math.abs(Math.sin(tf * 8.4));
   carBody.position.y = hop + thump; carBody.rotation.z = Math.sin((tf - STOP) * 7.5) * hop * .5;
   car.userData.door.rotation.y = -ease(t, DO, DO + .35, back) * 1.15;
-  const lit = ease(t, .8, 1.3); car.userData.lights.forEach(b => b.visible = lit > .3);
+  const lit = ease(t, .45, .85); car.userData.lights.forEach(b => b.visible = lit > .3);
   const hl = wpos(car.userData.lights[0]); headL.position.copy(hl); headL.intensity = 85 * lit;
-  headL.target.position.set(lerp(DX2 + 4, DX2 - .6, ease(t, .8, STOP + .2, sm)), 1.0, -2.1);
+  headL.target.position.set(lerp(DX2 + 4, DX2 - .6, ease(t, .45, STOP + .2, sm)), 1.0, -2.1);
   carFill.position.set(cx + 1.0, 2.2, cz + 1.4); carFill.intensity = 2.5; night.sp.intensity = 0; carKey.position.set(cx + 1.6, 2.0, cz + 2.6); carKey.intensity = 9; hemi.intensity = .06 + .1 * lit;
   // ── Sam и Mia: щурятся в свете фар, поворачиваются к машине
-  const turn = ease(t, 1.1, 1.6, sm), fadeM = ease(t, ex2 + .4, ex2 + 1.6) * (1 - ease(t, sh + 1.0, sh + 2.2) * .3);
+  const turn = ease(t, .8, 1.3, sm), fadeM = ease(t, ex2 + .3, ex2 + 1.2) * (1 - ease(t, sh + 1.0, sh + 2.2) * .2);
   const samHat = t > sh + 1.15;
   put(hero, DX2 - .6, -1.3, lerp(Math.PI / 2 - .3, .9, turn), keys(tf, [[0, { ...POSE.stand }], [1.3, { ...POSE.stand, aR: [1.3, -.25, 2.4], lean: -.08 }], [sb1 - .1, { ...POSE.shrug, aR: [1.2, -.4, 1.6] }], [sb1 + 1.0, POSE.stand], [sb2 - .2, { ...POSE.stand, aR: [1.5, -.2, .1], lean: .15 }], [sb2 + 1.1, POSE.stand],
     [sh + 1.0, { ...POSE.stand, aR: [1.2, -.1, .8], aL: [1.2, .1, .8] }], [sb3 - .1, { ...POSE.scared, aR: [1.2, -.1, .9] }], [sh2 + .4, { ...POSE.scared, aR: [1.2, -.1, .9] }]]), tf,
     { expr: t > sb3 - .2 ? 'scared' : t > sb2 - .2 && t < sb2 + 1.2 ? 'angry' : t > 1.3 ? 'surprised' : 'calm', wide: t > 1.3, lid: t > 1.3 && t < 2.6 ? .55 : 0, lookX: t > sb2 - .3 && t < sb2 + 1.2 ? -.9 : .8, mouth: talkG(T, 'sb1', 'sb2', 'sb3') });
   put(mia, DX2 + .1, -1.8, lerp(-Math.PI / 2 + .4, .7, turn), keys(tf, [[0, POSE.stand], [1.3, { ...POSE.stand, aL: [1.3, .25, 2.4] }], [mb - .2, { ...POSE.stand, aL: [1.1, .2, 2.5], aR: [1.1, -.2, 2.5] }], [mb + 1.2, POSE.scared], [ex2 + .6, { ...POSE.stand, aR: [1.0, -.3, 1.6], headX: .4 }], [sh + .6, POSE.scared]]), tf,
     { expr: t > mb - .2 ? 'scared' : 'surprised', wide: true, lookX: t > ex2 + .5 && t < sh ? .3 : .8, lookY: t > ex2 + .5 && t < sh ? -.7 : 0, mouth: talkG(T, 'mb1') }, .2, 8);
-  if (fadeM > .01) setFade(mia, 1 - fadeM * .6, 1 - fadeM * .55, false);
+  if (fadeM > .01) setFade(mia, 1 - fadeM * .85, 1 - fadeM * .7, false);
   // ── тени на стене: фары справа → тени крупные и левее хозяев
   const sOp = .05 + .95 * lit;
   const sneak = ease(t, G1 - .3, sb2, sm) * (1 - ease(t, sh - .2, sh + .6, sm) * .0), brave = ease(t, sh - .3, sh + .5, sm);
@@ -888,7 +890,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0); setFade(mia, 1, 1, false); car.visib
       : t < G1 - .2 ? walk(walkK * 3.2, .1, { aL: [.2, .25, .5], aR: [.2, -.25, .5] })
       : t > ex2 - .1 ? { ...POSE.stand, aR: [1.4, -.2, .2 + Math.sin(t * 9) * .4 * (t < ex2 + 1.2 ? 1 : 0)], aL: [.9, .5, 2.1] }
       : { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headZ: Math.sin(Math.max(0, t - G1) * 6) * .3 * (t < G1 + .9 ? 1 : 0), headX: -.1 }, tf,
-      { expr: 'angry', smile: .35, mouth: talkG(T, 'ex1', 'ex2'), lid: .2 }, 0, 61); exMan.root.position.y = 0; const kp = t < FZ1 ? CL(-1.2, 1.6, 2.3) : new THREE.Vector3(bx + .6, 1.9, bz + 1.4); brKey.position.copy(kp); brKey.intensity = t < FZ1 ? 7 : 4; }
+      { expr: 'angry', smile: .35, mouth: talkG(T, 'ex1', 'ex2'), lid: .2 }, 0, 61); exMan.root.position.y = 0; const kp = t < FZ1 ? CL(-1.2, 1.6, 2.3) : new THREE.Vector3(bx + .6, 1.9, bz + 1.4); brKey.position.copy(kp); brKey.intensity = t < FZ1 ? 14 : 6; }
   const grow = ease(t, G0, G1, back); exSh.holder.visible = grow > .01;
   applyPose(exSh, t > ex2 - .1 ? { ...POSE.stand, aR: [1.55, -.15, .1], aL: [.9, .5, 2.1], lean: -.1 } : t > G1 ? { ...POSE.stand, aL: [.9, .5, 2.1], aR: [.9, -.5, 2.1], headZ: Math.sin(Math.max(0, t - G1) * 6) * .3 * (t < G1 + .9 ? 1 : 0), headX: -.12 } : walk(walkK * 3.2, .1), tf, { mood: 'angry', look: -1 }, 51);
   placeShade(exSh, { x: lerp(DX2 + .9, DX2 + 1.05, drag), z: WN + .1, rise: 1, scale: lerp(.6, 2.35, grow), turn: -Math.PI / 2, op: 1 }); exSh.holder.position.y = .02;
@@ -896,7 +898,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0); setFade(mia, 1, 1, false); car.visib
   const [jx, jy] = hh(tf, .02);
   if (t < mb - .25) cam(lerp(DX2 + 4.1, DX2 + 3.7, ease(t, 0, mb, sm)) + jx, 1.0 + jy, lerp(4.9, 4.5, ease(t, 0, mb)), DX2 + 1.0, .95, -1.2, 50);
   else if (t < DO - .1) cam(DX2 - .25 + jx, 1.45 + jy, lerp(4.4, 3.9, ease(t, mb, DO)), DX2 - .6, 1.55, -2.1, 48);
-  else if (t < FZ1) { const up = ease(tf, BS + .2, BR, sm); const c = CL(-1.0, lerp(.3, .55, up), 3.1), l = CL(-.05, lerp(.25, 1.5, up), 1.0); cam(c.x, c.y, c.z, l.x, l.y, l.z, 40, -.08 * up); }
+  else if (t < FZ1) { const up = ease(tf, BS + .2, BR, sm); const c = CL(-1.0, lerp(.45, .6, up), 3.1), l = CL(-.05, lerp(.75, 1.5, up), 1.0); cam(c.x, c.y, c.z, l.x, l.y, l.z, 40, -.08 * up); }
   else if (t < sb2 - .15) cam(DX2 + .3 + jx, 1.7 + jy, lerp(6.6, 6.1, ease(t, G0, sb2)), DX2 + .3, 1.9, -2.1, 52);
   else if (t < ex1 - .15) cam(DX2 + .45 + jx, 1.22 + jy, .55, DX2 - .75, 1.15, -1.4, 36);
   else if (t < sh - .15) cam(DX2 + .45 + jx, 1.7 + jy, lerp(6.6, 5.8, ease(t, ex1, sh)), DX2 + .35, 1.9, -2.1, 52);
@@ -904,7 +906,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0); setFade(mia, 1, 1, false); car.visib
   else if (t < sh2 - .1) cam(DX2 + .3 + jx, 1.2 + jy, .7, DX2 - .7, 1.15, -1.4, 34);
   else { const z = ease(t, sh2, sh2 + 1.2, sm); cam(sX + .3 + jx * .5, 1.3 + jy * .5, lerp(3.8, 2.4, z), sX, 1.25, WN, 40); }
   FX = { fy: t > DO - .1 && t < FZ1 ? .5 : .42, fw: .36, blur: 5, bloom: .55, warm: -.04 };
-  return () => { if (t < .8) { ctx.fillStyle = `rgba(0,0,8,${.6 - .2 * ease(t, .5, .8)})`; ctx.fillRect(0, 0, 1080, 1920); }
+  return () => { if (t < .5) { ctx.fillStyle = `rgba(0,0,8,${.6 - .2 * ease(t, .3, .5)})`; ctx.fillRect(0, 0, 1080, 1920); }
     if (lit > 0) car.userData.lights.forEach(b => { const p = wpos(b); const [x, y] = toScreen(p.x, p.y, p.z); if (y < -200 || y > 2100) return; const g = ctx.createRadialGradient(x, y, 3, x, y, 150); g.addColorStop(0, `rgba(255,248,220,${.95 * lit})`); g.addColorStop(1, 'rgba(255,240,200,0)'); ctx.fillStyle = g; ctx.fillRect(x - 160, y - 160, 320, 320); });
     // басы: кольца-волны от машины, пока стоит
     if (t > .7 && t < DO) { const p = car.position; const [x, y] = toScreen(p.x, .6, p.z); ctx.save(); for (let i = 0; i < 2; i++) { const k = ((tf * 1.4 + i * .5) % 1); ctx.globalAlpha = (1 - k) * .35; ctx.strokeStyle = '#ff7ab0'; ctx.lineWidth = 6; ctx.beginPath(); ctx.ellipse(x, y, 80 + k * 260, 30 + k * 90, 0, 0, 7); ctx.stroke(); } ctx.restore(); }
@@ -918,7 +920,7 @@ S.XQ = (t, T) => { hideAll(); nightDoor(0); setFade(mia, 1, 1, false); car.visib
       ctx.save(); ctx.globalAlpha = ease(t, FZ0 + .35, FZ0 + .5); ctx.translate(560, 1392); ctx.rotate(-.12); ctx.textAlign = 'center'; ctx.font = '800 40px Unb'; ctx.fillStyle = '#07060c'; ctx.fillText('HER EX  ·  6′4″  ·  2 BRAIN CELLS', 0, 0); ctx.restore();
       ctx.save(); ctx.globalAlpha = ease(t, FZ0 + .55, FZ0 + .7); ctx.translate(560, 1000); ctx.rotate(-.12); ctx.textAlign = 'center'; ctx.font = '900 64px Unb'; ctx.lineWidth = 12; ctx.strokeStyle = '#07060c'; ctx.strokeText('DANGER: ★★★★★', 0, 0); ctx.fillStyle = '#ffd36a'; ctx.fillText('DANGER: ★★★★★', 0, 0); ctx.restore(); }
     // тень Mia тает вместе с хозяйкой: искры по контуру Mia
-    if (fadeM > .05) { const p = wpos(mia.head); const [x, y] = toScreen(p.x, p.y, p.z); ctx.save(); for (let i = 0; i < 14; i++) { const k = (t * .8 + h1(i)) % 1; ctx.globalAlpha = (1 - k) * .7 * fadeM; ctx.fillStyle = '#c8b8ff'; ctx.beginPath(); ctx.arc(x + (h1(i + 3) - .5) * 160, y + 300 - k * 380, 5, 0, 7); ctx.fill(); } ctx.restore(); }
+    if (fadeM > .05) { const p = wpos(mia.head); const [x, y] = toScreen(p.x, p.y, p.z); ctx.save(); for (let i = 0; i < 14; i++) { const k = (t * .8 + h1(i)) % 1; ctx.globalAlpha = (1 - k) * .9 * fadeM; ctx.fillStyle = '#d8ccff'; ctx.beginPath(); ctx.arc(x + (h1(i + 3) - .5) * 200, y + 340 - k * 440, 9, 0, 7); ctx.fill(); } ctx.restore(); }
     // глаза тени Sam загораются
     if (t > sh2 + .3) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); const g = ctx.createRadialGradient(x, y, 10, x, y, 260); g.addColorStop(0, `rgba(255,190,60,${.55 * ease(t, sh2 + .3, sh2 + .8)})`); g.addColorStop(1, 'rgba(255,90,30,0)'); ctx.fillStyle = g; ctx.fillRect(x - 280, y - 280, 560, 560); }
     drawLines(T, { mb1: { y: 1500, n: 16 }, sb1: { y: 1500, n: 16 }, ms2: { y: 420, n: 16 }, sb2: { y: 1500, n: 16, size: 78 }, ex1: { y: 1500, size: 78, n: 16 }, ex2: { y: 1500, size: 78, n: 16 }, sh1: { y: 420, size: 100 }, sb3: { y: 1500, n: 16 }, sh2: { y: 420, size: 92, n: 14 } }); };
@@ -934,12 +936,12 @@ const arena = new THREE.Group(); arena.position.set(60, 0, 0); arena.visible = f
   // слой: рисуем в метрах (y вверх), 64 px на метр
   const PX = 64; const layer = (z, w, h, col, draw, y = 0) => { const tx = canvasTex(Math.round(w * PX), Math.round(h * PX), (g, W2, H2) => { g.fillStyle = col; g.strokeStyle = col; g.translate(W2 / 2, H2); g.scale(PX, -PX); draw(g, w / 2, h); }); const m = mesh(G.plane(w, h), basic(tx), false, false); m.position.set(0, y + h / 2, z); arena.add(m); return m; };
   const R = (g, x, y, w, h) => g.fillRect(x, y, w, h), C = (g, x, y, r) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); };
-  layer(-18, 50, 7, '#b0384a', (g, X, H2) => { g.beginPath(); g.moveTo(-X, 0); for (let x = -X; x <= X; x += .25) g.lineTo(x, 2.2 + Math.sin(x * .7) * .8 + Math.sin(x * 2.3) * .3); g.lineTo(X, 0); g.fill(); }, -.2);
-  layer(-11, 36, 7, '#5a1430', (g, X) => { let x = -X, i = 0; while (x < X) { const bw = .9 + h1(i) * 1.6, bh = 1.2 + h1(i + 9) * 2.6; R(g, x, 0, bw, bh); if (h1(i + 4) > .6) R(g, x + bw * .4, bh, .06, .8); x += bw; i++; }
+  layer(-18, 50, 7, '#d0604e', (g, X, H2) => { g.beginPath(); g.moveTo(-X, 0); for (let x = -X; x <= X; x += .25) g.lineTo(x, 2.2 + Math.sin(x * .7) * .8 + Math.sin(x * 2.3) * .3); g.lineTo(X, 0); g.fill(); }, -.2);
+  layer(-11, 36, 7, '#8a2a44', (g, X) => { let x = -X, i = 0; while (x < X) { const bw = .9 + h1(i) * 1.6, bh = 1.2 + h1(i + 9) * 2.6; R(g, x, 0, bw, bh); if (h1(i + 4) > .6) R(g, x + bw * .4, bh, .06, .8); x += bw; i++; }
     R(g, 3.2, 3.2, 1.0, .8); R(g, 3.3, 2.2, .08, 1.0); R(g, 4.0, 2.2, .08, 1.0); g.beginPath(); g.moveTo(3.1, 4.0); g.lineTo(3.7, 4.5); g.lineTo(4.3, 4.0); g.fill();
     const cx = -2.6, cy = 3.6; R(g, -4, 0, 3, 3.3); g.beginPath(); g.ellipse(cx, cy, .28, .38, 0, 0, 7); g.fill(); C(g, cx, cy + .48, .2); g.beginPath(); g.moveTo(cx - .17, cy + .55); g.lineTo(cx - .12, cy + .8); g.lineTo(cx - .02, cy + .62); g.moveTo(cx + .17, cy + .55); g.lineTo(cx + .12, cy + .8); g.lineTo(cx + .02, cy + .62); g.fill();
     g.lineWidth = .09; g.beginPath(); g.moveTo(cx + .2, cy - .3); g.quadraticCurveTo(cx + .7, cy - .4, cx + .6, cy + .1); g.stroke(); }, -.1);
-  layer(-5.5, 26, 5, '#1e0a16', (g, X) => { R(g, -7.5, 0, 5.2, 3.6); R(g, -2.3, 0, 3.2, 2.6); R(g, 5.5, 0, 4.5, 3.9); g.beginPath(); g.moveTo(-7.7, 3.6); g.lineTo(-4.9, 4.4); g.lineTo(-2.1, 3.6); g.fill();
+  layer(-5.5, 26, 5, '#4a1426', (g, X) => { R(g, -7.5, 0, 5.2, 3.6); R(g, -2.3, 0, 3.2, 2.6); R(g, 5.5, 0, 4.5, 3.9); g.beginPath(); g.moveTo(-7.7, 3.6); g.lineTo(-4.9, 4.4); g.lineTo(-2.1, 3.6); g.fill();
     g.save(); g.fillStyle = 'rgba(255,170,90,.6)'; [[-7, 2.2], [-5.6, 2.2], [-3.6, 2.2], [-7, .9], [6.1, 2.4], [7.9, 2.4]].forEach(([x, y]) => R(g, x, y, .8, .9)); g.fillStyle = 'rgba(255,210,130,.45)'; R(g, -5.3, 0, .9, 1.7); g.restore();
     R(g, 3.6, 0, .12, 3.6); g.beginPath(); g.ellipse(3.66, 3.6, .3, .14, 0, 0, 7); g.fill();
     g.lineWidth = .04; g.beginPath(); for (let x = -2.3; x <= .9; x += .1) g.lineTo(x, 2.5 - Math.sin((x + 2.3) / 3.2 * Math.PI) * .35); g.stroke(); g.save(); g.fillStyle = 'rgba(255,224,150,.95)'; for (let x = -2.2; x < .9; x += .32) C(g, x, 2.42 - Math.sin((x + 2.2) / 3.2 * Math.PI) * .35, .06); g.restore();
@@ -950,7 +952,7 @@ const arena = new THREE.Group(); arena.position.set(60, 0, 0); arena.visible = f
     person(-1.2, 1, () => { R(g, .26, .9, .1, .35); R(g, .22, 1.22, .44, .05); R(g, .3, 1.27, .28, .34); });
     person(-.4, .95, () => { g.beginPath(); g.ellipse(.2, 1.55, .12, .24, .6, 0, 7); g.fill(); g.beginPath(); g.moveTo(-.3, .65); g.lineTo(.3, .65); g.lineTo(.42, .25); g.lineTo(-.42, .25); g.fill(); });
     person(5.0, 1.3, () => { R(g, -.4, .7, .8, .55); g.beginPath(); g.ellipse(.06, 1.6, .26, .13, 0, 0, 7); g.fill(); g.lineWidth = .12; g.beginPath(); g.moveTo(-.25, 1.1); g.lineTo(-.55, .85); g.lineTo(-.25, .7); g.moveTo(.25, 1.1); g.lineTo(.55, .85); g.lineTo(.25, .7); g.stroke(); }); }, -.02);
-  const ground = mesh(G.plane(80, 30), new THREE.MeshBasicMaterial({ color: '#12060e', toneMapped: false }), false, false); ground.rotation.x = -Math.PI / 2; ground.position.set(0, 0, 0); arena.add(ground);
+  const ground = mesh(G.plane(80, 30), new THREE.MeshBasicMaterial({ color: '#2e0e1c', toneMapped: false }), false, false); ground.rotation.x = -Math.PI / 2; ground.position.set(0, 0, 0); arena.add(ground);
   layer(3.0, 12, .9, '#050205', (g, X, H2) => { for (let i = 0; i < 46; i++) { const x = (h1(i) - .5) * 2 * X, s = .2 + h1(i + 5) * .5; g.beginPath(); g.moveTo(x - s * .3, 0); g.lineTo(x + (h1(i + 8) - .5) * .2, s * (1 + h1(i + 2))); g.lineTo(x + s * .3, 0); g.fill(); } R(g, -X, 0, 2 * X, .1); }, 0); }
 function col0(g) { return g.fillStyle; }
 S.KQ = (t, T) => { useSet('night'); hideAll(); night.g.visible = false; arena.visible = true; scene.background = new THREE.Color('#2a0b30'); scene.fog = null;
@@ -1041,7 +1043,7 @@ const hudBar = (t, x, y, label, k, ghost) => { const w = 560; ctx.save(); ctx.fi
       tag(t, FZ0 + .05, a, b, 250, 1430, 'SAM · ZERO RIZZ'); tag(t, FZ0 + .3, c, d, 820, 1560, 'MIA · 1ST DATE'); tag(t, FZ0 + .55, e, g, 540, 330, 'THEIR SHADOWS · NO SHAME', '#ff7ab0'); }; }; }
 { // FB: шкала «достоинства» тени сливается в ноль → K.O.
   const _FB = S.FB; S.FB = (t, T) => { const f = _FB(t, T); const RUN = lt('fb2') - .2; return () => { f && f(); if (t < RUN - .3) return; const k = 1 - ease(t, RUN, RUN + .9), gh = 1 - ease(t, RUN + .35, RUN + 1.3);
-    ctx.save(); ctx.translate(0, lerp(-200, 0, ease(t, RUN - .3, RUN))); hudBar(t, 260, 470, "SHADOW'S DIGNITY", k, gh); ctx.restore(); if (t > RUN + 1.0) stamp(t, RUN + 1.0, 'K.O.', { y: 760, size: 170, color: '#ff2a3a', rot: -.1 }); }; }; }
+    if (t > RUN + 1.0) stamp(t, RUN + 1.0, 'K.O.', { y: 760, size: 170, color: '#ff2a3a', rot: -.1 }); }; }; }
 { // S2: повтор-разбор «TACTICAL retreat» — замедленный флэшбек с маркером, как в спорте
   const _S2 = S.S2; S.S2 = (t, T) => { const W0 = lt('b19') + .3, W1 = W0 + 1.6; if (t < W0 || t > W1) return _S2(t, T);
     const keep = SHOT0; SHOT0 = starts.FB; const RUNf = lt('fb2') - .2; const tr = RUNf - .4 + (t - W0) * .5; S.FB(tr, SHOT0 + tr); SHOT0 = keep; const hp = wpos(shade.head);
@@ -1051,16 +1053,21 @@ const hudBar = (t, x, y, label, k, ghost) => { const w = 560; ctx.save(); ctx.fi
       const [x, y] = toScreen(hp.x, hp.y - .25, hp.z); const k = ease(t, W0 + .2, W0 + .6); ctx.save(); ctx.strokeStyle = '#ffe14a'; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.ellipse(x, y, 150, 220, -.2, -1.6, -1.6 + k * 6.6); ctx.stroke();
       if (t > W0 + .6) { ctx.font = '700 78px Cav'; ctx.fillStyle = '#ffe14a'; ctx.textAlign = 'center'; ctx.save(); ctx.translate(x + 40, y - 300); ctx.rotate(-.1); ctx.fillText('“tactical”', 0, 0); ctx.restore(); } ctx.restore();
       drawLines(T, { b19: { y: 1500 } }); }; }; }
-{ // S2B: условие — титром-ударом; «Manipulation again?» — летят красные флажки
-  const _S2B = S.S2B; S.S2B = (t, T) => { const f = _S2B(t, T); const a = lt('b13'), m = lt('b18'); return () => { f && f();
-    if (t > a + .1 && t < a + 1.5) slashCard(t, a + .1, 'TERM #5', 'INTRODUCE ME — OR I QUIT', { y: 1330, size: 150 });
-    if (t > m && t < m + 1.8) for (let i = 0; i < 7; i++) { const k = ease(t, m + i * .07, m + i * .07 + .25, back), x = 140 + h1(i + 3) * 800, y = 560 + h1(i + 7) * 700; if (k <= 0) continue; ctx.save(); ctx.translate(x, y); ctx.scale(k, k); ctx.rotate((h1(i) - .5) * .5 + Math.sin(t * 9 + i) * .08);
-      ctx.fillStyle = '#5a3a24'; ctx.fillRect(-4, -70, 8, 120); ctx.fillStyle = '#ff2a3a'; ctx.beginPath(); ctx.moveTo(4, -70); ctx.lineTo(80, -48); ctx.lineTo(4, -24); ctx.fill(); ctx.restore(); } }; }; }
 { // CAT: счёт как в файтинге
   const _CAT = S.CAT; S.CAT = (t, T) => { const f = _CAT(t, T); return () => { f && f(); if (t < 1.75) return; const k = ease(t, 1.8, 2.0, back);
     ctx.save(); ctx.translate(540, 560); ctx.scale(k, k); ctx.fillStyle = 'rgba(7,6,12,.85)'; rr(-380, -70, 760, 130, 24); ctx.fill(); ctx.textAlign = 'center'; ctx.font = '900 60px Unb'; ctx.fillStyle = '#ffd36a'; ctx.fillText('PIXEL 1 : 0 SHADOW', 0, 22); ctx.restore();
     if (t > 2.2 && t < 3.4) stamp(t, 2.2, '+1 HAT', { x: 760, y: 760, size: 80, color: '#7af0ff', rot: .12 }); }; }; }
 
+{ // монтаж «восьмёркой»: на каждую реплику — свой ракурс (крупно говорящий / тени на стене), жёсткая склейка
+  const ANG = { S6: { f1: 'sam', f2: 'mia' }, S7: { g7: 'wall' }, S9: { i1: 'wall', i2: 'sam', i3: 'mia' }, S10: { j3: 'mia', j4: 'sam' }, S2B: { b13: 'shade', b18: 'sam', b15: 'shade' } };
+  for (const id in ANG) { const _f = S[id]; S[id] = (t, T) => { const f = _f(t, T); let cur = null;
+    for (const lid in ANG[id]) { const a = lt(lid) - .05, b = lt(lid) + DURS[lid] + .45; if (t > a && t < b) cur = ANG[id][lid]; }
+    if (cur) { const [jx, jy] = hh(t, .008, 7);
+      if (cur === 'sam' || cur === 'mia') { const c = cur === 'sam' ? hero : mia, sd = cur === 'sam' ? 1 : -1; const p = wpos(c.head); cam(p.x + sd * .75 + jx, p.y + .05 + jy, p.z + 2.3, p.x + sd * .12, p.y - .22, p.z, 34); }
+      else if (cur === 'wall') { const p = wpos(shade.head), q = wpos(miaSh.head); const mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2; cam(mx + jx, my - .25 + jy, p.z + 3.4, mx, my - .45, p.z, 40); }
+      else { const p = wpos(shade.head); cam(p.x - .45 + jx, p.y - .3 + jy, p.z + 3.4, p.x - .3, p.y - .55, p.z, 40); }
+      FX.fy = .42; }
+    return f; }; } }
 // ---- монтаж ----
 const PUNCH = ['b19', 'b18', 'ct2', 's6', 's10', 'p2', 'e5', 'g3', 'k7', 'l2', 'h1'];
 const WHIPS = ['S1', 'S5', 'S10B', 'S11', 'S2'].filter(id => id in starts).map(id => starts[id]);
