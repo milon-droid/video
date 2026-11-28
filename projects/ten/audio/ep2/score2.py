@@ -110,13 +110,19 @@ def main_music():
     put(riser(.8, .6), PUSH - .8, .35, 0, .3); put(boom(.5, 1.0), PUSH, .5, 0, .2)
     chord(['F3', 'A3', 'C4', 'E4'], PUSH + .3, end('S1') - PUSH + .5, .22)
     for k, n in enumerate(['C5', 'F5', 'A5', 'C6']): put(celesta(hz(n)), PUSH + .45 + k * .12, .25, .3, .5)
-    AWK = AT['s6'] + D['s6'] + .1; R0 = sh('SS'); SCR = AT['s6'] - .4
-    ballad(R0 + .1, SCR)
-    sw = int(SR * .5); tt = np.arange(sw) / SR; fr = 900 * np.exp(-tt * 5) + 120; ph = 2 * np.pi * np.cumsum(fr) / SR
-    scr = (np.sign(np.sin(ph)) * .5 + rng.standard_normal(sw) * .5) * np.exp(-tt * 3) * (1 - np.exp(-tt * 80)); put(scr, SCR, .35, 0, .05)
+    AWK = AT['s6'] + D['s6'] + .1; R0 = sh('SS'); SCR = AT['s9'] + D['s9'] + .35   # отъезд камеры → «зажёванная плёнка»
+    global L, R, VERB
+    L0, R0b, V0 = L, R, VERB; L = np.zeros_like(L0); R = np.zeros_like(L0); VERB = np.zeros_like(L0)
+    ballad(R0 + .1, SCR + 1.2)
+    bl, br, bv = L, R, VERB; L, R, VERB = L0, R0b, V0
+    i0 = int(SCR * SR); TS = .75; n = int(TS * SR); sp = (1 - np.arange(n) / n) ** 1.6; pos = i0 + np.cumsum(sp)
+    for src, dst, g in ((bl, L, 1.), (br, R, 1.), (bv, VERB, 1.)):
+        dst[:i0] += src[:i0] * g
+        warped = np.interp(pos, np.arange(len(src)), src) * np.linspace(1, 0, n) ** .5
+        dst[i0:i0 + n] += warped * g
     put(cricket(1.9), AWK, .35, .4, .3); put(whist([hz("G5"), hz("E5"), hz("G5"), hz("C6")]), AWK + .65, .3, -.2, .3)
     # S5–S10 кафе
-    KNOCK = AT['g9'] - .15
+    KNOCK = AT['g3'] - .45
     AWKC = AT['g8'] + D['g8'] + .2
     lounge(sh('S5') + .2, AWKC, .9)
     for k in range(int((KNOCK - AWKC) / .5)): put(tick(.5, 1500), AWKC + .2 + k * .5, .14, .2, .1)  # неловкая тишина: только часы

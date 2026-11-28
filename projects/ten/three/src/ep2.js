@@ -84,6 +84,10 @@ function heartEyes(sh, k, t) { if (k <= 0) return; sh.eyes.forEach(e => { const 
 function burst(dt, x, y, color, n = 14, v0 = 380) { const life = .55; if (dt < 0 || dt > life) return; const k = dt / life; ctx.save(); ctx.fillStyle = color; for (let i = 0; i < n; i++) { const a = i / n * 6.283 + i, v = v0 * (.5 + h1(i) * .7); ctx.globalAlpha = 1 - k; ctx.beginPath(); ctx.arc(x + Math.cos(a) * v * dt, y + Math.sin(a) * v * dt * .8, 12 * (1 - k) + 2, 0, 7); ctx.fill(); } ctx.restore(); }
 function sparks(t, x, y, k) { if (k <= 0) return; ctx.save(); for (let i = 0; i < 18; i++) { const a = i / 18 * 6.283 + t * 2, r = 30 + ((t * 120 + h1(i) * 90) % 90); ctx.globalAlpha = k * (1 - r / 130); ctx.fillStyle = i % 2 ? '#fff6c8' : '#ffd36a'; ctx.save(); ctx.translate(x + Math.cos(a) * r, y + Math.sin(a) * r); ctx.rotate(.785); ctx.fillRect(-6, -6, 12, 12); ctx.restore(); } ctx.restore(); }
 function notes(t, x, y, k) { if (k <= 0) return; ctx.save(); ctx.font = '700 64px Cav'; ctx.textAlign = 'center'; for (let i = 0; i < 4; i++) { const ph = (t * .9 + i / 4) % 1; ctx.globalAlpha = k * (1 - ph); ctx.fillStyle = '#07060c'; ctx.strokeStyle = 'rgba(255,240,215,.9)'; ctx.lineWidth = 8; const px = x + 40 + ph * 120 + Math.sin(ph * 9) * 14, py = y - ph * 170; ctx.strokeText(i % 2 ? '♪' : '♫', px, py); ctx.fillText(i % 2 ? '♪' : '♫', px, py); } ctx.restore(); }
+// плашка с текстом: размер по замеру текста + поля (padX/padY) — текст никогда не касается краёв
+function pill(cx, cy, text, { size = 40, weight = 900, padX = 40, padY = 24, bg = 'rgba(7,6,12,.85)', fg = '#ffd36a', r = 22, maxW = 1000 } = {}) {
+  ctx.save(); ctx.font = `${weight} ${size}px Unb`; let w = ctx.measureText(text).width; if (w + padX * 2 > maxW) { size = Math.floor(size * (maxW - padX * 2) / w); ctx.font = `${weight} ${size}px Unb`; w = ctx.measureText(text).width; }
+  const W2 = w + padX * 2, H2 = size + padY * 2; ctx.fillStyle = bg; rr(cx - W2 / 2, cy - H2 / 2, W2, H2, r); ctx.fill(); ctx.fillStyle = fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, cx, cy + size * .06); ctx.restore(); return W2; }
 function sweat(x, y, k) { if (k <= 0) return; ctx.save(); ctx.globalAlpha = k; ctx.fillStyle = '#9ad8ff'; ctx.strokeStyle = '#1a3a5a'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, y - 26); ctx.quadraticCurveTo(x + 18, y, x, y + 10); ctx.quadraticCurveTo(x - 18, y, x, y - 26); ctx.fill(); ctx.stroke(); ctx.restore(); }
 function warmGlow(a, col = '255,170,90') { const g = ctx.createRadialGradient(540, 700, 200, 540, 900, 1200); g.addColorStop(0, `rgba(${col},0)`); g.addColorStop(1, `rgba(${col},${a})`); ctx.fillStyle = g; ctx.fillRect(0, 0, 1080, 1920); }
 
@@ -187,7 +191,7 @@ S.SS = (t, T) => { useSet('front'); hideAll(); pixel.g.visible = false; broom.vi
   const zo = ease(t, s5 + .5, s6 - .2, sm); const [cx, cy] = hh(t, .015);
   const cx0 = jx - .78;
   const aw = ease(t, AWK0, AWK0 + 3.5, sm);
-  cam(lerp(lerp(cx0, jx - .8, zo), jx - .55, aw) + cx, lerp(lerp(1.2, 1.1, zo), 1.2, aw) + cy, lerp(lerp(1.6, 5.0, zo), 3.9, aw), lerp(lerp(cx0, jx - .8, zo), jx - .75, aw), lerp(lerp(1.05, .85, zo), 1.35, aw), -1.28, 36);
+  cam(lerp(lerp(cx0, jx - .8, zo), jx - .55, aw) + cx, lerp(lerp(1.15, 1.1, zo), 1.2, aw) + cy, lerp(lerp(2.5, 5.0, zo), 3.9, aw), lerp(lerp(cx0, jx - .8, zo), jx - .75, aw), lerp(lerp(1.05, .85, zo), 1.35, aw), -1.28, 36);
   FX = { fy: lerp(.4, .5, zo), fw: .32, blur: 6, bloom: .2, warm: .06 };
   return () => { if (t > s5 - .3 && t < s6) { const p = wpos(shade.head); const [x, y] = toScreen(p.x, p.y, p.z); heartsFloat(t, x, y, .6, 200, 8); }
     band(shade, hero, t);
@@ -379,7 +383,7 @@ S.S6 = (t, T) => { useSet('cafe'); hideAll(); const f1 = lt('f1'), f2 = lt('f2')
     drawLines(T, { f1: { y: 1480 }, f2: { y: 1480 } }); };
 };
 // 7. «Lean in. Closer…» — локоть сбивает чашку
-S.S7 = (t, T) => { useSet('cafe'); hideAll(); const g1 = lt('g7'), g2 = lt('g8'), KNOCK = lt('g9') - .15, AWKC = g2 + DURS.g8 + .2;
+S.S7 = (t, T) => { useSet('cafe'); hideAll(); const g1 = lt('g7'), g2 = lt('g8'), KNOCK = lt('g3') - .45, AWKC = g2 + DURS.g8 + .2;
   const lean = ease(t, g1 + .4, g1 + 1.2, sm) * .2 + ease(t, g2 + .3, g2 + 1.0, sm) * .22 - ease(t, KNOCK + .2, KNOCK + .6) * .42;
   const samP = sit({ lean, aR: t > KNOCK - .35 && t < KNOCK + .3 ? [1.1, .25, .5] : [.7, -.1, 1.3], aL: [.75, .1, 1.3] });
   seatSam(t, t > KNOCK + .2 ? keys(t, [[KNOCK + .2, samP], [KNOCK + .5, sit({ aL: [1.2, .3, 1.8], aR: [1.2, -.3, 1.8], lean: -.1 })]]) : samP, { expr: t > KNOCK ? 'scared' : lean > .3 ? 'determined' : 'calm', smile: .3, mouth: talkG(T, 'g3'), lookX: .8, wide: t > KNOCK });
@@ -393,13 +397,13 @@ S.S7 = (t, T) => { useSet('cafe'); hideAll(); const g1 = lt('g7'), g2 = lt('g8')
   wallShade(miaSh, .52, t > KNOCK + .9 ? sit({ aR: [1.3, -.3, 1.9], headZ: .2 }) : sit({}), t, { mood: t > KNOCK + .3 ? 'happy' : 'calm', look: -1 }, 7, { turn: -Math.PI / 2 });
   // чашка Sam падает со стола, пятно
   const ck = ease(t, KNOCK, KNOCK + .35); const cup = cafe.cupM; cup.rotation.z = -ck * 1.6; cup.position.set(.06 + ck * .06, .44, cafe.TZ + .1); cafe.spill.visible = t > KNOCK + .2; cafe.spill.scale.setScalar(ease(t, KNOCK + .2, KNOCK + .6));
-  const [jx, jy] = hh(t, .012); const push = ease(t, 0, KNOCK, sm);
-  cam(lerp(.1, 0, push) + jx, lerp(1.35, 1.25, push) + jy, lerp(4.2, 3.6, push), .05, .95, -1.0, 36);
+  const [jx, jy] = hh(t, .012); const push = ease(t, 0, KNOCK, sm), aw2 = ease(t, AWKC - .2, KNOCK - .1, sm) * (1 - ease(t, KNOCK - .1, KNOCK + .15, sm));
+  cam(lerp(lerp(.1, 0, push), -.25, aw2) + jx, lerp(lerp(1.35, 1.25, push), 1.05, aw2) + jy, lerp(lerp(4.2, 3.6, push), 2.4, aw2), lerp(.05, -.35, aw2), lerp(.95, .9, aw2), -1.0, 36);
   FX = { fy: .45, fw: .3, blur: 6, warm: .1, bloom: .25 };
   return () => { if (t > KNOCK && t < KNOCK + .6) { const [bx, by] = toScreen(.1, .5, cafe.TZ + .1); burst(t - KNOCK, bx, by, '#7a4a2a', 16, 360); }
     if (t > KNOCK) { const p = wpos(hero.head); const [x, y] = toScreen(p.x, p.y, p.z); sweat(x - 70, y - 60 + (t - KNOCK) * 30, 1 - ease(t, KNOCK + 1.4, KNOCK + 1.8)); }
     band(shade, hero, t); band(miaSh, mia, t, .7);
-    drawLines(T, { g7: { y: 380, size: 100 }, g8: { y: 380, size: 100 }, g9: { y: 380, size: 110 }, g3: { y: 1480 } });
+    drawLines(T, { g7: { y: 380, size: 100 }, g8: { y: 380, size: 100 }, g3: { y: 1480 } });
     if (t > AWKC + .1 && t < KNOCK - .3) { ctx.save(); ctx.globalAlpha = ease(t, AWKC + .1, AWKC + .4) * .9; ctx.font = '700 46px Cav'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#140a1e'; ctx.lineWidth = 8; ctx.strokeText('*awkward silence*', 540, 1560); ctx.fillText('*awkward silence*', 540, 1560); ctx.restore(); }
     if (t > KNOCK + .9 && t < KNOCK + 2.4) { const q = wpos(miaSh.aR.hand); const [x, y] = toScreen(q.x, q.y, q.z); ctx.save(); ctx.globalAlpha = ease(t, KNOCK + .9, KNOCK + 1.1) * (1 - ease(t, KNOCK + 2.0, KNOCK + 2.4)); ctx.strokeStyle = '#ffd36a'; ctx.lineWidth = 6; for (let r = 0; r < 8; r++) { const a2 = r / 8 * 6.28; ctx.beginPath(); ctx.moveTo(x + Math.cos(a2) * 26, y - 30 + Math.sin(a2) * 26); ctx.lineTo(x + Math.cos(a2) * 46, y - 30 + Math.sin(a2) * 46); ctx.stroke(); } ctx.restore(); } };
 };
@@ -857,7 +861,7 @@ const hat2 = hat.clone(); hat2.visible = false; scene.add(hat2);
 const cloneA = makeShade(), cloneB = makeShade(); [cloneA, cloneB].forEach(C => { scene.add(C.holder); C.holder.visible = false; const m = new THREE.MeshBasicMaterial({ color: '#2a1050', transparent: true, opacity: .85 }); C.root.traverse(o => { if (o.isMesh && o.material.color && o.material.color.r < .1 && o.material.color.b < .1) o.material = m; }); C.eyes.forEach(e => e.children.forEach(c => c.material = glow('#d58aff', 2.4))); });
 const FIGHT_POSE = { aL: [1.25, .35, 2.3], aR: [1.0, -.3, 2.5], lL: [.45, .55], lR: [-.35, .35], crouch: .07, lean: .12 };
 S.XQ = (t, T) => { hideAll(); EXINK.color.set('#3a0710'); nightDoor(0, true, false); mia.tail.rotation.x = .05; miaSh.tail.rotation.x = -.2; setFade(mia, 1, 1, false); car.visible = true;
-  const mb = lt('mb1'), sb1 = lt('sb1'), ms = lt('ms2'), sb2 = lt('sb2'), ex1 = lt('ex1'), ex2 = lt('ex2'), sh = lt('lg1'), sb3 = lt('ex4'), sh2 = lt('sh3');
+  const mb = lt('mb1'), sb1 = lt('sb1'), ms = lt('ms2'), sb2 = lt('ms2') + DURS.ms2 + .25 + .45 + 1.1 + 1.3 + 1.3 + 1.3, ex1 = lt('ex1'), ex2 = lt('ex2'), sh = lt('lg1'), sb3 = lt('ex4'), sh2 = lt('sh3');
   const DO = ms + DURS.ms2 + .25, BS = DO + .45, BR = BS + 1.1, FZ0 = BR, FZ1 = FZ0 + 1.3, G0 = FZ1, G1 = G0 + 1.3;
   const tf = t > FZ0 && t < FZ1 ? FZ0 : t;                                    // стоп-кадр: всё замирает
   // ── машина: въезжает слева направо по улице, разворачивается фарами на пару, прыгает на гидравлике
@@ -1050,18 +1054,18 @@ const hudBar = (t, x, y, label, k, ghost) => { const w = 560; ctx.save(); ctx.fi
       drawLines(T, { b19: { y: 1500 } }); }; }; }
 { // CAT: счёт как в файтинге
   const _CAT = S.CAT; S.CAT = (t, T) => { const f = _CAT(t, T); return () => { f && f(); if (t < 1.75) return; const k = ease(t, 1.8, 2.0, back);
-    ctx.save(); ctx.translate(830, 170); ctx.scale(k, k); ctx.fillStyle = 'rgba(7,6,12,.85)'; rr(-245, -55, 490, 100, 22); ctx.fill(); ctx.textAlign = 'center'; ctx.font = '900 40px Unb'; ctx.fillStyle = '#ffd36a'; ctx.fillText('PIXEL 1 : 0 SHADOW', 0, 14); ctx.restore();
+    ctx.save(); ctx.translate(810, 175); ctx.scale(k, k); pill(0, 0, 'PIXEL 1 : 0 SHADOW', { size: 34, padX: 40, padY: 26, maxW: 460 }); ctx.restore();
     }; }; }
 
 { // монтаж «восьмёркой» с плавным переводом камеры: к говорящему (или к теням) и обратно — проезд 0,45 с, внутри — лёгкий наезд
-  const ANG = { S6: { f1: 'sam', f2: 'mia' }, S9: { i1: 'wall', i2: 'sam', i3: 'mia' }, S10: { j3: 'mia', j4: 'sam' }, S2B: { b18: 'sam', b15: 'shade' } };
+  const ANG = { S6: { f1: 'sam', f2: 'mia' }, S9: { i1: 'wall', i2: 'sam', i3: 'mia' }, S10: { j3: 'mia', j4: 'sam' }, S2B: { b13: 'push', b18: 'sam', b15: 'shade' } };
   const target = (cur, t, a) => { const push = ease(t, a, a + 2.5, sm) * .25;
     if (cur === 'sam' || cur === 'mia') { const c = cur === 'sam' ? hero : mia, sd = cur === 'sam' ? 1 : -1; const p = wpos(c.head); return [p.x + sd * .75, p.y + .05, p.z + 2.3 - push, p.x + sd * .12, p.y - .22, p.z, 34, 0]; }
     if (cur === 'wall') { const p = wpos(shade.head), q = wpos(miaSh.head); const mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2; return [mx, my - .25, p.z + 3.4 - push, mx, my - .45, p.z, 40, 0]; }
     const p = wpos(shade.head); return [p.x - .45, p.y - .3, p.z + 3.4 - push, p.x - .3, p.y - .55, p.z, 40, 0]; };
   for (const id in ANG) { const _f = S[id]; S[id] = (t, T) => { const f = _f(t, T); let C = CAM.slice(), any = false;
     for (const lid in ANG[id]) { const a = lt(lid), b = lt(lid) + DURS[lid] + .35; const w = ease(t, a - .4, a + .05, sm) * (1 - ease(t, b, b + .45, sm)); if (w <= 0) continue; any = true;
-      const G2 = target(ANG[id][lid], t, a); C = C.map((v, i) => lerp(v, G2[i], w)); }
+      const G2 = ANG[id][lid] === 'push' ? (() => { const q = CAM.slice(), k = ease(t, a, a + DURS[lid] + .5, sm); q[0] = lerp(q[0], q[3], .35 * k); q[1] = lerp(q[1], q[4], .35 * k); q[2] = lerp(q[2], q[5], .38 * k); return q; })() : target(ANG[id][lid], t, a); C = C.map((v, i) => lerp(v, G2[i], w)); }
     if (any) { const [jx, jy] = hh(t, .006, 7); cam(C[0] + jx, C[1] + jy, C[2], C[3], C[4], C[5], C[6], C[7]); FX.fy = .43; }
     return f; }; } }
 // ---- монтаж ----

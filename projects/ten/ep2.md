@@ -94,3 +94,6 @@
   руки без растяжения; за столом снова «Lean in. Come on.» → «Closer… closer!» — тень тянется к тени Mia и не достаёт → *awkward silence* (часы) → «Oops.» → чашка;
   «Let her go… you walking blackout.» (угрожающе); финал: без таблиц и ODDS — только рекорды внизу (0–1 «lost to Pixel (cat)» / 27–0), портреты в круге, злой портрет Брэда, тень Брэда того же цвета,
   заставка «SHADOW FIGHT» кистевым шрифтом (Permanent Marker, Apache 2.0), CTA «Who wins this? / Place your bets below», без FINAL EPISODE. ~2:05 → `render/shadow-quit-ep2-v12.mp4`.
+- 2026-11-28 v13: без «Oops» (только звук чашки), без «Don't you dare run again» (Sam молча злится), «you walking blackout» короче (пауза ужата), «Closer…» один раз,
+  табло PIXEL — плашка с полями по замеру (`pill()`), отъезд камеры у бегуна → баллада «зажёвывается» (tape-stop); динамика: наезд на «Term five», подкат короче и шире,
+  медленный комичный наезд на Sam в *awkward silence*, темнота перед машиной короче. ~2:02 → `render/shadow-quit-ep2-v13.mp4`.

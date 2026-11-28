@@ -54,7 +54,7 @@ def main_sfx():
     lib(ST['S5'] + .3, "oc-PAPRHndl_BookPageTurns_OS_01", .3, align="start"); lib(ST['S5'] + .7, "shimmer-long-soft", .3, align="start")
     for i in range(5): lib(ST['S6'] + .15 + i * .42, "oc-FEETHmn_ShoeConcreteLand_OS_0%d" % (1 + i % 2), .22, align="start")
     lib(AT['f2'] + D['f2'] + .9, "foley-fabric-slide", .45)
-    K = AT['g9'] - .15; lib(K - 1.0, "move-spring", .3, rate=.8); lib(K, "foley-glass-touch", .8); lib(K + .3, "oc-PLASImpt_PlasticCupDrop_OS_01", .55); syn(K + .32, "puff", .4)
+    K = AT['g3'] - .45; lib(K - 1.0, "move-spring", .3, rate=.8); lib(K, "foley-glass-touch", .8); lib(K + .3, "oc-PLASImpt_PlasticCupDrop_OS_01", .55); syn(K + .32, "puff", .4)
     TOUCH = ST['S8'] + 2.9; lib(TOUCH, "shimmer-long-sparkle", .55, align="start"); lib(TOUCH + .35, "whoosh-fast-soft", .5, align="start"); lib(TOUCH + .4, "transform-stretch", .45, align="start", rate=1.4)
     LOOK2 = AT['i3'] + D['i3'] + .2; lib(LOOK2, "whoosh-fast-soft", .45, align="start")
     SHAKE = ST['S10B'] + 3.85; KISS = SHAKE + .45; DROP = KISS + .6 + 1.6 + .4
@@ -122,7 +122,6 @@ def variants():
         lib(FZ1 + .1, "transform-stretch", .6, align="start", rate=.7); lib(FZ1 + .2, "reverse-whoosh-long-strong", .4, align="start")
         lib(G1 + .1, "oc-GOREBone_SkullCracking_OS_01", .35, align="start"); lib(G1 + .45, "oc-GOREBone_SkullCracking_OS_02", .35, align="start")
         for i in range(5): lib(G1 + .2 + i * .25, "oc-FEETHmn_ShoeConcreteLand_OS_02", .12, align="start", rate=1.4)
-        lib(AT['sb2'] - .1, "whoosh-fast-soft", .4, align="start")
         lib(AT['ex2'] + .2, "transform-stretch", .5, align="start", rate=1.3); lib(AT['ex2'] + .4, "shimmer-long-sparkle", .45, align="start"); 
         lib(SH - .1, "whoosh-fast-soft", .4, align="start"); lib(AT['ex4'] + .2, "oc-GOREBone_SkullCracking_OS_01", .0, align="start")
         lib(S2 + .45, "oc-GOREBone_SkullCracking_OS_01", .45, align="start"); lib(S2 + .85, "oc-GOREBone_SkullCracking_OS_02", .45, align="start"); lib(S2 + .3, "digital-power-up", .4, align="start")
